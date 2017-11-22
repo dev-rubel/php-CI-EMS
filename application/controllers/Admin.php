@@ -2737,7 +2737,7 @@ class Admin extends CI_Controller
         // pd($className);
 
         $this->excel->setActiveSheetIndex(0);
-        $this->excel->getActiveSheet()->setTitle('Class '.$className.' All Students');
+        $this->excel->getActiveSheet()->setTitle('Class '.$className);
         $this->excel->getActiveSheet()->freezePane('A2');
 
         $this->excel->getActiveSheet()->setCellValue('A1', 'ID');               
@@ -2753,7 +2753,7 @@ class Admin extends CI_Controller
          
         if(!empty($extra)){
             $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
-            $extra['running_year'] = $running_year;
+            $extra['year'] = $running_year;
             $studentInfo = $this->db->get_where('enroll' , $extra)->result_array();    
         }else{
             $studentInfo = $this->db->get_where('enroll' , 
