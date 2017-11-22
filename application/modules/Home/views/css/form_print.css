@@ -1,0 +1,145 @@
+
+body{
+	font-family: "Times New Roman", Georgia, Serif;
+	margin:20px 0;
+	padding:0px;
+	color:#3d409b;
+}
+.wrapper{
+	width:730px;
+	height:1000px;
+	background-color:#efefef;
+	margin:auto;
+	border:none;
+	padding:0;
+}
+.main-wrapper{
+	width:710px;
+	height:870px;
+	margin:auto;
+}
+.blnk-space{
+	height: 40px;
+	width:100%;
+}
+.hdr{
+	height: 165px;
+}
+.logo-container{
+	float:left;
+	width:110px;
+	height:160px;
+}
+.name-all{
+	font-family: "Times New Roman", Georgia, Serif;
+	color:#3d409b;
+	width:440px;
+	height:100px;
+	text-align:center;
+	float:left;
+
+}
+.name-all h1{
+	display:block;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+.ex{
+	font-size:29px!important;
+}
+.name-all h3{
+	display:inline-block;
+	margin-top:0px;
+	margin-bottom:5px;
+}
+.name-all p{
+	
+	margin-top:0px;
+	margin-bottom:2px;
+}
+.propic-container{
+	float:left;
+	width:160px;
+	height:165px;
+}
+.custom-txtp{
+	margin-top:10px;
+	font-size:22px;
+	background-color: #B8B8B8!important;
+	width:190px;
+	display:inline-block;
+	padding: 7px 0px;
+	border-radius: 25px!important;
+}
+.srl-no{
+	float:left;
+	margin-top:23px;
+}
+.office-part{
+	float:left;
+	font-size:17px;
+	width: 730px;
+	margin-top: 11;
+	height:400px;
+
+}
+.pst{
+	margin-top:3px;
+	width:720px;
+	float:left;
+	border-bottom: 1px dashed #ccc;
+}
+.left-td{
+	width:220px;
+	padding:2px;
+	float:left;
+	color:#3d409b !important;
+}
+.right-td{
+	color:black;
+	float:left;
+	width:490px;
+	padding:2px;
+}
+.commitment-container{
+	font-family: "Times New Roman", Georgia, Serif;
+	float:left;
+	width:100%;
+	height: 140px;
+	color:#3d409b !important;
+}
+.commitment-container h3{
+	text-align:center;
+	margin-bottom:5px;
+}
+.commitment-container p{
+	font-size:14px;
+}
+.commitment-container hr{
+	width: 710px;
+	float:left;
+}
+.sign-container-guardian{
+	float:left;
+	margin-top:20px;
+	font-size:14px;
+	width:130px;
+}
+.sign-container-student{
+	float:right;
+	margin-top:20px;
+	width:130px;
+	font-size:14px;
+}
+.office-use-container{
+	width:720px;
+	float:left;
+	font-family: "Times New Roman", Georgia, Serif;
+	color:#3d409b!important;
+}
+.office-use-container h3{
+	text-align:center;
+}
+.office-use-container p{
+	font-size:14px;
+}

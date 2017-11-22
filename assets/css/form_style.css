@@ -1,0 +1,151 @@
+
+body{
+	margin:20px 0;
+	padding:0px;
+}
+.wrapper{
+	width:730px;
+	height:1000px;
+	margin:auto;
+	border:1px solid #A6A6A6;
+	padding:30px 40px;
+}
+.main-wrapper{
+	width:710px;
+	height:870px;
+	margin:auto;
+}
+.blnk-space{
+	height: 40px;
+	width:100%;
+}
+.hdr{
+	height: 165px;
+}
+.logo-container{
+	float:left;
+	width:110px;
+	height:160px;
+}
+.name-all{
+	color:#3d409b;
+	font-family:arial;
+	width:440px;
+	height:100px;
+	text-align:center;
+	float:left;
+
+}
+.name-all h1{
+	display:inline-block;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+.ex{
+	font-size:27px!important;
+}
+.name-all h3{
+	display:inline-block;
+	margin-top:0px;
+	margin-bottom:5px;
+}
+.name-all p{
+	
+	margin-top:0px;
+	margin-bottom:2px;
+}
+.propic-container{
+	float:left;
+	width:155px;
+	height:165px;
+}
+.custom-txtp{
+	margin-top:10px;
+	font-size:20px;
+	background-color: #D7D7D7;
+	width:190px;
+	display:inline-block;
+	padding: 7px 0px;
+	border-radius: 25px;
+}
+.srl-no{
+	float:left;
+	margin-top:23px;
+}
+.office-part{
+	float:left;
+	font-size:17px;
+	width: 730px;
+	margin-top: 11;
+	height:400px;
+
+}
+.pst{
+	margin-top:3px;
+	width:720px;
+	float:left;
+	border-bottom: 1px dashed #ccc;
+}
+.left-td{
+	width:220px;
+	padding:2px;
+	float:left;
+	color:#3d409b;
+}
+.right-td{
+	color:black;
+	float:left;
+	width:490px;
+	padding:2px;
+}
+.commitment-container{
+	font-family:arial;
+	float:left;
+	width:100%;
+	height: 140px;
+	color:#3d409b;
+}
+.commitment-container h3{
+	text-align:center;
+	margin-bottom:5px;
+	border-bottom: 1px solid;
+	border-bottom-width: 1px;
+	width: 26%;
+	margin: 5px auto;
+}
+.commitment-container p{
+	font-size:14px;
+}
+.commitment-container hr{
+	width: 710px;
+	float:left;
+}
+.sign-container-guardian{
+	float:left;
+	margin-top:20px;
+	font-size:14px;
+	width:130px;
+}
+.sign-container-student{
+	float:right;
+	margin-top:20px;
+	width:130px;
+	font-size:14px;
+}
+.office-use-container{
+	width:720px;
+	height:;
+	float:left;
+	font-family:arial;
+	color:#3d409b;/*#6161e1;*/
+}
+.office-use-container h3{
+    text-align: center;
+	border-bottom: 1px solid;
+	border-bottom-width: 1px;
+	width: 20%;
+	margin: 5px auto;
+}
+.office-use-container p{
+	font-size:14px;
+}
