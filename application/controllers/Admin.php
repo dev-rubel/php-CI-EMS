@@ -2724,6 +2724,7 @@ class Admin extends CI_Controller
 
     function export_student_info_excel($extra = [])
     {
+        // pd($extra);
         $this->load->library('excel');
         if(!empty($extra)){
             $class_id     = $extra['class_id'];    
@@ -2734,23 +2735,51 @@ class Admin extends CI_Controller
 
         $className = $this->db->get_where('class',['class_id'=>$class_id])->result_array();
         $className = $className[0]['name'];
-        // pd($className);
+        
+        // SET CUSTOM COLUMN WIDTH -- START
+        $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth("25");
+        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth("25");
+        // SET CUSTOM COLUMN WIDTH -- END
 
-        $this->excel->setActiveSheetIndex(0);
-        $this->excel->getActiveSheet()->setTitle('Class '.$className);
-        $this->excel->getActiveSheet()->freezePane('A2');
-
+        $this->excel->setActiveSheetIndex(0); // SELECT PAGE        
+        $this->excel->getActiveSheet()->setTitle('Class '.$className); // PAGE TITLE        
+        $this->excel->getActiveSheet()->freezePane('A2'); // FREEZE TOP ROW
+        // SET TOP ROW VALUE -- START
         $this->excel->getActiveSheet()->setCellValue('A1', 'ID');               
-        $this->excel->getActiveSheet()->setCellValue('B1', 'Name');               
-        $this->excel->getActiveSheet()->setCellValue('C1', 'Roll');               
-        $this->excel->getActiveSheet()->setCellValue('D1', 'Section');               
-        $this->excel->getActiveSheet()->setCellValue('E1', 'Group');               
-        $this->excel->getActiveSheet()->setCellValue('F1', 'Shift');               
+        $this->excel->getActiveSheet()->setCellValue('B1', 'Name');    
+        $this->excel->getActiveSheet()->setCellValue('C1', 'Roll');    
+        $this->excel->getActiveSheet()->setCellValue('D1', 'Section');  
+        $this->excel->getActiveSheet()->setCellValue('E1', 'Group');   
+        $this->excel->getActiveSheet()->setCellValue('F1', 'Shift');   
         $this->excel->getActiveSheet()->setCellValue('G1', 'Father Name');               
-        $this->excel->getActiveSheet()->setCellValue('H1', 'Mobile');               
-        $this->excel->getActiveSheet()->getStyle('A1:H1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->setCellValue('H1', 'Mobile');          
+        // SET TOW ROW VALUE -- END
 
-         
+        // SET CUSTOM STYLE -- START
+        $styleArray = [
+            'styleOne' => [
+                'borders' => [
+                    'allborders' => [
+                        'style' => PHPExcel_Style_Border::BORDER_THIN
+                    ]
+                ]
+            ],
+            'styleTwo' => [
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ]
+            ]
+        ];        
+        $this->excel->getDefaultStyle()->applyFromArray($styleArray['styleOne']);
+        $this->excel->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray['styleTwo']);
+        // SET CUSTOM STYLE -- END
+
         if(!empty($extra)){
             $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
             $extra['year'] = $running_year;
@@ -2758,8 +2787,7 @@ class Admin extends CI_Controller
         }else{
             $studentInfo = $this->db->get_where('enroll' , 
             ['class_id' => $class_id, 'year'=> $running_year])->result_array();
-        }  
-        
+        }          
         
         foreach($studentInfo as $key=>$each) {
             $std_id = $each['student_id'];
@@ -2782,8 +2810,11 @@ class Admin extends CI_Controller
             
             
             $key = $key+2;
-            $this->excel->getActiveSheet()->setCellValue('A'.$key, $std_id); 
-            $this->excel->getActiveSheet()->setCellValue('B'.$key, $std_info[0]['name']); 
+            $this->excel->getActiveSheet()->getStyle("A$key:H$key")
+            ->getAlignment()->setWrapText(true); 
+
+            $this->excel->getActiveSheet()->setCellValue('A'.$key, $std_id);
+            $this->excel->getActiveSheet()->setCellValue('B'.$key, $std_info[0]['name']);            
             $this->excel->getActiveSheet()->setCellValue('C'.$key, $each['roll']); 
             $this->excel->getActiveSheet()->setCellValue('D'.$key, $sec_info); 
             $this->excel->getActiveSheet()->setCellValue('E'.$key, $grp_info); 
@@ -2799,12 +2830,14 @@ class Admin extends CI_Controller
             $filename= 'Class-'.$className.'-All-Students.xls';
         }
         
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'.$filename.'"'); 
+        // SET HEADER -- START
+        header('Content-Type: application/vnd.ms-excel'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013) 
+        header('Content-Disposition: attachment;filename="'.$filename.'"'); // SET FILE NAME
         header('Cache-Control: max-age=0');
-                    
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');  
-        $objWriter->save('php://output');
+        // SET HEADER -- END
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013) 
+        $objWriter->save('php://output'); // FOURCE DOWNLOAD
         
     }
 
