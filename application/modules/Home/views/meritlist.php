@@ -1,8 +1,10 @@
 <?php
 $logo = $this->db->get_where('images',array('id'=>1))->row()->img_name;
+$session = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
 $this->db->select('*');
 $this->db->from('admit_std');
-$this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
+$this->db->join('admission_result', 'admission_result.uniq_id = admit_std.uniq_id');
+$this->db->where('admit_std.session',$session);
 $this->db->where('admit_std.class',$class);
 $this->db->where('admit_std.group', $group);
 $this->db->order_by('admission_result.mark','desc');

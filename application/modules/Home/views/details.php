@@ -16,6 +16,7 @@ $Dmsg = $this->db->get_where('frontpages',array('track_name'=>$this->uri->segmen
                    <div class = "panel-body">
                       <?php 
                       
+                      echo $url;
                       if(isset($Dmsg->title)){
                           echo $Dmsg->title;
                       }elseif(isset($Dtitle)){
@@ -39,17 +40,17 @@ $Dmsg = $this->db->get_where('frontpages',array('track_name'=>$this->uri->segmen
                                 echo '';
                             }
                             ?>
-                            <?php if(!empty($noticeId) && file_exists('assets/otherFiles/'.$noticeId.'_noticepdf.pdf')==true):?>
+                            <?php $url = $this->uri->segment(4); if(empty($url) && !empty($noticeId) && file_exists('assets/otherFiles/'.$noticeId.'_noticepdf.pdf')==true):?>
                             <br/><br/>
                             <h3 style="border-top: 2px solid #1ABC9C;padding-top: 10px;">Attached File</h3>
                             <object style="height: 500px;" data="assets/otherFiles/<?php echo $noticeId.'_noticepdf.pdf'?>" type="application/pdf" width="100%" height="100%">
-            <p>Alternative text - include a link <a href="myfile.pdf">to the PDF!</a></p>
-          </object>
+                            <p>Alternative text - include a link <a href="myfile.pdf">to the PDF!</a></p>
+                            </object>
                         <a href="assets/otherFiles/<?php echo $noticeId.'_noticepdf.pdf'?>" target="_blank" download="download">Download This PDF</a>                        
-                        <?php endif;?>
-                        </div>
-                    
+                            <?php endif;?>
+                        </div>                    
                     </div>
+                    
             </div>
             <!-- /.col-md-12 -->
             <div class="col-md-4">

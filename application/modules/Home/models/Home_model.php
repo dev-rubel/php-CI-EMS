@@ -10,6 +10,21 @@ class Home_model extends CI_Model{
         $data['colors'] = $this->db->get_where('frontpages', array('track_name' => 'colors'))->result_array();
         return $data;
     }
+
+    function get_admit_std_info_join($data)
+    {        
+        $session = $data['session'];
+        $this->db->select('*');
+        $this->db->from('admit_std');
+        //$this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
+        // $this->db->where('admit_std.class',$data['class']);
+        // $this->db->where('admit_std.group', $data['group']);
+        //$this->db->where('admit_std.session', $session);
+        $this->db->where('session', $session);
+        //$this->db->order_by('admission_result.mark','desc');
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
     
     function get_contentInfo()
     {
@@ -43,7 +58,27 @@ class Home_model extends CI_Model{
     
     function insert_admit_std_info($data)
     {
-        //pd($data);
+        $session = $this->db->get_where('settings', 
+            ['type'=>'admission_session'])
+                    ->result_array();
+        $data['session']  =  $session[0]['description'];
+        $year = substr($data['session'], -2);
+        $class = $data['class'];
+
+
+        $this->db->like('uniq_id', $year, 'after');
+        $exist = $this->db->get('admit_std')->result_array();
+        if(!empty($exist)) {     
+            $last = end($exist);
+            $uniq_id = str_pad(substr($last['uniq_id'], -4)+1, 4, '0', STR_PAD_LEFT);
+            $data['uniq_id'] = $year.$class.$uniq_id;
+        } else {
+            $uniq_id = str_pad(1, 4, '0', STR_PAD_LEFT);
+            $data['uniq_id'] = $year.$class.$uniq_id;
+        }
+
+
+        // pd($data);
         $this->db->insert('admit_std',$data);
         $id = $this->db->insert_id();
         

@@ -275,14 +275,15 @@ class Homemanage extends CI_Controller
     function sms_api($user,$pass,$sender,$msg,$mobile)
     {
         $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile";
-        $mystring = $this->get_data($url);
+        $mystring = $this->curl_url($url);
         return $mystring;
     }
+    
+
     function long_sms_api($user,$pass,$sender,$msg,$mobile)
-    { 	
-		$url = "http://api.zaman-it.com/api/v3/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
-		
-        $mystring = $this->get_data($url);
+    {
+        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
+        $mystring = $this->curl_url($url);
         return $mystring;
     }
 	
@@ -308,6 +309,16 @@ class Homemanage extends CI_Controller
         curl_close($ch);
         return $data;
     }
+
+    function curl_url($url)
+    {        
+        $data = file_get_contents($url);
+        if($data) {
+            return true;
+        }
+        return true;
+        
+    }
     
     function update_admission_info()
     {
@@ -319,15 +330,15 @@ class Homemanage extends CI_Controller
         $this->db->where('type', 'sms_description');
         $this->db->update('settings',array('description'=>$des));
         
-        $_POST['exam_date'];
         $this->db->where('type', 'exam_date');
         $this->db->update('settings',array('description'=>$_POST['exam_date']));
         
-        $_POST['exam_time'];
         $this->db->where('type', 'exam_time');
         $this->db->update('settings',array('description'=>$_POST['exam_time']));
-        
-        
+
+        $this->db->where('type', 'admission_session');
+        $this->db->update('settings',array('description'=>$_POST['admission_session']));
+                
         !empty($_POST['link_status'])?$_POST['link_status']=1:$_POST['link_status']=0;
         $this->db->where('type', 'link_status');
         $this->db->update('settings',array('description'=>$_POST['link_status']));
@@ -341,24 +352,42 @@ class Homemanage extends CI_Controller
     function add_admission_result()
     {
         //pd($_POST);
-        $id = $this->db->get_where('admission_result',array('std_id'=>$_POST['std_id']))->row()->id;
-        if(!empty($id)):
-            $this->db->update('admission_result',$_POST,array('id'=>$id));
+        $session = $this->db->get_where('settings', 
+                ['type'=>'admission_session'])
+                    ->row()->description;
+        $uniq_id = $this->db->get_where('admission_result',
+                ['uniq_id'=>$_POST['uniq_id'], 'session' => $session])
+                    ->row()->id;
+        $id = $this->db->get_where('admit_std',
+                ['uniq_id'=>$_POST['uniq_id'], 'session' => $session])
+                    ->row()->id;
+        $_POST['std_id'] = $id;
+        $_POST['session'] = $session;
+        if(!empty($uniq_id)):
+            $this->db->update('admission_result',$_POST,['uniq_id'=>$uniq_id, 'session' => $session]);
             $this->flashmsg('Mark Updated');
             redirect(base('homemanage', 'admission_result'));
         else:
             $this->db->insert('admission_result',$_POST);
             $this->flashmsg('Mark Inserted');
             redirect(base('homemanage', 'admission_result'));
-        endif;
-        
+        endif;        
     }
     
     function getAdmitStdName($value)  //ajax response
     {
-        $namebn = $this->db->get_where('admit_std',array('id'=>$value, 'status'=>'1'))->row()->namebn;
-        $mark = $this->db->get_where('admission_result',array('std_id'=>$value))->row()->mark;
-        $fnamebn = $this->db->get_where('admit_std',array('id'=>$value, 'status'=>'1'))->row()->fnamebn;              
+        $session = $this->db->get_where('settings', 
+                        ['type'=>'admission_session'])
+                                    ->row()->description;
+        $namebn = $this->db->get_where('admit_std',
+                        ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
+                                    ->row()->namebn;
+        $mark = $this->db->get_where('admission_result',
+                        ['uniq_id'=>$value, 'session' => $session])
+                                    ->row()->mark;
+        $fnamebn = $this->db->get_where('admit_std',
+                        ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
+                                    ->row()->fnamebn;              
               
 		if(empty($fnamebn)){
 			$fname = '';
@@ -387,15 +416,20 @@ class Homemanage extends CI_Controller
     
     function getClassResult()
     {
-        //pd($_POST);
+        // pd($session);
         unset($_SESSION['flash_message']);
         unset($_SESSION['error']);
         !empty($_POST['group'])?$group=$_POST['group']:$group='';
+        $session = $this->db->get_where('settings', 
+            ['type'=>'admission_session'])
+                    ->result_array();
+        $session = $session[0]['description'];
         $this->db->select('*');
         $this->db->from('admit_std');
         $this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
         $this->db->where('admit_std.class',$_POST['class']);
         $this->db->where('admit_std.group', $group);
+        $this->db->where('admit_std.session', $session);
         $this->db->order_by('admission_result.mark','desc');
         $query = $this->db->get()->result_array();
         if(!empty($query)):
@@ -409,27 +443,79 @@ class Homemanage extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function updateHeaderImg()
+    public function transfer_admit_student()
     {
-        $configUpload['upload_path']    = './assets/otherFiles';               
-        $configUpload['allowed_types']  = '*';     
-        $configUpload['max_size']       = '1024'; 
-        $configUpload['max_width']      = '1500';  
-        $configUpload['max_height']     = '300';    
-        $configUpload['overwrite']      = TRUE;    
-        $configUpload['file_name']      = 'header_image';                  
-        $this->upload->initialize($configUpload);   
-        if(!$this->upload->do_upload('header_img')){
-            $uploadedDetails    = $this->upload->display_errors();
-            pd($uploadedDetails);
-            $this->flashmsg('Error', 'error');
-            redirect(base('admin', 'system_settings'));
-        }else{
-            $uploadedDetails    = $this->upload->data(); 
-            $this->db->update('settings',array('description'=>$uploadedDetails['file_name']), array('settings_id'=>30));
-            $this->flashmsg('Update Header Image');
-            redirect(base('admin', 'system_settings'));
-        }
+        $fee = $_POST['fee'];
+        unset($_POST['fee']);
+        
+        $this->db->where('id',$_POST['student_id']);
+        $data = $this->db->get('admit_std')->result_array();
+
+
+        //pd($data[0]);
+        //student table section
+        $admint_student_id = $data[0]['id'];
+        unset($data[0]['id']);
+        unset($data[0]['student_id']);
+        $stdInfo1 = array_slice($data[0], 0, 15);
+        $studentInfo['jscinfo'] = $data[0]['jscinfo'];
+        $studentInfo['birthday'] = $data[0]['date'];
+        $studentInfo['mobile'] = $data[0]['mobile'];
+        $studentInfo['sex'] = 'Male';
+        $studentInfo['from_admit_std'] = 'Yes';
+        $studentInfo['password'] = substr(md5(rand(0, 1000000)), 0, 7);
+        $studentTable = array_merge($stdInfo1,$studentInfo);
+        
+
+        //pd($studentTable);
+        $this->db->insert('student', $studentTable);
+        $enrolInfo['student_id'] = $this->db->insert_id();
+        $this->db->update('admit_std',array('student_id'=>$enrolInfo['student_id']),array('id'=>$admint_student_id));
+
+        //student image rename and move to upload folder
+        $ext = strtolower(pathinfo($data[0]['img'], PATHINFO_EXTENSION));
+        copy('assets/'.$data[0]['img'], 'uploads/student_image/'.$enrolInfo['student_id'].'.'.$ext);
+
+
+        //enroll table section
+        unset($_POST['student_id']);
+        $enrolInfo['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7); 
+        $enrolInfo['date_added']     = strtotime(date("Y-m-d H:i:s"));
+        $enrolInfo['year']           = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $enrolTable = array_merge($enrolInfo,$_POST);
+        //pd($enrolTable);
+        $this->db->insert('enroll', $enrolTable);
+
+
+        //invoice table section
+        $invoiceInfo['student_id']         = $enrolInfo['student_id'];
+        $invoiceInfo['title']              = 'Admit Fee';
+        $invoiceInfo['description']        = 'Admit Fee';
+        $invoiceInfo['amount']             = $fee;
+        $invoiceInfo['amount_paid']        = $fee;
+        $invoiceInfo['due']                = '';
+        $invoiceInfo['status']             = 'paid';
+        $invoiceInfo['creation_timestamp'] = strtotime(date('m/d/Y'));
+        $invoiceInfo['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+       
+        $this->db->insert('invoice', $invoiceInfo);
+        $invoice_id = $this->db->insert_id();
+
+        //payment table section
+        $paymentInfo['invoice_id']        =   $invoice_id;
+        $paymentInfo['student_id']        =   $enrolInfo['student_id'];
+        $paymentInfo['title']             =   'Admit Fee';
+        $paymentInfo['description']       =   'Admit Fee';
+        $paymentInfo['payment_type']      =   'income';
+        $paymentInfo['method']            =   '1';
+        $paymentInfo['amount']            =   $fee;
+        $paymentInfo['timestamp']         =   strtotime(date('m/d/Y'));
+        $paymentInfo['year']              =    $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $this->db->insert('payment' , $paymentInfo);
+        
+        $_SESSION['stdClass'] = $data[0]['class'];
+        $_SESSION['stdGroup'] = notEmpty($data[0]['group']);
+        redirect(base('homemanage', 'getClassResult'));
     }
 	
 

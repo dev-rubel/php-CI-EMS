@@ -43,7 +43,6 @@ extract($result);
 			
 			<div class="">
             		<br>
-                <form action="<?php echo base('Homemanage','transfer_admit_student');?>" method='post'>
                 <?php echo form_open(base('homemanage','transfer_admit_student') ,'', array('student_id'=>$id));?>
                 <table class="table table-bordered" style="width: 80%; margin: 0 auto;">
                 

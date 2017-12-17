@@ -1,14 +1,28 @@
 <?php 
-$getClass = $this->db->get('class')->result_array();
-$panddingStd = $this->db->get_where('admit_std',array('status'=>0))->result_array();
-$confirmStd = $this->db->get_where('admit_std',array('status'=>1))->result_array();
-$arr = array('exam_date','exam_time', 'link_status','sms_title','sms_description');
+
+$arr = ['exam_date','exam_time',
+        'link_status','sms_title',
+        'sms_description','admission_session'];
+
 $this->db->where_in('type',$arr);
 $result1 = $this->db->get('settings')->result_array();
+$session = $result1[5]['description'];
+
+
+$getClass = $this->db->get('class')->result_array();
+
+$panddingStd = $this->db->get_where('admit_std',
+    ['status'=>0,'session'=>$session])
+            ->result_array();
+
+$confirmStd = $this->db->get_where('admit_std',
+    ['status'=>1,'session'=>$session])
+            ->result_array();
+
 
 $paddingCount = array_count_values(array_column($panddingStd,'class'));
 $confirmCount = array_count_values(array_column($confirmStd,'class'));
-//pd(count($panddingStd));
+// pd($panddingStd);
 
 ?>
 <hr />	
@@ -21,12 +35,12 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
         <ul class="nav nav-tabs bordered">
             <li class="active">
                 <a href="#list" data-toggle="tab"><i class="entypo-menu"></i> 
-                    <?php echo get_phrase('aplicant_list'); ?>
+                    <?php echo get_phrase('aplicant_list').' <b>('.count($panddingStd).')</b>'; ?>
                 </a>
             </li>
             <li>
                 <a href="#list2" data-toggle="tab"><i class="entypo-menu"></i> 
-                    <?php echo get_phrase('confirm_aplicant_list'); ?>
+                    <?php echo get_phrase('confirm_aplicant_list').' <b>('.count($confirmStd).')</b>'; ?>
                 </a>
             </li>
             <li>
@@ -87,7 +101,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                             ?>
                             <tr>
                                 <td><?php echo $key+1;?></td>
-                                <td><?php echo $list['id'];?></td>                                
+                                <td><?php echo substr($list['uniq_id'], -4);?></td>                                
                                 <!-- <td>
                                     <img src="assets/<?php //echo $list['img'];?>" width="50px" height="50px"/>
                                 </td> -->
@@ -209,7 +223,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                         <tr>
                             <th><div>#</div></th>
 							<th><div>ID/Roll</div></th>  
-                            <th width="70px"><div><?php echo get_phrase('image'); ?></div></th>
+                            <!-- <th width="70px"><div><?php echo get_phrase('image'); ?></div></th> -->
                             <th><div><?php echo get_phrase('name'); ?></div></th>
                             <th><div><?php echo get_phrase('father_name'); ?></div></th>
                             <th width="115px"><div><?php echo get_phrase('want_to_admit'); ?></div></th>
@@ -298,6 +312,9 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
             <br>
             <div class="tab-pane box" id="list1">
                 <div class="col-md-6 col-md-offset-3">
+
+                    <h3 class="text-center"><a href="<?php echo base('Home', 'download_online_addmission_student_info');?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download This Session Student Information'?></a></h3>
+
                     <form action="<?php echo base('homemanage', 'update_admission_info')?>" method="post">
                     <div class="form-group">
                       <label for="exampleInputName2">Admission Exam Date</label>
@@ -319,7 +336,17 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                         <label for="exampleInputEmail2">Admission Page: &nbsp;</label>
                       <input type="checkbox" name="link_status" data-toggle="toggle" <?php echo $result1[2]['description']==1?'checked':''?>>
                     </div>
-                    <button type="submit" class="btn btn-success">Update</button>
+                    <div class="form-group">
+                      <label for="exampleInputName2">Admission Session: </label>
+                      <select name="admission_session" class="form-control" id="exampleInputName2">
+                        <?php foreach(range(2016, date('Y')+1) as $k=>$each):?>
+                          <option value="<?php echo $each;?>" <?php echo $session==$each?'selected':'';?>>
+                              <?php echo $each;?>
+                          </option>
+                        <?php endforeach;?>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-info">Update</button>
                   </form>
                     </div>
             </div>

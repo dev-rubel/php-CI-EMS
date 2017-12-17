@@ -14,7 +14,7 @@
 	           				<?php if($account_type == 'admin'):?> 
 	           				onclick="get_session_changer()"
 	           			<?php endif;?>>
-	           				<?php echo get_phrase('running_session');?> : <?php echo $running_year;?>
+	           				<?php echo get_phrase('running_session');?> : <?php echo substr($running_year, 0, -5);?>
 	           			</a>
 	           		</h4>
 	           </li>

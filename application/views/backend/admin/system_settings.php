@@ -71,9 +71,9 @@
                           <?php $running_year = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;?>
                           <option value=""><?php echo get_phrase('select_running_session');?></option>
                           <?php for($i = 0; $i < 10; $i++):?>
-                              <option value="<?php echo (2016+$i);?>-<?php echo (2016+$i+1);?>"
+                              <option value="<?php echo (2016+$i).'-'.(2016+$i+1);?>"
                                 <?php if($running_year == (2016+$i).'-'.(2016+$i+1)) echo 'selected';?>>
-                                  <?php echo (2016+$i);?>-<?php echo (2016+$i+1);?>
+                                  <?php echo substr((2016+$i).'-'.(2016+$i+1), 0, -5);?>
                               </option>
                           <?php endfor;?>
                           </select>

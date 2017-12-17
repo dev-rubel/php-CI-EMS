@@ -105,6 +105,8 @@
                   <li><a href="<?php echo base_url(); ?>index.php?admin/student_promotion"><?php echo get_phrase('student_promotion'); ?></a></li>
                   <li><a href="<?php echo base_url(); ?>index.php?homemanage/admission_query"><?php echo get_phrase('admission_query'); ?></a></li>
                   <li><a href="<?php echo base_url(); ?>index.php?homemanage/admission_result"><?php echo get_phrase('admission_result'); ?></a></li>
+                  <li><a href="<?php echo base_url(); ?>index.php?admin/testimonial_voc"><?php echo get_phrase('testimonial_for_voc'); ?></a></li>
+                  <li><a href="<?php echo base_url(); ?>index.php?admin/testimonial_general"><?php echo get_phrase('testimonial_for_general'); ?></a></li>
                   <li><a href="<?php echo base_url(); ?>index.php?admin/download_excel"><?php echo get_phrase('download_excel'); ?></a></li>
                   
                </ul>

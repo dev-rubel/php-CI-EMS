@@ -154,9 +154,19 @@ function ckd($data1,$data2)
     return $result;
 }
 
-function upload_file($s,$w,$h,$file_name)
+function upload_file($s,$w,$h,$file_name,$logo='')
 {
-    $config['upload_path']   = './assets/'; 
+    $session = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
+    $dir = 'assets/images/admission_student/'.$session;
+    if (!is_dir($dir)){
+        mkdir($dir, 0777, true);
+    }            
+
+    if(empty($logo)):
+        $config['upload_path']   = './assets/images/admission_student/'.$session; 
+    else:
+        $config['upload_path']   = './assets/images'; 
+    endif;
     $config['allowed_types'] = '*'; 
     $config['overwrite']     = TRUE;
     $config['max_size']      = $s; 

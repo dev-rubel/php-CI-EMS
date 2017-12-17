@@ -562,9 +562,11 @@ class Admin extends CI_Controller
 
     function update_new_promotion_std_info() 
     {        
+        $current_year = $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
         $student_id   = $this->uri->segment(3);
         $info = $this->input->post();
         $this->db->where('student_id', $student_id);
+        $this->db->where('year', $current_year);
         $this->db->update('enroll', $info);
         $this->session->set_flashdata('flash_message' , get_phrase('new_enrollment_successfull'));
         redirect(base_url() . 'index.php?admin/student_information/'.$info['class_id'] , 'refresh');
@@ -665,6 +667,232 @@ class Admin extends CI_Controller
         $page_data['page_title']    = 'Total Students: ('.$all_std_count.')';
         $page_data['page_name']  = 'total_student_page';
         $this->load->view('backend/index', $page_data);
+    }
+
+
+    /**** TESTIMONIAL SECTION *****/    
+    function testimonial_voc()
+    {
+        $class_id = $this->db->get_where('class', array('name_numeric' => 101))->row()->class_id;
+        $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
+        $page_data['page_name']  = 'testimonial_voc';
+        $page_data['page_title'] = get_phrase('testimonial_for_vocational');
+        $this->load->view('backend/index', $page_data);
+    }  
+    
+    function testimonial_general()
+    {
+        $class_id = $this->db->get_where('class', array('name_numeric' => 10))->row()->class_id;
+        $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
+        $page_data['page_name']  = 'testimonial_general';
+        $page_data['page_title'] = get_phrase('testimonial_for_general');
+        $this->load->view('backend/index', $page_data);
+    } 
+
+    function print_testimonial_voc($page_data = '')
+    {
+        $page_data['page_name']  = 'print_testimonial_voc';
+        $page_data['page_title'] = get_phrase('testimonial_for_vocational');
+        $this->load->view('backend/admin/print_testimonial_voc' , $page_data);
+    }
+
+    function print_testimonial_general($page_data = '')
+    {
+        $page_data['page_name']  = 'print_testimonial_general';
+        $page_data['page_title'] = get_phrase('testimonial_for_general');
+        $this->load->view('backend/admin/print_testimonial_general' , $page_data);
+    }
+
+    function search_testimonial()
+    {   
+        $group_id = $this->input->post('group_id');
+        $roll     = $this->input->post('roll');
+        $year     = $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
+        $id       = $this->db->get_where('enroll', array('year' => $year, 'group_id' => $group_id, 'roll' => $roll))->row()->student_id;
+        $class_id = $this->db->get_where('group', array('group_id' => $group_id))->row()->class_id;
+        $class_name_numeric = $this->db->get_where('class', array('class_id' => $class_id))->row()->name_numeric;
+        if($class_name_numeric == 101 || $class_name_numeric == 91){
+            $page = 'vocational';
+        }
+        
+        if(is_numeric($id)):
+            $test_data1 = $this->db->get_where('testimonial', array('student_id'=>$id))->result_array();    
+
+            if(!empty($test_data1)): // FOUND WITH REGISTERED STUDENT INFO
+                unset($_SESSION['flash_message']);
+                unset($_SESSION['error']);
+                $this->flashmsg('Testimonial Found');
+                $page_data['found_test']     = 'found';             
+                $page_data['std_info']       = $test_data1[0];
+                $this->search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data, $page);
+
+            else:  // NO DATA FOUND
+                $page_data['std_group_id']   =  $group_id;
+
+                unset($_SESSION['flash_message']);
+                unset($_SESSION['error']);
+                $this->flashmsg('Student Found');
+                $this->search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data, $page);
+            endif;
+
+        else:
+
+            $test_data2 = $this->db->get_where('testimonial', array('trade' => $group_id,'pass_roll'=>$roll))->result_array();
+
+            if(!empty($test_data2)){ // FOUND MENUAL TESTIMONIAL INPUT RESULT
+                unset($_SESSION['flash_message']);
+                unset($_SESSION['error']);
+                $this->flashmsg('Student Found');
+                $page_data['found_test']     = 'found';
+                $page_data['std_info']       = $test_data2[0];
+            }else{ // NO DATA FOUND
+                unset($_SESSION['flash_message']);
+                unset($_SESSION['error']);
+                $this->flashmsg('Student Not Found', 'error');
+            }
+            
+            $this->search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data, $page);
+        endif;
+        
+    }
+
+    function search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data = "", $page = "")
+    {        
+        if(isset($page_data['found_test']) == false){
+            $enroll_info = $this->db->get_where('enroll', array('group_id' => $group_id, 'roll' => $roll))->result_array();
+            $std_info = $this->db->get_where('student', array('student_id' => $id))->result_array();
+            $page_data['std_info']      =  $std_info[0];
+            $page_data['enroll_info']   =  $enroll_info[0];
+        }
+        
+        if(!empty($page)){
+            $class_id = $this->db->get_where('class', array('name_numeric' => 101))->row()->class_id;
+            $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
+            $page_data['page_name']     = 'testimonial_voc';
+            $page_data['page_title']    = get_phrase('testimonial_for_vocational');
+        }else{
+            $class_id = $this->db->get_where('class', array('name_numeric' => 10))->row()->class_id;
+            $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
+            $page_data['page_name']  = 'testimonial_general';
+            $page_data['page_title'] = get_phrase('testimonial_for_general');
+        }
+        
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function add_testimonial()
+    {
+        $data['student_id']      = $this->input->post('student_id');
+        $data['student_name']    = $this->input->post('student_name');            
+        $data['father_name']     = $this->input->post('father_name');
+        $data['mother_name']     = $this->input->post('mother_name');
+        $data['address']         = implode('_', $this->input->post('address'));
+        if(isset($_POST['course'])){
+            $data['course']       = $this->input->post('course');
+        }
+        $data['pass_year']       = $this->input->post('pass_year');
+        $data['pass_roll']       = $this->input->post('pass_roll');
+        $data['pass_no']         = $this->input->post('pass_no');
+        $data['pass_regis_no']   = $this->input->post('pass_regis_no');
+        $data['pass_session']    = $this->input->post('pass_session');
+        $data['gpa']             = $this->input->post('gpa');
+        $data['trade']           = $this->input->post('trade');
+        $data['birth']           = implode('-', $this->input->post('birth'));
+        $data['asset_sign']      = $this->input->post('asset_sign');
+        $data['headmaster_sign'] = $this->input->post('headmaster_sign');
+
+        if(isset($_POST['save_new'])){ 
+                      
+            $check_exist = $this->db->get_where('testimonial', array('trade' => $data['trade'], 'pass_roll' => $data['pass_roll']))->num_rows();
+            if($check_exist > 0){
+                if(isset($_POST['course'])){
+                    unset($_SESSION['flash_message']);
+                    unset($_SESSION['error']);
+                    $this->flashmsg('Testimonial Already Added');                    
+                    redirect(base('admin', 'testimonial_general'));
+                }else{
+                    unset($_SESSION['flash_message']);
+                    unset($_SESSION['error']);
+                    $this->flashmsg('Testimonial Already Added');
+                    redirect(base('admin', 'testimonial_voc'));
+                }
+            }
+
+
+            $this->db->insert('testimonial', $data);
+
+            unset($_SESSION['flash_message']);
+            unset($_SESSION['error']);
+            $this->flashmsg('Successfully Save');
+            if(isset($_POST['course'])){
+                redirect(base('admin', 'testimonial_general'));
+            }else{
+                redirect(base('admin', 'testimonial_voc'));
+            }            
+        }
+
+        if(isset($_POST['update_new'])){
+
+            $testimonial_id = $this->input->post('testimonial_id');
+
+            $this->db->where('testimonial_id', $testimonial_id);
+            $this->db->update('testimonial', $data);
+            unset($_SESSION['flash_message']);
+            unset($_SESSION['error']);
+            $this->flashmsg('Update Successfully Save');
+            if(isset($_POST['course'])){
+                redirect(base('admin', 'testimonial_general'));
+            }else{
+                redirect(base('admin', 'testimonial_voc'));
+            }
+        }
+
+        if(isset($_POST['save_print'])){
+            $check_exist = $this->db->get_where('testimonial', array('trade' => $data['trade'], 'pass_roll' => $data['pass_roll']))->num_rows();
+            if($check_exist > 0){
+                if(isset($_POST['course'])){
+                    unset($_SESSION['flash_message']);
+                    unset($_SESSION['error']);
+                    $this->flashmsg('Testimonial Already Added');                    
+                    redirect(base('admin', 'testimonial_general'));
+                }else{
+                    unset($_SESSION['flash_message']);
+                    unset($_SESSION['error']);
+                    $this->flashmsg('Testimonial Already Added');
+                    redirect(base('admin', 'testimonial_voc'));
+                }
+            }
+
+            $this->db->insert('testimonial', $data);
+            $insertID = $this->db->insert_id();
+
+            $page_data['std_info'] = $this->db->get_where('testimonial', array('testimonial_id'=>$insertID))->result_array();
+            $page_data['trade_name'] = $this->db->get_where('group', array('group_id' => $page_data['std_info'][0]['trade']))->row()->name;
+
+            if(isset($_POST['course'])){
+                $this->print_testimonial_general($page_data);
+            }else{
+                $this->print_testimonial_voc($page_data);
+            }
+            
+            
+        }
+
+        if(isset($_POST['update_print'])){
+
+            $testimonial_id = $this->input->post('testimonial_id');
+            $this->db->where('testimonial_id', $testimonial_id);
+            $this->db->update('testimonial', $data);
+
+            $page_data['std_info'] = $this->db->get_where('testimonial', array('testimonial_id'=>$testimonial_id))->result_array();
+            $page_data['trade_name'] = $this->db->get_where('group', array('group_id' => $page_data['std_info'][0]['trade']))->row()->name;
+            
+            if(isset($_POST['course'])){
+                $this->print_testimonial_general($page_data);
+            }else{
+                $this->print_testimonial_voc($page_data); 
+            }
+        }
     }
 
 
@@ -2976,6 +3204,7 @@ class Admin extends CI_Controller
         return true;
         
     }
+
 
 }
 

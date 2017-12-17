@@ -57,7 +57,7 @@
                     <form action="<?php echo base('homemanage', 'add_admission_result') ?>" method="post">
                         <div class="form-group">
                             <label>Admission Roll No.</label>
-                            <input type="number" class="form-control" name="std_id" aria-describedby="emailHelp" placeholder="eg.29" autofocus>
+                            <input type="number" class="form-control" name="uniq_id" aria-describedby="emailHelp" placeholder="eg.29" autofocus>
 
                         </div>
                         <div class="form-group">
@@ -76,7 +76,8 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box <?php echo !empty($result)?'active':'';?>" id="list2">
 
-                <h3 class="text-center"><a href="<?php echo base('Home', 'meritlistPage/'.$Oclass.'/'.$Ogroup);?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download '.$Sclass.$Sgroup.' Mark-Sheet'?></a></h3>
+                <h3 class="text-center"><a href="<?php echo base('Home', 'meritlistPage/'.$Oclass.'/'.$Ogroup);?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download '.$Sclass.'-'.$Sgroup.' Mark-Sheet'?></a></h3>
+                
                 <table id="example" class="table table-bordered datatable" cellspacing="0" width="100%">
                     <thead>
                         <tr>
@@ -92,7 +93,7 @@
                         <?php foreach($result as $key=>$list):?>
                         <tr>
                             <td><?php echo $key+1;?></td>
-                            <td><?php echo $list['std_id'];?></td>
+                            <td><?php echo $list['uniq_id'];?></td>
                             <td><?php echo $list['namebn'];?></td>
                             <td><?php echo $list['fnamebn'];?></td>
                             <td><?php echo $list['mark'];?></td>     
@@ -176,7 +177,7 @@
         $('.groupHolder').hide();
         
         
-        $( "input[name=std_id]" ).keyup(function() {
+        $( "input[name=uniq_id]" ).keyup(function() {
             var value = $( this ).val();
             //alert(value);
             $.ajax({

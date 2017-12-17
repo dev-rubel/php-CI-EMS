@@ -32,7 +32,8 @@
         <?php foreach($all_class as $k=>$list): ?>
          <div class="tab-pane <?php echo $k==0?'active':'';?>" id="a<?php echo $k; ?>">
          <?php 
-         	$this->db->where('class_id', $list['class_id']);
+			 $this->db->where('class_id', $list['class_id']);
+			 $this->db->where('year', $running_year);
 			$this->db->from('enroll');
 			$class_total_student = $this->db->count_all_results(); // Produces an integer, like 17
           ?>
@@ -52,7 +53,8 @@
 		    if(count($sections) > 0):
 		    	foreach($sections as $k2=>$list2):
 		    		$this->db->where('class_id', $list['class_id']);
-		    		$this->db->where('section_id', $list2['section_id']);
+					$this->db->where('section_id', $list2['section_id']);
+					$this->db->where('year', $running_year);
 					$this->db->from('enroll');
 					$section_total_student = $this->db->count_all_results(); 
 					$k2++;

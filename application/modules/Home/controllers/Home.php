@@ -54,31 +54,7 @@ class Home extends MX_Controller {
     {
         $this->load_page('confirmpage','Confirm Submission');
     }
-    
-    function test()
-    {
-        $data['std_info'] = $this->db->get_where('admit_std',array('id'=>43))->result_array();      
-        $this->load->view('printform', $data);
-//        
-//        $this->load->library('mpdf');
-//        $mpdf=new mPDF('','A4',14,'nikosh'); 
-//        //$mpdf->SetHTMLHeader('<img style="margin-bottom: 30px;" src="https://1.bp.blogspot.com/-boQWvVPqHtQ/V_CmldvMVgI/AAAAAAAAAPY/y9cxS27EvPkSMhy6tycJoU70r7PeT8g1QCLcB/s1600/Capture3.JPG"/>');
-////$mpdf->AddPage('', // L - landscape, P - portrait 
-////        '', '', '', '',
-////        5, // margin_left
-////        5, // margin right
-////       60, // margin top
-////       30, // margin bottom
-////        0, // margin header
-////        0); // margin footer
-//$data['std_info'] = $this->db->get_where('admit_std',array('id'=>45))->result_array();    
-//$html = $this->load->view('printform',$data,true);
-//    $mpdf->WriteHTML($html);
-//    $mpdf->Output();
-//    exit();
-    }
-	
-	
+
 	function meritlistPage()
 	{
 		$uri = $_SERVER['REQUEST_URI'];
@@ -102,7 +78,106 @@ class Home extends MX_Controller {
         $this->m_pdf->pdf->WriteHTML($html);
         $this->m_pdf->pdf->Output($fileName,"D"); 
 		exit;
-	}
+    }
+    
+    function download_online_addmission_student_info()
+    {
+        $data['session'] = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
+        // DOWNLOAD SPACIFIC CLASS INFORMATION
+            // $uri = $_SERVER['REQUEST_URI'];
+            // $url = array_slice(explode('/',$uri),-2,2);
+
+            // if(is_numeric(end($url))){
+            //     $data['class'] = $url[1];
+            //     $class_id = $url[1];
+            //     $data['group'] = '';
+            //     $className = $this->db->get_where('class',
+            //         ['class_id'=>$class_id])->row()->name;
+            // } else {
+            //     $data['class'] = $url[0];
+            //     $data['group'] = $url[1];
+            //     $class_id = $url[0];
+            //     $group_id = $url[1];  
+            //     $className = $this->db->get_where('class',
+            //         ['class_id'=>$class_id])->row()->name;
+            //     $groupName = $this->db->get_where('group',
+            //         ['group_id'=>$group_id])->row()->name;          
+            // }
+        // DOWNLOAD SPACIFIC CLASS INFORMATION -- END
+
+        $result = $this->home_model->get_admit_std_info_join($data);
+        // pd($result);        
+
+        $this->load->library('excel');
+        // SET CUSTOM COLUMN WIDTH -- START
+        $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth("18");
+        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth("18");
+        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth("25");
+        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth("23");
+        $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth("11");
+        // SET CUSTOM COLUMN WIDTH -- END
+
+        $this->excel->setActiveSheetIndex(0); // SELECT PAGE        
+        $this->excel->getActiveSheet()->setTitle($data['session'].' Applied Students'); // PAGE TITLE        
+        $this->excel->getActiveSheet()->freezePane('A2'); // FREEZE TOP ROW
+        // SET TOP ROW VALUE -- START
+        $this->excel->getActiveSheet()->setCellValue('A1', 'ID');               
+        $this->excel->getActiveSheet()->setCellValue('B1', 'Name');    
+        $this->excel->getActiveSheet()->setCellValue('C1', 'Father Name');    
+        $this->excel->getActiveSheet()->setCellValue('D1', 'Mother Name');  
+        $this->excel->getActiveSheet()->setCellValue('E1', 'Address');   
+        $this->excel->getActiveSheet()->setCellValue('F1', 'Previous School');   
+        $this->excel->getActiveSheet()->setCellValue('G1', 'D.O.B');             
+        // SET TOW ROW VALUE -- END
+
+        // SET CUSTOM STYLE -- START
+        $styleArray = [
+            'styleOne' => [
+                'borders' => [
+                    'allborders' => [
+                        'style' => PHPExcel_Style_Border::BORDER_THIN
+                    ]
+                ]
+            ],
+            'styleTwo' => [
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ]
+            ]
+        ];        
+        $this->excel->getDefaultStyle()->applyFromArray($styleArray['styleOne']);
+        $this->excel->getActiveSheet()->getStyle('A1:G1')->applyFromArray($styleArray['styleTwo']);
+        // SET CUSTOM STYLE -- END
+
+        foreach($result as $key=>$each){
+            $key = $key+2;
+            $this->excel->getActiveSheet()->getStyle("A$key:G$key")
+            ->getAlignment()->setWrapText(true); 
+
+            $this->excel->getActiveSheet()->setCellValue('A'.$key, $each['uniq_id']);
+            $this->excel->getActiveSheet()->setCellValue('B'.$key, $each['name']);        
+            $this->excel->getActiveSheet()->setCellValue('C'.$key, $each['fname']); 
+            $this->excel->getActiveSheet()->setCellValue('D'.$key, $each['mname']); 
+            $this->excel->getActiveSheet()->setCellValue('E'.$key, $each['paadress']); 
+            $this->excel->getActiveSheet()->setCellValue('F'.$key, $each['preschoolname']); 
+            $this->excel->getActiveSheet()->setCellValue('G'.$key, $each['date']); 
+        }
+        
+        $filename= 'All Applied Students ('.$data['session'].').xls';
+        // SET HEADER -- START
+        header('Content-Type: application/vnd.ms-excel'); // EXCEL FORMAT (CURRENT EXCEL 2000-2003) 
+        header('Content-Disposition: attachment;filename="'.$filename.'"'); // SET FILE NAME
+        header('Cache-Control: max-age=0');
+        // SET HEADER -- END
+        
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5'); // EXCEL FORMAT (CURRENT EXCEL 2000-2003) 
+        $objWriter->save('php://output'); // FOURCE DOWNLOAD
+
+    }
             
     function admit_student()
     {
@@ -148,7 +223,9 @@ class Home extends MX_Controller {
         $_POST['date'] = date("Y-m-d", strtotime($_POST['date']));
         $token = $this->home_model->insert_admit_std_info($_POST);
         $url = base_url().'index.php?Home/check_token/'.$token;
-        $shorten = $this->shorten($url);
+        // pd($shorten);
+        $shorten = $this->googleShorten($url);
+        
         $this->session->set_flashdata('token_url',$url);
         
         if(!empty($_POST['email'])):
@@ -163,30 +240,30 @@ class Home extends MX_Controller {
 	
 	function contact_mail()
     {
-	$toEmail = $this->db->get_where('settings',array('type'=>'system_email'))->row()->description;
-	$this->load->library('email');
+        $toEmail = $this->db->get_where('settings',array('type'=>'system_email'))->row()->description;
+        $this->load->library('email');
         $this->email->from($_POST['email'], $_POST['name']);
         $this->email->to($toEmail);
         $this->email->subject('Mail From School Website');
         $this->email->message($_POST['description']);
         $this->email->send();
-	set_flashmsg('Your Message Has Been Successfully Sent.','succ');
+        set_flashmsg('Your Message Has Been Successfully Sent.','succ');
         redirect(base('Home', ''));
     }
             
     function check_token()
     {
-    	$id = encryptor('decrypt', $this->uri(3));
+        $id = encryptor('decrypt', $this->uri(3));
         $data['std_info'] = $this->db->get_where('admit_std',array('id'=>$id))->result_array();
         $name = $this->db->get_where('admit_std',array('id'=>$id))->row()->name;
         $fname = $this->db->get_where('admit_std',array('id'=>$id))->row()->fname;      
         $fileName = ucwords(strtolower(str_replace(' ','-', $name))).'('.ucwords(strtolower(str_replace(' ','-', $fname))).')'.'.pdf';
         $this->load->library('m_pdf');
         //pd($data);
-	$html = $this->load->view('pdfPrint', $data, true);
+        $html = $this->load->view('pdfPrint', $data, true);
         $this->m_pdf->pdf->WriteHTML($html);
         $this->m_pdf->pdf->Output($fileName,"D"); 
-	exit;
+	    exit;
     }
             
     function confirm_submit()
@@ -199,11 +276,10 @@ class Home extends MX_Controller {
         write_file('name', $data);
     }
 
-
             
     function load_page($page, $title = '', $data2 = '')
     {
-    $status = $this->db->get_where('settings',array('type'=>'webAppStatus'))->row()->description;
+        $status = $this->db->get_where('settings',array('type'=>'webAppStatus'))->row()->description;
         if($status==0){
         	$this->load->view('underConstraction','');
         }else{
@@ -235,6 +311,14 @@ class Home extends MX_Controller {
         $this->email->message($msg);
         $this->email->send();
         return true;
+    }
+
+    public function googleShorten($url) 
+    {
+        $this->load->library('google_url_api');
+        $this->google_url_api->enable_debug(FALSE);
+        $short_url = $this->google_url_api->shorten($url);
+        echo $short_url->id;
     }
     
     function shorten($url)

@@ -149,7 +149,7 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
 	<div class="latest_news col-md-8" style="height: 40px;">
 		<marquee scrollamount="3" height="40" style="padding-top:8px;" onmouseover="this.stop();" onmouseout="this.start();">
 		<?php foreach($head['imnoticeInfo'] as $list):?>
-		<i class="fa fa-dot-circle-o" style="font-size: 14px;margin-left:15px;color:#FFE325;"></i> <a href="<?php echo base('Home', 'noticeView/' . $list['id']); ?>" target="_blank"><?php echo $list['title'];?></a>
+		<i class="fa fa-dot-circle-o" style="font-size: 14px;margin-left:15px;color:#FFE325;"></i> <a href="<?php echo base('Home', 'noticeView/' . $list['id'].'/important'); ?>" target="_blank"><?php echo $list['title'];?></a>
 		<?php endforeach;?>
 		</marquee>
 	</div>

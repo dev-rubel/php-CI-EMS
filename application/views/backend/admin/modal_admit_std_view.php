@@ -1,5 +1,5 @@
 <?php
-
+$session = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
 $result = oneDim($this->db->get_where('admit_std',array('id'=>$param2))->result_array());
 extract($result);
 //pd($result);
@@ -12,7 +12,7 @@ extract($result);
 		<div class="col-sm-3">
 			
 			<a href="#" class="profile-picture">
-				<img src="<?php echo base_url().'assets/'.$img;?>" 
+				<img src="<?php echo base_url().'assets/images/admission_student/'.$session.'/'.$img;?>" 
                 	class="img-responsive img-circle" />
 			</a>
 			
