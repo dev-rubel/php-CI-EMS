@@ -20,7 +20,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <a href="http://www.bigganacademy.com/index.php?login" target="_blank" class="login-link">Login</a>
+            <a href="<?php echo base_url();?>index.php?login" target="_blank" class="login-link">Login</a>
             <h1><?php echo $this->db->get_where('settings' , array('type' =>'system_title'))->row()->description;?></h1>
             <h2 class="subtitle">We're working hard to improve our website and we'll ready to launch before</h2>
             <div id="countdown"></div>
