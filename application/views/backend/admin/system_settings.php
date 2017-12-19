@@ -24,6 +24,14 @@
                   </div>
                     
                   <div class="form-group">
+                      <label  class="col-sm-3 control-label"><?php echo get_phrase('system_title_english');?></label>
+                      <div class="col-sm-9">
+                          <input type="text" class="form-control" name="system_title_english" 
+                              value="<?php echo $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;?>">
+                      </div>
+                  </div>
+                    
+                  <div class="form-group">
                       <label  class="col-sm-3 control-label"><?php echo get_phrase('system_title');?></label>
                       <div class="col-sm-9">
                           <input type="text" class="form-control" name="system_title" 
@@ -125,6 +133,54 @@
                 </div>
             
             </div>
+
+            <?php echo form_open(base_url() . 'index.php?admin/system_settings/upload_favicon' , array(
+            'class' => 'form-horizontal form-groups-bordered validate','target'=>'_top' , 'enctype' => 'multipart/form-data'));?>
+
+              <div class="panel panel-primary" >
+              
+                  <div class="panel-heading">
+                      <div class="panel-title">
+                          <?php echo get_phrase('upload_favicon');?>
+                      </div>
+                  </div>
+                  
+                  <div class="panel-body">
+                      
+                    
+                      <div class="form-group">
+                          <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('photo');?></label>
+                          
+                          <div class="col-sm-9">
+                              <div class="fileinput fileinput-new" data-provides="fileinput">
+                                  <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;" data-trigger="fileinput">
+                                      <img src="<?php echo base_url();?>uploads/favicon.png" alt="...">
+                                  </div>
+                                  <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px"></div>
+                                  <div>
+                                      <span class="btn btn-white btn-file">
+                                          <span class="fileinput-new">Select image</span>
+                                          <span class="fileinput-exists">Change</span>
+                                          <input type="file" name="userfile" accept="image/*">
+                                      </span>
+                                      <a href="#" class="btn btn-orange fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    
+                    
+                    <div class="form-group">
+                      <div class="col-sm-offset-3 col-sm-9">
+                          <button type="submit" class="btn btn-info"><?php echo get_phrase('upload');?></button>
+                      </div>
+                    </div>
+                      
+                  </div>
+              
+              </div>
+
+            <?php echo form_close();?>
 			
 			<!--<div class="panel panel-primary" data-collapsed="0">
             
@@ -402,11 +458,19 @@
                     <?php echo get_phrase('site_status'); ?>
                 </div>
             </div>
-            <div class="panel-body text-center">
-            <?php $siteStatus = $this->db->get_where('settings',array('type'=>'webAppStatus'))->row()->description;?>
-            	<form action="<?php echo base('homemanage', 'updateSiteStatus');?>" method="post">
-		       <input type="checkbox" name="status" data-toggle="toggle" <?php echo $siteStatus==1?'checked':''?>/>
-		       <button type="submit" class="btn btn-info"><?php echo lng('Update');?></button>
+            <div class="panel-body">
+        <?php $siteStatus = $this->db->get_where('settings',array('type'=>'webAppStatus'))->row()->description;?>
+        <form action="<?php echo base('homemanage', 'updateSiteStatus');?>" method="post">
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control datepicker" name="siteStatusTime" data-format="dd-mm-yyyy" value="<?php echo date('d-m-Y', strtotime(date('d-m-Y'). ' + 2 days'));?>" />                    
+                </div>
+                
+                <div class="col-md-6">
+                <input type="checkbox" name="status" data-toggle="toggle"<?php echo $siteStatus==1?'checked':''?>/>
+                    <button type="submit" class="btn btn-info"><?php echo lng('Update');?></button>     
+                </div>
+		       
 		 </form>
             </div>
         </div>

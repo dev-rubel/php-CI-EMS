@@ -7,11 +7,18 @@
 			<li>
 				<a href="#list" data-toggle="tab"><i class="entypo-menu"></i>
 					<?php echo get_phrase('result_list');?>
-				</a></li>
+				</a>
+			</li>
 				<li class="active">
 					<a href="#add" data-toggle="tab"><i class="entypo-plus-circled"></i>
 						<?php echo get_phrase('send_result');?>
-					</a></li>
+					</a>
+				</li>
+				<li>
+					<a href="#notice" data-toggle="tab"><i class="entypo-mail"></i>
+						<?php echo get_phrase('send_notice');?>
+					</a>
+				</li>
 				</ul>
 				<!-- CONTROL TABS END -->
 				<div class="tab-content">
@@ -86,6 +93,49 @@
 								</div>
 							</div>
 						</form>
+					</div>
+				</div>
+				<!-- CREATION FORM ENDS -->
+
+
+
+				<!-- CREATION FORM STARTS -->
+					<div class="tab-pane box" id="notice" style="padding: 5px">
+						<div class="box-content">
+							<form action="<?php echo base('admin', 'send_notice_sms'); ?>" method="post" enctype="multipart/form-data" class="form-horizontal form-groups-bordered validate">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><?php echo get_phrase('download_demo_file'); ?></label>
+								<div class="col-sm-5">
+									<a href="<?php echo base_url(); ?>assets/otherFiles/noticeFormat.xls" class="btn btn-default btn-sm">Download</a>
+									<p class="form-text text-muted">
+										Please do not change file format.
+									</p>
+								</div>
+							</div>
+
+
+
+                        <div class="form-group">
+                            <label  class="col-sm-3 control-label"><?php echo get_phrase('SMS Description'); ?></label>
+                            <div class="col-sm-5">
+                                <textarea name="sms_description" id="sms_description" class="form-control" rows="15"></textarea>
+                            </div>
+                        </div>
+
+							<div class="form-group">
+								<label  class="col-sm-3 control-label"><?php echo get_phrase('input_.xls_file'); ?></label>
+								<div class="col-sm-5">
+									<input type="file" class="form-control" name="xls_file">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-5">
+									<button type="submit" class="btn btn-info"><?php echo get_phrase('send_notice');?></button>
+								</div>
+							</div>
+						</form>
+
 					</div>
 				</div>
 				<!-- CREATION FORM ENDS -->

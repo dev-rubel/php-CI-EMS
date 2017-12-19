@@ -918,15 +918,16 @@ class Homemanage extends CI_Controller
     
     function updateSiteStatus()
     {
-    	//pd($_POST);
-    	if(!empty($_POST)){
+        $date = explode('-',$_POST['siteStatusTime']);
+        $data = '0|'.$date[2].'/'.$date[1].'/'.$date[0];
+    	if(!empty($_POST['status'])){
     		$this->db->where('type','webAppStatus');
     		$this->db->update('settings',array('description'=>1));
     		$this->flashmsg('Now Site On');
         	redirect(base('admin', 'system_settings'));
     	}else{
-		$this->db->where('type','webAppStatus');
-    		$this->db->update('settings',array('description'=>0));
+		    $this->db->where('type','webAppStatus');
+    		$this->db->update('settings',array('description'=>$data));
     		$this->flashmsg('Now Site Off');
         	redirect(base('admin', 'system_settings'));
     	}

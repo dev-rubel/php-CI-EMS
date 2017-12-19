@@ -23,8 +23,27 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
 	background-color: #FEC606;
     color: #fff;
 }
+.search-box {
+    height: 40px;
+    border: 1px solid #f4f4f4;
+}
+.input-group-addon{
+    background-color: #6BAFBD;
+    color: #fff;
+}
 </style>
 <hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">Search Student ID Wise</span>
+            <input type="text" class="form-control search-box" id="studentSearch" placeholder="Search Student ID Wise">            
+        </div>
+    </div>
+    <div class="col-md-12" id="searchStudentList"></div>
+</div>
+
+<br>
 <div class="row">
     <div class="col-sm-6 col-md-3">
         <div class="panel-stat3 bg-danger">
@@ -157,6 +176,17 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
 
 <script>
     $(document).ready(function () {
+
+        $("#studentSearch").keyup(function(){
+            var str=  $("#studentSearch").val();
+            if(str == "") {
+                $( "#searchStudentList" ).html("");  
+            }else {
+                $.get( "<?php echo base_url();?>index.php?admin/ajaxStudentSearch/"+str, function( data ){
+                    $( "#searchStudentList" ).html( data );  
+                });
+            }
+        }); 
 
         var calendar = $('#notice_calendar');
 

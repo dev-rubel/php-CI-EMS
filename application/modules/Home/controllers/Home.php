@@ -2,11 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 //use Dompdf\Dompdf;
 class Home extends MX_Controller {
+
+    protected $systemTitleName;
      function __construct() {
         parent::__construct();
         
         $this->load->database();
         $this->load->model('home_model');
+        $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
         
         
     }
@@ -255,7 +258,7 @@ class Home extends MX_Controller {
         $this->load->library('email');
         $this->email->from($_POST['email'], $_POST['name']);
         $this->email->to($toEmail);
-        $this->email->subject('Mail From School Website');
+        $this->email->subject($this->systemTitleName);
         $this->email->message($_POST['description']);
         $this->email->send();
         set_flashmsg('Your Message Has Been Successfully Sent.','succ');
@@ -291,8 +294,10 @@ class Home extends MX_Controller {
     function load_page($page, $title = '', $data2 = '')
     {
         $status = $this->db->get_where('settings',array('type'=>'webAppStatus'))->row()->description;
-        if($status==0){
-        	$this->load->view('underConstraction','');
+        $status = explode('|', $status);
+        if($status[0]==0){
+            $data['date'] = $status[1];
+        	$this->load->view('underConstraction',$data);
         }else{
         $data2['title'] = $title;
         $data3['head'] = $this->home_model->get_headerInfo();
@@ -316,7 +321,7 @@ class Home extends MX_Controller {
     function send_email($form, $to, $sub, $msg)
     {
         $this->load->library('email');
-        $this->email->from($form, 'HAH-SCHOOL');
+        $this->email->from($form, $this->systemTitleName);
         $this->email->to($to);
         $this->email->subject($sub);
         $this->email->message($msg);

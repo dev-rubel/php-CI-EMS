@@ -7,13 +7,15 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Admin extends CI_Controller
 {
-    
+
+    protected $systemTitleName;    
     
     function __construct()
     {
         parent::__construct();
         $this->load->database();
         $this->load->library('session');
+        $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
         
        /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -173,6 +175,11 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'dashboard';
         $page_data['page_title'] = get_phrase('admin_dashboard');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajaxStudentSearch() 
+    {
+        echo $this->uri(3);
     }
     
     /****MANAGE STUDENTS CLASSWISE*****/
@@ -2279,6 +2286,10 @@ class Admin extends CI_Controller
             $this->db->where('type' , 'system_name');
             $this->db->update('settings' , $data);
 
+            $data['description'] = $this->input->post('system_title_english');
+            $this->db->where('type' , 'system_title_english');
+            $this->db->update('settings' , $data);
+
             $data['description'] = $this->input->post('system_title');
             $this->db->where('type' , 'system_title');
             $this->db->update('settings' , $data);
@@ -2325,6 +2336,11 @@ class Admin extends CI_Controller
         }
         if ($param1 == 'upload_logo') {
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/logo.png');
+            $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
+            redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
+        }
+        if ($param1 == 'upload_favicon') {
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
             $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
@@ -2454,23 +2470,6 @@ class Admin extends CI_Controller
         if($arg == true){
             $msg = str_replace('2C', '0A', $msg);    
         }
-        
-
-        // echo $pass;
-        // echo '<br>';
-        // echo $user;
-        // echo '<br>';
-        // echo $sender;
-        // echo '<br>';
-        // print_r($msg);
-        // echo '<br>';
-        // // var_dump($_POST['sms_description']);
-        // echo '<br>';
-        // echo $mobile;
-        // echo '<br>';
-        // print_r($arg);
-
-        // die();
 
         if($_POST['sms_lng']=='bangla') {
             $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);            
@@ -2486,6 +2485,48 @@ class Admin extends CI_Controller
             return true;
         }
         
+    }
+
+    function send_notice_sms()
+    {
+        $user = $this->db->get_where('settings', 
+            ['type'=>'nihalit_sms_user'])->row()->description;            
+        $pass = $this->db->get_where('settings', 
+            ['type'=>'nihalit_sms_password'])->row()->description;       
+
+        if(empty($_POST['sms_description'])) {
+            $this->flashmsg('Please input description.','error');
+            redirect(base('admin', 'send_result_sms'));
+        }
+        
+        $sender = urlencode($this->systemTitleName); 
+        $sms_description = urlencode($_POST['sms_description']);
+        $file = $_FILES["xls_file"]["tmp_name"];
+
+        // ========= Load excel library & fetch data
+        $this->load->library('excel_reader');
+        $this->excel_reader->read($file);
+        $worksheet = $this->excel_reader->sheets[0];
+        $rows = $worksheet['cells'];
+
+        foreach($rows as $k=>$each) {
+            if(empty($each[1]) || strlen($each[1]) < 11){
+                $this->flashmsg('Please input valid phone number.','error');
+                redirect(base('admin', 'send_result_sms'));
+            } else {
+                $final[] = $each[1];
+            }            
+        }
+
+        foreach ($final as $key => $mobile) {
+            $this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+        }
+
+        // pd($final);
+
+        $this->flashmsg('Send SMS Successfully.');
+        redirect(base('admin', 'send_result_sms'));
+
     }
 
 
@@ -2878,7 +2919,7 @@ class Admin extends CI_Controller
                         if($key2 == 6 || $key2 == 9 || $key2 == 12) {                            
                             
                             if($key2 == 12) {
-                                $smsString .= '('.$each1[$each2].'),Biggan Academy'; 
+                                $smsString .= '('.$each1[$each2].'),'.$this->systemTitleName; 
                             } else {
                                 $smsString .= '('.$each1[$each2].'),';  
                             }
@@ -2887,7 +2928,7 @@ class Admin extends CI_Controller
                     
                     $smsFinalString[$each1['Phone']] = $smsString;             
                     // Send SMS
-                    $this->send_custom_sms('Biggan Academy',$smsString, $each1['Phone'], true);   
+                    $this->send_custom_sms($this->systemTitleName,$smsString, $each1['Phone'], true);   
                     $smsString = '';
                 }
 

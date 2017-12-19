@@ -26,12 +26,8 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         <link href="assets/css/banglafont.min.css" rel="stylesheet" media="all">
         <!-- LIGHTBOX 2 -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/css/lightbox.min.css" rel="stylesheet" media="all">
-        <!-- Favicons -->
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/front/images/ico/apple-touch-icon-144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/front/images/ico/apple-touch-icon-114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/front/images/ico/apple-touch-icon-72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="assets/front/images/ico/apple-touch-icon-57-precomposed.png">
-        <link rel="shortcut icon" href="assets/front/images/ico/favicon.ico">
+        <!-- Favicons -->        
+        <link rel="shortcut icon" href="uploads/favicon.png">
         <!-- JavaScripts -->
         <script src="assets/js/alljs.min.js"></script>
         
@@ -98,6 +94,9 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         }
         .home-gallery.item img {
             border: 2px solid <?php echo $head['colors'][1]['description'];?> !important;
+        }
+        .stat i {
+            color: <?php echo $head['colors'][0]['description'];?> !important;
         }
         </style>
     </head>

@@ -46,7 +46,7 @@
   <script src="assets/underConstraction/js/jquery.countdown.min.js"></script>
   <script type="text/javascript">
   
-  $('#countdown').countdown("2017/11/03", function(event) {
+  $('#countdown').countdown("<?php echo $date; ?>", function(event) {
   $(this).html(event.strftime('%w week %d days <br /> %H:%M:%S'));
   });
   </script>
