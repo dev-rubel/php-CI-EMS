@@ -28,6 +28,7 @@ $url = $url[0];
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <script src="assets/js/jquery.word-and-character-counter.min.js"></script>
 <script src="assets/backend/js/bootstrap-toggle.min.js"></script>
+<script src="assets/backend/js/jscolor.min.js"></script>
 
 <!-- end for homemanage controller-->
 <script src="assets/js/jquery.dataTables.min.js"></script>

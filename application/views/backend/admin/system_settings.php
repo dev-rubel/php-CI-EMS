@@ -428,6 +428,39 @@
               </form>
             </div>
         </div>
+        <br>
+
+        <!-- SITE COLOR SECTION -->
+        <?php
+            $mainColor = $this->db->get_where('frontpages',['title'=>'main_color'])->row()->description;
+            $hoverColor = $this->db->get_where('frontpages',['title'=>'hover_color'])->row()->description;
+        ?>
+        <div class="panel-primary" style="border: 1px solid; border-radius: 2px;">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <?php echo get_phrase('site_color'); ?>
+                </div>
+            </div>
+            <div class="panel-body text-center">
+              <form action="<?php echo base('homemanage', 'change_site_color');?>" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="field-1" class="col-md-3 control-label">Main Color</label>
+                    <div class="col-md-8">
+                        <input type="test" class="form-control jscolor" name="main_color" value="<?php echo $mainColor; ?>" required="required">
+                    </div>                  
+                </div>
+                <br><br><br>
+                <div class="form-group">
+                    <label for="field-1" class="col-md-3 control-label">Hover Color</label>
+                    <div class="col-md-8">
+                        <input type="test" class="form-control jscolor" name="hover_color" value="<?php echo $hoverColor; ?>" required="required">
+                    </div>                  
+                </div>
+                <br><br><br>
+                <button type="submit" class="btn btn-info"><?php echo lng('Update');?></button>
+              </form>
+            </div>
+        </div>
         <?php endif;?>
             
         

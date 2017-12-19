@@ -517,6 +517,28 @@ class Homemanage extends CI_Controller
         $_SESSION['stdGroup'] = notEmpty($data[0]['group']);
         redirect(base('homemanage', 'getClassResult'));
     }
+
+    function updateHeaderImg()
+    {
+        $configUpload['upload_path']    = './assets/otherFiles';               
+        $configUpload['allowed_types']  = '*';     
+        $configUpload['max_size']       = '1024'; 
+        $configUpload['max_width']      = '1500';  
+        $configUpload['max_height']     = '300';    
+        $configUpload['overwrite']      = TRUE;    
+        $configUpload['file_name']      = 'header_image';                  
+        $this->upload->initialize($configUpload);   
+        if(!$this->upload->do_upload('header_img')){
+            $uploadedDetails    = $this->upload->display_errors();
+            $this->flashmsg('Error', 'error');
+            redirect(base('admin', 'system_settings'));
+        }else{
+            $uploadedDetails    = $this->upload->data(); 
+            $this->db->update('settings',array('description'=>$uploadedDetails['file_name']), array('settings_id'=>30));
+            $this->flashmsg('Update Header Image');
+            redirect(base('admin', 'system_settings'));
+        }
+    }
 	
 
     
@@ -536,12 +558,15 @@ class Homemanage extends CI_Controller
     
     
     
-    
-    
-    
-    
-    
-    
+    function change_site_color()
+    {       
+        $mainColor = '#'.$this->input->post('main_color');
+        $hoverColor = '#'.$this->input->post('hover_color');
+        $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
+        $this->db->update('frontpages',['description'=>$hoverColor],['title'=>'hover_color']);
+        $this->flashmsg('site_color_changed');
+        redirect(base('admin', 'system_settings'));
+    }
     
     function add_logo()
     {

@@ -194,13 +194,13 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
             <div class="widget-item wow flipInY" data-wow-duration="3s">
                 <form action="<?php echo base('Home', 'contact_mail') ?>" method="post">
                     <div class="form-group">
-                        <input type="email" class="form-control" name="email" placeholder="Email">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required="required">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="name" placeholder="Name">
+                        <input type="text" class="form-control" name="name" placeholder="Name" required="required">
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" name="description" placeholder="Your Message" rows="3"></textarea>
+                        <textarea class="form-control" name="description" placeholder="Your Message" rows="3" required="required"></textarea>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
@@ -215,13 +215,7 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
 <?php if ($contentInfo['textInfo']['present'] == 1): ?>
     <div class="container counter-bg" data-stellar-background-ratio="0.5" style="border: 1px solid white;border-top: 0px;border-bottom: 0px;box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);padding-left: 5px;padding-right: 5px;">
         <div class="col-md-12">
-            <!--        <h4 class="text-center" style="color: white;
-                font-size: 40px;
-                font-weight: bold;
-                border: 1px solid #F7C221;
-                width: 50%;
-                margin: 0 auto;
-                padding-top: 0;"><?php //echo lnguag('School Status'); ?></h4>-->
+           
             <div class="bottom-counter" style="min-height: 180px;">
                 <div class="stat wow flipInY" data-wow-duration="3s" style="/*padding-top: 26px;*/">
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
@@ -268,12 +262,12 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
             গ্যলারি
         </div>
     </div>
-    <div id="owl-all" class="owl-carousel" style="margin-top: 10px; margin-bottom: 10px;margin-left:15px;">
+    <div id="owl-all" class=" owl-carousel" style="margin-top: 10px; margin-bottom: 10px;margin-left:15px;">
             <?php
             if (!empty($contentInfo['galleryInfo'])):
                 foreach ($contentInfo['galleryInfo'] as $list): $info = explode('+', $list['info']);
                     ?>
-                <div class="item">
+                <div class="home-gallery item">
 
                 <a href="assets/images/gallery_image/<?php echo $list['img_name']; ?>" data-lightbox="roadtrip" data-title="<?php echo $info[0]; ?>">
                     <img src="assets/images/gallery_image/<?php echo $list['img_name']; ?>" alt="<?php echo $info[0]; ?>" style="border: 2px solid #1B9ABA; width: 186px; height: 140px">

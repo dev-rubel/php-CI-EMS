@@ -74,7 +74,7 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
             border-top: 1px solid <?php echo $head['colors'][1]['description']; ?>;
         }
         .latest_news {
-            background: <?php echo $head['colors'][1]['description']; ?>;
+            background: <?php echo $head['colors'][1]['description']; ?> !important;
         }
         .owl-carousel img {
             border: 2px solid <?php echo $head['colors'][0]['description'];?>;
@@ -89,6 +89,15 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         }
         .footer-media-icons li a{
             background-color: <?php echo $head['colors'][1]['description'];?>;
+        }
+        .col-md-4.datetime-section {
+            background: <?php echo $head['colors'][0]['description'];?> !important;
+        }
+        .panel-default {
+            border: 1px solid <?php echo $head['colors'][1]['description'];?> !important;
+        }
+        .home-gallery.item img {
+            border: 2px solid <?php echo $head['colors'][1]['description'];?> !important;
         }
         </style>
     </head>
