@@ -177,9 +177,10 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function ajaxStudentSearch() 
+    function ajaxStudentSearch()
     {
-        echo $this->uri(3);
+        $page_data['class_id'] = $this->uri(3);
+        $this->load->view('backend/admin/ajax_student_search' , $page_data);
     }
     
     /****MANAGE STUDENTS CLASSWISE*****/
@@ -310,7 +311,8 @@ class Admin extends CI_Controller
         ))->row()->description;
         if ($param1 == 'create') {
             
-            // CREATE STUDENT ACCOUNT UNIQUE CODE
+            // CREATE STUDENT ACCOUNT UNIQUE CODE --- NOT USE
+
             $cname = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$_POST['group_id']))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$_POST['section_id']))->row()->name;
@@ -328,15 +330,34 @@ class Admin extends CI_Controller
                 $class_name = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name;
                 $acc_code = strtolower($shname[0].$class_name[0].$_POST['roll']);
 
+            }            
+            // END CREATE STUDENT ACCOUNT UNIQUE CODE
+
+            // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
+
+            $session = $this->db->get_where('settings', 
+            ['type'=>'admission_session'])->row()->description;
+            $year = substr($session, -2);
+
+            $this->db->like('uniq_id', $year, 'after');
+            $exist = $this->db->get('admit_std')->result_array();
+            if(!empty($exist)) {     
+                $last = end($exist);
+                $uniq_id = str_pad(substr($last['uniq_id'], -4)+1, 4, '0', STR_PAD_LEFT);
+                $uniq_id = $year.$cname.$uniq_id;
+            } else {
+                $uniq_id = str_pad(1, 4, '0', STR_PAD_LEFT);
+                $uniq_id = $year.$cname.$uniq_id;
             }
-            
+
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
             
             
             $table1Value1 = array_slice($_POST, 0, 21);
-            $table1Value2 = array('acc_code' => $acc_code, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-            $table1Value3 = array_merge($table1Value1,$table1Value2);           
-            //pd($table1Value3);
+            $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
+            $table1Value3 = array_merge($table1Value1,$table1Value2);    
+
+            // pd($table1Value3);
 
             //pd($table2Value1);
             $this->db->insert('student', $table1Value3);
@@ -3244,6 +3265,36 @@ class Admin extends CI_Controller
         }
         return true;
         
+    }
+
+    function test()
+    {        
+        $session = $this->db->get_where('settings', 
+            ['type'=>'admission_session'])->row()->description;
+            $year = substr($session, -2);
+        
+
+        $student_info = $this->db->get('student')->result_array();
+        foreach($student_info as $k=>$value){  
+            
+            $classID = $this->db->get_where('enroll',['student_id'=>$value['student_id']])->row()->class_id;
+            $cname = $this->db->get_where('class',['class_id'=>$classID])->row()->name_numeric;
+            //pd($classID);
+
+            // $this->db->like('student_code', $year, 'after');
+            // $exist = $this->db->get('student')->result_array();
+            
+            // if(!empty($exist)) {     
+            //     $last = end($exist);
+                $uniq_id = str_pad(substr($k, -4)+1, 4, '0', STR_PAD_LEFT);
+                $uniq_id = $year.$cname.$uniq_id;
+            // } else {
+            //     $uniq_id = str_pad(1, 4, '0', STR_PAD_LEFT);
+            //     $uniq_id = $year.$cname.$uniq_id;
+            // }
+
+            $this->db->update('student',['student_code'=>$uniq_id],['student_id'=>$value['student_id']]);
+        }
     }
 
 
