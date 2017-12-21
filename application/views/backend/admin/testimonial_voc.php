@@ -1,4 +1,8 @@
-<?php //pd($std_info); ?>
+<?php //pd($std_info); 
+
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+?>
 
 <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <style>
@@ -40,7 +44,7 @@
 	}
 	.testimonial-wrapper::after {
 	    content: "";
-	    background: url(<?php echo base_url(); ?>assets/images/logo_testimonial.jpg);
+	    background: url(<?php echo base_url(); ?>uploads/school_logo.png);
 	    opacity: 0.1;
 	    top: 300px;
 	    left: 0;
@@ -48,7 +52,7 @@
 	    right: 0;
 	    position: absolute;
 	    z-index: -1;
-	    background-size: 550px 400px;
+	    background-size: 400px 400px;
 	    background-repeat: no-repeat;
 	    background-position: center center;
 	}
@@ -94,13 +98,13 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="col-md-3 text-right logo">
-				<img src="<?php echo base_url(); ?>assets/images/logo_testimonial.jpg" alt="" class="img-responsive">
+				<img src="<?php echo base_url(); ?>uploads/school_logo.png" alt="" class="img-responsive">
 			</div>
 			<div class="col-md-6 header-title">
 				<div class="text-center">
-					<h2>HOMNA ADARSHA HIGH SCHOOL</h2>
-					<p>Established: 1989</p>
-					<p>P.O: Homna, Upazila: Homna, Dist: Comilla</p>	
+					<h2><?php echo $schoolName; ?></h2>
+					<p>EIIN: <?php echo $eiin; ?></p>
+					<p><?php echo $schoolAddress; ?></p>	
 				</div>				
 			</div>
 			<div class="col-md-3">

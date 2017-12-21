@@ -12,8 +12,10 @@ $query = $this->db->get()->result_array();
 
 	
 $count = count($query)/29;
-
 $first = ceil($count); 
+
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 ?>
 
 <head>
@@ -52,11 +54,11 @@ $first = ceil($count);
 ?>
 <div class="wrapper">
 	<div class="headerWrapper">
-		<div class="leftDiv"><img src="<?php echo base_url().'assets/'.$logo;?>" width="120px" height="120px"/></div>
+		<div class="leftDiv"><img src="<?php echo base_url().'uploads/school_logo.png';?>" width="120px" height="120px"/></div>
 		<div class="centerDiv">
-		<h2 style="color: #008000;">Homna Adarsha High School</h2>
-		<p style="color: #008000;">Homna, Comilla</p>
-		<p>Season-2017</p>
+		<h2 style="color: #008000;"><?php echo $schoolName; ?></h2>
+		<p style="color: #008000;"><?php echo $schoolAddress; ?></p>
+		<p>Season-<?php echo $session; ?></p>
 		
 		</div>
 		<div class="rightDiv">

@@ -1,6 +1,12 @@
 <?php 
-!empty($group_id)?$group_id=$group_id:$group_id=NULL;
-if($group_id!==NULL):
+
+
+
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+
+!empty($group_id)?$group_id=$group_id:$group_id='';
+if($group_id !== ''):
     $group_name       = $this->db->get_where('group' , array('group_id' => $group_id))->row()->name;
 endif;
 	$class_name		= $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
@@ -20,6 +26,7 @@ endif;
         else if($month == 10) $m='October';
         else if($month == 11) $m='November';
         else if($month == 12) $m='December';
+
 ?>
 <div id="print">
 	<script src="assets/js/jquery-1.11.0.min.js"></script>
@@ -30,8 +37,8 @@ endif;
 	</style>
 
 	<center>
-		<img src="uploads/logo.png" style="max-height : 60px;"><br>
-		<h3 style="font-weight: 100;"><?php echo $system_name;?></h3>
+		<img src="uploads/school_logo.png" style="max-height : 60px;"><br>
+		<h3 style="font-weight: 100;"><?php echo $schoolName;?></h3>
 		<?php echo get_phrase('attendance_sheet');?><br>
 		<?php echo '<b>'.get_phrase('class') . ':</b> ' . $class_name;?><br>
         <?php echo '<b>'.get_phrase('section').':</b> '.$section_name;?><br>

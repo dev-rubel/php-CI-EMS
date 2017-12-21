@@ -1,4 +1,8 @@
 <?php  
+
+	$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+	list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+
 	if(isset($std_info) && !empty($std_info)){
 		extract($std_info[0]);
 		$eachAdd = explode('_', $address);
@@ -93,7 +97,7 @@
 	}
 	.testimonial-wrapper:after {
  	  content: "";
-	  background: url(<?php echo base_url(); ?>assets/images/logo_testimonial.jpg);
+	  background: url(<?php echo base_url(); ?>uploads/school_logo.png);
 	  opacity: 0.1;
 	  top: 100px;
 	  left: 0;
@@ -154,9 +158,9 @@
 		.testimonial-wrapper:after{
 			color: #000 !important;
 		    text-shadow: none !important;
-		    background: url(<?php echo base_url(); ?>assets/images/logo_testimonial.jpg) !important;
+		    background: url(<?php echo base_url(); ?>uploads/school_logo.png) !important;
 		    box-shadow: none !important;
-		    background-size: 550px 400px !important;
+		    background-size: 400px 400px !important;
 		  	background-repeat: no-repeat !important;
 		  	background-position: center center !important;
 		}
@@ -177,13 +181,13 @@
 	<div class="row">
 		<div class="col-xs-12 text-center">
 			<div class="col-xs-3 text-right logo">
-				<img src="<?php echo base_url(); ?>assets/images/logo_testimonial.jpg" alt="" class="img-responsive">
+				<img src="<?php echo base_url(); ?>uploads/school_logo.png" alt="" class="img-responsive">
 			</div>
 			<div class="col-xs-6 header-title">
 				<div class="text-center">
-					<h2>HOMNA ADARSHA HIGH SCHOOL</h2>
-					<p>Established: 1989</span>
-					<p>P.O: Homna, Upazila: Homna, Dist: Comilla</span>	
+					<h2><?php echo $schoolName; ?></h2>
+					<p>EIIN: <?php echo $eiin; ?></p>
+					<p><?php echo $schoolAddress; ?></p>
 				</div>				
 			</div>
 			<div class="col-xs-3">

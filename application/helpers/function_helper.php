@@ -156,8 +156,9 @@ function ckd($data1,$data2)
 
 function upload_file($s,$w,$h,$file_name,$logo='')
 {
-    $session = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
+    $session = ci()->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
     $dir = 'assets/images/admission_student/'.$session;
+    
     if (!is_dir($dir)){
         mkdir($dir, 0777, true);
     }            

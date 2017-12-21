@@ -6,11 +6,15 @@ endif;
 $info = oneDim($std_info);
 extract($info);
 //pd($info);
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+
 $examdate = $this->db->get_where('settings',array('type'=>'exam_date'))->row()->description;
 $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->description;
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head>
+
+<html>
+    <head>
     
         <meta http-equiv="Content-Type" content="charset=UTF-8" />
         <style>
@@ -20,7 +24,7 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                 opacity: 0.2;
                 background-size: 220px 225px;
                 background-repeat: no-repeat;
-                background-image: url("assets/images/logo.jpg");
+                background-image: url("assets/images/school_logo.png");
                 width: 220px;
                 height: 225px;
                 position: absolute;
@@ -29,10 +33,10 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                 left: 320px;
             }
             
-		</style>
-        
+		</style>       
 
-    </head><body onload="window.print()" style="margin: auto 5%;"><div style="">
+    </head>
+    <body onload="window.print()" style="margin: auto 5%;"><div style="">
             <div style="width: 100%; padding-top: 50px;">
                 <!--<div class="blnk-space"></div>-->
                 <div class="hdr">
@@ -42,10 +46,10 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                             <div style="margin-top: 15px;"> Serial No: <?php echo $id;?></div>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
-                            <h2 class="ex" style='color: green;'>Homna Adarsha High School</h2>
-                            <h3 style='color: green;'>Homna, Comilla</h3>
-                            <p>EIIN: 105673, Email: hahs105673@gmail.com</p>
-                            <p style="margin-bottom:10px;">Phone: 08025-54244 / 01705 100106</p>
+                            <h2 class="ex" style='color: green;'><?php echo $schoolName; ?></h2>
+                            <h3 style='color: green;'><?php echo $schoolName; ?></h3>
+                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
+                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
                             <p style="font-size: 18px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
@@ -53,7 +57,7 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                         </div>
                     </div>
                     <div class="office-part" style="position: relative; line-height: 16px;">
-                        <img src="assets/images/logo.jpg" style="
+                        <img src="assets/images/school_logo.png" style="
                              position: absolute;
                              overflow: hidden;
                              z-index: -1;
@@ -159,10 +163,10 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                             <div style="margin-top: 15px;"> Serial No: <?php echo $id;?></div>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
-                            <h2 class="ex" style='color: green;'>Homna Adarsha High School</h2>
-                            <h3 style='color: green;'>Homna, Comilla</h3>
-                            <p>EIIN: 105673, Email: hahs105673@gmail.com</p>
-                            <p style="margin-bottom:10px;">Phone: 08025-54244 / 01705 100106</p>
+                            <h2 class="ex" style='color: green;'><?php echo $schoolName; ?></h2>
+                            <h3 style='color: green;'><?php echo $schoolAddress; ?></h3>
+                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
+                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
                             <p style="font-size: 18px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
@@ -200,4 +204,6 @@ $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->desc
                 </div>
             </div>
         </div>
-    </body></html>
+    </body>
+    
+    </html>

@@ -21,6 +21,8 @@ class Home_model extends CI_Model{
         // $this->db->where('admit_std.group', $data['group']);
         //$this->db->where('admit_std.session', $session);
         $this->db->where('session', $session);
+        $this->db->where('status', 0);
+        $this->db->or_where('status', 1);
         //$this->db->order_by('admission_result.mark','desc');
         $query = $this->db->get()->result_array();
         return $query;
@@ -67,6 +69,7 @@ class Home_model extends CI_Model{
 
 
         $this->db->like('uniq_id', $year, 'after');
+        $this->db->where('session', $session[0]['description']);
         $exist = $this->db->get('admit_std')->result_array();
         if(!empty($exist)) {     
             $last = end($exist);

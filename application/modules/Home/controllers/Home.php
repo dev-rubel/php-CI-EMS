@@ -183,7 +183,7 @@ class Home extends MX_Controller {
     }
             
     function admit_student()
-    {
+    {        
     	$formEmail = $this->db->get_where('settings',array('type'=>'system_email'))->row()->description;
     	$info = $this->ciValidation();
         if($info=='0'):
@@ -201,9 +201,9 @@ class Home extends MX_Controller {
             $_POST['jscinfo'] = implode(',', $_POST['jscinfo']);
         }
 
-        //pd($_POST);
         if(!empty($_FILES['img']['name'])):
         $img = mt_rand().'_admitstd';
+        
         $this->upload->initialize(upload_file(100,300,300,$img));
         if ( ! $this->upload->do_upload('img')) 
         {
@@ -224,9 +224,10 @@ class Home extends MX_Controller {
         endif;
         
         $_POST['date'] = date("Y-m-d", strtotime($_POST['date']));
+        
         $token = $this->home_model->insert_admit_std_info($_POST);
         $url = base_url().'index.php?Home/check_token/'.$token;
-        // pd($shorten);
+        
         $shorten = $this->googleShorten($url);
         
         $this->session->set_flashdata('token_url',$url);
@@ -334,7 +335,7 @@ class Home extends MX_Controller {
         $this->load->library('google_url_api');
         $this->google_url_api->enable_debug(FALSE);
         $short_url = $this->google_url_api->shorten($url);
-        echo $short_url->id;
+        return $short_url->id;
     }
     
     function shorten($url)

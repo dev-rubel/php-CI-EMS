@@ -10,12 +10,17 @@
         </tr>
     </thead>
     <tbody>
+    <?php if(!empty($student_info)):foreach($student_info as $k=>$each):?>
         <tr>
-            <td><?php echo $class_id; ?></td>
-            <td>John</td>
-            <td>Carter</td>
-            <td>johncarter@mail.com</td>
-            <td>johncarter@mail.com</td>
+            <td><?php echo $each['student_code']; ?></td>
+            <td>
+                <?php $roll = $this->db->get_where('enroll',['student_id'=>$each['student_id']])->row()->roll; 
+                    echo $roll;
+                ?>
+            </td>
+            <td><?php echo $each['name']; ?></td>
+            <td><?php echo $each['fname']; ?></td>
+            <td><?php echo $each['mobile']; ?></td>
             <td>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -34,7 +39,7 @@
                         
                         <!-- STUDENT PROFILE LINK -->
                         <li>
-                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_profile/<?php echo 1;?>');">
+                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_profile/<?php echo $each['student_id'];?>');">
                                 <i class="entypo-user"></i>
                                     <?php echo get_phrase('profile');?>
                                 </a>
@@ -42,7 +47,7 @@
                         
                         <!-- STUDENT EDITING LINK -->
                         <li>
-                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_edit/<?php echo 1;?>');">
+                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_edit/<?php echo $each['student_id'];?>');">
                                 <i class="entypo-pencil"></i>
                                     <?php echo get_phrase('edit');?>
                                 </a>
@@ -51,7 +56,7 @@
                         <?php if($_SESSION['name']=='NihalIT'):?>
                         <!-- STUDENT DELETION LINK -->
                         <li>
-                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/student/delete/<?php echo 1;?>');">
+                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/student/delete/<?php echo $each['student_id'];?>');">
                                 <i class="entypo-trash"></i>
                                     <?php echo get_phrase('delete');?>
                             </a>
@@ -61,5 +66,10 @@
                 </div>
             </td>
         </tr>
+    <?php endforeach; else:?>
+        <tr class="text-center">
+            <td colspan="6">No Data Found</td>
+        </tr>
+    <?php endif;?>
     </tbody>
 </table>

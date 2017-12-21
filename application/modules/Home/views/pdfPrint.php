@@ -2,6 +2,9 @@
 $info = oneDim($std_info);
 extract($info);
 //pd($info);
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+
 $exDate = $this->db->get_where('settings',array('type'=>'exam_date'))->row()->description;
 $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->description;
 if(!empty($group)){
@@ -24,7 +27,7 @@ if($class==91){
 }else{
 	$class = $class;
 }
-$base = base_url().'assets/images/';
+$base = base_url().'uploads/';
 $stdImg = base_url().'assets/'.$img;
 
 if(!empty($lguaridan)):
@@ -48,14 +51,14 @@ endif;
                 <div class="hdr">
                     <div style="width: 100%; height: 150px">
                         <div style="float: left; width: 15%; text-align: center">
-                            <img src="<?php echo $base.'logo.jpg';?>" width="100px" height="115px">
+                            <img src="<?php echo $base.'school_logo.png';?>" width="100px" height="100px">
                             <div style="margin-top: 15px;"> Serial No: <?php echo $id; ?></div>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
-                            <h2 class="ex" style="color: green;">Homna Adarsha High School</h2>
-                            <h3 style="color: green;">Homna, Comilla</h3>
-                            <p>EIIN: 105673, Email: hahs105673@gmail.com</p>
-                            <p style="margin-bottom:10px;">Phone: 08025-54244 / 01705 100106</p>
+                            <h2 class="ex" style="color: green;"><?php echo $schoolName; ?></h2>
+                            <h3 style="color: green;"><?php echo $schoolAddress; ?></h3>
+                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
+                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
                             <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
@@ -63,8 +66,8 @@ endif;
                         </div>
                     </div>
                     <div class="office-part" style="position: relative; line-height: 10px;">
-                        <img src="<?php echo $base.'logo.jpg';?>" style="
-                             opacity: .2;
+                        <img src="<?php echo $base.'school_logo.png';?>" style="
+                             opacity: .1;
                              margin-left: 210px;
                              margin-top: 125px;
                              width: 220px;
@@ -150,14 +153,15 @@ endif;
                     <div style="padding-top: 10px; height: 500px;">
                         <div style="width: 100%; padding-top: 0px;">
                         <div style="float: left; width: 15%; text-align: center">
-                            <img src="<?php echo $base.'logo.jpg' ;?>" width="100px" height="115px">
+                            <img src="<?php echo $base.'school_logo.png' ;?>" width="100px" height="100px">
                             <div style="margin-top: 15px;"> Serial No: <?php echo $id;?></div>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
-                            <h2 class="ex" style="color: green;">Homna Adarsha High School</h2>
-                            <h3 style="color: green;">Homna, Comilla</h3>
-                            <p>EIIN: 105673, Email: hahs105673@gmail.com</p>
-                            <p style="margin-bottom:10px;">Phone: 08025-54244 / 01705 100106</p>
+
+                            <h2 class="ex" style="color: green;"><?php echo $schoolName; ?></h2>
+                            <h3 style="color: green;"><?php echo $schoolAddress; ?></h3>
+                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
+                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
                             <p style="font-size: 13px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
@@ -169,8 +173,8 @@ endif;
                     
                         
                     <div class="admitCard" style="height: 350px;">
-					<img src="<?php echo $base.'logo.jpg';?>" style="
-                             opacity: .2;
+					<img src="<?php echo $base.'school_logo.png';?>" style="
+                             opacity: .1;
                              margin-left: 210px;
                              margin-top: 0px;
                              width: 220px;
@@ -195,6 +199,25 @@ endif;
                             <p style="border-top: 1px solid gray; border-width: 2px;">Headteacher Sign</p>
                         </div>
                     </div>
+
+                    <div class="officeRecord" style="height: 200px;">
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Form Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo substr($uniq_id, -4); ?></span></p> </div></div>
+
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $name; ?></span></p> </div></div>
+
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Father's Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $fname;?></span></p> </div></div>
+
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $paadress;?></span></p> </div></div>
+
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mobile Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $mobile;?></span></p> </div></div>  
+
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">ID : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $uniq_id;?></span></p> </div></div>
+                    </div>
+
+
+
+
+
                     <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No: <?php echo 2;?></p>
                         
                     </div>

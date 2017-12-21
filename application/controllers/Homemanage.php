@@ -335,9 +335,10 @@ class Homemanage extends CI_Controller
         
         $this->db->where('type', 'exam_time');
         $this->db->update('settings',array('description'=>$_POST['exam_time']));
-
+        
         $this->db->where('type', 'admission_session');
         $this->db->update('settings',array('description'=>$_POST['admission_session']));
+
                 
         !empty($_POST['link_status'])?$_POST['link_status']=1:$_POST['link_status']=0;
         $this->db->where('type', 'link_status');

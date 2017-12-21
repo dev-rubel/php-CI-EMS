@@ -4,6 +4,9 @@
     }
 </style>
 <?php
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+
 $this->db->where('type', 'link_status');
 $result1 = oneDim($this->db->get('settings')->result_array());
 if ($result1['description'] == 0):
@@ -118,7 +121,7 @@ if ($result1['description'] == 0):
 
             <div class="row text-center" style="padding: 30px 0px;">
                 <div class="col-md-12">
-                    <h2>Homna Adarsha High School</h2>
+                    <h2><?php echo $schoolName; ?></h2>
                     <h4>Online Admission Form</h4>
                     <h5>All Information have to fill in English, only 2, 4, 6 have to fill in Bangla. Fields marked with star(
                         <span

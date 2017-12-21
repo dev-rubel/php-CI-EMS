@@ -20,8 +20,6 @@ class Admin extends CI_Controller
        /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
-        // if ($this->session->userdata('admin_login') != 1)
-        //     redirect(base_url() . 'index.php?login', 'refresh');
     }
 
 
@@ -82,16 +80,6 @@ class Admin extends CI_Controller
         foreach ($_POST as $key => $value) {
             $localServerInfo[] = current(explode('@', $value));
         }
-        // echo $currentStrDate;
-        // die();
-        // echo '<pre>';
-        // print_r($_POST);
-        // $lastIn = explode('@', $_POST[2]);
-
-        // print_r(date('H:i:s', $lastIn[1]));
-        // echo 'hello world';
-        // echo '</pre>';
-
 
         foreach ($allStudent as $singlestd) {
             $attStdId = $this->db->get_where('attendance', array('student_id' => $singlestd['student_id'], 'timestamp' => $currentStrDate))->row()->student_id;
@@ -179,7 +167,14 @@ class Admin extends CI_Controller
 
     function ajaxStudentSearch()
     {
-        $page_data['class_id'] = $this->uri(3);
+        $student_id = $this->uri(3);        
+        $page_data['student_info'] = [];
+
+        if(!empty($student_id)){
+            $this->db->limit(5);
+            $this->db->like('student_code', $student_id);
+            $page_data['student_info'] = $this->db->get('student')->result_array();        }            
+
         $this->load->view('backend/admin/ajax_student_search' , $page_data);
     }
     
@@ -340,6 +335,7 @@ class Admin extends CI_Controller
             $year = substr($session, -2);
 
             $this->db->like('uniq_id', $year, 'after');
+            $this->db->where('session', $session);
             $exist = $this->db->get('admit_std')->result_array();
             if(!empty($exist)) {     
                 $last = end($exist);
@@ -351,6 +347,7 @@ class Admin extends CI_Controller
             }
 
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
+            $this->db->insert('admit_std',['uniq_id'=>$uniq_id,'status'=>3,'session'=>$session]);
             
             
             $table1Value1 = array_slice($_POST, 0, 21);
@@ -2362,6 +2359,13 @@ class Admin extends CI_Controller
         }
         if ($param1 == 'upload_favicon') {
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
+            $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
+            redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
+        }
+        if ($param1 == 'upload_school_info') {
+            $data = implode('+',$_POST);
+            $this->db->update('settings',['description'=>$data],['type'=>'school_information']);
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/school_logo.png');
             $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
