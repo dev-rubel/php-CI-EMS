@@ -131,8 +131,9 @@ class Accounting extends CI_Controller
             redirect(base_url(), 'refresh');
         
         if ($param1 == 'create') {
-            $acc_code = $this->input->post('acc_code');
-            $student_id = $this->db->get_where('student', array('acc_code' => $acc_code))->row()->student_id;
+            $student_code = $this->input->post('student_code');
+            $student_id = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
+            
             if(!$student_id){
                 $this->flashmsg('No Student Found', 'error');
                 redirect(base_url().'index.php?a/accounting/student_payment', 'refresh');
@@ -150,7 +151,7 @@ class Accounting extends CI_Controller
 
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
-            $data['acc_code']           = $this->input->post('acc_code');
+            $data['acc_code']           = $this->input->post('student_code');
             $data['months']             = $monthsValue;
             $data['fee_name']           = implode(',', $this->input->post('fee_name'));
             $data['fee_amount']         = implode(',', $this->input->post('fee_amount'));
@@ -176,6 +177,27 @@ class Accounting extends CI_Controller
             $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
 
             $this->db->insert('payment' , $data2);
+
+            $tution_sms_status = $this->db->get_where('settings',['type'=>'tution_fee_sms_status'])->row()->description;
+            
+            // TUTION FEE SMS SECTION
+            // IF TUTION FEE SMS SETTING STATUS ON
+            if($tution_sms_status == 1){
+                $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
+                    ->row()
+                    ->description;            
+                $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
+                    ->row()
+                    ->description;
+                $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
+                $tution_sms_details = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
+
+                $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;
+                $sender = urlencode($school_name);
+                $msg    = urlencode($tution_sms_details);                
+                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+            }
+            // END TUTION FEE SMS SECTION
 
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             redirect(base_url() . 'index.php?a/accounting/student_payment', 'refresh');
@@ -216,8 +238,8 @@ class Accounting extends CI_Controller
 
         if ($param1 == 'do_update') {
             $invoice_id = $this->uri->segment(5); 
-            $acc_code                   = $this->input->post('acc_code');
-            $student_id                 = $this->db->get_where('student', array('acc_code' => $acc_code))->row()->student_id;
+            $student_code                   = $this->input->post('student_code');
+            $student_id                 = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
             if(!$student_id){
                 $this->flashmsg('No Student Found', 'error');
                 redirect(base_url() . 'index.php?a/accounting/edit_student_payment/'.$invoice_id, 'refresh');
@@ -226,7 +248,7 @@ class Accounting extends CI_Controller
             
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
-            $data['acc_code']           = $acc_code;
+            $data['student_code']           = $student_code;
             $data['months']             = implode(',', $this->input->post('months'));
             $data['fee_name']           = implode(',', $this->input->post('fee_name'));
             $data['fee_amount']         = implode(',', $this->input->post('fee_amount'));
@@ -301,7 +323,7 @@ class Accounting extends CI_Controller
         $invoice_id = $this->uri->segment(4);
         $page_data['income_category'] = $this->db->get('income_category')->result_array();
         $page_data['invoice_info'] = $this->db->get_where('invoice', array('invoice_id'=>$invoice_id))->result_array();
-        $page_data['acc_code'] = $this->db->get_where('student', array('student_id'=>$page_data['invoice_info'][0]['student_id']))->row()->acc_code;
+        $page_data['student_code'] = $this->db->get_where('student', array('student_id'=>$page_data['invoice_info'][0]['student_id']))->row()->student_code;
         $this->loadView('accounting/edit_student_payment', 'edit_invoice/edit', $page_data);
     }
 
@@ -317,8 +339,7 @@ class Accounting extends CI_Controller
     }
 
     function income_category($param1 = '' , $param2 = '')
-    {
-        
+    {        
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         if ($param1 == 'create') {
@@ -348,6 +369,11 @@ class Accounting extends CI_Controller
 
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
+
+        $this->db->select('description');
+        $this->db->where('type','tution_fee_sms_status');
+        $this->db->or_where('type','tution_fee_sms_details');
+        $page_data['tution_fee_setting'] = $this->db->get('settings')->result_array();
         $page_data['income_category'] = $this->db->get('income_category')->result_array();
         $this->loadView('accounting/student_payment', 'create_student_payment', $page_data);
     }
@@ -582,13 +608,39 @@ class Accounting extends CI_Controller
         redirect(base('a/accounting', 'bank_transaction'));
     }
 
+    function tution_fee_sms_setting()
+    {
+        $data = $this->input->post();
+        $data['tution_fee_sms_status'] = $data['tution_fee_sms_status']==''?0:1;
+        $this->db->update('settings',
+            ['description'=>$data['tution_fee_sms_status']],
+            ['type'=>'tution_fee_sms_status']);
+        $this->db->update('settings',
+            ['description'=>$data['tution_fee_sms_details']],
+            ['type'=>'tution_fee_sms_details']);
+        $this->flashmsg('Tution Fee SMS Setting Updated');
+        redirect(base('a/accounting', 'student_payment'));
+    }
+
 
     // AJAX RESPONSE FUNCTION LIST //
 
+    function getStudentAccHistory()
+    {
+        $year = $this->db->get_where('settings' , array('type' =>'running_year'))->row()->description;
+        $student_id = $result = $this->uri->segment(4);
+        $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_id,'year'=>$year])->result_array();
+        if(empty($page_data['student_payment'])){
+            $page_data['student_payment'] = [];
+        }
+        
+        $this->load->view('backend/admin/accounting/student_account_history', $page_data);
+    }
+
     function getAccStdInfo($value)  //ajax response
     {
-        $name = $this->db->get_where('student',array('acc_code'=>$value))->row()->namebn;
-        $stdId = $this->db->get_where('student',array('acc_code'=>$value))->row()->student_id;
+        $name = $this->db->get_where('student',array('student_code'=>$value))->row()->namebn;
+        $stdId = $this->db->get_where('student',array('student_code'=>$value))->row()->student_id;
         $classId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->class_id;
         $roll = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->roll;
         $className = $this->db->get_where('class',array('class_id'=>$classId))->row()->name;
@@ -605,7 +657,7 @@ class Accounting extends CI_Controller
 
     public function ajax_list_two()
     {
-        $base_url = base_url();
+        $base_url = base_url(); 
         $this->load->model('income_model','income');
         $list = $this->income->get_datatables_datewise();
 
@@ -735,22 +787,34 @@ class Accounting extends CI_Controller
         return $result;
     }
 
-
     function curl_url($url)
     {
-        // create a new cURL resource
-        $ch = curl_init();
+        // // create a new cURL resource
+        // $ch = curl_init();
 
-        // set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, "$url");
-        curl_setopt($ch, CURLOPT_HEADER, 0);
+        // // set URL and other appropriate options
+        // curl_setopt($ch, CURLOPT_URL, "$url");
+        // curl_setopt($ch, CURLOPT_HEADER, 0);
 
-        // grab URL and pass it to the browser
-        curl_exec($ch);
+        // // grab URL and pass it to the browser
+        // curl_exec($ch);
 
-        // close cURL resource, and free up system resources
-        curl_close($ch);
+        // // close cURL resource, and free up system resources
+        // curl_close($ch);
+        $data = file_get_contents($url);
+        if($data) {
+            return true;
+        }
         return true;
+        
+    }
+
+
+    function long_sms_api($user,$pass,$sender,$msg,$mobile)
+    {
+        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
+        $mystring = $this->curl_url($url);
+        return $mystring;
     }
     
     

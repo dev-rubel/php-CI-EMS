@@ -3,20 +3,21 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*	
- *	@author 	: Joyonto Roy
- *	date		: 27 september, 2014
- *	Ekattor School Management System Pro
- *	http://codecanyon.net/user/Creativeitem
- *	support@creativeitem.com
+ *	@author 	: Md Nur Alam
+ *	date		: December 2017
+ *  Nihal IT
  */
 
 class Homemanage extends CI_Controller
 {
+
+    private $running_year;
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
         $this->load->library('session');
+        $this->running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
 		
        /*cache control*/
 		$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -453,13 +454,15 @@ class Homemanage extends CI_Controller
         $data = $this->db->get('admit_std')->result_array();
 
 
-        //pd($data[0]);
+        // pd($data[0]);
         //student table section
         $admint_student_id = $data[0]['id'];
         unset($data[0]['id']);
         unset($data[0]['student_id']);
         $stdInfo1 = array_slice($data[0], 0, 15);
-        $studentInfo['jscinfo'] = $data[0]['jscinfo'];
+        $stdInfo1['student_code'] = $stdInfo1['uniq_id'];
+        unset($stdInfo1['uniq_id']);
+        $studentInfo['jscpecinfo'] = $data[0]['jscinfo'];
         $studentInfo['birthday'] = $data[0]['date'];
         $studentInfo['mobile'] = $data[0]['mobile'];
         $studentInfo['sex'] = 'Male';
@@ -468,36 +471,40 @@ class Homemanage extends CI_Controller
         $studentTable = array_merge($stdInfo1,$studentInfo);
         
 
-        //pd($studentTable);
+        // pd($studentTable);
         $this->db->insert('student', $studentTable);
         $enrolInfo['student_id'] = $this->db->insert_id();
-        $this->db->update('admit_std',array('student_id'=>$enrolInfo['student_id']),array('id'=>$admint_student_id));
+        // $this->db->update('admit_std',array('student_id'=>$enrolInfo['student_id']),array('id'=>$admint_student_id));
 
         //student image rename and move to upload folder
+        $session = $this->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
         $ext = strtolower(pathinfo($data[0]['img'], PATHINFO_EXTENSION));
-        copy('assets/'.$data[0]['img'], 'uploads/student_image/'.$enrolInfo['student_id'].'.'.$ext);
+        copy("assets/images/admission_student/$session/".$data[0]['img'], 'uploads/student_image/'.$enrolInfo['student_id'].'.'.$ext);
 
 
         //enroll table section
         unset($_POST['student_id']);
         $enrolInfo['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7); 
         $enrolInfo['date_added']     = strtotime(date("Y-m-d H:i:s"));
-        $enrolInfo['year']           = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $enrolInfo['year']           = $this->running_year;
         $enrolTable = array_merge($enrolInfo,$_POST);
-        //pd($enrolTable);
+        // pd($enrolTable);
         $this->db->insert('enroll', $enrolTable);
 
 
         //invoice table section
         $invoiceInfo['student_id']         = $enrolInfo['student_id'];
-        $invoiceInfo['title']              = 'Admit Fee';
-        $invoiceInfo['description']        = 'Admit Fee';
+        $invoiceInfo['class_id']           = $_POST['class_id'];
+        $invoiceInfo['acc_code']           = $studentTable['student_code'];
+        $invoiceInfo['fee_name']           = 'Admission Fee';
+        $invoiceInfo['fee_amount']         = $fee;
+        $invoiceInfo['description']        = 'Admission Fee';
         $invoiceInfo['amount']             = $fee;
         $invoiceInfo['amount_paid']        = $fee;
         $invoiceInfo['due']                = '';
         $invoiceInfo['status']             = 'paid';
         $invoiceInfo['creation_timestamp'] = strtotime(date('m/d/Y'));
-        $invoiceInfo['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $invoiceInfo['year']               = $this->running_year;
        
         $this->db->insert('invoice', $invoiceInfo);
         $invoice_id = $this->db->insert_id();
@@ -505,18 +512,23 @@ class Homemanage extends CI_Controller
         //payment table section
         $paymentInfo['invoice_id']        =   $invoice_id;
         $paymentInfo['student_id']        =   $enrolInfo['student_id'];
-        $paymentInfo['title']             =   'Admit Fee';
-        $paymentInfo['description']       =   'Admit Fee';
+        $paymentInfo['title']             =   'Admission Fee';
+        $paymentInfo['description']       =   'Admission Fee';
         $paymentInfo['payment_type']      =   'income';
         $paymentInfo['method']            =   '1';
         $paymentInfo['amount']            =   $fee;
         $paymentInfo['timestamp']         =   strtotime(date('m/d/Y'));
-        $paymentInfo['year']              =    $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $paymentInfo['year']              =   $this->running_year;
         $this->db->insert('payment' , $paymentInfo);
+
+        // UPDATE STUDENT STATUS IN ADMISSION TABLE
+        $this->db->update('admit_std',['status'=>2],['uniq_id'=>$stdInfo1['student_code']]);
         
         $_SESSION['stdClass'] = $data[0]['class'];
         $_SESSION['stdGroup'] = notEmpty($data[0]['group']);
-        redirect(base('homemanage', 'getClassResult'));
+
+        $this->flashmsg('Student Admitted Successfuly');
+        redirect(base('homemanage', 'admission_result'));
     }
 
     function updateHeaderImg()
@@ -966,14 +978,14 @@ class Homemanage extends CI_Controller
     function cleanAdmitStdTable()
     {
         $this->db->truncate('admit_std'); 
-        $this->flashmsg('Clean Admit Student Table');
+        $this->flashmsg('Clean Admission Student Table');
         redirect(base('admin', 'system_settings'));
     }
     
     function cleanAdmitStdResultTable()
     {
         $this->db->truncate('admission_result'); 
-        $this->flashmsg('Clean Admit Student Result Table');
+        $this->flashmsg('Clean Admission Student Result Table');
         redirect(base('admin', 'system_settings'));
     }
     

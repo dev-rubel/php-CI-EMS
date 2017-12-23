@@ -36,6 +36,14 @@
                                 </a>
                         </li>
 
+                        <!-- STUDENT TUTION FEE HISTORY  -->
+                        <li>
+                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_ajax_student_payment_history/<?php echo $each['student_id'];?>');">
+                                <i class="entypo-ticket"></i>
+                                    <?php echo get_phrase('tution_history');?>
+                                </a>
+                        </li>
+
                         
                         <!-- STUDENT PROFILE LINK -->
                         <li>

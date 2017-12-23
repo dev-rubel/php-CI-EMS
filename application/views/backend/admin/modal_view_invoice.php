@@ -1,7 +1,7 @@
 <?php
 $edit_data = $this->db->get_where('invoice', array('invoice_id' => $param2))->result_array();
 
-//pd($edit_data);
+// pd($edit_data);
 foreach ($edit_data as $row):
 ?>
 <center>
@@ -108,7 +108,7 @@ foreach ($edit_data as $row):
         <table width="100%" border="0"> 
             <tr>
                 <td align="right" width="80%"><h4><?php echo get_phrase('total_amount'); ?> :</h4></td>
-                <td align="right"><h4><?php echo money_format('%n', $row['amount_paid']).' TK.'; ?></h4></td>
+                <td align="right"><h4><?php echo $row['amount_paid'].' TK.'; ?></h4></td>
             </tr>
         </table>
 

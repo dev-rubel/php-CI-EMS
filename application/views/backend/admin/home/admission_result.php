@@ -90,7 +90,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($result as $key=>$list):?>
+                        <?php /* pd($result); */ foreach($result as $key=>$list):?>
                         <tr>
                             <td><?php echo $key+1;?></td>
                             <td><?php echo $list['uniq_id'];?></td>
@@ -98,10 +98,10 @@
                             <td><?php echo $list['fnamebn'];?></td>
                             <td><?php echo $list['mark'];?></td>     
                             <td width="100px">
-                            <?php if($list['student_id']==null):?>
+                            <?php if($list['status'] != 2):?>
                                 <a href="#" class="btn btn-danger btn-sm" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_new_student/<?php echo $list['std_id'];?>');">Admit Student</a>
                             <?php else: 
-                                $invoice_id = $this->db->get_where('invoice', array('student_id' => $list['student_id']))->row()->invoice_id;
+                                $invoice_id = $this->db->get_where('invoice', array('acc_code' => $list['uniq_id']))->row()->invoice_id;
                             ?>
                                 <a href="#" class="btn btn-success btn-sm" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_view_invoice/<?php echo $invoice_id;?>');">Download Invoice</a>
                             <?php endif;?>

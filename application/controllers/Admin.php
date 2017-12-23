@@ -3,19 +3,22 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*  
  *  @author     : Md. Rubel
- *  Anauv
+ *  Nihal IT
  */
 class Admin extends CI_Controller
 {
 
     protected $systemTitleName;    
+    private $running_year;
     
     function __construct()
     {
         parent::__construct();
         $this->load->database();
         $this->load->library('session');
+
         $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
+        $this->running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
         
        /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -73,7 +76,7 @@ class Admin extends CI_Controller
 
     public function getInfo()
     {
-        $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $running_year = $this->running_year;
         $allStudent = $this->db->get('enroll')->result_array();
         $currentStrDate = strtotime(date('Y-m-d'));
         // echo json_encode($arr);
@@ -228,9 +231,7 @@ class Admin extends CI_Controller
                 }
                 $data2['roll']          =   $rolls[$i];
                 $data2['date_added']    =   strtotime(date("Y-m-d H:i:s"));
-                $data2['year']          =   $this->db->get_where('settings' , array(
-                                                'type' => 'running_year'
-                                            ))->row()->description;
+                $data2['year']          =   $this->running_year;
 
                 $this->db->insert('enroll' , $data2);
 
@@ -272,7 +273,7 @@ class Admin extends CI_Controller
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         $class_id     = $this->db->get_where('enroll' , array(
-            'student_id' => $student_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+            'student_id' => $student_id , 'year' => $this->running_year
         ))->row()->class_id;
         $student_name = $this->db->get_where('student' , array('student_id' => $student_id))->row()->name;
         $class_name   = $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
@@ -287,7 +288,7 @@ class Admin extends CI_Controller
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         $class_id     = $this->db->get_where('enroll' , array(
-            'student_id' => $student_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+            'student_id' => $student_id , 'year' => $this->running_year
         ))->row()->class_id;
         $class_name   = $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
 
@@ -301,9 +302,7 @@ class Admin extends CI_Controller
     {        
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
-        $running_year = $this->db->get_where('settings' , array(
-            'type' => 'running_year'
-        ))->row()->description;
+        $running_year = $this->running_year;
         if ($param1 == 'create') {
             
             // CREATE STUDENT ACCOUNT UNIQUE CODE --- NOT USE
@@ -347,7 +346,8 @@ class Admin extends CI_Controller
             }
 
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
-            $this->db->insert('admit_std',['uniq_id'=>$uniq_id,'status'=>3,'session'=>$session]);
+            $this->db->insert('admit_std',
+                 ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
             
             
             $table1Value1 = array_slice($_POST, 0, 21);
@@ -587,7 +587,7 @@ class Admin extends CI_Controller
 
     function update_new_promotion_std_info() 
     {        
-        $current_year = $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
+        $current_year = $this->running_year;
         $student_id   = $this->uri->segment(3);
         $info = $this->input->post();
         $this->db->where('student_id', $student_id);
@@ -599,7 +599,7 @@ class Admin extends CI_Controller
 
     function get_student_roll($classID)
     {        
-        $current_year = $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
+        $current_year = $this->running_year;
         if(!empty($_POST['groupid'])){
             $whereArr = array(
                 'class_id' => $_POST['classid'],
@@ -654,8 +654,6 @@ class Admin extends CI_Controller
             foreach ($groups as $row) {
             echo '<option value="' . $row['group_id'] . '">' . ucwords($row['name']) . '</option>';
             }
-        }elseif($class_numeric==6){
-            echo true;
         }else{
             echo null;
         }
@@ -732,7 +730,7 @@ class Admin extends CI_Controller
     {   
         $group_id = $this->input->post('group_id');
         $roll     = $this->input->post('roll');
-        $year     = $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
+        $year     = $this->running_year;
         $id       = $this->db->get_where('enroll', array('year' => $year, 'group_id' => $group_id, 'roll' => $roll))->row()->student_id;
         $class_id = $this->db->get_where('group', array('group_id' => $group_id))->row()->class_id;
         $class_name_numeric = $this->db->get_where('class', array('class_id' => $class_id))->row()->name_numeric;
@@ -1233,7 +1231,7 @@ class Admin extends CI_Controller
         $data['subject_id']             =   $this->input->post('subject_id');
         $data['uploader_type']          =   $this->session->userdata('login_type');
         $data['uploader_id']            =   $this->session->userdata('login_user_id');
-        $data['year']                   =   $this->db->get_where('settings',array('type'=>'running_year'))->row()->description;
+        $data['year']                   =   $this->running_year;
         $data['timestamp']              =   strtotime(date("Y-m-d H:i:s"));
         //uploading file using codeigniter upload library
         $files = $_FILES['file_name'];
@@ -1328,7 +1326,7 @@ class Admin extends CI_Controller
     function get_class_students($class_id)
     {
         $students = $this->db->get_where('enroll' , array(
-            'class_id' => $class_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+            'class_id' => $class_id , 'year' => $this->running_year
         ))->result_array();
         foreach ($students as $row) {
             $name = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;
@@ -1339,7 +1337,7 @@ class Admin extends CI_Controller
     function get_class_students_mass($class_id)
     {
         $students = $this->db->get_where('enroll' , array(
-            'class_id' => $class_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+            'class_id' => $class_id , 'year' => $this->running_year
         ))->result_array();
         echo '<div class="form-group">
                 <label class="col-sm-3 control-label">' . get_phrase('students') . '</label>
@@ -1366,7 +1364,7 @@ class Admin extends CI_Controller
             $data['name']    = $this->input->post('name');
             $data['date']    = $this->input->post('date');
             $data['comment'] = $this->input->post('comment');
-            $data['year']    = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']    = $this->running_year;
             $this->db->insert('exam', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             redirect(base_url() . 'index.php?admin/exam/', 'refresh');
@@ -1375,7 +1373,7 @@ class Admin extends CI_Controller
             $data['name']    = $this->input->post('name');
             $data['date']    = $this->input->post('date');
             $data['comment'] = $this->input->post('comment');
-            $data['year']    = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']    = $this->running_year;
             
             $this->db->where('exam_id', $param3);
             $this->db->update('exam', $data);
@@ -1413,7 +1411,7 @@ class Admin extends CI_Controller
             // get all the students of the selected class
             $students = $this->db->get_where('enroll' , array(
                 'class_id' => $class_id,
-                    'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+                    'year' => $this->running_year
             ))->result_array();
             // get the marks of the student for selected exam
             foreach ($students as $row) {
@@ -1429,7 +1427,7 @@ class Admin extends CI_Controller
 
                 $this->db->where('exam_id' , $exam_id);
                 $this->db->where('student_id' , $row['student_id']);
-                $marks = $this->db->get_where('mark' , array('year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description))->result_array();
+                $marks = $this->db->get_where('mark' , array('year' => $this->running_year))->result_array();
                 $message = '';
                 foreach ($marks as $row2) {
                     $subject       = $this->db->get_where('subject' , array('subject_id' => $row2['subject_id']))->row()->name;
@@ -1551,7 +1549,7 @@ class Admin extends CI_Controller
 
     function marks_update($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
     {
-        $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $running_year = $this->running_year;
         $marks_of_students = $this->db->get_where('mark' , array(
             'exam_id' => $exam_id,
                 'class_id' => $class_id,
@@ -1688,7 +1686,7 @@ class Admin extends CI_Controller
             $data['time_start_min'] = $this->input->post('time_start_min');
             $data['time_end_min']   = $this->input->post('time_end_min');
             $data['day']            = $this->input->post('day');
-            $data['year']           = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']           = $this->running_year;
             $this->db->insert('class_routine', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             redirect(base_url() . 'index.php?admin/class_routine_add/', 'refresh');
@@ -1704,7 +1702,7 @@ class Admin extends CI_Controller
             $data['time_start_min'] = $this->input->post('time_start_min');
             $data['time_end_min']   = $this->input->post('time_end_min');
             $data['day']            = $this->input->post('day');
-            $data['year']           = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']           = $this->running_year;
             
             $this->db->where('class_routine_id', $param2);
             $this->db->update('class_routine', $data);
@@ -1877,7 +1875,7 @@ class Admin extends CI_Controller
         else:
             $group_id = '';
         endif;
-        $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $running_year = $this->running_year;
         $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
         $attendance_of_students = $this->db->get_where('attendance' , array(
             'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
@@ -1909,7 +1907,7 @@ class Admin extends CI_Controller
             redirect(base_url() , 'refresh');
 
         $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
-        $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+        $running_year = $this->running_year;
         
         if($_POST)
         {
@@ -3075,7 +3073,7 @@ class Admin extends CI_Controller
         // SET CUSTOM STYLE -- END
 
         if(!empty($extra)){
-            $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $running_year = $this->running_year;
             $extra['year'] = $running_year;
             $studentInfo = $this->db->get_where('enroll' , $extra)->result_array();    
         }else{
