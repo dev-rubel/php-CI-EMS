@@ -1,4 +1,6 @@
 <?php
+    $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+    list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 
     $class_name    =   $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
     $section_name  =   $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;
@@ -8,7 +10,6 @@
         $group_name  = '';
     }    
     $shift_name    =   $this->db->get_where('shift' , array('shift_id' => $shift_id))->row()->name;
-    $system_name   =   $this->db->get_where('settings' , array('type'=>'system_name'))->row()->description;
     $running_year  =   $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
 ?>
 
@@ -23,8 +24,8 @@
     </style>
 
     <center>
-        <img src="uploads/logo.png" style="max-height : 60px;"><br>
-        <h3 style="font-weight: 100;"><?php echo $system_name;?></h3>
+        <img src="uploads/school_logo.png" style="max-height : 60px;"><br>
+        <h3 style="font-weight: 100;"><?php echo $schoolName;?></h3>
         <?php echo get_phrase('class_routine');?><br>
         <?php echo get_phrase('class_:') . ' ' . $class_name;?> | <?php echo get_phrase('section_:');?> <?php echo $section_name;?> | <?php echo get_phrase('shift_:');?> <?php echo $shift_name;?><br>
         <?php if(!empty($group_name)):?>
@@ -68,14 +69,18 @@
                         $routines = $this->db->get('class_routine')->result_array();
                         foreach($routines as $row):
                         ?>
-                            <div style="float:left; padding:8px; margin:5px; background-color:#ccc;">
+                            <div style="float:left; padding:8px; margin:5px; background-color:#ccc; text-align: center;">
                                 <?php echo $this->crud_model->get_subject_name_by_id($row['subject_id']);?>
                                 <?php
                                     if ($row['time_start_min'] == 0 && $row['time_end_min'] == 0) 
-                                        echo '('.$row['time_start'].'-'.$row['time_end'].')';
+                                        //echo '('.$row['time_start'].'-'.$row['time_end'].')';
+                                        echo date("g:i a", strtotime($row['time_start'].':'.$row['time_end']));
                                     if ($row['time_start_min'] != 0 || $row['time_end_min'] != 0)
-                                        echo '('.$row['time_start'].':'.$row['time_start_min'].'-'.$row['time_end'].':'.$row['time_end_min'].')';
+                                        echo '('.date("g:i", strtotime($row['time_start'].':'.$row['time_start_min'])).'-';
+                                        echo date("g:i A", strtotime($row['time_end'].':'.$row['time_end_min'])).')';
                                 ?>
+                                <br>
+                                <?php echo $this->db->get_where('teacher',['teacher_id'=>$row['teacher_id']])->row()->name;?>
                             </div>
                         <?php endforeach;?>
                             </td>

@@ -30,6 +30,13 @@ class Accounting extends CI_Controller
             redirect(base_url() . 'index.php?admin/dashboard', 'refresh');
     }
 
+    public function accounting_menu() 
+    {
+        $page_data['page_name']  = 'menus/accounting_menu';
+        $page_data['page_title'] = get_phrase('accounting');
+        $this->load->view('backend/index', $page_data);
+    }
+
     public function add_student_income()
     {   
         $arrayCount = count($_POST);
@@ -698,11 +705,11 @@ class Accounting extends CI_Controller
         }
  
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->income->count_all(),
-                        "recordsFiltered" => $this->income->count_filtered(),
-                        "data" => $data,
-                );
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->income->count_all(),
+            "recordsFiltered" => $this->income->count_filtered(),
+            "data" => $data,
+        );
         //output to json format
         echo json_encode($output);
     }
@@ -805,10 +812,8 @@ class Accounting extends CI_Controller
         if($data) {
             return true;
         }
-        return true;
-        
+        return true;        
     }
-
 
     function long_sms_api($user,$pass,$sender,$msg,$mobile)
     {

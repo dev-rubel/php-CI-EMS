@@ -26,51 +26,7 @@ class Homemanage extends CI_Controller
 		
     }
     
-    function delete_files()
-    {
-        unlink('assets/otherFiles/'.$this->uri(4));
-        $this->dashboard_model->delete_table_files($this->uri(3));
-        $this->flashmsg('Deleted');
-        redirect(base('homemanage', 'manage_pages'));
-    }
     
-    function add_files()
-    {
-        if(!empty($_FILES['files']['name'])):
-        $ext = end(explode(".", $_FILES['files']['name']));
-        $name = str_replace(' ','-', $_POST['filetitle']).rand(99, 199);
-        $this->load->helper(array('form','url'));
-        $config['upload_path'] = './assets/otherFiles/';
-        $config['allowed_types'] = '*';
-        $config['file_name'] = $name;
-        $config['max_size']    = 3072;
-        $this->upload->initialize($config);
-        if (!$this->upload->do_upload('files'))
-        {
-            $error = array('error' => $this->upload->display_errors());
-            $this->flashmsg($error['error'],'error');
-            redirect(base('homemanage', 'manage_pages'));
-        }
-        else
-        {
-            $this->upload->data();
-            $this->dashboard_model->insertFiles($_POST['filetitle'],$name.'.'.$ext);
-            $this->flashmsg('Inserted with file');
-            redirect(base('homemanage', 'manage_pages'));
-        }
-        else:
-            $this->flashmsg('Please insert file', 'errror');
-            redirect(base('homemanage', 'manage_pages'));
-        endif;
-    }
-    
-    function getPageInfo($value)
-    {
-        $names = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->title;
-        $mark = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->description;
-            $Response = array('name' => $names, 'mark' => $mark);
-            echo json_encode($Response);
-    }
     
     
     /***default functin, redirects to login page if no admin logged in yet***/
@@ -80,6 +36,22 @@ class Homemanage extends CI_Controller
             redirect(base_url() . 'index.php?login', 'refresh');
         if ($this->session->userdata('admin_login') == 1)
             redirect(base_url() . 'index.php?homemanage/dashboard', 'refresh');
+    }
+
+    function admission_menu()
+    {
+        $page_data['page_name']  = 'menus/admission_menu';
+        $page_data['page_title'] = get_phrase('admission');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function manageHomeMenu()
+    {
+        if ($this->session->userdata('admin_login') != 1)
+            redirect(base_url(), 'refresh');
+        $page_data['page_name']  = 'menus/manage_home_menu';
+        $page_data['page_title'] = get_phrase('manage_website');
+        $this->load->view('backend/index', $page_data);
     }
     
     function change_logo()
@@ -110,7 +82,7 @@ class Homemanage extends CI_Controller
     }
     
     function slider()
-    {
+    {   
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/sliderPage';
@@ -261,6 +233,52 @@ class Homemanage extends CI_Controller
         $this->db->delete('admit_std');
         $this->flashmsg('student_deleted');
         redirect(base('Homemanage', 'admission_query'));
+    }
+
+    function delete_files()
+    {
+        unlink('assets/otherFiles/'.$this->uri(4));
+        $this->dashboard_model->delete_table_files($this->uri(3));
+        $this->flashmsg('Deleted');
+        redirect(base('homemanage', 'manage_pages'));
+    }
+    
+    function add_files()
+    {
+        if(!empty($_FILES['files']['name'])):
+        $ext = end(explode(".", $_FILES['files']['name']));
+        $name = str_replace(' ','-', $_POST['filetitle']).rand(99, 199);
+        $this->load->helper(array('form','url'));
+        $config['upload_path'] = './assets/otherFiles/';
+        $config['allowed_types'] = '*';
+        $config['file_name'] = $name;
+        $config['max_size']    = 3072;
+        $this->upload->initialize($config);
+        if (!$this->upload->do_upload('files'))
+        {
+            $error = array('error' => $this->upload->display_errors());
+            $this->flashmsg($error['error'],'error');
+            redirect(base('homemanage', 'manage_pages'));
+        }
+        else
+        {
+            $this->upload->data();
+            $this->dashboard_model->insertFiles($_POST['filetitle'],$name.'.'.$ext);
+            $this->flashmsg('Inserted with file');
+            redirect(base('homemanage', 'manage_pages'));
+        }
+        else:
+            $this->flashmsg('Please insert file', 'errror');
+            redirect(base('homemanage', 'manage_pages'));
+        endif;
+    }
+    
+    function getPageInfo($value)
+    {
+        $names = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->title;
+        $mark = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->description;
+            $Response = array('name' => $names, 'mark' => $mark);
+            echo json_encode($Response);
     }
     
     function sms_infos()

@@ -1,7 +1,5 @@
 <?php 
 
-
-
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 
@@ -12,8 +10,7 @@ endif;
 	$class_name		= $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
     $section_name       = $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;
 	$shift_name  		= $this->db->get_where('shift' , array('shift_id' => $shift_id))->row()->name;
-	$system_name        =	$this->db->get_where('settings' , array('type'=>'system_name'))->row()->description;
-	$running_year       =	$this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+    $running_year       =	$this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
         if($month == 1) $m = 'January';
         else if($month == 2) $m='February';
         else if($month == 3) $m='March';

@@ -1,128 +1,130 @@
 <hr />
-<a href="<?php echo base_url();?>index.php?admin/class_routine_add" class="btn btn-primary pull-right">
-    <i class="entypo-plus-circled"></i>
-    <?php echo get_phrase('add_class_routine');?>
-</a>
-<br>
-<br>
-<br>
-<?php //pd($shift_id); ?>
-<?php
-if(isset($group_id)){
-    $query = $this->db->get_where('section' , array('class_id' => $class_id)); 
-}else{
-    $query = $this->db->get_where('section' , array('section_id' => $section_id));
-    $group_id = '';
-}
-    if($query->num_rows() > 0):
-        $class_sections = $query->result_array();
-    foreach($class_sections as $row):
-?>
+
+<?php echo form_open(base_url() . 'index.php?admin/attendance_selector/');?>
 <div class="row">
+<div class="col-md-offset-1 col-md-10">
+	<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class');?></label>
+			<select id="class_id" name="class_id" class="form-control selectboxit" onchange="select_section(this.value)">
+				<option value=""><?php echo get_phrase('select_class');?></option>
+				<?php
+					$classes = $this->db->get('class')->result_array();
+					foreach($classes as $row):
+                                            
+				?>
+                                
+				<option value="<?php echo $row['class_id'];?>"
+					><?php echo $row['name'];?></option>
+                                
+				<?php endforeach;?>
+			</select>
+		</div>
+	</div>
 
-    <div class="col-md-12">
-
-        <div class="panel panel-default" data-collapsed="0">
-            <div class="panel-heading">
-                <div class="panel-title" style="font-size: 16px; color: black; text-align: center;">
-                    <?php echo get_phrase('class');?> -
-                    <?php echo $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;?> :
-                    <?php echo get_phrase('section');?> -
-                    <?php echo $this->db->get_where('section' , array('section_id' => $row['section_id']))->row()->name;?>
-
-                    <?php $groupName = $this->db->get_where('group' , array('group_id' => $group_id))->row()->name;
-                    if(!empty($groupName)):
-                ?>
-                    <?php echo get_phrase('group');
-                        echo ' - '.ucwords($groupName);
-                    endif;
-                ?>
-
-                    <?php echo get_phrase('shift');?> -
-                    <?php echo $this->db->get_where('shift' , array('shift_id' => $shift_id))->row()->name;?>
-                    <a href="<?php echo base_url();?>index.php?admin/class_routine_print_view/<?php echo 
-                $class_id.'/'.
-                $row['section_id'].'/'.
-                $shift_id.'/'.
-                $group_id;
-                ?>" class="btn btn-primary btn-xs pull-right" target="_blank">
-                        <i class="entypo-print"></i>
-                        <?php echo get_phrase('print');?>
-                    </a>
-                </div>
-            </div>
-            <div class="panel-body">
-
-                <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered">
-                    <tbody>
-                        <?php 
-                    for($d=1;$d<=7;$d++):
-                    
-                    if($d==1)$day='sunday';
-                    else if($d==2)$day='monday';
-                    else if($d==3)$day='tuesday';
-                    else if($d==4)$day='wednesday';
-                    else if($d==5)$day='thursday';
-                    else if($d==6)$day='friday';
-                    else if($d==7)$day='saturday';
-                    ?>
-                        <tr class="gradeA">
-                            <td width="100">
-                                <?php echo strtoupper($day);?>
-                            </td>
-                            <td>
-                                <?php
-                            $this->db->order_by("time_start", "asc");
-                            $this->db->where('day' , $day);
-                            $this->db->where('class_id' , $class_id);
-                            $this->db->where('section_id' , $row['section_id']);
-                            $this->db->where('group_id' , $group_id);
-                            $this->db->where('shift_id' , $shift_id);
-                            $this->db->where('year' , $running_year);
-                            $routines   =   $this->db->get('class_routine')->result_array();
-                            foreach($routines as $row2):
+	<div id="group_holder">
+    </div>
+	
+    <div id="section_holder">
+	<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
+			<select id="section_id" class="form-control selectboxit" name="section_id">
+                            <option value=""><?php echo get_phrase('select_section_first') ?></option>
+				
+			</select>
+		</div>
+	</div>
+    </div>
+	
+    <div id="shift_holder">
+	<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('shift');?></label>
+			<select id="shift_id" class="form-control selectboxit" name="shift_id">
+                            <option value=""><?php echo get_phrase('select_shift_first') ?></option>
+                            <?php $shifts = $this->db->get('shift')->result_array();
+                            	foreach($shifts as $shift):
                             ?>
-                                    <div class="btn-group">
-                                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                            <?php echo $this->crud_model->get_subject_name_by_id($row2['subject_id']);?>
-                                            <?php
-                                        if ($row2['time_start_min'] == 0 && $row2['time_end_min'] == 0) 
-                                            echo '('.$row2['time_start'].'-'.$row2['time_end'].')';
-                                        if ($row2['time_start_min'] != 0 || $row2['time_end_min'] != 0)
-                                            echo '('.$row2['time_start'].':'.$row2['time_start_min'].'-'.$row2['time_end'].':'.$row2['time_end_min'].')';
-                                    ?>
-                                                <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_edit_class_routine/<?php echo $row2['class_routine_id'];?>');">
-                                                    <i class="entypo-pencil"></i>
-                                                    <?php echo get_phrase('edit');?>
-                                                </a>
-                                            </li>
+							<option value="<?php echo $shift['shift_id'];?>"><?php echo $shift['name'] ;?></option>						
+                        	<?php endforeach;?>
+				
+			</select>
+		</div>
+	</div>
+    </div>
+    <div class="col-md-2">
+    <div class="form-group">
+    <label class="control-label" style="margin-bottom: 5px;"></label>
+    <button href="#" class="btn btn-info" type="button" onclick="get_students_class_routine()">
+            <i class="entypo-plus-circled"></i>
+            <?php echo get_phrase('search_routine');?></button>
+    </div>
+    </div>
 
-                                            <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/class_routine/delete/<?php echo $row2['class_routine_id'];?>');">
-                                                    <i class="entypo-trash"></i>
-                                                    <?php echo get_phrase('delete');?>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <?php endforeach;?>
-
-                            </td>
-                        </tr>
-                        <?php endfor;?>
-
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
+    <div class="col-md-2">
+    <div class="form-group">
+    <label class="control-label" style="margin-bottom: 5px;"></label>
+        <a href="<?php echo base_url();?>index.php?admin/class_routine_add"
+        class="btn btn-primary">
+            <i class="entypo-plus-circled"></i>
+            <?php echo get_phrase('add_class_routine');?>
+        </a> 
+    </div>
+    </div>
 
     </div>
 
 </div>
-<?php endforeach;?>
-<?php endif;?>
+<?php echo form_close();?>
+
+<div id="routine_holder"></div>
+
+<script type="text/javascript">
+
+    function get_students_class_routine()
+    {
+        var classID = $('#class_id').val();
+        var sectionID = $('#section_id').val();
+        var shiftID = $('#shift_id').val();
+        var groupID = $('#group_id').val();
+        if(groupID){
+            groupID = $('#group_id').val();
+        } else {
+            groupID = '';
+        }
+        if (classID == "" || sectionID == "" || shiftID == "") {
+            toastr.error("<?php echo get_phrase('select_all_field_properly');?>")
+            return false;
+        }
+        $.get( "<?php echo base_url();?>index.php?admin/ajaxClassRoutine/"+classID+"/"+sectionID+"/"+shiftID+"/"+groupID, function( data ){
+            $( "#routine_holder" ).html( data );  
+        });
+    }
+   
+    $('#group_holder').hide();
+
+    function select_section(class_id) {
+
+        $.ajax({
+            url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
+            success:function (response)
+            {
+            	if(response){
+            		$('#group_holder').show();
+            		jQuery('#group_holder').html(response);	
+            	}else{
+            		$('#group_holder').hide();
+            	}                
+            }
+        });
+
+        $.ajax({
+            url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
+            success:function (response)
+            {
+                jQuery('#section_holder').html(response);
+            }
+        });
+    }
+</script>

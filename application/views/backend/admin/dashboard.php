@@ -86,7 +86,6 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
         </div>
     </div><!-- /.col -->
     
-    
 </div>
 
 <div class="row">
@@ -164,11 +163,6 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
             </div>
         </div>
     </div>
-	
-	
-	
-
-
 
 </div>
 
@@ -206,11 +200,11 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
 $notices = $this->db->get('noticeboard')->result_array();
 foreach ($notices as $row):
     ?>
-                    {
-                        title: "<?php echo $row['notice_title']; ?>",
-                        start: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>),
-                        end: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>)
-                    },
+            {
+                title: "<?php echo $row['notice_title']; ?>",
+                start: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>),
+                end: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>)
+            },
     <?php
 endforeach
 ?>
@@ -219,5 +213,3 @@ endforeach
         });
     });
 </script>
-
-

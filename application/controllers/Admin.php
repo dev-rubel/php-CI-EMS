@@ -442,6 +442,13 @@ class Admin extends CI_Controller
         }
     }
 
+    function student_menu()
+    {
+        $page_data['page_name']  = 'menus/student_menu';
+        $page_data['page_title'] = get_phrase('student');
+        $this->load->view('backend/index', $page_data);
+    }
+
     function auto_acc_code()
     {
         $all_student = $this->db->get('enroll')->result_array();
@@ -693,7 +700,15 @@ class Admin extends CI_Controller
     }
 
 
-    /**** TESTIMONIAL SECTION *****/    
+    /**** TESTIMONIAL SECTION *****/ 
+    
+    function testimonial_menu()
+    {
+        $page_data['page_name']  = 'menus/testimonial_menu';
+        $page_data['page_title'] = get_phrase('testimonial');
+        $this->load->view('backend/index', $page_data);
+    }
+
     function testimonial_voc()
     {
         $class_id = $this->db->get_where('class', array('name_numeric' => 101))->row()->class_id;
@@ -960,6 +975,39 @@ class Admin extends CI_Controller
     
     
     /****MANAGE TEACHERS*****/
+
+    function teacherMenu()
+    {
+        $page_data['page_name']  = 'menus/teacher_menu';
+        $page_data['page_title'] = get_phrase('teachers_menu');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function teacher_class_routine()
+    {
+        $page_data['page_name']  = 'teacher/teacher_class_routine';
+        $page_data['page_title'] = get_phrase('teachers_class_routine_schedule');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function ajaxTeacherRoutine()
+    {
+        $teacher_id = $this->uri(3);        
+        // $day_id = $this->uri(4);   
+             
+        // echo $teacher_id.' '.$day_id;
+        // $page_data['student_info'] = [];
+
+        if(!empty($teacher_id)){
+            $page_data['teacher_id'] = $teacher_id;
+            $page_data['teacher_routine'] = $this->db->get_where('class_routine',
+                                ['teacher_id'=>$teacher_id])
+                                        ->result_array();
+
+            $this->load->view('backend/admin/teacher/ajax_teacher_routine' , $page_data);
+        }
+    }
+
     function teacher($param1 = '', $param2 = '', $param3 = '')
     {
         if ($this->session->userdata('admin_login') != 1)
@@ -1007,7 +1055,7 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/teacher/', 'refresh');
         }
         $page_data['teachers']   = $this->db->get('teacher')->result_array();
-        $page_data['page_name']  = 'teacher';
+        $page_data['page_name']  = 'teacher/teacher';
         $page_data['page_title'] = get_phrase('manage_teacher');
         $this->load->view('backend/index', $page_data);
     }
@@ -1053,6 +1101,13 @@ class Admin extends CI_Controller
         $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
         $page_data['page_name']  = 'subject';
         $page_data['page_title'] = get_phrase('manage_subject'.' (Class: '.$className.')');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function subject_menu()
+    {
+        $page_data['page_name']  = 'menus/subject_menu';
+        $page_data['page_title'] = get_phrase('subject_menu');
         $this->load->view('backend/index', $page_data);
     }
 
@@ -1112,7 +1167,15 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_class');
         $this->load->view('backend/index', $page_data);
     }
-     function get_subject($class_id) 
+
+    function class_menu()
+    {
+        $page_data['page_name']  = 'menus/class_menu';
+        $page_data['page_title'] = get_phrase('class');
+        $this->load->view('backend/index', $page_data);
+    }
+    
+    function get_subject($class_id) 
     {
         $subject = $this->db->get_where('subject' , array(
             'class_id' => $class_id
@@ -1396,6 +1459,13 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function exam_menu()
+    {
+        $page_data['page_name']  = 'menus/exam_menu';
+        $page_data['page_title'] = get_phrase('exam_menu_section');
+        $this->load->view('backend/index', $page_data);
+    }
+
     /****** SEND EXAM MARKS VIA SMS ********/
     function exam_marks_sms($param1 = '' , $param2 = '')
     {
@@ -1674,6 +1744,7 @@ class Admin extends CI_Controller
         if ($param1 == 'create') {
             $data['class_id']       = $this->input->post('class_id');
             $data['shift_id']       = $this->input->post('shift_id');
+            $data['teacher_id']     = $this->input->post('teacher_id');
             if($this->input->post('section_id') != '') {
                 $data['section_id'] = $this->input->post('section_id');
             }
@@ -1696,6 +1767,10 @@ class Admin extends CI_Controller
             if($this->input->post('section_id') != '') {
                 $data['section_id'] = $this->input->post('section_id');
             }
+            if($this->input->post('group_id') != '') {
+                $data['group_id'] = $this->input->post('group_id');
+            }
+            $data['teacher_id']     = $this->input->post('teacher_id');
             $data['subject_id']     = $this->input->post('subject_id');
             $data['time_start']     = $this->input->post('time_start') + (12 * ($this->input->post('starting_ampm') - 1));
             $data['time_end']       = $this->input->post('time_end') + (12 * ($this->input->post('ending_ampm') - 1));
@@ -1723,6 +1798,29 @@ class Admin extends CI_Controller
         
     }
 
+    function ajaxClassRoutine()
+    {    
+        $classID = $this->uri(3);     
+        $sectionID = $this->uri(4);     
+        $shiftID = $this->uri(5);     
+        $groupID = $this->uri(6);   
+
+        if(!empty($groupID)){
+            $page_data['group_id'] = $groupID;
+        }else{
+            $page_data['section_id'] = $sectionID;
+        }
+
+        $page_data['class_id']  =   $classID;
+        $page_data['shift_id']  =   $shiftID;
+        $page_data['running_year']  =   $this->running_year;
+        //$className = $this->db->get_where('class' , array('class_id' => $classID))->row()->name;
+        
+        $this->load->view('backend/admin/attendance/ajax_attendance_search' , $page_data);
+
+        //echo $classID.' '.$sectionID.' '.$shiftID.' '.$groupID;
+    }
+
     function class_routine_add()
     {
         if ($this->session->userdata('admin_login') != 1)
@@ -1732,21 +1830,13 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function class_routine_view($class_id, $section_group, $shift_id, $group_or_not='')
+    function class_routine_view()
     {
         if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
-        if(!empty($group_or_not)){
-            $page_data['group_id'] = $section_group;
-        }else{
-            $page_data['section_id'] = $section_group;
-        }
+            redirect(base_url(), 'refresh');        
 
         $page_data['page_name']  = 'class_routine_view';
-        $page_data['class_id']  =   $class_id;
-        $page_data['shift_id']  =   $shift_id;
-        $className = $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
-        $page_data['page_title'] = get_phrase('class_routine_:_'.$className);
+        $page_data['page_title'] = get_phrase('class_routine');
         $this->load->view('backend/index', $page_data);
     }
 
@@ -1784,6 +1874,13 @@ class Admin extends CI_Controller
 
         $page_data['page_name']  =  'manage_attendance';
         $page_data['page_title'] =  get_phrase('manage_attendance_of_class');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function attendance_menu()
+    {
+        $page_data['page_name']  = 'menus/attendance_menu';
+        $page_data['page_title'] = get_phrase('attendance_menu');
         $this->load->view('backend/index', $page_data);
     }
 
@@ -2377,6 +2474,13 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'system_settings';
         $page_data['page_title'] = get_phrase('system_settings');
         $page_data['settings']   = $this->db->get('settings')->result_array();
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function setting_menu()
+    {
+        $page_data['page_name']  = 'menus/setting_menu';
+        $page_data['page_title'] = get_phrase('settins');
         $this->load->view('backend/index', $page_data);
     }
 

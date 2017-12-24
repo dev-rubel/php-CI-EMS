@@ -1,5 +1,6 @@
 <?php 
 $edit_data		=	$this->db->get_where('class_routine' , array('class_routine_id' => $param2) )->result_array();
+//pd($edit_data);
 ?>
 <div class="tab-pane box active" id="edit" style="padding: 5px">
     <div class="box-content">
@@ -43,6 +44,23 @@ $edit_data		=	$this->db->get_where('class_routine' , array('class_routine_id' =>
                 <?php endif;?>
 
                 <div id="section_subject_edit_holder"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><?php echo get_phrase('teacher');?></label>
+                    <div class="col-sm-5">
+                        <select id="teacher_id" name="teacher_id" class="form-control selectboxit">
+                            <?php 
+                            $teachers = $this->db->get('teacher')->result_array();
+                            foreach($teachers as $row2):
+                            ?>
+                                <option value="<?php echo $row2['teacher_id'];?>" <?php if($row2['teacher_id']==$row['teacher_id'])echo 'selected';?>>
+                                    <?php echo $row2['name'];?></option>
+                            <?php
+                            endforeach;
+                            ?>
+                        </select>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('shift');?></label>

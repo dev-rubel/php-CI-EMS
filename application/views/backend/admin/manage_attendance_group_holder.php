@@ -2,6 +2,7 @@
 	<div class="form-group">
 	<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('group');?></label>
 		<select name="group_id" id="group_id" class="form-control selectboxit">
+            <option value="">Select Group</option>
 			<?php 
 				foreach($group_info as $row):
 			?>
@@ -12,6 +13,7 @@
 </div>
 
 <script type="text/javascript">
+
    
     $(document).ready(function () {
 
