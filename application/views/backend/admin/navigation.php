@@ -43,7 +43,7 @@
             <!-- MANAGE ADMISSION SECTION -->
 
             <li class="<?php if ($page_name == 'menus/admission_menu') echo 'active'; ?> ">
-                <a href="<?php echo base_url(); ?>index.php?admin/admission_menu">
+                <a href="<?php echo base_url(); ?>index.php?homemanage/admission_menu">
                     <i class="entypo-layout"></i>
                     <?php echo get_phrase('admission'); ?>
                 </a>
