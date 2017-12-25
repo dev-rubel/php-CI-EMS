@@ -5,7 +5,9 @@ $url = explode('/', $url[1]);
 $url = $url[0];
 ?>
 
-
+<div id="loadingSpinner" style="text-align: center; margin: 0 auto;">
+	<img src="https://static.centro.org.uk/XnwmAssets/img/spinner.gif" alt="" width="150px" height="150px">
+</div>
 <link rel="stylesheet" href="assets/js/select2/select2-bootstrap.css">
 <link rel="stylesheet" href="assets/js/select2/select2.css">
 <link rel="stylesheet" href="assets/js/selectboxit/jquery.selectBoxIt.css">
@@ -47,7 +49,20 @@ $url = $url[0];
 <script src="assets/js/neon-demo.js"></script>
 <script src="assets/js/custom.js"></script>
 
+<!-- AJAX LOADING SPINNER -->
 
+<script>
+	var loading = $('#loadingSpinner').hide();
+	$( document ).ready(function() {
+		ajaxStart(function () {
+			loading = setTimeout(loading.show(), 1000);
+		})
+		ajaxStop(function () {
+			clearTimeout(loading);
+			loading.hide();
+		});
+	});
+</script>
 
 <!-- SHOW SUCCESS TOASTR NOTIFICATION -->
 <?php if ($this->session->flashdata('flash_message') != ""):?>

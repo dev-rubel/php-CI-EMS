@@ -3,10 +3,12 @@ $info = oneDim($std_info);
 extract($info);
 //pd($info);
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
-list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
+list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoolInfo);
 
 $exDate = $this->db->get_where('settings',array('type'=>'exam_date'))->row()->description;
 $time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->description;
+$admission_session = $this->db->get_where('settings' , array('type' => 'admission_session'))->row()->description;
+
 if(!empty($group)){
     $condition3 = '
      <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
@@ -28,7 +30,7 @@ if($class==91){
 	$class = $class;
 }
 $base = base_url().'uploads/';
-$stdImg = base_url().'assets/'.$img;
+$stdImg = base_url().'assets/images/admission_student/'.$admission_session.'/'.$img;
 
 if(!empty($lguaridan)):
     $condition1 = '
@@ -40,158 +42,357 @@ if(!empty($lguaridan)):
     
 endif;
 ?>
-<html><head>
-    
-        
+    <html>
 
-    </head><body style="font-size: 12px;">
-    
-            <div style="width: 100%;">
-                <!--<div class="blnk-space"></div>-->
-                <div class="hdr">
-                    <div style="width: 100%; height: 150px">
-                        <div style="float: left; width: 15%; text-align: center">
-                            <img src="<?php echo $base.'school_logo.png';?>" width="100px" height="100px">
-                            <div style="margin-top: 15px;"> Serial No: <?php echo $id; ?></div>
-                        </div>
-                        <div style="float: left; width: 65%; text-align: center; line-height: 15px">
-                            <h2 class="ex" style="color: green;"><?php echo $schoolName; ?></h2>
-                            <h3 style="color: green;"><?php echo $schoolAddress; ?></h3>
-                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
-                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
-                            <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
-                        </div>
-                        <div style="float: right; width: 20%; text-align: center">
-                            <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+    <head>
+    </head>
+
+    <body style="font-size: 12px;">
+
+        <div style="width: 100%;">
+            <!--<div class="blnk-space"></div>-->
+            <div class="hdr">
+                <div style="width: 100%; height: 150px">
+                    <div style="float: left; width: 15%; text-align: center">
+                        <img src="<?php echo $base.'school_logo.png';?>" width="100px" height="100px">
+                        <div style="margin-top: 15px;"> Serial No:
+                            <?php echo substr($uniq_id, -4); ?>
                         </div>
                     </div>
-                    <div class="office-part" style="position: relative; line-height: 10px;">
-                        <img src="<?php echo $base.'school_logo.png';?>" style="
+                    <div style="float: left; width: 65%; text-align: center; line-height: 15px">
+                        <h2 class="ex" style="color: green;">
+                            <?php echo $schoolName; ?>
+                        </h2>
+                        <h3 style="color: green;">
+                            <?php echo $schoolAddress; ?>
+                        </h3>
+                        <p>EIIN:
+                            <?php echo $eiin; ?>, Email:
+                            <?php echo $schoolEmail; ?>
+                        </p>
+                        <p style="margin-bottom:10px;">Phone:
+                            <?php echo $phone; ?>
+                        </p>
+                        <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
+                    </div>
+                    <div style="float: right; width: 20%; text-align: center">
+                        <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+                    </div>
+                </div>
+                <div class="office-part" style="position: relative; line-height: 10px;">
+                    <img src="<?php echo $base.'school_logo.png';?>" style="
                              opacity: .1;
                              margin-left: 210px;
                              margin-top: 125px;
                              width: 220px;
                              height: 225px;
                              " />
-                        <div style="margin-top: -330px;border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $name; ?></span></p> </div>
+                    <div style="margin-top: -330px;border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $name; ?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 14px;"><?php echo $namebn;?></span></p> </div>
+                    </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 14px;">
+                                    <?php echo $namebn;?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $fname;?></span></p> </div>
+                    </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $fname;?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 14px;"><?php echo $fnamebn;?></span></p> </div>
+                    </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 14px;">
+                                    <?php echo $fnamebn;?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $mname;?></span></p> </div>
+                    </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $mname;?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name (Bangla):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 14px;"><?php echo $mnamebn;?></span></p> </div>
+                    </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name (Bangla):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 14px;">
+                                    <?php echo $mnamebn;?>
+                                </span>
+                            </p>
                         </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Present Address : </p><p style="font-weight: normal; color: black; font-size: 12px; margin-top: 5px; margin-bottom: 0px;"><?php echo $paadress;?></p> </div>
-                        </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Permanent Address : </p><p style="font-weight: normal; color: black; font-size: 12px; margin-top: 5px; margin-bottom: 0px;"><?php echo $praddress;?></p></div>
-                        </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Religion : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $religion;?></span></p> </div>
-                        </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Nationality : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $nationality;?></span></p> </div>
-                        </div>
-                      
- <?php echo $condition1;?>
+                    </div>
 
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Email : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $email;?></span></p> </div>
+                    <div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Present Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $paadress;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Applied Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $class;?></span></p> </div>
+
+                    <div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Permanent Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $praddress;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
-                        <?php echo $condition3;?>
-                        <?php echo $condition2;?>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $preschoolname;?></span></p> </div>
+
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Religion : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $religion;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Address : </p><p style="font-weight: normal; color: black; font-size: 12px; margin-top: 5px; margin-bottom: 0px;"><?php echo $preschooladd;?></p></div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Nationality : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $nationality;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
-                        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Date of Birth : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo date("d-m-Y", strtotime($date));?></span></p> </div>
+
+                    <?php echo $condition1;?>
+
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Email : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $email;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
-                        <div style="font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Guardian Mobile No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $mobile;?></span></p> </div>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Applied Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $class;?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <?php echo $condition3;?>
+                    <?php echo $condition2;?>
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $preschoolname;?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Address : &nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $preschooladd;?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Date of Birth : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo date("d-m-Y", strtotime($date));?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; margin-bottom: 5px;">
+                        <div style="margin-bottom: 4px; font-weight: bold;">
+                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Guardian Mobile No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <?php echo $mobile;?>
+                                </span>
+                            </p>
+                        </div>
                     </div>
 
 
-                    </div>
-                    <div class="commitment-container" style="margin-top: 10px;width: 100%;border-bottom: 1px solid gray;font-size: 12px;line-height: 10px;height: 130px;">
-                        <h3 style="width: 30%; text-align: center; border-bottom: 1px solid; margin: 0 auto; padding: 10px 0px; font-size: 13px; margin-top: 10px;color: green;">Commitment Letter</h3>
-                        <p style="text-align: center; margin: 10px 0px">I am committed to that, I will obey this school rules. Otherwise school authoritys decision shall be deemed final.</p>
-                        <p style="width: 100%; display: inline-block; margin-top: 20px;">&nbsp;&nbsp;&nbsp;Guardian sign: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Student Sign:
-						<br><br><br>&nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date:</p>
+                </div>
+                <div class="commitment-container" style="margin-top: 10px;width: 100%;border-bottom: 1px solid gray;font-size: 12px;line-height: 10px;height: 130px;">
+                    <h3 style="width: 30%; text-align: center; border-bottom: 1px solid; margin: 0 auto; padding: 10px 0px; font-size: 13px; margin-top: 10px;color: green;">Commitment Letter</h3>
+                    <p style="text-align: center; margin: 10px 0px">I am committed to that, I will obey this school rules. Otherwise school authoritys decision shall be
+                        deemed final.</p>
+                    <p style="width: 100%; display: inline-block; margin-top: 20px;">&nbsp;&nbsp;&nbsp;Guardian sign: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Student
+                        Sign:
+                        <br>
+                        <br>
+                        <br>&nbsp;&nbsp;&nbsp;Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date:</p>
 
-                    </div>
-                    <div style="line-height: 5px; font-size: 12px; height: 150px;">
-                        <h3 style="width: 30%;text-align: center;border-bottom: 1px solid;margin: 0 auto;padding-bottom: 10px;padding-top: 5px;font-size: 13px;margin-top: 10px;color: green;">For Office Use</h3>
-                        <p style="margin-left: 15px">After taking exam this student considered fit for class ....................... </p>
-                        <p style="margin-left: 15px">Information Checker teachers name ......................................................... , Date ..........................................</p>
-                        <p style="margin-left: 15px">The Head Teachers orders to admit .......................................................... in class ..........................................</p>
-                        <p style="margin-left: 15px">Admission No in Register : </p>
-                        <p style="margin-left: 15px">Class Roll No : </p>
-						
-                    </div>
-                    <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No: <?php echo 1;?></p>
-					
-					
-					<!-- ADMIT CARD PORTION -->
-					
-                    <div style="padding-top: 10px; height: 500px;">
-                        <div style="width: 100%; padding-top: 0px;">
+                </div>
+                <div style="line-height: 5px; font-size: 12px; height: 150px;">
+                    <h3 style="width: 30%;text-align: center;border-bottom: 1px solid;margin: 0 auto;padding-bottom: 10px;padding-top: 5px;font-size: 13px;margin-top: 10px;color: green;">For Office Use</h3>
+                    <p style="margin-left: 15px">After taking exam this student considered fit for class ....................... </p>
+                    <p style="margin-left: 15px">Information Checker teachers name ......................................................... , Date ..........................................</p>
+                    <p style="margin-left: 15px">The Head Teachers orders to admit .......................................................... in class
+                        ..........................................
+                    </p>
+                    <p style="margin-left: 15px">Admission No in Register : </p>
+                    <p style="margin-left: 15px">Class Roll No : </p>
+
+                </div>
+                <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No:
+                    <?php echo 1;?>
+                </p>
+
+
+                <!-- ADMIT CARD PORTION -->
+
+                <div style="padding-top: 10px; height: 500px;">
+                    <div style="width: 100%; padding-top: 0px;">
                         <div style="float: left; width: 15%; text-align: center">
                             <img src="<?php echo $base.'school_logo.png' ;?>" width="100px" height="100px">
-                            <div style="margin-top: 15px;"> Serial No: <?php echo $id;?></div>
+                            <div style="margin-top: 15px;"> Serial No:
+                                <?php echo substr($uniq_id, -4); ?>
+                            </div>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
 
-                            <h2 class="ex" style="color: green;"><?php echo $schoolName; ?></h2>
-                            <h3 style="color: green;"><?php echo $schoolAddress; ?></h3>
-                            <p>EIIN: <?php echo $eiin; ?>, Email: <?php echo $email; ?></p>
-                            <p style="margin-bottom:10px;">Phone: <?php echo $phone; ?></p>
+                            <h2 class="ex" style="color: green;">
+                                <?php echo $schoolName; ?>
+                            </h2>
+                            <h3 style="color: green;">
+                                <?php echo $schoolAddress; ?>
+                            </h3>
+                            <p>EIIN:
+                                <?php echo $eiin; ?>, Email:
+                                <?php echo $schoolEmail; ?>
+                            </p>
+                            <p style="margin-bottom:10px;">Phone:
+                                <?php echo $phone; ?>
+                            </p>
                             <p style="font-size: 13px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
                             <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
                         </div>
-                    </div><br/>
+                    </div>
                     <br/>
                     <br/>
-                    
-                        
+                    <br/>
+
+
                     <div class="admitCard" style="height: 350px;">
-					<img src="<?php echo $base.'school_logo.png';?>" style="
+                        <img src="<?php echo $base.'school_logo.png';?>" style="
                              opacity: .1;
                              margin-left: 210px;
                              margin-top: 0px;
                              width: 220px;
                              height: 225px;
                              " />
-                        <div style="margin-top: -250px; border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $name;?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $fname;?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Applied For Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $class;?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Group : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo ucfirst($group);?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo !empty($exDate)?$exDate.' '.date("Y"):'';?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Time: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $time;?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Marks: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo 'Bangla 30 + English 30 + Math 40 = 100';?></span></p> </div></div>
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Roll: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $id;?></span></p> </div></div>
+                        <div style="margin-top: -250px; border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $name;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $fname;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Applied For Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $class;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <?php if(!empty($group)):?>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Group : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo ucfirst($group);?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <?php endif;?>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo !empty($exDate)?$exDate.' '.date("Y"):'';?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Time: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $time;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Marks: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo 'Bangla 30 + English 30 + Math 40 = 100';?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Roll: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo substr($uniq_id, -4); ?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div style="width: 100%; height: 150px; margin-top: 0px;">
                         <div style="float: left; width: 15%; text-align: center">
-                          <p style="border-top: 1px solid gray; border-width: 2px;">Office Seal</p>
+                            <p style="border-top: 1px solid gray; border-width: 2px;">Office Seal</p>
                         </div>
                         <div style="float: left; width: 65%; text-align: center; line-height: 15px">
                         </div>
@@ -201,27 +402,74 @@ endif;
                     </div>
 
                     <div class="officeRecord" style="height: 200px;">
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Form Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo substr($uniq_id, -4); ?></span></p> </div></div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Form Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo substr($uniq_id, -4); ?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
 
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $name; ?></span></p> </div></div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $name; ?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
 
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Father's Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $fname;?></span></p> </div></div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Father's Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $fname;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
 
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $paadress;?></span></p> </div></div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $paadress;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
 
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mobile Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $mobile;?></span></p> </div></div>  
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mobile Number : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $mobile;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
 
-                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">ID : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;"><?php echo $uniq_id;?></span></p> </div></div>
+                        <div style="border-bottom: 1px dotted !important; font-size: 12px; margin-bottom: 5px;">
+                            <div style="margin-bottom: 4px; font-weight: bold;">
+                                <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">ID : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <?php echo $uniq_id;?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
+                    <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No:
+                        <?php echo 2;?>
+                    </p>
 
-
-
-
-
-                    <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No: <?php echo 2;?></p>
-                        
-                    </div>
                 </div>
             </div>
         </div>
-    </body></html>
+        </div>
+    </body>
+
+    </html>

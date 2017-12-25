@@ -157,6 +157,7 @@ class Admin extends CI_Controller
 
     
     /***ADMIN DASHBOARD***/
+
     function dashboard()
     {
         if ($this->session->userdata('admin_login') != 1)
@@ -176,17 +177,18 @@ class Admin extends CI_Controller
         if(!empty($student_id)){
             $this->db->limit(5);
             $this->db->like('student_code', $student_id);
-            $page_data['student_info'] = $this->db->get('student')->result_array();        }            
-
+            $page_data['student_info'] = $this->db->get('student')->result_array();        
+        }            
+        
         $this->load->view('backend/admin/ajax_student_search' , $page_data);
     }
     
     /****MANAGE STUDENTS CLASSWISE*****/
+
     function student_add() 
     {
         if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
-            
+            redirect(base_url(), 'refresh');                        
         $page_data['page_name']  = 'student_add';
         $page_data['page_title'] = get_phrase('add_student');
         $this->load->view('backend/index', $page_data);
@@ -252,8 +254,7 @@ class Admin extends CI_Controller
     }
     
     function student_information($class_id = '', $group_id = '')
-    {
-        
+    {        
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         if(!empty($group_id)):
@@ -269,7 +270,8 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function student_marksheet($student_id = '') {
+    function student_marksheet($student_id = '') 
+    {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         $class_id     = $this->db->get_where('enroll' , array(
@@ -284,7 +286,8 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function student_marksheet_print_view($student_id , $exam_id) {
+    function student_marksheet_print_view($student_id , $exam_id) 
+    {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         $class_id     = $this->db->get_where('enroll' , array(
@@ -661,7 +664,7 @@ class Admin extends CI_Controller
             foreach ($groups as $row) {
             echo '<option value="' . $row['group_id'] . '">' . ucwords($row['name']) . '</option>';
             }
-        }else{
+        } else {
             echo null;
         }
         
@@ -909,7 +912,7 @@ class Admin extends CI_Controller
 
             if(isset($_POST['course'])){
                 $this->print_testimonial_general($page_data);
-            }else{
+            } else {
                 $this->print_testimonial_voc($page_data);
             }
             
@@ -993,11 +996,6 @@ class Admin extends CI_Controller
     function ajaxTeacherRoutine()
     {
         $teacher_id = $this->uri(3);        
-        // $day_id = $this->uri(4);   
-             
-        // echo $teacher_id.' '.$day_id;
-        // $page_data['student_info'] = [];
-
         if(!empty($teacher_id)){
             $page_data['teacher_id'] = $teacher_id;
             $page_data['teacher_routine'] = $this->db->get_where('class_routine',
@@ -1223,10 +1221,6 @@ class Admin extends CI_Controller
     }
     
     
-    
-    
-
-
     /****MANAGE GROUPS*****/
     function groups($param1 = '', $param2 = '')
     {
@@ -1651,10 +1645,9 @@ class Admin extends CI_Controller
         $group_subject = $this->db->get_where('subject', array('class_id'=>$class_id, 'group_id'=>$group_id))->result_array();
         if(count($group_subject) > 0){
             echo json_encode($group_subject);    
-        }else{
+        } else {
             echo false;
-        }
-        
+        }        
     }
 
     // TABULATION SHEET
@@ -1814,11 +1807,8 @@ class Admin extends CI_Controller
         $page_data['class_id']  =   $classID;
         $page_data['shift_id']  =   $shiftID;
         $page_data['running_year']  =   $this->running_year;
-        //$className = $this->db->get_where('class' , array('class_id' => $classID))->row()->name;
         
         $this->load->view('backend/admin/attendance/ajax_attendance_search' , $page_data);
-
-        //echo $classID.' '.$sectionID.' '.$shiftID.' '.$groupID;
     }
 
     function class_routine_add()
@@ -1904,7 +1894,8 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
     
-    function get_section($class_id) {
+    function get_section($class_id) 
+    {
           $page_data['class_id'] = $class_id; 
           $this->load->view('backend/admin/manage_attendance_section_holder' , $page_data);
     }
@@ -2070,13 +2061,16 @@ class Admin extends CI_Controller
                                     $this->input->post('session') , 'refresh');
     }
         ///////ATTENDANCE REPORT /////
-     function attendance_report() {
+     function attendance_report() 
+     {
          $page_data['month']        = date('m');
          $page_data['page_name']    = 'attendance_report';
          $page_data['page_title']   = get_phrase('attendance_report');
          $this->load->view('backend/index',$page_data);
      }
-     function attendance_report_view($class_id = '' ,$shift_id = '' , $section_id = '', $month = '', $group_id = '') {
+
+     function attendance_report_view($class_id = '' ,$shift_id = '' , $section_id = '', $month = '', $group_id = '') 
+     {
          if($this->session->userdata('admin_login')!=1)
             redirect(base_url() , 'refresh');
         $class_name = $this->db->get_where('class' , array(
@@ -2097,7 +2091,9 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('attendance_report_of_class') . ' ' . $class_name . ' : ' . get_phrase('section') . ' ' . $section_name. ' : ' . get_phrase('shift') . ' ' . $shift_name;
         $this->load->view('backend/index', $page_data);
      }
-     function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '') {
+
+     function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '') 
+     {
           if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
         $page_data['class_id'] = $class_id;
@@ -2172,6 +2168,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
         
     }
+
     /**********MANAGE TRANSPORT / VEHICLES / ROUTES********************/
     function transport($param1 = '', $param2 = '', $param3 = '')
     {
@@ -2213,6 +2210,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
         
     }
+
     /**********MANAGE DORMITORY / HOSTELS / ROOMS ********************/
     function dormitory($param1 = '', $param2 = '', $param3 = '')
     {
@@ -2358,7 +2356,8 @@ class Admin extends CI_Controller
     }
     /* private messaging */
 
-    function message($param1 = 'message_home', $param2 = '', $param3 = '') {
+    function message($param1 = 'message_home', $param2 = '', $param3 = '') 
+    {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
 
@@ -2500,7 +2499,8 @@ class Admin extends CI_Controller
 	
 	/***** UPDATE PRODUCT *****/
 	
-	function update( $task = '', $purchase_code = '' ) {
+    function update( $task = '', $purchase_code = '' ) 
+    {
         
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
