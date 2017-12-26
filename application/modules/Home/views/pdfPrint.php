@@ -76,7 +76,9 @@ endif;
                         <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
                     </div>
                     <div style="float: right; width: 20%; text-align: center">
-                        <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+                        <?php if(!empty($img)):?>
+                            <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+                        <?php endif;?>
                     </div>
                 </div>
                 <div class="office-part" style="position: relative; line-height: 10px;">
@@ -299,7 +301,9 @@ endif;
                             <p style="font-size: 13px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
-                            <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+                            <?php if(!empty($img)):?>
+                                <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+                            <?php endif;?>
                         </div>
                     </div>
                     <br/>

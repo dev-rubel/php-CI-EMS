@@ -12,8 +12,13 @@ extract($result);
 		<div class="col-sm-3">
 			
 			<a href="#" class="profile-picture">
+            <?php if(!empty($img)):?>
 				<img src="<?php echo base_url().'assets/images/admission_student/'.$session.'/'.$img;?>" 
                 	class="img-responsive img-circle" />
+            <?php else: ?>
+            <img src="http://via.placeholder.com/150x150?text=No+Image" 
+                        class="img-responsive img-circle" />
+            <?php endif;?>
 			</a>
 			
 		</div>
