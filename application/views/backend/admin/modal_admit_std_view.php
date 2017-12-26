@@ -97,8 +97,8 @@ extract($result);
                         <td><b><?php echo $class;?></b></td>
                     </tr>
                     <tr>
-                        <td><?php echo get_phrase('submission_date');?></td>
-                        <td><b><?php echo $date;?></b></td>
+                        <td><?php echo get_phrase('date_of_birth');?></td>
+                        <td><b><?php echo date("m-d-Y", strtotime($date));?></b></td>
                     </tr>
                     <tr>
                         <td><?php echo get_phrase('mobile');?></td>

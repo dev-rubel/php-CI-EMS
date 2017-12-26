@@ -23,6 +23,9 @@
         top: 15px;
         font-weight: bold;
     }
+    .panel {
+        margin: 0px !important;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -61,16 +64,13 @@
 
                         </div>
                         <div class="form-group">
-                            <label>Student Name</label>
-                            <input type="text" class="form-control" id="stdName" placeholder="eg.student name" disabled="disabled">
-                        </div>
-                        <div class="form-group">
                             <label>Obtain Mark</label>
                             <input type="number" class="form-control" name="mark" step="any" required> 
                         </div>
                         <button type="submit" id="hideButton" class="btn btn-primary">Update</button>
                     </form>
                 </div>
+                <div class="col-md-offset-1 col-md-5" id="searchAdmissionStudent"></div>
 
             </div>
             <!----TABLE LISTING STARTS-->
@@ -182,26 +182,13 @@
             //alert(value);
             $.ajax({
             url: '<?php echo base_url();?>index.php?homemanage/getAdmitStdName/' + value ,
-            success: function(response)
+            success: function(response) //searchAdmissionStudent
             {
-                var data = $.parseJSON(response);
-                if(!data.name){
-                    jQuery('#stdName').val('কোন ছাত্র খুজে পাওয়া যায় নি।');
-                    jQuery('input[name=mark]').val('0');
-                    $('#hideButton').hide();
-                }
-                else{
-                    jQuery('#stdName').val(data.name);
-                    jQuery('input[name=mark]').val(data.mark);
-                    $('#hideButton').show();
-                }
-                //console.log('Done: ', response);
+                $( "#searchAdmissionStudent" ).html( response );  
             }
         });
         
         });
-        $('#example').DataTable({
-            
-        });
+        $('#example').DataTable();
     });
 </script>

@@ -194,11 +194,12 @@ class Homemanage extends CI_Controller
         $token = encryptor('encrypt', $this->uri(3));
         $url = 'http://freehtmltopdf.com/?convert='.base_url().'index.php?Home/check_token/'.$token;
         $shorten = $this->shorten($url);
-        $msg = $sms['desc'].'+'.$shorten;
+        $sms['title'] = urlencode($sms['title']);
+        $msg = urlencode($sms['desc'].'. '.$shorten);
 		//pd($msg);
 		
         //call api function
-        $smsId = $this->sms_api($sms['user'], $sms['pass'], $sms['title'], $msg, $mobile);
+        $smsId = $this->long_sms_api($sms['user'], $sms['pass'], $sms['title'], $msg, $mobile);
         if(is_numeric($smsId)==true){
             $smsToken = $smsId;
         }else{
@@ -284,8 +285,7 @@ class Homemanage extends CI_Controller
     function sms_infos()
     {
         $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
-        $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;
-        
+        $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;        
         $data['title'] = $this->db->get_where('settings',array('type'=>'sms_title'))->row()->description;
         $data['desc'] = $this->db->get_where('settings',array('type'=>'sms_description'))->row()->description;
         return $data;
@@ -399,29 +399,34 @@ class Homemanage extends CI_Controller
         $session = $this->db->get_where('settings', 
                         ['type'=>'admission_session'])
                                     ->row()->description;
-        $namebn = $this->db->get_where('admit_std',
-                        ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
-                                    ->row()->namebn;
-        $mark = $this->db->get_where('admission_result',
-                        ['uniq_id'=>$value, 'session' => $session])
-                                    ->row()->mark;
-        $fnamebn = $this->db->get_where('admit_std',
-                        ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
-                                    ->row()->fnamebn;              
+        // $namebn = $this->db->get_where('admit_std',
+        //                 ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
+        //                             ->row()->namebn;
+        // $mark = $this->db->get_where('admission_result',
+        //                 ['uniq_id'=>$value, 'session' => $session])
+        //                             ->row()->mark;
+        // $fnamebn = $this->db->get_where('admit_std',
+        //                 ['uniq_id'=>$value, 'status'=>'1', 'session' => $session])
+        //                             ->row()->fnamebn;              
               
-		if(empty($fnamebn)){
-			$fname = '';
-		}else{
-			$fname = ' (পিতা: '.$fnamebn.')';
-		}
+		// if(empty($fnamebn)){
+		// 	$fname = '';
+		// }else{
+		// 	$fname = ' (পিতা: '.$fnamebn.')';
+		// }
 		
-        if(!empty($mark)){
-            $stdMark = $mark;
-        }else{
-            $stdMark = '';
-        }
-		$Response = array('name' => $namebn.$fname, 'mark' => $stdMark);
-		echo json_encode($Response);
+        // if(!empty($mark)){
+        //     $stdMark = $mark;
+        // }else{
+        //     $stdMark = '';
+        // }
+		// $Response = array('name' => $namebn.$fname, 'mark' => $stdMark);
+        // echo json_encode($Response);
+        
+        $page_data['admission_year'] = $session;
+        $page_data['student_id']     = $value;
+
+        $this->load->view('backend/admin/admission/ajax_admission_student_info' , $page_data);
         
     }
     

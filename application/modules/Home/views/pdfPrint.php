@@ -227,7 +227,7 @@ endif;
                         <div style="margin-bottom: 4px; font-weight: bold;">
                             <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Date of Birth : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo date("d-m-Y", strtotime($date));?>
+                                    <?php echo date("m-d-Y", strtotime($date));?>
                                 </span>
                             </p>
                         </div>
