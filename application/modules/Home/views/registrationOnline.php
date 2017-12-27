@@ -7,7 +7,7 @@
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 
-$this->db->where('type', 'link_status');
+$this->db->where('type', 'admission_link_status');
 $result1 = oneDim($this->db->get('settings')->result_array());
 if ($result1['description'] == 0):
     ?>

@@ -5,8 +5,9 @@ extract($info);
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoolInfo);
 
-$exDate = $this->db->get_where('settings',array('type'=>'exam_date'))->row()->description;
-$time = $this->db->get_where('settings',array('type'=>'exam_time'))->row()->description;
+$exDate = $this->db->get_where('settings',array('type'=>'admission_exam_date'))->row()->description;
+$time = $this->db->get_where('settings',array('type'=>'admission_exam_time'))->row()->description;
+$examMark = $this->db->get_where('settings',array('type'=>'admission_exam_mark'))->row()->description;
 $admission_session = $this->db->get_where('settings' , array('type' => 'admission_session'))->row()->description;
 
 if(!empty($group)){
@@ -76,7 +77,7 @@ endif;
                         <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
                     </div>
                     <div style="float: right; width: 20%; text-align: center">
-                        <?php if(!empty($img)):?>
+                        <?php if(file_exists($stdImg)):?>
                             <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
                         <?php endif;?>
                     </div>
@@ -301,7 +302,7 @@ endif;
                             <p style="font-size: 13px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
-                            <?php if(!empty($img)):?>
+                            <?php if(file_exists($stdImg)):?>
                                 <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
                             <?php endif;?>
                         </div>
@@ -379,7 +380,7 @@ endif;
                             <div style="margin-bottom: 4px; font-weight: bold;">
                                 <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Admission Exam Marks: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span style="font-weight: normal; color: black; font-size: 12px;">
-                                        <?php echo 'Bangla 30 + English 30 + Math 40 = 100';?>
+                                        <?php echo $examMark;?>
                                     </span>
                                 </p>
                             </div>

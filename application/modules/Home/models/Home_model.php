@@ -11,6 +11,20 @@ class Home_model extends CI_Model{
         return $data;
     }
 
+    function getMetaInfo()
+    {
+        $schoolInfo = $this->db->get_where('settings', 
+            ['type'=>'school_information'])
+                    ->row()->description;
+        $schoolInfo = explode('+',$schoolInfo);
+        $data['schoolName'] = $schoolInfo[0];
+        $data['location'] = $schoolInfo[1];
+        $data['eiin'] = $schoolInfo[2];
+        $data['schoolEmail'] = $schoolInfo[3];
+        $data['schoolPhone'] = $schoolInfo[4];
+        return $data;
+    }
+
     function get_admit_std_info_join($data)
     {        
         $session = $data['session'];

@@ -182,7 +182,7 @@
             //alert(value);
             $.ajax({
             url: '<?php echo base_url();?>index.php?homemanage/getAdmitStdName/' + value ,
-            success: function(response) //searchAdmissionStudent
+            success: function(response)
             {
                 $( "#searchAdmissionStudent" ).html( response );  
             }

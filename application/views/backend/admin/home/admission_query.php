@@ -1,8 +1,9 @@
 <?php 
+$nihalit = $_SESSION['name'] == 'NihalIT'?'Found':'';
 
-$arr = ['exam_date','exam_time',
-        'link_status','sms_title',
-        'sms_description','admission_session'];
+$arr = ['admission_exam_date','admission_exam_time',
+        'admission_link_status','admission_sms_title',
+        'admission_sms_description','admission_session','admission_exam_mark'];
 
 $this->db->where_in('type',$arr);
 $result1 = $this->db->get('settings')->result_array();
@@ -318,23 +319,27 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                     <form action="<?php echo base('homemanage', 'update_admission_info')?>" method="post">
                     <div class="form-group">
                       <label for="exampleInputName2">Admission Exam Date</label>
-                      <input type="text" name="exam_date" class="form-control" id="exampleInputName2" placeholder="EG.16 December" value="<?php echo $result1[0]['description'];?>">
+                      <input type="text" name="admission_exam_date" class="form-control" id="exampleInputName2" placeholder="EG.16 December" value="<?php echo $result1[0]['description'];?>">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputEmail2">Admission Exam Time</label>
-                      <input type="text" name="exam_time" class="form-control" id="exampleInputEmail2" placeholder="EG.10:00PM/10:00AM" value="<?php echo $result1[1]['description'];?>">
+                      <input type="text" name="admission_exam_time" class="form-control"  placeholder="EG.10:00PM/10:00AM" value="<?php echo $result1[1]['description'];?>">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail2">Admission Mark Distribution</label>
+                      <input type="text" name="admission_exam_mark" class="form-control" placeholder="Bangla 30 + English 30 + Math 40 = 100" value="<?php echo $result1[6]['description'];?>">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputEmail2">SMS Title</label>
-                      <input type="text" name="sms_title" class="form-control" placeholder="title" value="HAH SCHOOL" readonly="readonly">
+                      <input type="text" name="admission_sms_title" class="form-control" placeholder="title" value="<?php echo $result1[3]['description'];?>" <?php echo !empty($nihalit)?'':'readonly="readonly"'?>>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputEmail2">SMS Description</label>
-                      <textarea class="form-control" name="sms_description" placeholder="Description" id="" readonly="readonly"><?php echo str_replace('+', ' ', $result1[4]['description']);?></textarea>
+                      <textarea class="form-control" name="admission_sms_description" placeholder="Description" <?php echo !empty($nihalit)?'':'readonly="readonly"'?>><?php echo $result1[4]['description'];?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail2">Admission Page: &nbsp;</label>
-                      <input type="checkbox" name="link_status" data-toggle="toggle" <?php echo $result1[2]['description']==1?'checked':''?>>
+                      <input type="checkbox" name="admission_link_status" data-toggle="toggle" <?php echo $result1[2]['description']==1?'checked':''?>>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputName2">Admission Session: </label>
