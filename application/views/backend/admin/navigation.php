@@ -46,7 +46,7 @@
                 <a href="<?php echo base_url(); ?>index.php?homemanage/admission_menu">
                     <i class="entypo-layout"></i>
                     <?php echo get_phrase('admission'); ?>
-                </a>
+                </a> 
             </li>
 
             <!-- MANAGE TESTIMONIAL SECTION -->
