@@ -15,6 +15,12 @@ class Home extends MX_Controller {
     }
     function index()
     {
+        /* DYNAMIC SITE COLOR IN CSS FILE */
+        $mainColor = $this->db->get_where('frontpages',['title'=>'main_color'])->row()->description;
+        $hoverColor = $this->db->get_where('frontpages',['title'=>'hover_color'])->row()->description;
+        $exists = file_exists('assets/siteColor.txt');        
+        write_file('assets/siteColor.txt', $mainColor.'|'.$hoverColor);        
+        
        	$this->load_page('content', 'Home Page');
         
     }
@@ -270,6 +276,9 @@ class Home extends MX_Controller {
     {
         $id = encryptor('decrypt', $this->uri(3));
         $data['std_info'] = $this->db->get_where('admit_std',array('id'=>$id))->result_array();
+        if(empty($data['std_info'])){
+            pd('Invalid Token ID !!');
+        }
         $name = $this->db->get_where('admit_std',array('id'=>$id))->row()->name;
         $fname = $this->db->get_where('admit_std',array('id'=>$id))->row()->fname;      
         $fileName = ucwords(strtolower(str_replace(' ','-', $name))).'('.ucwords(strtolower(str_replace(' ','-', $fname))).')'.'.pdf';
@@ -301,6 +310,7 @@ class Home extends MX_Controller {
         	$this->load->view('underConstraction',$data);
         }else{
         $data2['title'] = $title;
+        $data['meta'] = $this->home_model->getMetaInfo(); 
         $data3['head'] = $this->home_model->get_headerInfo();
         $data3['header_img'] = $this->db->get_where('settings', array('type'=>'headerImg'))->row()->description;
         $data2['contentInfo'] = $this->home_model->get_contentInfo();

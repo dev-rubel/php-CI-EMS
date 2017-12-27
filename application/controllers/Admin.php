@@ -607,6 +607,11 @@ class Admin extends CI_Controller
         redirect(base_url() . 'index.php?admin/student_information/'.$info['class_id'] , 'refresh');
     }
 
+    function ajax_page_load()
+    {
+        echo $_POST['pageName'];
+    }
+
     function get_student_roll($classID)
     {        
         $current_year = $this->running_year;

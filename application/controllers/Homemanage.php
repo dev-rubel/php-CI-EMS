@@ -341,27 +341,16 @@ class Homemanage extends CI_Controller
     
     function update_admission_info()
     {
-        $title = str_replace(' ', '+', $_POST['sms_title']);
-        $this->db->where('type', 'sms_title');
-        $this->db->update('settings',array('description'=>$title));
-        
-        $des = str_replace(' ', '+', $_POST['sms_description']);
-        $this->db->where('type', 'sms_description');
-        $this->db->update('settings',array('description'=>$des));
-        
-        $this->db->where('type', 'exam_date');
-        $this->db->update('settings',array('description'=>$_POST['exam_date']));
-        
-        $this->db->where('type', 'exam_time');
-        $this->db->update('settings',array('description'=>$_POST['exam_time']));
-        
-        $this->db->where('type', 'admission_session');
-        $this->db->update('settings',array('description'=>$_POST['admission_session']));
+        $data = ['admission_sms_title', 'admission_sms_description', 'admission_exam_date', 'admission_exam_time', 'admission_session'];
 
+        foreach($data as $k=>$each){
+            $this->db->where('type', $each);
+            $this->db->update('settings',array('description'=>$_POST[$each]));
+        }       
                 
-        !empty($_POST['link_status'])?$_POST['link_status']=1:$_POST['link_status']=0;
-        $this->db->where('type', 'link_status');
-        $this->db->update('settings',array('description'=>$_POST['link_status']));
+        $_POST['admission_link_status'] = !empty($_POST['admission_link_status'])?1:0;
+        $this->db->where('type', 'admission_link_status');
+        $this->db->update('settings',array('description'=>$_POST['admission_link_status']));
         
         $this->flashmsg('update_admission_setting');
         redirect(base('Homemanage', 'admission_query'));
@@ -371,7 +360,6 @@ class Homemanage extends CI_Controller
     
     function add_admission_result()
     {
-        //pd($_POST);
         $session = $this->db->get_where('settings', 
                 ['type'=>'admission_session'])
                     ->row()->description;
@@ -384,7 +372,8 @@ class Homemanage extends CI_Controller
         $_POST['std_id'] = $id;
         $_POST['session'] = $session;
         if(!empty($uniq_id)):
-            $this->db->update('admission_result',$_POST,['uniq_id'=>$uniq_id, 'session' => $session]);
+            $this->db->where('std_id',$id);
+            $this->db->update('admission_result',['mark'=>$_POST['mark']]);
             $this->flashmsg('Mark Updated');
             redirect(base('homemanage', 'admission_result'));
         else:

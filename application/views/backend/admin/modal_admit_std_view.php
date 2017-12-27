@@ -18,7 +18,7 @@ extract($result);
             <?php else: ?>
             <img src="http://via.placeholder.com/150x150?text=No+Image" 
                         class="img-responsive img-circle" />
-            <?php endif;?>
+            <?php endif;?> 
 			</a>
 			
 		</div>

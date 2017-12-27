@@ -2,6 +2,11 @@
 	<div class="col-md-12 col-sm-12 clearfix" style="text-align:center;">
 		<h2 style="font-weight:200; margin:0px; font-family: 'Lobster', cursive;"><?php echo $system_name;?></h2>
     </div>
+
+	<div id="overlayDiv" style="width: 99%;height: 100%;background-color: white;position: absolute;top: 0;z-index: 11; opacity: .7; display: none;"></div>
+	<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 70%; left: 40%; z-index: 1111; display: none;"/>  
+	<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading2" style="position: absolute; top: 20%; left: 40%; z-index: 1111; display: none;"/>  
+
 	<!-- Raw Links -->
 	<div class="col-md-12 col-sm-12 clearfix ">
 		
