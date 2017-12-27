@@ -4,7 +4,7 @@
 }
 .extra-menu {
     padding: 2px 10px !important;
-    min-height: 70px;
+    min-height: 60px;
 }
 .extra-menu h4 {
     font-size: 10px !important;
@@ -17,12 +17,12 @@ $title = ['Admit New Student','Admit Bulk Student','Total Student','Student Prom
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 
-<div class="row">
-
+<div class="row"  id="studentNavManu">
+<div class="col-md-2"></div>
 <?php foreach($links as $k=>$each):?>
     <div class="col-sm-3 col-md-1" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
-            <div class="panel-stat3 bg-info extra-menu<?php //echo $color[rand(1,7)];?>">
+            <div class="panel-stat3 bg-info extra-menu" id="<?php echo $each;?>">
                 <h4><?php echo ($k+1).'. '.$title[$k];?></h4>
 
                 <div class="stat-icon">
@@ -36,9 +36,9 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 <div class="col-sm-3 col-md-2" style="margin-bottom: 10px;">
     <div class="panel-stat3 bg-info extra-menu<?php //echo $color[rand(1,7)];?>">
-        <h4>Student Information</h4>
-        <select name="" class="" id="" style="color: #000;">
-        <option value="">Select One</option>
+        <h4>6. Student Information</h4>
+        <select name="" id="navMenuSelect" onchange="changePage()" style="color: #000;">
+        <option value="">Please Select</option>
         <?php
             $classes = $this->db->get('class')->result_array();
             foreach ($classes as $row):
@@ -47,11 +47,11 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
             ?>
             <optgroup label="<?php echo get_phrase('class').' '.$row['name']; ?>">
                 <?php foreach($groupName as $each): ?>
-                    <option value=""><?php echo get_phrase($each['name']); ?></option>
+                    <option value="<?php echo $row['class_id'].'/'.$each['group_id'];?>"><?php echo get_phrase($each['name']); ?></option>
                 <?php endforeach; ?>
             </optgroup>
             <?php else: ?>
-                <option value=""><?php echo get_phrase('class').' '.$row['name']; ?></option>
+                <option value="<?php echo $row['class_id']; ?>"><?php echo get_phrase('class').' '.$row['name']; ?></option>
             <?php endif; ?>
             <?php endforeach; ?>
         </select>
@@ -73,7 +73,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 <?php foreach($links as $k=>$each):?>
     <div class="col-sm-6 col-md-3" style="margin-bottom: 10px;">
-        <a href="<?php echo base_url(); ?>index.php?admin/<?php echo $each?>">
+        <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat3 bg-info<?php //echo $color[rand(1,7)];?>">
                 <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2>
                 <h4><?php echo $title[$k];?></h4>
@@ -91,8 +91,8 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
         <div class="panel-stat3 bg-info<?php //echo $color[rand(1,7)];?>">
             <h2 class="m-top-none" id="userCount">6</h2>
             <h4>Student Information</h4>
-            <select name="" class="" id="" style="color: #000;">
-            <option value="">Select One</option>
+            <select name="" onchange="changePage()" id="mainMenuSelect" style="color: #000;">
+                <option value="">Please Select</option>
             <?php
                 $classes = $this->db->get('class')->result_array();
                 foreach ($classes as $row):
@@ -101,11 +101,11 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
                 ?>
                 <optgroup label="<?php echo get_phrase('class').' '.$row['name']; ?>">
                     <?php foreach($groupName as $each): ?>
-                        <option value=""><?php echo get_phrase($each['name']); ?></option>
+                        <option value="<?php echo $row['class_id'].'/'.$each['group_id'];?>"><?php echo get_phrase($each['name']); ?></option>
                     <?php endforeach; ?>
                 </optgroup>
                 <?php else: ?>
-                    <option value=""><?php echo get_phrase('class').' '.$row['name']; ?></option>
+                    <option value="<?php echo $row['class_id']; ?>"><?php echo get_phrase('class').' '.$row['name']; ?></option>
                 <?php endif; ?>
                 <?php endforeach; ?>
             </select>
@@ -118,68 +118,54 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 </div>
 
-<hr>
-<h3>Student Information</h3>
-<hr>
-
-<div class="row">
-
-    
-
-</div>
-
-<ul>
-    <?php
-    $classes = $this->db->get('class')->result_array();
-    foreach ($classes as $row):
-        $groupName = $this->db->get_where('group', array('class_id' => $row['class_id']))->result_array();
-        if(!empty($groupName)):
-        ?>
-    
-        <li>
-            <a href="#"><?php echo get_phrase('class').' '.$row['name']; ?> <span class="submenu-icon"></span></a>
-            <ul>
-                <?php foreach($groupName as $each): ?>
-                    <li>
-                        <a href="<?php echo base_url(); ?>index.php?admin/student_information/<?php echo $row['class_id'].'/'.$each['group_id']; ?>">
-                            <?php echo get_phrase($each['name']); ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </li>
-
-    <?php else: ?>
-        <li>
-            <a href="<?php echo base_url(); ?>index.php?admin/student_information/<?php echo $row['class_id']; ?>">
-                <?php echo get_phrase('class').' '.$row['name']; ?>
-            </a>
-        </li>
-    <?php endif; ?>
-    <?php endforeach; ?>
-</ul>
-
 <script>
+$('#studentNavManu').hide();
+// studentNavManu
 function changePage(page)
 {
+    var selectValueOne = $('#mainMenuSelect').val();
+    var selectValueTwo = $('#navMenuSelect').val();
+    var selectValue;
+    if(page) {
+        selectValue = page;
+    } else if(selectValueTwo) {
+        selectValue = selectValueTwo;        
+    } else if(selectValueOne) {
+        selectValue = selectValueOne;
+    }
+    
     $.ajax({
             type: "POST",
             data: {
-                pageName : page
+                pageName : selectValue                
             },
-            beforeSend: function() { 
-            //  alert("start");
+            beforeSend: function() {                
                     $('#loading2').show();
                     $('#overlayDiv').show();
             },  
             url: '<?php echo base_url(); ?>index.php?admin/ajax_page_load',
             success: function (response)
             {   
-                console.log(response); //ajaxPageContainer // studentMainManu
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?admin/' + selectValue;
+                window.history.pushState({path:newurl},'',newurl);                
+                // var cName = $('#'+selectValue).hasClass('bg-info'); 
+                // if(cName){
+                //     $("#"+selectValue).removeClass("bg-info");
+                //     $("#"+selectValue).addClass("bg-primary");
+                // } else {
+                //     $("#"+selectValue).addClass("bg-info");
+                //     $("#"+selectValue).removeClass("bg-primary");
+                // }
+                // if(cName.contains("bg-info")){
+                //     console.log("String Found");
+                // }
+                //$("#"+selectValue).removeClass("bg-info");
+                //$("#"+selectValue).toggleClass("bg-primary");
+                $('#studentNavManu').show();
                 $('#studentMainManu').hide();
                 $('#ajaxPageContainer').html(response);
                 $('#loading2').fadeOut('slow');
-                $('#overlayDiv').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');                
             }
         });
 }

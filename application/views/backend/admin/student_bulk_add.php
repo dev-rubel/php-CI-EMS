@@ -3,10 +3,10 @@
 			array('class' => 'form-inline validate', 'style' => 'text-align:center;'));?>
 <div class="row">
 	<div class="col-md-3"></div>
-	<div class="col-md-3">
+	<div class="col-md-6">
 		<div class="form_group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class');?></label>
-			<select name="class_id" id="class_id" class="form-control selectboxit" required="required"
+			<select name="class_id" id="class_id" class="form-control" required="required"
 				onchange="get_sections(this.value)"  data-validate="required"  data-message-required="<?php echo get_phrase('value_required');?>">
 				<option value=""><?php echo get_phrase('select_class');?></option>
 				<?php

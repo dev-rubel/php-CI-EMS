@@ -25,7 +25,7 @@
 	<div class="form-group">
         <div class="col-sm-3" style="margin-top: 15px;">
         <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('current_session');?></label>
-            <select name="running_year" class="form-control selectboxit">
+            <select name="running_year" class="form-control">
             <option value="<?php echo $running_year;?>">
             	<?php echo $running_year;?>
             </option>
@@ -36,7 +36,7 @@
     <div class="form-group">
         <div class="col-sm-3">
         <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('promote_to_session');?></label>
-            <select name="promotion_year" class="form-control selectboxit" id="promotion_year">
+            <select name="promotion_year" class="form-control" id="promotion_year">
             <option value="<?php echo $next_year;?>">
             	<?php echo $next_year;?>
             </option>
@@ -47,7 +47,7 @@
     <div class="form-group">
         <div class="col-sm-3">
         <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('promotion_from_class');?></label>
-            <select name="promotion_from_class_id" id="from_class_id" class="form-control selectboxit"
+            <select name="promotion_from_class_id" id="from_class_id" class="form-control"
                 >
                 <option value=""><?php echo get_phrase('select');?></option>
                 <?php
@@ -62,7 +62,7 @@
     <div class="form-group">
         <div class="col-sm-3">
         <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('promotion_to_class');?></label>
-            <select name="promotion_to_class_id" id="to_class_id" class="form-control selectboxit">
+            <select name="promotion_to_class_id" id="to_class_id" class="form-control">
                 <option value=""><?php echo get_phrase('select');?></option>
                 <?php foreach($classes as $row):?>
                 <option value="<?php echo $row['class_id'];?>"><?php echo $row['name'];?></option>
@@ -91,7 +91,7 @@
         promotion_year  = $("#promotion_year").val();
         
         if (from_class_id == "" || to_class_id == "") {
-            toastr.error("<?php echo get_phrase('select_class_for_promotion_to_and_from');?>")
+            toastr.error("<?php echo get_phrase('select_class_for_promotion_to_and_from');?>");
             return false;
         }
         $.ajax({

@@ -341,7 +341,7 @@ class Homemanage extends CI_Controller
     
     function update_admission_info()
     {
-        $data = ['admission_sms_title', 'admission_sms_description', 'admission_exam_date', 'admission_exam_time', 'admission_session'];
+        $data = ['admission_sms_title', 'admission_sms_description', 'admission_exam_date', 'admission_exam_time', 'admission_session','admission_exam_mark'];
 
         foreach($data as $k=>$each){
             $this->db->where('type', $each);

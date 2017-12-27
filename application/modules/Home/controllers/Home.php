@@ -289,6 +289,15 @@ class Home extends MX_Controller {
         $this->m_pdf->pdf->Output($fileName,"D"); 
 	    exit;
     }
+
+    function download_blank_form()
+    {
+        $this->load->library('m_pdf');
+        $html = $this->load->view('pdfSamplePrint', '', true);
+        $this->m_pdf->pdf->WriteHTML($html);
+        $this->m_pdf->pdf->Output('Blank-Form.pdf',"D"); 
+	    exit;
+    }
             
     function confirm_submit()
     {

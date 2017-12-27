@@ -27,4 +27,18 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
     </div>
     <!-- /.col -->
 <?php endforeach;?>
+
+    <div class="col-sm-6 col-md-3" style="margin-bottom: 10px;">
+        <a href="<?php echo base_url(); ?>index.php?Home/download_blank_form">
+            <div class="panel-stat3 bg-info<?php //echo $color[rand(1,7)];?>">
+                <h2 class="m-top-none" id="userCount">3</h2>
+                <h4>Download Admission Form</h4>
+
+                <div class="stat-icon">
+                    <i class="fa fa-bars fa-3x"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
 </div>

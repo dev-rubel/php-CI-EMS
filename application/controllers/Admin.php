@@ -193,6 +193,13 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('add_student');
         $this->load->view('backend/index', $page_data);
     }
+
+    function ajax_student_add($pageName)
+    {
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
+    }
     
     function student_bulk_add($param1 = '')
     {
@@ -268,6 +275,21 @@ class Admin extends CI_Controller
         $page_data['class_id']  = $class_id;
         $page_data['group_id']  = $group_id;
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_student_information($class_id, $group_id = '')
+    {
+        if(!empty($group_id)):
+            $gname = ' || Group - ';
+            $gname .= ucfirst($this->db->get_where('group', array('group_id'=>$group_id))->row()->name);
+        endif;
+            
+        $page_data['page_name']     = 'student_information';
+        $page_data['page_title']    = get_phrase('student_information'). " - ".get_phrase('class')." : ".
+                                            $this->crud_model->get_class_name($class_id).$gname;
+        $page_data['class_id']  = $class_id;
+        $page_data['group_id']  = $group_id;
+        $this->load->view('backend/admin/student_information', $page_data);
     }
 
     function student_marksheet($student_id = '') 
@@ -452,6 +474,13 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_student_menu_pages($pageName)
+    {
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
+    }
+
     function auto_acc_code()
     {
         $all_student = $this->db->get('enroll')->result_array();
@@ -609,7 +638,14 @@ class Admin extends CI_Controller
 
     function ajax_page_load()
     {
-        echo $_POST['pageName'];
+        if(strpos($_POST['pageName'],'/')){
+            list($classID,$groupID) = explode('/', $_POST['pageName']);
+            $this->ajax_student_information($classID, $groupID);
+        } elseif (is_numeric($_POST['pageName'])){
+            $this->ajax_student_information($_POST['pageName']);
+        } else {
+            $this->ajax_student_menu_pages($_POST['pageName']);
+        }
     }
 
     function get_student_roll($classID)
@@ -3270,7 +3306,7 @@ class Admin extends CI_Controller
     function download_excel()
     {
         $page_data['page_title']    = get_phrase('download_excel');
-        $page_data['page_name']     = 'download_excel_std_info';
+        $page_data['page_name']     = 'download_excel';
         $this->load->view('backend/index', $page_data);
     }
 
@@ -3377,6 +3413,7 @@ class Admin extends CI_Controller
         return true;
         
     }
+    
 
     function test()
     {        
