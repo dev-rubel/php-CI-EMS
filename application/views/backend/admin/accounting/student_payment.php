@@ -386,7 +386,7 @@
 </script>
 
 
-<SCRIPT language="javascript">
+<script language="javascript">
         function addRow(tableID) {
 
             var table = document.getElementById(tableID);
@@ -441,4 +441,4 @@
             }
         }
 
-    </SCRIPT>
+    </script>

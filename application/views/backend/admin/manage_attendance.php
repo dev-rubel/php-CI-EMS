@@ -6,7 +6,7 @@
 	<div class="col-md-2">
 		<div class="form-group">
 		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class');?></label>
-			<select name="class_id" class="form-control selectboxit" onchange="select_section(this.value)">
+			<select name="class_id" class="form-control" onchange="select_section(this.value)">
 				<option value=""><?php echo get_phrase('select_class');?></option>
 				<?php
 					$classes = $this->db->get('class')->result_array();
@@ -29,7 +29,7 @@
 	<div class="col-md-2">
 		<div class="form-group">
 		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
-			<select class="form-control selectboxit" name="section_id">
+			<select class="form-control" name="section_id">
                             <option value=""><?php echo get_phrase('select_class_first') ?></option>
 				
 			</select>
@@ -41,7 +41,7 @@
 	<div class="col-md-2">
 		<div class="form-group">
 		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('shift');?></label>
-			<select class="form-control selectboxit" name="shift_id">
+			<select class="form-control" name="shift_id">
                             <option value=""><?php echo get_phrase('select_shift_first') ?></option>
                             <?php $shifts = $this->db->get('shift')->result_array();
                             	foreach($shifts as $shift):

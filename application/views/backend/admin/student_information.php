@@ -10,11 +10,11 @@
 </style>
 <hr />
 
-<a href="<?php echo base_url();?>index.php?admin/student_add"
+<!-- <a href="<?php echo base_url();?>index.php?admin/student_add"
     class="btn btn-primary pull-right">
         <i class="entypo-plus-circled"></i>
         <?php echo get_phrase('add_new_student');?>
-    </a> 
+    </a>  -->
 
 <?php $stdExist =  $this->db->get_where('enroll' , ['class_id' => $class_id, 'year'=> $running_year])->result_array();
 if(!empty($stdExist)):

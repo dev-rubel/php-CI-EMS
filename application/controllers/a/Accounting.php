@@ -37,6 +37,29 @@ class Accounting extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    public function ajax_accounting_menu_pages() 
+    {
+        $pageName = $_POST['pageName'];
+        if($pageName == 'student_payment') {
+            $this->db->select('description');
+            $this->db->where('type','tution_fee_sms_status');
+            $this->db->or_where('type','tution_fee_sms_details');
+            $page_data['tution_fee_setting'] = $this->db->get('settings')->result_array();
+            $page_data['income_category'] = $this->db->get('income_category')->result_array();
+
+        } elseif($pageName == 'income') {
+            $page_data['invoices'] = $this->db->get('invoice')->result_array();
+
+        } elseif($pageName == 'daily_expense') { 
+            $page_data['expense_category'] = $this->db->get('expense_category')->result_array();
+            
+        } elseif($pageName == 'manage_bank_ac') { 
+            $page_data['accounts'] = $this->db->get('bank_account')->result_array();
+        }
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/accounting/'.$pageName, $page_data);
+    }
+
     public function add_student_income()
     {   
         $arrayCount = count($_POST);

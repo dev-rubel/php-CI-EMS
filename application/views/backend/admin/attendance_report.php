@@ -1,5 +1,5 @@
 <hr />
-
+<?php $month = date('m');?>
 <?php echo form_open(base_url() . 'index.php?admin/attendance_report_selector/'); ?>
 <div class="row">
 
@@ -13,7 +13,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class'); ?></label>
-                <select class="form-control selectboxit" name="class_id" onchange="select_section(this.value)">
+                <select class="form-control" name="class_id" onchange="select_section(this.value)">
                     <option value=""><?php echo get_phrase('select_class'); ?></option>
                     <?php foreach ($class as $row): ?>
                     <option value="<?php echo $row['class_id']; ?>" ><?php echo $row['name']; ?></option>
@@ -30,7 +30,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section'); ?></label>
-                <select class="form-control selectboxit" name="section_id">
+                <select class="form-control" name="section_id">
                     <option value=""><?php echo get_phrase('select_class_first') ?></option>
 
                 </select>
@@ -41,7 +41,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('shift'); ?></label>
-                <select class="form-control selectboxit" name="shift_id">
+                <select class="form-control" name="shift_id">
                     <option value=""><?php echo get_phrase('select_shift_first') ?></option>
                     <?php $shifts = $this->db->get('shift')->result_array();
                     foreach($shifts as $shift):
@@ -55,7 +55,7 @@
     <div class="col-md-2">
          <div class="form-group">
                 <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section'); ?></label>
-        <select name="month" class="form-control selectboxit" id="month" onchange="show_year()">
+        <select name="month" class="form-control" id="month" onchange="show_year()">
             <?php
             for ($i = 1; $i <= 12; $i++):
                 if ($i == 1)

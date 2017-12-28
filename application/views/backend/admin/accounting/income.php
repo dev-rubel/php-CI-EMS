@@ -176,11 +176,10 @@ $(document).ready(function() {
 
 
 
-	jQuery(document).ready(function($)
-	{
-		
-		$(".dataTables_wrapper select").select2({
-			minimumResultsForSearch: -1
-		});
+jQuery(document).ready(function($)
+{	
+	$(".dataTables_wrapper select").select2({
+		minimumResultsForSearch: -1
 	});
+});
 </script>

@@ -77,7 +77,7 @@
 			<!----CREATION FORM STARTS---->
 			<div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
-                	<?php echo form_open(base_url() . 'index.php?admin/subject/create' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'), array('class_id'=>$this->uri->segment(3)));?>
+                	<?php echo form_open(base_url() . 'index.php?admin/subject/create' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'), array('class_id'=>$class_id));?>
                         <div class="padded">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('subject_name');?></label>
@@ -88,10 +88,10 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('subject_category');?></label>
                                 <div class="col-sm-5">
-                                    <select name="subject_category" class="form-control selectboxit" style="width:100%;" onchange="return get_join_subject(this.value)">
+                                    <select name="subject_category" class="form-control" style="width:100%;" onchange="return get_join_subject(this.value)">
                                         <option value=""><?php echo get_phrase('select_category');?></option>
                                         <option value="main">Main Subject</option>
-                                        <?php $classNumaric = $this->db->get_where('class',array('class_id'=>$this->uri->segment(3)))->row()->name_numeric;
+                                        <?php $classNumaric = $this->db->get_where('class',array('class_id'=>$class_id))->row()->name_numeric;
                                         if($classNumaric > 8 && $classNumaric < 11):
                                         ?>
                                         <option value="group">Group Subject</option>                                       
@@ -100,7 +100,7 @@
                                         <option value="optional">Optional Subject</option>   
                                         <?php endif;?>    
                                         <?php 
-                                            $countJoin = $this->db->get_where('subject',array('class_id'=>$this->uri->segment(3),'subject_category'=>'main'))->result_array();
+                                            $countJoin = $this->db->get_where('subject',array('class_id'=>$class_id,'subject_category'=>'main'))->result_array();
                                             if(count($countJoin) > 0):
                                         ?>                                
                                             <option value="join">Join Subject</option>
@@ -137,7 +137,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('teacher');?></label>
                                 <div class="col-sm-5">
-                                    <select name="teacher_id" class="form-control selectboxit" style="width:100%;">
+                                    <select name="teacher_id" class="form-control" style="width:100%;">
                                         <option value=""><?php echo get_phrase('select_teacher');?></option>
                                     	<?php 
 										$teachers = $this->db->get('teacher')->result_array();
@@ -181,7 +181,7 @@
 
     function get_join_subject(name)
     {
-        this.class_id = <?php echo $this->uri->segment(3);?>;
+        this.class_id = <?php echo $class_id;?>;
         if(name=='join'){
             $.ajax({
                 url: '<?php echo base_url(); ?>index.php?admin/get_join_subject_info/' + this.class_id,

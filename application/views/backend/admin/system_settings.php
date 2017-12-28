@@ -75,7 +75,7 @@
                   <div class="form-group">
                       <label  class="col-sm-3 control-label"><?php echo get_phrase('running_session');?></label>
                       <div class="col-sm-9">
-                          <select name="running_year" class="form-control selectboxit">
+                          <select name="running_year" class="form-control">
                           <?php $running_year = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;?>
                           <option value=""><?php echo get_phrase('select_running_session');?></option>
                           <?php for($i = 0; $i < 10; $i++):?>
@@ -91,7 +91,7 @@
                   <div class="form-group">
                       <label  class="col-sm-3 control-label"><?php echo get_phrase('language');?></label>
                       <div class="col-sm-9">
-                          <select name="language" class="form-control selectboxit">
+                          <select name="language" class="form-control">
                                 <?php
 									$fields = $this->db->list_fields('language');
 									foreach ($fields as $field)
@@ -115,7 +115,7 @@
                   <div class="form-group">
                       <label  class="col-sm-3 control-label"><?php echo get_phrase('text_align');?></label>
                       <div class="col-sm-9">
-                          <select name="text_align" class="form-control selectboxit">
+                          <select name="text_align" class="form-control">
                           	  <?php $text_align	=	$this->db->get_where('settings' , array('type'=>'text_align'))->row()->description;?>
                               <option value="left-to-right" <?php if ($text_align == 'left-to-right')echo 'selected';?>> left-to-right</option>
                               <option value="right-to-left" <?php if ($text_align == 'right-to-left')echo 'selected';?>> right-to-left</option>
@@ -559,7 +559,7 @@
                 </div>
                 
                 <div class="col-md-6">
-                <input type="checkbox" name="status" data-toggle="toggle"<?php echo $siteStatus==1?'checked':''?>/>
+                <input type="checkbox" name="status" id="statusToggle" data-toggle="toggle"<?php echo $siteStatus==1?'checked':''?>/>
                     <button type="submit" class="btn btn-info"><?php echo lng('Update');?></button>     
                 </div>
 		       
@@ -633,3 +633,4 @@
         });
 });
 </script>
+

@@ -53,6 +53,24 @@ class Homemanage extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_website');
         $this->load->view('backend/index', $page_data);
     }
+
+    function ajax_admission_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/home/'.$pageName, $page_data);
+    }
+
+    function ajax_home_menu_pages()
+    {
+        $niddle = explode('_',$_POST['pageName']);
+        $upper = ucfirst($niddle[1]);
+        $pageName = $niddle[0].$upper.'Page';
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/home/'.$pageName, $page_data);
+    }
     
     function change_logo()
     {
@@ -130,13 +148,13 @@ class Homemanage extends CI_Controller
         redirect(base('homemanage', 'important_notice'));
     }
     
-    function manage_pages()
+    function manage_home()
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
         $page_data['page_data'] = $this->db->get_where('linkinfo',array('track_name'=>'files'))->result_array();
-        $page_data['page_name']  = 'home/managePages';
-        $page_data['page_title'] = get_phrase('manage_pages');
+        $page_data['page_name']  = 'home/manageHomePage';
+        $page_data['page_title'] = get_phrase('manage_home');
         $this->load->view('backend/index', $page_data);
     }
     
@@ -241,7 +259,7 @@ class Homemanage extends CI_Controller
         unlink('assets/otherFiles/'.$this->uri(4));
         $this->dashboard_model->delete_table_files($this->uri(3));
         $this->flashmsg('Deleted');
-        redirect(base('homemanage', 'manage_pages'));
+        redirect(base('homemanage', 'manage_home'));
     }
     
     function add_files()
@@ -259,18 +277,18 @@ class Homemanage extends CI_Controller
         {
             $error = array('error' => $this->upload->display_errors());
             $this->flashmsg($error['error'],'error');
-            redirect(base('homemanage', 'manage_pages'));
+            redirect(base('homemanage', 'manage_home'));
         }
         else
         {
             $this->upload->data();
             $this->dashboard_model->insertFiles($_POST['filetitle'],$name.'.'.$ext);
             $this->flashmsg('Inserted with file');
-            redirect(base('homemanage', 'manage_pages'));
+            redirect(base('homemanage', 'manage_home'));
         }
         else:
             $this->flashmsg('Please insert file', 'errror');
-            redirect(base('homemanage', 'manage_pages'));
+            redirect(base('homemanage', 'manage_home'));
         endif;
     }
     
@@ -817,7 +835,7 @@ class Homemanage extends CI_Controller
         $this->db->where('track_name',$tname);
         $this->db->update('frontpages',$_POST);
         $this->flashmsg('Updated');
-        redirect(base('homemanage', 'manage_pages'));
+        redirect(base('homemanage', 'manage_home'));
     }
     
     function add_important_link()

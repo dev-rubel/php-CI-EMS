@@ -1,6 +1,3 @@
- <div id="overlayDiv" style="width: 99%;height: 100%;background-color: white;position: absolute;top: 0;z-index: 11; opacity: .7;"></div>
-<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 20%; left: 40%; z-index: 1111;"/>  
-
 <br>
 <div class="row">
 	<div class="col-md-offset-2 col-md-2">
@@ -25,20 +22,17 @@
 
 
 <script>
-	$('#loading').hide();
-    $('#overlayDiv').hide();
-
 	$('#table_name').on('change', function(e){
 		//alert(e.target.value);
 		$.ajax({
 			beforeSend: function() { 
-                $('#loading').show();
+                $('#loading2').show();
                 $('#overlayDiv').show();
             }, 
 			url: '<?php echo base('admin', 'get_database_table').'/'; ?>' + e.target.value,
 			success: function(responce){
 				$('#dataHolder').html(responce);
-				$('#loading').fadeOut('slow');
+				$('#loading2').fadeOut('slow');
                 $('#overlayDiv').fadeOut('slow');
 			}
 		});

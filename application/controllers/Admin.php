@@ -639,10 +639,12 @@ class Admin extends CI_Controller
     function ajax_page_load()
     {
         if(strpos($_POST['pageName'],'/')){
-            list($classID,$groupID) = explode('/', $_POST['pageName']);
-            $this->ajax_student_information($classID, $groupID);
-        } elseif (is_numeric($_POST['pageName'])){
-            $this->ajax_student_information($_POST['pageName']);
+            $niddle = explode('/',$_POST['pageName']);
+            if(count($niddle) > 2) {
+                $this->ajax_student_information($niddle[1], $niddle[2]);
+            } else {
+                $this->ajax_student_information($niddle[1]);
+            }
         } else {
             $this->ajax_student_menu_pages($_POST['pageName']);
         }
@@ -751,6 +753,20 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'menus/testimonial_menu';
         $page_data['page_title'] = get_phrase('testimonial');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_testimonial_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        if($pageName == 'testimonial_voc'){
+            $class_id = $this->db->get_where('class', array('name_numeric' => 101))->row()->class_id;
+        } elseif($pageName == 'testimonial_general') {
+            $class_id = $this->db->get_where('class', array('name_numeric' => 10))->row()->class_id;
+        }
+        $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
     }
 
     function testimonial_voc()
@@ -1034,6 +1050,17 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_teacher_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        if($pageName == 'teacher') {
+            $page_data['teachers']   = $this->db->get('teacher')->result_array();
+        }        
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/teacher/'.$pageName, $page_data);
+    }
+
     function ajaxTeacherRoutine()
     {
         $teacher_id = $this->uri(3);        
@@ -1150,6 +1177,18 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_subject_menu_pages()
+    {
+        $param1   = $_POST['pageName'];
+        $pageName = 'subject';
+        $page_data['class_id']   = $param1;
+        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
+
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = 'subject';
+        $this->load->view('backend/admin/'.$pageName, $page_data);
+    }
+
     function get_join_subject_info($class_id)
     {
         $subjectInfo = $this->db->get_where('subject', array('class_id'=>$class_id,'subject_category'=>'main'))->result_array();
@@ -1202,7 +1241,7 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/classes/', 'refresh');
         }
         $page_data['classes']    = $this->db->get('class')->result_array();
-        $page_data['page_name']  = 'class';
+        $page_data['page_name']  = 'classs';
         $page_data['page_title'] = get_phrase('manage_class');
         $this->load->view('backend/index', $page_data);
     }
@@ -1212,6 +1251,23 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'menus/class_menu';
         $page_data['page_title'] = get_phrase('class');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_class_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        if($pageName == 'classes') {
+            $page_data['classes']   = $this->db->get('class')->result_array();
+        } elseif($pageName == 'shifts') {
+            $page_data['shifts']    = $this->db->get('shift')->result_array();
+        } elseif($pageName == 'groups') {
+            $page_data['groups']    = $this->db->get('group')->result_array();
+            $page_data['classes']   = $this->db->get('class')->result_array();
+        }
+        
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
     }
     
     function get_subject($class_id) 
@@ -1256,7 +1312,7 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/shifts/', 'refresh');
         }
         $page_data['shifts']    = $this->db->get('shift')->result_array();
-        $page_data['page_name']  = 'shift';
+        $page_data['page_name']  = 'shifts';
         $page_data['page_title'] = get_phrase('manage_shift');
         $this->load->view('backend/index', $page_data);
     }
@@ -1298,12 +1354,10 @@ class Admin extends CI_Controller
         }
         $page_data['groups']    = $this->db->get('group')->result_array();
         $page_data['classes']    = $this->db->get('class')->result_array();
-        $page_data['page_name']  = 'group';
+        $page_data['page_name']  = 'groups';
         $page_data['page_title'] = get_phrase('manage_group');
         $this->load->view('backend/index', $page_data);
     }
-    
-    
     
     // ACADEMIC SYLLABUS
     function academic_syllabus($class_id = '')
@@ -1499,6 +1553,20 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'menus/exam_menu';
         $page_data['page_title'] = get_phrase('exam_menu_section');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_exam_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        if($pageName == 'exam'){
+            $page_data['exams']      = $this->db->get('exam')->result_array();
+        } elseif($pageName == 'grade') {
+            $page_data['grades']     = $this->db->get('grade')->result_array();
+        }   
+  
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
     }
 
     /****** SEND EXAM MARKS VIA SMS ********/
@@ -1915,6 +1983,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_attendance_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
+    }
+
     function manage_attendance_view($class_id = '' , $shift_id = '' , $section_id = '' , $timestamp = '',$group_id = '')
     {
         if($this->session->userdata('admin_login')!=1)
@@ -2104,7 +2180,6 @@ class Admin extends CI_Controller
         ///////ATTENDANCE REPORT /////
      function attendance_report() 
      {
-         $page_data['month']        = date('m');
          $page_data['page_name']    = 'attendance_report';
          $page_data['page_title']   = get_phrase('attendance_report');
          $this->load->view('backend/index',$page_data);
@@ -2522,6 +2597,24 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'menus/setting_menu';
         $page_data['page_title'] = get_phrase('settins');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_setting_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        $page_data['settings']   = $this->db->get('settings')->result_array();
+
+        if ($pageName == 'sms_settings') {
+            $page_data['user'] = $this->db->get_where('settings', 
+                    ['type'=>'nihalit_sms_user'])
+                            ->row()->description;            
+            $page_data['pass'] = $this->db->get_where('settings', 
+                    ['type'=>'nihalit_sms_password'])
+                            ->row()->description;
+        }
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
     }
 
     function get_session_changer()

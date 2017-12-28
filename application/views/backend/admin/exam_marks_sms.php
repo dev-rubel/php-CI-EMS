@@ -5,7 +5,7 @@
 		<div class="col-md-3">
             <div class="form-group">
             <label class="control-label"><?php echo get_phrase('exam');?></label>
-                <select name="exam_id" class="form-control selectboxit">
+                <select name="exam_id" class="form-control">
             	<?php 
             		$exams = $this->db->get_where('exam' , array('year' => $running_year))->result_array();
             		foreach ($exams as $row):
@@ -19,7 +19,7 @@
         <div class="col-md-3">
             <div class="form-group">
             <label class="control-label"><?php echo get_phrase('class');?></label>
-                <select name="class_id" class="form-control selectboxit">
+                <select name="class_id" class="form-control">
                 <?php 
                 	$classes = $this->db->get('class')->result_array();
                 	foreach ($classes as $row):
@@ -33,7 +33,7 @@
         <div class="col-md-3">
             <div class="form-group">
             <label class="control-label"><?php echo get_phrase('receiver');?></label>
-                <select name="receiver" class="form-control selectboxit" id="receiver">
+                <select name="receiver" class="form-control" id="receiver">
                 	<option value=""><?php echo get_phrase('select_receiver');?></option>
                 	<option value="student"><?php echo get_phrase('students');?></option>
                 	<option value="parent"><?php echo get_phrase('parents');?></option>

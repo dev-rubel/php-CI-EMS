@@ -5,7 +5,7 @@
 			<div class="col-md-4">
 				<div class="form-group">
 					<label class="control-label"><?php echo get_phrase('class');?></label>
-					<select name="class_id" class="form-control selectboxit">
+					<select name="class_id" class="form-control">
                         <option value=""><?php echo get_phrase('select_a_class');?></option>
                         <?php 
                         $classes = $this->db->get('class')->result_array();
@@ -24,7 +24,7 @@
 			<div class="col-md-4">
 				<div class="form-group">
 				<label class="control-label"><?php echo get_phrase('exam');?></label>
-					<select name="exam_id" class="form-control selectboxit">
+					<select name="exam_id" class="form-control">
                         <option value=""><?php echo get_phrase('select_an_exam');?></option>
                         <?php 
                         $exams = $this->db->get_where('exam' , array('year' => $running_year))->result_array();
