@@ -12,8 +12,13 @@
             </li>
             <?php if($_SESSION['name']=='NihalIT'):?>
     			<li>
-                	<a href="#addac" data-toggle="tab"><i class="entypo-user"></i> 
+                	<a href="#addac" data-toggle="tab"><i class="entypo-plus"></i> 
     					<?php echo get_phrase('add_account');?>
+                	</a>
+                </li>
+    			<li>
+                	<a href="#aclist" data-toggle="tab"><i class="entypo-list"></i> 
+    					<?php echo get_phrase('accounts_list');?>
                 	</a>
                 </li>
             <?php endif;?>
@@ -134,9 +139,44 @@
         </div>
     </div>
     <?php endif;?>
+
+    <?php if($_SESSION['name']=='NihalIT'):
+        $list = $this->db->get('admin')->result_array();    
+        
+    ?>
+    <div class="tab-pane box" id="aclist" style="padding: 5px">
+        <div class="box-content">
+
+        <table class="table table-bordered table_export">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Access</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($list as $k=>$each):?>
+                <tr>
+                    <td><?php echo $k+1;?></td>
+                    <td><?php echo $each['name'];?></td>
+                    <td><?php echo $each['email'];?></td>
+                    <td><?php echo $each['level'];?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        </div>
+    </div>
+    <?php endif;?>
             
 		</div>
 	</div>
+
+    
+
 
 
 <br>
@@ -199,3 +239,33 @@
 		</div>
 	</div>
 </div>
+
+<script>
+
+$('#my-form').submit( function(e) {
+    e.preventDefault();
+
+    var data = new FormData(this); // <-- 'this' is your form element
+
+    $.ajax({
+            url: '/my_URL/',
+            data: data,
+            beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },  
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'POST',     
+            success: function(data){
+                toastr.error("<?php echo get_phrase('select_class_for_promotion_to_and_from');?>");
+                return false;
+            }, error: function (e) {
+                $("#result").text(e.responseText);
+                console.log("ERROR : ", e);
+                $("#btnSubmit").prop("disabled", false);
+            }
+    });
+
+</script>

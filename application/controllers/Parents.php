@@ -2,13 +2,15 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-/*	
- *	@author : Joyonto Roy
- *	date	: 20 August, 2013
- *	University Of Dhaka, Bangladesh
- *	Ekattor School & College Management System
- *	http://codecanyon.net/user/joyontaroy
+
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
+ 
 
 class Parents extends CI_Controller
 {

@@ -1,10 +1,15 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-/*  
- *  @author     : Md. Rubel
- *  Nihal IT
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
+ 
+ 
 class Admin extends CI_Controller
 {
 
@@ -289,6 +294,7 @@ class Admin extends CI_Controller
                                             $this->crud_model->get_class_name($class_id).$gname;
         $page_data['class_id']  = $class_id;
         $page_data['group_id']  = $group_id;
+        $page_data['running_year'] = $this->running_year;
         $this->load->view('backend/admin/student_information', $page_data);
     }
 

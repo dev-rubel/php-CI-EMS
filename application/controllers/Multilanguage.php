@@ -2,13 +2,15 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
-/*	
- *	@author : Joyonto Roy
- *	date	: 1 August, 2013
- *	University Of Dhaka, Bangladesh
- *	Hospital Management system
- *	http://codecanyon.net/user/joyontaroy
+
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
+ 
 
 
 class Multilanguage extends CI_Controller

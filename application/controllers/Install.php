@@ -2,12 +2,12 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-/*	
- *	@author 	: Joyonto Roy
- *	date		: 27 september, 2014
- *	Ekattor School Management System Pro
- *	http://codecanyon.net/user/Creativeitem
- *	support@creativeitem.com
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
 
 class Install extends CI_Controller

@@ -2,15 +2,15 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-/*  
- *  @author          :    Creativeitem
- *  date             :    25 July, 2015
- *  Item             :    Ekattor School Management System ios Application
- *  Specification    :    Mobile app response, JSON formatted data for iOS & android app
- *  Portfolio        :    http://codecanyon.net/user/Creativeitem
- *  Website          :    http://www.creativeitem.com
- *  Support          :    http://support.creativeitem.com
+
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
+ 
 
 class Mobile extends CI_Controller
 {

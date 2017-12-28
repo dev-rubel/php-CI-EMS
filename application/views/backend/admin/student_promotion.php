@@ -1,19 +1,4 @@
 <hr />
-<div class="row">
-    <div class="col-md-12">
-        <blockquote class="blockquote-blue">
-            <p>
-                <strong>Student Promotion Notes</strong>
-            </p>
-            <p>
-                Promoting student from the present class to the next class will create an enrollment of that student to
-                the next session. Make sure to select correct class options from the select menu before promoting.If you don't want
-                to promote a student to the next class, please select that option. That will not promote the student to the next class
-                but it will create an enrollment to the next session but in the same class.
-            </p>
-        </blockquote>
-    </div>
-</div>
 <?php echo form_open(base_url() . 'index.php?admin/student_promotion/promote');?>
 <div class="row">
 <?php 

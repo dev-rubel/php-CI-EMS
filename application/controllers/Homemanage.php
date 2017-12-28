@@ -2,10 +2,12 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-/*	
- *	@author 	: Md Nur Alam
- *	date		: December 2017
- *  Nihal IT
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
  */
 
 class Homemanage extends CI_Controller

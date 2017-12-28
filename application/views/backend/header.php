@@ -4,7 +4,7 @@
     </div>
 
 	<div id="overlayDiv" style="width: 99%;height: 100%;background-color: white;position: absolute;top: 0;z-index: 11; opacity: .7; display: none;"></div>
-	<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 70%; left: 40%; z-index: 1111; display: none;"/>  
+	<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 50%; left: 40%; z-index: 1111; display: none;"/>  
 	<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading2" style="position: absolute; top: 20%; left: 40%; z-index: 1111; display: none;"/>  
 
 	<!-- Raw Links -->

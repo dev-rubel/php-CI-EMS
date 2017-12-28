@@ -1,5 +1,15 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
  
+ 
+ /*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
+ */
+ 
+ 
 class income_model extends CI_Model { 
     var $table = 'invoice'; 
     var $column_order = array(null, 'student_id', 'acc_code', 'months','fee_name','fee_amount', 'amount', 'amount_paid', 'creation_timestamp'); //set column field database for datatable orderable 

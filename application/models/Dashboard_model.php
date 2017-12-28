@@ -1,4 +1,13 @@
 <?php
+
+/*
+ *	@author 	: Nihal-IT Team
+ *	date		: 1 October, 2016
+ *	Bidyapith School Management System
+ *	https://www.nihalit.com
+ *	info@nihalit.com
+ */
+ 
 class Dashboard_model extends CI_Model
 {
     function insert_logo_img($img,$title)
