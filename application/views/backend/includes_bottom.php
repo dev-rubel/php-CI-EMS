@@ -6,9 +6,9 @@ $url = $url[0];
 ?>
 
 
-<!-- <link rel="stylesheet" href="assets/js/select2/select2-bootstrap.css">
+<link rel="stylesheet" href="assets/js/select2/select2-bootstrap.css">
 <link rel="stylesheet" href="assets/js/select2/select2.css">
-<link rel="stylesheet" href="assets/js/selectboxit/jquery.selectBoxIt.css"> -->
+<link rel="stylesheet" href="assets/js/selectboxit/jquery.selectBoxIt.css">
 
    
 <!-- Bottom Scripts -->
@@ -24,6 +24,9 @@ $url = $url[0];
 <script src="assets/js/bootstrap-datepicker.js"></script>
 <script src="assets/js/fileinput.js"></script>
 
+<!-- Ajax Request Handle -->
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+
 <!--start for homemanage controller-->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <script src="assets/js/jquery.word-and-character-counter.min.js"></script>
@@ -38,8 +41,8 @@ $url = $url[0];
 <script src="assets/js/datatables/lodash.min.js"></script>
 <script src="assets/js/datatables/responsive/js/datatables.responsive.js"></script>
 
-<!-- <script src="assets/js/select2/select2.min.js"></script>
-<script src="assets/js/selectboxit/jquery.selectBoxIt.min.js"></script> -->
+<script src="assets/js/select2/select2.min.js"></script>
+<script src="assets/js/selectboxit/jquery.selectBoxIt.min.js"></script>
 
 
 <script src="assets/js/neon-calendar.js"></script>

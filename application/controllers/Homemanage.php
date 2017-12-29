@@ -70,6 +70,7 @@ class Homemanage extends CI_Controller
         $upper = ucfirst($niddle[1]);
         $pageName = $niddle[0].$upper.'Page';
         $page_data['running_year'] = $this->running_year;
+        $page_data['page_data'] = $this->db->get_where('linkinfo',array('track_name'=>'files'))->result_array();
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/home/'.$pageName, $page_data);
     }

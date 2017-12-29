@@ -339,7 +339,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail2">Admission Page: &nbsp;</label>
-                      <input type="checkbox" name="admission_link_status" data-toggle="toggle" <?php echo $result1[2]['description']==1?'checked':''?>>
+                      <input type="checkbox" name="admission_link_status" id="admission_link_status" data-toggle="toggle" <?php echo $result1[2]['description']==1?'checked':''?>>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputName2">Admission Session: </label>

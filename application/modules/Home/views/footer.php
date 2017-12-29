@@ -70,7 +70,7 @@ $school_phone = $this->db->get_where('settings', array('type'=>'phone'))->row()-
         <div class="bottom-footer">
             <div class="row">
                 <div class="col-md-12">
-                    <p class="small-text text-center">&copy; 2017 Bidyapith. Developed by
+                    <p class="small-text text-center">&copy; <?php echo date('Y');?> Bidyapith. Developed by
                         <a href="https://www.nihalit.com">Nihal IT</a>
                     </p>
                 </div>

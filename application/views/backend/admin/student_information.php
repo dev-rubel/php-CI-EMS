@@ -9,7 +9,7 @@
     }
 </style>
 <hr />
-
+<br>
 <!-- <a href="<?php echo base_url();?>index.php?admin/student_add"
     class="btn btn-primary pull-right">
         <i class="entypo-plus-circled"></i>
@@ -77,7 +77,7 @@ if(!empty($stdExist)):
         
         <div class="tab-content">
             <div class="tab-pane active" id="home">                
-                <table class="table table-bordered table_export">
+                <table class="table table-bordered datatable" id="table_export2">
                     <thead>
                         <tr>
                             <th width="80"><div><?php echo get_phrase('id');?></div></th>
@@ -391,7 +391,7 @@ if(!empty($stdExist)):
 
 	jQuery(document).ready(function($)
 	{
-    	var datatable = $(".table_export").dataTable({
+    	var datatable = $("#table_export2").dataTable({
             "aLengthMenu": [[1, 2, -1], [1, 2, "All"]],
 			"sPaginationType": "bootstrap",
 			"sDom": "<'row'<'col-xs-3 col-left'l><'col-xs-9 col-right'<'export-data'T>f>r>t<'row'<'col-xs-3 col-left'i><'col-xs-9 col-right'p>>",

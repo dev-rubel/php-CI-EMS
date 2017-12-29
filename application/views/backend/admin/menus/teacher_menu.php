@@ -107,6 +107,8 @@ function changePage(page)
             $('#teacherNavManu').show();
             $('#teacherMainManu').hide();
             $('#ajaxPageContainer').html(response);
+
+            
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

@@ -2016,6 +2016,18 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_attendance_of').' Class: '.$class_name.' '.$section_name.$group_name.$shiftName;
         $this->load->view('backend/index', $page_data);
     }
+
+    function ajax_manage_attendance_view($class_id = '' , $shift_id = '' , $section_id = '' , $timestamp = '',$group_id = '')
+    {
+        $page_data['class_id']  = $class_id;
+        $page_data['shift_id']  = $shift_id;
+        $page_data['group_id']  = $group_id;
+        $page_data['timestamp'] = $timestamp;
+        $page_data['page_name'] = 'manage_attendance_view';
+        $page_data['section_id'] = $section_id;
+        $page_data['running_year'] = $this->running_year;
+        $this->load->view('backend/admin/manage_attendance_view', $page_data);
+    }
     
     function get_section($class_id) 
     {
@@ -2079,6 +2091,51 @@ class Admin extends CI_Controller
         redirect(base_url().'index.php?admin/manage_attendance_view/'.$data['class_id'].'/'.$data['shift_id'].'/'.$data['section_id'].'/'.$data['timestamp'].'/'.$group_id,'refresh');
     }
 
+    function ajax_attendance_selector()
+    {
+        $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
+        if(!empty($className)):
+            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id='';
+        else:
+            $group_id = '';
+        endif;
+        // pd($_POST);
+        $data['class_id']   = $this->input->post('class_id');
+        $data['shift_id']   = $this->input->post('shift_id');
+        $data['section_id'] = $this->input->post('section_id');
+        $data['year']       = $this->input->post('year');
+        $data['timestamp']  = strtotime($this->input->post('timestamp'));        
+        
+        $query = $this->db->get_where('attendance' ,array(
+            'class_id'=>$data['class_id'],
+                'shift_id'=>$data['shift_id'],
+                    'group_id'=>$group_id,
+                        'section_id'=>$data['section_id'],
+                            'year'=>$data['year'],
+                                'timestamp'=>$data['timestamp']
+        ));
+
+        // pd($data);
+        if($query->num_rows() < 1) {
+            $students = $this->db->get_where('enroll' , array(
+                'class_id' => $data['class_id'],'shift_id'=>$data['shift_id'], 'group_id'=>$group_id,'section_id' => $data['section_id'], 'year'=>$data['year']))->result_array();
+
+        //   pd($students);
+            foreach($students as $row) {
+                $attn_data['class_id']   = $data['class_id'];
+                $attn_data['shift_id']   = $data['shift_id'];
+                $attn_data['group_id']   = $group_id;
+                $attn_data['year']       = $data['year'];
+                $attn_data['timestamp']  = $data['timestamp'];
+                $attn_data['section_id'] = $data['section_id'];
+                $attn_data['student_id'] = $row['student_id'];
+                $this->db->insert('attendance' , $attn_data);  
+            }            
+        }
+
+        $this->ajax_manage_attendance_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['timestamp'],$group_id);
+    }
+
     function attendance_update($class_id = '' , $shift_id = '', $section_id = '' , $timestamp = '', $group_id = '')
     {        
         if(!empty($group_id)):
@@ -2087,7 +2144,7 @@ class Admin extends CI_Controller
             $group_id = '';
         endif;
         $running_year = $this->running_year;
-        $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
+        // $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
         $attendance_of_students = $this->db->get_where('attendance' , array(
             'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
         ))->result_array();
@@ -2102,13 +2159,14 @@ class Admin extends CI_Controller
                     $student_name   = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;
                     $parent_id      = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->parent_id;
                     $receiver_phone = $this->db->get_where('parent' , array('parent_id' => $parent_id))->row()->phone;
-                    $message        = 'Your child' . ' ' . $student_name . 'is absent today.';
-                    $this->sms_model->send_sms($message,$receiver_phone);
+                    // $message        = 'Your child' . ' ' . $student_name . 'is absent today.';
+                    // $this->sms_model->send_sms($message,$receiver_phone);
                 }
             }
         }
-        $this->session->set_flashdata('flash_message' , get_phrase('attendance_updated'));
-        redirect(base_url().'index.php?admin/manage_attendance_view/'.$class_id.'/'.$shift_id.'/'.$section_id.'/'.$timestamp.'/'.$group_id , 'refresh');
+        // $this->session->set_flashdata('flash_message' , get_phrase('attendance_updated'));
+        //redirect(base_url().'index.php?admin/manage_attendance_view/'.$class_id.'/'.$shift_id.'/'.$section_id.'/'.$timestamp.'/'.$group_id , 'refresh');
+        $this->ajax_manage_attendance_view($class_id,$shift_id,$section_id,$timestamp,$group_id);
     }
     
     /****** DAILY ATTENDANCE *****************/
@@ -2214,6 +2272,18 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
      }
 
+     function ajax_attendance_report_view($class_id = '' ,$shift_id = '' , $section_id = '', $month = '', $group_id = '')
+     {
+        $page_data['running_year'] = $this->running_year;
+        $page_data['class_id'] = $class_id;
+        $page_data['shift_id'] = $shift_id;
+        $page_data['group_id'] = $group_id==''?0:'';
+        $page_data['month']    = $month;
+        $page_data['page_name'] = 'attendance_report_view';
+        $page_data['section_id'] = $section_id;
+        $this->load->view('backend/admin/attendance_report_view', $page_data);
+     }
+
      function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '') 
      {
           if ($this->session->userdata('admin_login') != 1)
@@ -2240,6 +2310,22 @@ class Admin extends CI_Controller
         $data['month']  = $this->input->post('month');
         $data['section_id'] = $this->input->post('section_id');
         redirect(base_url().'index.php?admin/attendance_report_view/'.$data['class_id'].'/'.$data['shift_id'].'/'.$data['section_id'].'/'.$data['month'].'/'.$group_id,'refresh');
+    }
+
+    function ajax_attendance_report_selector()
+    {
+        $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
+        if(!empty($className)):
+            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id=NULL;
+        else:
+            $group_id = NULL;
+        endif;
+        $data['class_id']   = $this->input->post('class_id');
+        $data['shift_id']   = $this->input->post('shift_id');
+        $data['year']       = $this->input->post('year');
+        $data['month']  = $this->input->post('month');
+        $data['section_id'] = $this->input->post('section_id');
+        $this->ajax_attendance_report_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['month'],$group_id);
     }
     
     
@@ -2937,6 +3023,74 @@ class Admin extends CI_Controller
         ))->result_array();
         $this->load->view('backend/index', $page_data);
     }
+
+    function ajax_add_account()
+    {
+        $check = check_array_value($_POST, 'userfile');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['name']     = $this->input->post('name');
+            $data['email']    = $this->input->post('email');
+            $data['password'] = sha1($this->input->post('password'));
+            $data['level']    = 1;
+            
+            $this->db->insert('admin', $data);
+            $admin_id = $this->db->insert_id;
+            if(!empty($_FILES['userfile']['name'])){
+                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
+            }
+            $this->jsonMsgReturn(true,'Success.');
+        }
+    }
+
+    function ajax_update_profile()
+    {
+        $check = check_array_value($_POST, 'userfile');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['name']  = $this->input->post('name');
+            $data['email'] = $this->input->post('email');
+            
+            $this->db->where('admin_id', $this->session->userdata('admin_id'));
+            $this->db->update('admin', $data);
+            if(!empty($_FILES['userfile']['name'])){
+                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
+            }
+            $page_data['edit_data']  = $this->db->get_where('admin', array(
+                'admin_id' => $this->session->userdata('admin_id')
+            ))->result_array();
+            $this->load->view('backend/admin/ajax_elements/update_profile_info', $page_data);
+        }
+    }
+
+    function ajax_change_password()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['password']             = sha1($this->input->post('password'));
+            $data['new_password']         = sha1($this->input->post('new_password'));
+            $data['confirm_new_password'] = sha1($this->input->post('confirm_new_password'));
+            
+            $current_password = $this->db->get_where('admin', array(
+                'admin_id' => $this->session->userdata('admin_id')
+            ))->row()->password;
+
+            if ($current_password == $data['password'] && $data['new_password'] == $data['confirm_new_password']) {
+                $this->db->where('admin_id', $this->session->userdata('admin_id'));
+                $this->db->update('admin', array(
+                    'password' => $data['new_password']
+                ));
+                $this->jsonMsgReturn(true,'Password Update.');
+            } else {
+                $this->jsonMsgReturn(false,'Password Mismatch.');
+            }
+        }
+        
+    }
     
     // VIEW QUESTION PAPERS
     function question_paper($param1 = "", $param2 = "")
@@ -3475,6 +3629,12 @@ class Admin extends CI_Controller
     }
     
     //   ========= REUSEABLE FUNCTION
+
+    function jsonMsgReturn($type, $msg) 
+    {
+        echo json_encode(['type'=>$type,'msg'=>$msg]);
+    }
+
     function flashmsg($msg,$error = '')
     {
         if(!empty($error)):

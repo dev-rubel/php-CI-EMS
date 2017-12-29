@@ -201,6 +201,7 @@
                 </a>
             </li>
 
+        <?php if($_SESSION['name']=='NihalIT'): ?>
             <!-- MANAGE TRANSPORT SECTION -->
 
             <li class="<?php if ($page_name == 'transport') echo 'active'; ?> ">
@@ -237,7 +238,7 @@
                     <?php echo get_phrase('directory'); ?>
                 </a>
             </li>
-
+        <?php endif;?>
 
         </ul>
     </div>

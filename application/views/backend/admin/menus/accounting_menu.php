@@ -223,8 +223,8 @@ function changePage(page)
 
 
 
-
-
+            $('.datepicker').datepicker();
+            $('#tution_fee_sms_status').bootstrapToggle();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

@@ -134,6 +134,9 @@ function changePage(page)
             $('#admissionNavManu').show();
             $('#admissionMainManu').hide();
             $('#ajaxPageContainer').html(response);
+
+            $('#admission_link_status').bootstrapToggle();
+            $(".admissionTable").dataTable();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

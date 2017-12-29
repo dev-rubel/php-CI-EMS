@@ -1,6 +1,6 @@
 <hr />
 <?php $month = date('m');?>
-<?php echo form_open(base_url() . 'index.php?admin/attendance_report_selector/'); ?>
+<form id="attendanceReportSelector" action="<?php echo base_url() .'index.php?admin/ajax_attendance_report_selector'; ?>" class="form-horizontal form-groups-bordered validate" method="post">  
 <div class="row">
 
     <?php
@@ -105,34 +105,49 @@
 
 
 
-
+<div id="attendance_report_section_holder"></div>
 
 
 
 <script type="text/javascript">
-    function select_section(class_id) {
-        $('#group_holder').hide();
 
-        $.ajax({
-            url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
-            success:function (response)
-            {
-                if(response){
-                    $('#group_holder').show();
-                    jQuery('#group_holder').html(response); 
-                }else{
-                    $('#group_holder').hide();
-                }                
-            }
-        });
+/* Search Attendance */
+$('#attendanceReportSelector').ajaxForm({ 
+	beforeSend: function() {                
+		$('#loading2').show();
+		$('#overlayDiv').show();
+	},  
+	success: function (data){		
+		$( "#attendance_report_section_holder" ).html( data ); 
+		$('#loading2').fadeOut('slow');
+		$('#overlayDiv').fadeOut('slow');  
+						
+	}
+}); 
 
-        $.ajax({
-            url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
-            success: function (response)
-            {
+function select_section(class_id) {
+    $('#group_holder').hide();
 
-                jQuery('#section_holder').html(response);
-            }
-        });
-    }
+    $.ajax({
+        url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
+        success:function (response)
+        {
+            if(response){
+                $('#group_holder').show();
+                jQuery('#group_holder').html(response); 
+            }else{
+                $('#group_holder').hide();
+            }                
+        }
+    });
+
+    $.ajax({
+        url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
+        success: function (response)
+        {
+
+            jQuery('#section_holder').html(response);
+        }
+    });
+}
 </script>

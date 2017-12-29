@@ -22,6 +22,11 @@
                 	</a>
                 </li>
             <?php endif;?>
+            <li>
+                <a href="#changePassword" data-toggle="tab"><i class="entypo-lock"></i> 
+                    <?php echo get_phrase('change_password');?>
+                </a>
+            </li>
 		</ul>
     	<!------CONTROL TABS END------>
         
@@ -31,44 +36,49 @@
         	<!----EDITING FORM STARTS---->
 			<div class="tab-pane box active" id="list" style="padding: 5px">
                 <div class="box-content">
-					<?php 
-                    foreach($edit_data as $row):
-                        ?>
-                        <?php echo form_open(base_url() . 'index.php?admin/manage_profile/update_profile_info' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top' , 'enctype' => 'multipart/form-data'));?>
+					
+                        
+                        <form id="updateAccount" action="<?php echo base_url() .'index.php?admin/ajax_update_profile'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data">                            
                             
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label"><?php echo get_phrase('name');?></label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="name" value="<?php echo $row['name'];?>"/>
-                                </div>
-                            </div>
+                            <div id="profile_info">
 
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label"><?php echo get_phrase('email');?></label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="email" value="<?php echo $row['email'];?>"/>
+                            <?php foreach($edit_data as $row): ?>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label"><?php echo get_phrase('name');?></label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" name="name" value="<?php echo $row['name'];?>"/>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('photo');?></label>
-                                
-                                <div class="col-sm-5">
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;" data-trigger="fileinput">
-                                            <img src="<?php echo $this->crud_model->get_image_url('admin' , $row['admin_id']);?>" alt="...">
-                                        </div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px"></div>
-                                        <div>
-                                            <span class="btn btn-white btn-file">
-                                                <span class="fileinput-new">Select image</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="userfile" accept="image/*">
-                                            </span>
-                                            <a href="#" class="btn btn-orange fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label"><?php echo get_phrase('email');?></label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" name="email" value="<?php echo $row['email'];?>"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('photo');?></label>
+                                    
+                                    <div class="col-sm-5">
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;" data-trigger="fileinput">
+                                                <img src="<?php echo $this->crud_model->get_image_url('admin' , $row['admin_id']);?>" alt="...">
+                                            </div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px"></div>
+                                            <div>
+                                                <span class="btn btn-white btn-file">
+                                                    <span class="fileinput-new">Select image</span>
+                                                    <span class="fileinput-exists">Change</span>
+                                                    <input type="file" name="userfile" accept="image/*">
+                                                </span>
+                                                <a href="#" class="btn btn-orange fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <?php endforeach; ?>
+
                             </div>
 
                             <div class="form-group">
@@ -77,9 +87,7 @@
                               </div>
 								</div>
                         </form>
-						<?php
-                    endforeach;
-                    ?>
+						
                 </div>
 			</div>
             <!-- EDITING FORM ENDS -->
@@ -87,21 +95,19 @@
     <?php if($_SESSION['name']=='NihalIT'):?>
     <div class="tab-pane box" id="addac" style="padding: 5px">
         <div class="box-content">
-            <?php echo form_open(base_url() . 'index.php?admin/manage_profile/add_account' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top' , 'enctype' => 'multipart/form-data'));?>
-                            
+        <form id="addAccount" action="<?php echo base_url() .'index.php?admin/ajax_add_account'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data">                            
                 <div class="form-group">
-                    <label class="col-sm-3 control-label"><?php echo get_phrase('name');?></label>
-                    <div class="col-sm-5">
+                <div class="col-md-1"></div>
+                    <label class="col-sm-1 control-label"><?php echo get_phrase('name');?></label>
+                    <div class="col-sm-3">
                         <input type="text" class="form-control" name="name"/>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-3 control-label"><?php echo get_phrase('email');?></label>
-                    <div class="col-sm-5">
+                    <label class="col-sm-1 control-label"><?php echo get_phrase('email');?></label>
+                    <div class="col-sm-3">
                         <input type="text" class="form-control" name="email" />
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('password');?></label>
                     <div class="col-sm-5">
@@ -171,40 +177,15 @@
         </div>
     </div>
     <?php endif;?>
-            
-		</div>
-	</div>
 
     
+    <div class="tab-pane box" id="changePassword" style="padding: 5px">
+        <div class="box-content">
 
-
-
-<br>
-
-<!--password-->
-<div class="row">
-	<div class="col-md-12">
-    
-    	<!------CONTROL TABS START------>
-		<ul class="nav nav-tabs bordered">
-
-			<li class="active">
-            	<a href="#list" data-toggle="tab"><i class="entypo-lock"></i> 
-					<?php echo get_phrase('change_password');?>
-                    	</a></li>
-		</ul>
-    	<!------CONTROL TABS END------>
-        
-	
-		<div class="tab-content">
-        <br>
-        	<!----EDITING FORM STARTS---->
-			<div class="tab-pane box active" id="list" style="padding: 5px">
-                <div class="box-content padded">
-					<?php 
+        <?php 
                     foreach($edit_data as $row):
                         ?>
-                        <?php echo form_open(base_url() . 'index.php?admin/manage_profile/change_password' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'));?>
+                        <form id="changePassword" action="<?php echo base_url() .'index.php?admin/ajax_change_password'; ?>" class="form-horizontal form-groups-bordered validate" method="post">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('current_password');?></label>
                                 <div class="col-sm-5">
@@ -232,40 +213,91 @@
 						<?php
                     endforeach;
                     ?>
-                </div>
-			</div>
-            <!-- EDITING FORM ENDS -->
+
+        </div>
+    </div>
             
 		</div>
 	</div>
+
+    
+
+
+
+<br>
+
+
 </div>
 
 <script>
+$(document).ready(function() { 
+    /* Change Password */
+    // toastr.options.positionClass = 'toast-bottom-right';
 
-$('#my-form').submit( function(e) {
-    e.preventDefault();
+    $('#changePassword').ajaxForm({ 
+        success: function (data){
+            var jData = JSON.parse(data);
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);
+                $('#changePassword').clearForm();
+            }                
+        }
+    }); 
 
-    var data = new FormData(this); // <-- 'this' is your form element
+    /* Add Account */
+    $('#addAccount').ajaxForm({ 
+        success: function (data){
+            var jData = JSON.parse(data);
+            if(!jData.type) {                    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);                
+                $('#addAccount').resetForm();
+            }                
+        }
+    }); 
 
-    $.ajax({
-            url: '/my_URL/',
-            data: data,
-            beforeSend: function() {                
-                $('#loading2').show();
-                $('#overlayDiv').show();
-            },  
-            cache: false,
-            contentType: false,
-            processData: false,
-            type: 'POST',     
-            success: function(data){
-                toastr.error("<?php echo get_phrase('select_class_for_promotion_to_and_from');?>");
-                return false;
-            }, error: function (e) {
-                $("#result").text(e.responseText);
-                console.log("ERROR : ", e);
-                $("#btnSubmit").prop("disabled", false);
-            }
-    });
+    /* Update Account */
+    $('#updateAccount').ajaxForm({ 
+        success: function (data){
+            
+            toastr.success('Updated');    
+            $( "#profile_info" ).html( data );  
+                            
+        }
+    }); 
+ 
+
+    
+    
+}); 
+
+// $('#my-form').submit( function(e) {
+//     e.preventDefault();
+
+//     var data = new FormData(this); // <-- 'this' is your form element
+
+//     $.ajax({
+//             url: '/my_URL/',
+//             data: data,
+//             beforeSend: function() {                
+//                 $('#loading2').show();
+//                 $('#overlayDiv').show();
+//             },  
+//             cache: false,
+//             contentType: false,
+//             processData: false,
+//             type: 'POST',     
+//             success: function(data){
+//                 toastr.error("<?php //echo get_phrase('select_class_for_promotion_to_and_from');?>");
+//                 return false;
+//             }, error: function (e) {
+//                 $("#result").text(e.responseText);
+//                 console.log("ERROR : ", e);
+//                 $("#btnSubmit").prop("disabled", false);
+//             }
+//     });
 
 </script>

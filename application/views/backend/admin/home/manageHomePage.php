@@ -23,9 +23,7 @@ $school_history = explode('+', $result['school_history']);
     <div class="tab-content">
         <br>
         <!----TABLE LISTING STARTS-->
-        <div class="tab-pane box" id="list">
-        <div id="overlayDiv" style="width: 99%;height: 100%;background-color: white;position: absolute;top: 0;z-index: 11; opacity: .7;"></div>
-        <img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 30%; left: 40%; z-index: 1111;"/>  
+        <div class="tab-pane box" id="list">         
             <div class="col-md-10 col-md-offset-1">
                 <div class="form-group">
                     <label>Page Name:</label>
@@ -121,7 +119,7 @@ $school_history = explode('+', $result['school_history']);
                                         
                                     </th>
                                     <th scope="row"><?php echo $list['title']; ?></th>
-                                    <td><button class="btn" data-clipboard-text="<?php echo base_url().'assets/otherFiles/'.$link;?>">
+                                    <td><button class="btn copyLink" data-clipboard-text="<?php echo base_url().'assets/otherFiles/'.$link;?>">
     Copy to clipboard
 </button></td>
                                     <td>
@@ -147,11 +145,9 @@ $school_history = explode('+', $result['school_history']);
 <script src="assets/js/clipboard.min.js"></script>
     <script>
          $(document).ready(function () {
-       		new Clipboard('.btn');
-       		$('#loading').hide();
-	        $('#overlayDiv').hide();
-       
-    });
+       		new Clipboard('.copyLink');  
+            tinyMCE.init({ selector: '#tinyDes' });     
+        });
         
         
         $("#pageName").change(function () {

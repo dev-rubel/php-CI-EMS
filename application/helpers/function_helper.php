@@ -276,6 +276,24 @@ function return_month($data)
     return $string;
 }
 
+function check_array_value($data, $param='')
+{
+    if(!empty($param)){
+        unset($data[$param]);
+    }
+    $count = 0;
+    foreach($data as $k=>$each){
+        if(!empty($each)){
+            $count++;
+        }
+    }
+    if(count($data) == $count){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function numberTomonth($data)
 {
     switch ($data) {

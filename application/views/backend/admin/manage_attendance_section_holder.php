@@ -1,7 +1,7 @@
 <div class="col-md-2">
 	<div class="form-group">
 	<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
-		<select name="section_id" id="section_id" class="form-control selectboxit">
+		<select name="section_id" id="section_id" class="form-control">
 			<?php 
 				$sections = $this->db->get_where('section' , array(
 					'class_id' => $class_id 

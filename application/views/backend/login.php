@@ -4,217 +4,159 @@ $system_title = $this->db->get_where('settings', array('type' => 'system_title')
 ?>
 
 <!DOCTYPE html>
-<html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+    <!--<![endif]-->
+    <!-- BEGIN HEAD -->
+
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8" />
         <title><?php echo get_phrase('login'); ?> | <?php echo $system_title; ?></title>
-        <link rel="stylesheet" href="assets/css/bootstrap.css">
-        <link rel="stylesheet" href="assets/css/font-icons/font-awesome/css/font-awesome.min.css">
-       
-        <style type="text/css">
-            @font-face { font-family: 'Source Sans Pro'; src: url('assets/fonts/SourceSansPro-Regular.ttf'); } 
-            * {
-                margin: 0;
-                padding: 0;
-            }
-
-            html {
-                background: linear-gradient( limegreen, transparent ), linear-gradient( 90deg, skyblue, transparent ), linear-gradient( -90deg, coral, transparent );
-            background-blend-mode: screen;
-                background-size: cover;
-                height: 700px;
-            }
-
-            body {
-                background: transparent;
-            }
-
-            body, input, button {
-                font-family: 'Source Sans Pro', sans-serif;
-            }
-
-            .login {
-                padding: 15px;
-                width: 400px;
-                min-height: 400px;
-                margin: 8% auto 0 auto;
-            }
-            .login .heading {
-                text-align: center;
-                margin-top: 1%;
-                padding: 10px;
-            box-shadow: 0 0 0 10px rgba(0,0,0,0.3);
-            }
-            .login .heading h2 {
-                font-size: 3em;
-                font-weight: 300;
-                color: rgba(255, 255, 255, 0.7);
-                display: inline-block;
-                padding-bottom: 5px;
-                text-shadow: 1px 1px 3px #23203b;
-            }
-            .login form .input-group {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            .login form .input-group:last-of-type {
-                border-top: none;
-            }
-            .login form .input-group span {
-                background: transparent;
-                min-width: 53px;
-                border: none;
-            }
-            .login form .input-group span i {
-                font-size: 1.5em;
-                color: #393437;
-            }
-            .login form input.form-control {
-                display: block;
-                width: auto;
-                height: auto;
-                border: none;
-                outline: none;
-                box-shadow: none;
-                background: none;
-                border-radius: 0px;
-                padding: 10px;
-                font-size: 1.6em;
-                width: 100%;
-                background: transparent;
-                color: black;
-            }
-            .login form input.form-control:focus {
-                border: none;
-            }
-            .login form button {
-                margin-top: 20px;
-            background: #1571BB;
-            border: none;
-            font-size: 1.6em;
-            font-weight: 300;
-            padding: 5px 0;
-            width: 100%;
-            border-radius: 3px;
-            color: #b3eecc;
-            border-bottom: 4px solid #393437;
-            }
-            .login form button:hover {
-                background: #393437;
-            -webkit-animation: hop 1s;
-            animation: hop 1s;
-            border-bottom: 4px solid #1571BB;
-            }
-
-            .float {
-                display: inline-block;
-                -webkit-transition-duration: 0.3s;
-                transition-duration: 0.3s;
-                -webkit-transition-property: transform;
-                transition-property: transform;
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                box-shadow: 0 0 1px transparent;
-            }
-
-            .float:hover, .float:focus, .float:active {
-                -webkit-transform: translateY(-3px);
-                transform: translateY(-3px);
-            }
-
-            /* Large Devices, Wide Screens */
-            @media only screen and (max-width: 1200px) {
-                .login {
-                    width: 600px;
-                    font-size: 2em;
-                }
-            }
-            @media only screen and (max-width: 1100px) {
-                .login {
-                    margin-top: 18%;
-                    width: 600px;
-                    font-size: 1.7em;
-                }
-            }
-            /* Medium Devices, Desktops */
-            @media only screen and (max-width: 992px) {
-                .login {
-                    margin-top: 20%;
-                    width: 550px;
-                    font-size: 1.7em;
-                    min-height: 0;
-                }
-            }
-            /* Small Devices, Tablets */
-            @media only screen and (max-width: 768px) {
-                .login {
-                    margin-top: 0;
-                    width: 500px;
-                    font-size: 1.3em;
-                    min-height: 0;
-                }
-            }
-            /* Extra Small Devices, Phones */
-            @media only screen and (max-width: 480px) {
-                .login {
-                    margin-top: 0;
-                    width: 400px;
-                    font-size: 1em;
-                    min-height: 0;
-                }
-                .login h2 {
-                    margin-top: 0;
-                }
-            }
-            /* Custom, iPhone Retina */
-            @media only screen and (max-width: 320px) {
-                .login {
-                    margin-top: 0;
-                    width: 200px;
-                    font-size: 0.7em;
-                    min-height: 0;
-                }
-            }
-
-
-        </style>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="Preview page of Metronic Admin Theme #1 for " name="description" />
+        <meta content="" name="author" />
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link href="assets/login/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/login/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/login/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/login/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <link href="assets/login/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/login/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="assets/login/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="assets/login/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES -->
+        <link href="assets/login/pages/css/login-5.min.css" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL STYLES -->
+        <!-- BEGIN THEME LAYOUT STYLES -->
+        <!-- END THEME LAYOUT STYLES -->
+        <link rel="shortcut icon" href="assets/images/favicon.png">
     </head>
+    <!-- END HEAD -->
 
-    <body>
-        <div class="login">
-            <div class="heading">
-                <div class="login-content" style="width:100%;">
-
-                    <a href="<?php echo base_url(); ?>" class="logo">
-                        <img src="uploads/logo.png" alt=""/>
-                    </a>
-
+    <body class=" login">
+        <!-- BEGIN : LOGIN PAGE 5-1 -->
+        <div class="user-login-5">
+            <div class="row bs-reset">
+                <div class="col-md-6 bs-reset mt-login-5-bsfix">
+                    <div class="login-bg" style="background-image:url(assets/login/pages/img/login/bg1.jpg)">
+                        <img class="login-logo" src="uploads/logo.png" /> </div>
                 </div>
-                <?php if(isset($_SESSION['loginsuccess'])):?>
-                    <br/>
-                    <h3 style="color: rgba(255, 255, 255, 0.2);"><?php echo $_SESSION['loginsuccess'];?></h3>
-                    <br/>
-                <?php else:?>
-                    <h2 style="color: rgba(255, 255, 255, 0.2);">Sign in</h2><br/><br/>
-                <?php endif;?>
-                <form action="<?php echo base('login', 'ajax_login')?>" method="post">
-
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" name="email" class="form-control" placeholder="Username or email">
+                <div class="col-md-6 login-container bs-reset mt-login-5-bsfix">
+                    <div class="login-content">
+                        <h1><span class="micro-credit">Bidyapith</span> Login Area.</h1>
+                        <form action="<?php echo base('login', 'ajax_login')?>" class="login-form" method="post">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button>
+                                <span>Enter any username and password. </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <input class="form-control form-control-solid placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="Email" name="email" required/> </div>
+                                <div class="col-xs-6">
+                                    <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="Password" name="password" required/> </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="rem-password">
+                                        <label class="rememberme mt-checkbox mt-checkbox-outline">
+                                            <input type="checkbox" name="remember" value="1" /> Remember me
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8 text-right">
+                                    <div class="forgot-password">
+                                        <a href="javascript:;" id="forget-password" class="forget-password">Forgot Password?</a>
+                                    </div>
+                                    <button class="btn green" type="submit">Sign In</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- BEGIN FORGOT PASSWORD FORM -->
+                        <form class="forget-form" action="javascript:;" method="post">
+                            <h3 class="font-green">Forgot Password ?</h3>
+                            <p> Enter your e-mail address below to reset your password. </p>
+                            <div class="form-group">
+                                <input class="form-control placeholder-no-fix form-group" type="text" autocomplete="off" placeholder="Email" name="email" /> </div>
+                            <div class="form-actions">
+                                <button type="button" id="back-btn" class="btn green btn-outline">Back</button>
+                                <button type="submit" class="btn btn-success uppercase pull-right">Submit</button>
+                            </div>
+                        </form>
+                        <!-- END FORGOT PASSWORD FORM -->
                     </div>
-
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="Password">
+                    <div class="login-footer">
+                        <div class="row bs-reset">
+                            <div class="col-xs-5 bs-reset">
+                                <ul class="login-social">
+                                    <li>
+                                        <a href="https://www.facebook.com/NihalitHost/" target="_blank">
+                                            <i class="icon-social-facebook"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://twitter.com/NihalITHost" target="_blank">
+                                            <i class="icon-social-twitter"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-7 bs-reset">
+                                <div class="login-copyright text-right">
+                                    <p>Copyright &copy; Bidyapith <?php echo date('Y');?> By <a href="https://www.nihalit.com">Nihal-IT</a> </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <button type="submit" class="float">Login</button>
-                </form><br/>
-                <p><a href="<?php echo base('login', 'forgot_password')?>" style="color: rgba(255, 255, 255, 0.2);">Forgot Password..??</a></p>
+                </div>
             </div>
         </div>
-
-
+        <!-- END : LOGIN PAGE 5-1 -->
+        <!--[if lt IE 9]>
+<script src="assets/login/global/plugins/respond.min.js"></script>
+<script src="assets/login/global/plugins/excanvas.min.js"></script> 
+<script src="assets/login/global/plugins/ie8.fix.min.js"></script> 
+<![endif]-->
+        <!-- BEGIN CORE PLUGINS -->
+        <script src="assets/login/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <!-- END CORE PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="assets/login/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+        <script src="assets/login/global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL SCRIPTS -->
+        <script src="assets/login/global/scripts/app.min.js" type="text/javascript"></script>
+        <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+        <script src="assets/login/pages/scripts/login-5.min.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <!-- END THEME LAYOUT SCRIPTS -->
+        <script>
+            $(document).ready(function()
+            {
+                $('#clickmewow').click(function()
+                {
+                    $('#radio1003').attr('checked', 'checked');
+                });
+            })
+        </script>
     </body>
+
 </html>
