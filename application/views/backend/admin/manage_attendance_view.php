@@ -136,7 +136,9 @@ $('#attendanceUpdate').ajaxForm({
 		$('#overlayDiv').show();
 	},  
 	success: function (data){		
-		$( "#attendance_section_holder" ).html( data ); 
+		$( "#attendance_section_holder" ).html( data );
+        $('body,html').animate({scrollTop:0},800); 
+        toastr.success('Attendance Updated');  
 		$('#loading').fadeOut('slow');
 		$('#overlayDiv').fadeOut('slow');  
 						

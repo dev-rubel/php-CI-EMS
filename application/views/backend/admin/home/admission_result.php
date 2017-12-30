@@ -37,13 +37,6 @@
                     <?php echo get_phrase('add_result'); ?>
                 </a>
             </li>
-            <?php if(!empty($result)):?>
-            <li class="<?php echo !empty($result)?'active':'';?>">
-                <a href="#list2" data-toggle="tab"><i class="entypo-menu"></i> 
-                    <?php echo $Sclass.$Sgroup.' Mark-Sheet'?>
-                </a>
-            </li>
-            <?php endif;?>
             <li>
                 <a href="#list3" data-toggle="tab"><i class="entypo-menu"></i> 
                     Search
@@ -57,7 +50,7 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box <?php echo !empty($result)?'':'active';?>" id="list">
                 <div class="col-md-4 col-md-offset-1">
-                    <form action="<?php echo base('homemanage', 'add_admission_result') ?>" method="post">
+                    <form id="addResult" action="<?php echo base_url() .'index.php?homemanage/ajax_add_admission_result'; ?>" class="form-horizontal form-groups-bordered validate" method="post">                            
                         <div class="form-group">
                             <label>Admission Roll No.</label>
                             <input type="number" class="form-control" name="uniq_id" aria-describedby="emailHelp" placeholder="eg.29" autofocus>
@@ -73,53 +66,17 @@
                 <div class="col-md-offset-1 col-md-5" id="searchAdmissionStudent"></div>
 
             </div>
-            <!----TABLE LISTING STARTS-->
-            <div class="tab-pane box <?php echo !empty($result)?'active':'';?>" id="list2">
-
-                <h3 class="text-center"><a href="<?php echo base('Home', 'meritlistPage/'.$Oclass.'/'.$Ogroup);?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download '.$Sclass.'-'.$Sgroup.' Mark-Sheet'?></a></h3>
-                
-                <table id="example" class="table table-bordered datatable" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Merit</th>
-                            <th>Roll</th>
-                            <th>Name</th>
-                            <th>Father's Name</th>
-                            <th>Obtain Mark</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php /* pd($result); */ foreach($result as $key=>$list):?>
-                        <tr>
-                            <td><?php echo $key+1;?></td>
-                            <td><?php echo $list['uniq_id'];?></td>
-                            <td><?php echo $list['namebn'];?></td>
-                            <td><?php echo $list['fnamebn'];?></td>
-                            <td><?php echo $list['mark'];?></td>     
-                            <td width="100px">
-                            <?php if($list['status'] != 2):?>
-                                <a href="#" class="btn btn-danger btn-sm" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_new_student/<?php echo $list['std_id'];?>');">Admit Student</a>
-                            <?php else: 
-                                $invoice_id = $this->db->get_where('invoice', array('acc_code' => $list['uniq_id']))->row()->invoice_id;
-                            ?>
-                                <a href="#" class="btn btn-success btn-sm" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_view_invoice/<?php echo $invoice_id;?>');">Download Invoice</a>
-                            <?php endif;?>
-                            </td>                       
-                        </tr>
-                        <?php endforeach;?>
-                    </tbody>
-                </table>
-            </div>
-            <br>
+         
 
             <!-- TABLE LISTING ENDS -->
 			 
 			<div class="tab-pane box" id="list3">
-                <div class="col-md-4 col-md-offset-1">
-                    <form action="<?php echo base('homemanage', 'getClassResult')?>" method="post">
-                              <div class="form-group row">
-                                  <label class="col-form-label">Search mark-sheet by class</label>
+                
+                <div class="col-md-12">
+                    <form id="admissionResultHolder" action="<?php echo base_url() .'index.php?homemanage/ajax_getClassResult'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+                        <div class="col-md-3 col-md-offset-1">
+                                <div class="form-group row">
+                                    <label class="col-form-label">Search mark-sheet by class</label>
                                     <select class="form-control" id="classID" name="class" >
                                         <option>6</option>
                                         <option>7</option>
@@ -127,68 +84,116 @@
                                         <option>9</option>
                                         <option value="91">9 Voc</option>
                                     </select>
-                              </div>
-                        
-                               <div class="form-group row groupHolder">
-                                   <label class="col-md-2 col-form-label">Group</label>
-                                <select class="form-control" name="group" >
-                                    <option value="">Select</option>
-                                    <option class="group1" value="business-studies">Business Studies</option>
-                                    <option class="group1" value="science">Science</option>
-                                    <option class="group1" value="humanities">Humanities</option>
-                                    
-                                    <option class="group2" value="electrical">Electrical</option>
-                                    <option class="group2" value="mechanical">Mechanical</option>
-                                    <option class="group2" value="dressMaking">Dress Making</option>
-                                </select>
-                               </div>
-                        
-                                 <div class="form-group">
-                                    <button class="btn btn-primary" type="submit">Search</button>
+
+                                </div>
+                        </div>
+                        <div class="col-md-2">
+                                <div class="form-group row groupHolder">
+                                    <label class="col-md-2 col-form-label">Group</label>
+                                    <select class="form-control" name="group" >
+                                        <option value="">Select</option>
+                                        <option class="group1" value="business-studies">Business Studies</option>
+                                        <option class="group1" value="science">Science</option>
+                                        <option class="group1" value="humanities">Humanities</option>
+                                        
+                                        <option class="group2" value="electrical">Electrical</option>
+                                        <option class="group2" value="mechanical">Mechanical</option>
+                                        <option class="group2" value="dressMaking">Dress Making</option>
+                                    </select>
+                                </div>
+                        </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Search</button>
                             </div>
-                </form>
+                    </form>
                 </div>
+
+                <div id="admission_result_section_holder" class="col-md-12"></div>
             </div>
+
 
         </div>
 
-
     </div>
+
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <!--<script src="assets/js/jquery.dataTables.min.js"></script>-->
 
 
 <script>
+$(document).ready(function() { 
+    /* Change Password */
+    // toastr.options.positionClass = 'toast-bottom-right';
+
+    $('#addResult').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);            
+            toastr.success(jData.msg);  
+            $( "#searchAdmissionStudent" ).html( jData.html );
+            $('body,html').animate({scrollTop:0},800);
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                  
+        }
+    }); 
+
+    $('#admissionResultHolder').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+                $( "#admission_result_section_holder" ).html( '' );
+                $('body,html').animate({scrollTop:0},800);
+            } else {
+                toastr.success(jData.msg);  
+                $( "#admission_result_section_holder" ).html( jData.html );                               
+                $('body,html').animate({scrollTop:400},800);
+            }         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');   
+                              
+        }
+    }); 
+
+});
     
-    $("#classID").change(function() {
-        var selectValue = $("#classID option:selected").val();  
-        //alert(selectValue);
-        if(selectValue === "9"){
-            $('.group1,.groupHolder').show();
-            $('.group2').hide();
-        }else if(selectValue === "91"){
-            $('.group2,.groupHolder').show();
-            $('.group1').hide();
-        }else{
-            $('.groupHolder').hide();}
+$("#classID").change(function() {
+    var selectValue = $("#classID option:selected").val();  
+    //alert(selectValue);
+    if(selectValue === "9"){
+        $('.group1,.groupHolder').show();
+        $('.group2').hide();
+    }else if(selectValue === "91"){
+        $('.group2,.groupHolder').show();
+        $('.group1').hide();
+    }else{
+        $('.groupHolder').hide();}
+});
+$(document).ready(function () {
+    $('.groupHolder').hide();
+    
+    
+    $( "input[name=uniq_id]" ).keyup(function() {
+        var value = $( this ).val();
+        //alert(value);
+        $.ajax({
+        url: '<?php echo base_url();?>index.php?homemanage/getAdmitStdName/' + value ,
+        success: function(response)
+        {
+            $( "#searchAdmissionStudent" ).html( response );  
+        }
     });
-    $(document).ready(function () {
-        $('.groupHolder').hide();
-        
-        
-        $( "input[name=uniq_id]" ).keyup(function() {
-            var value = $( this ).val();
-            //alert(value);
-            $.ajax({
-            url: '<?php echo base_url();?>index.php?homemanage/getAdmitStdName/' + value ,
-            success: function(response)
-            {
-                $( "#searchAdmissionStudent" ).html( response );  
-            }
-        });
-        
-        });
-        $('#example').DataTable();
+    
     });
+    $('#example').DataTable();
+});
 </script>

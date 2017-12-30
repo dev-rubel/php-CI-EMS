@@ -863,7 +863,7 @@ class Admin extends CI_Controller
     function search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data = "", $page = "")
     {        
         if(isset($page_data['found_test']) == false){
-            $enroll_info = $this->db->get_where('enroll', array('group_id' => $group_id, 'roll' => $roll))->result_array();
+            $enroll_info = $this->db->get_where('enroll', array('student_id' => $id))->result_array();
             $std_info = $this->db->get_where('student', array('student_id' => $id))->result_array();
             $page_data['std_info']      =  $std_info[0];
             $page_data['enroll_info']   =  $enroll_info[0];
@@ -1906,12 +1906,39 @@ class Admin extends CI_Controller
         
     }
 
+    function ajax_add_class_routine()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['class_id']       = $this->input->post('class_id');
+            $data['shift_id']       = $this->input->post('shift_id');
+            $data['teacher_id']     = $this->input->post('teacher_id');
+            if($this->input->post('section_id') != '') {
+                $data['section_id'] = $this->input->post('section_id');
+            }
+            if($this->input->post('group_id') != '') {
+                $data['group_id'] = $this->input->post('group_id');
+            }
+            $data['subject_id']     = $this->input->post('subject_id');
+            $data['time_start']     = $this->input->post('time_start') + (12 * ($this->input->post('starting_ampm') - 1));
+            $data['time_end']       = $this->input->post('time_end') + (12 * ($this->input->post('ending_ampm') - 1));
+            $data['time_start_min'] = $this->input->post('time_start_min');
+            $data['time_end_min']   = $this->input->post('time_end_min');
+            $data['day']            = $this->input->post('day');
+            $data['year']           = $this->running_year;
+            $this->db->insert('class_routine', $data);
+            $this->jsonMsgReturn(true,'Successfully Added');
+        }   
+    }
+
     function ajaxClassRoutine()
     {    
-        $classID = $this->uri(3);     
-        $sectionID = $this->uri(4);     
-        $shiftID = $this->uri(5);     
-        $groupID = $this->uri(6);   
+        $classID = $this->uri(3);  
+        $sectionID = $this->uri(4);
+        $shiftID = $this->uri(5);
+        $groupID = $this->uri(6);
 
         if(!empty($groupID)){
             $page_data['group_id'] = $groupID;
@@ -1933,6 +1960,13 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'class_routine_add';
         $page_data['page_title'] = get_phrase('add_class_routine');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_class_routine_add()
+    {
+        $page_data['page_name']  = 'class_routine_add';
+        $page_data['page_title'] = get_phrase('add_class_routine');
+        $this->load->view('backend/admin/class_routine_add', $page_data);
     }
 
     function class_routine_view()
@@ -2684,6 +2718,97 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_upload_school_info()
+    {        
+        $data = implode('+',$_POST);
+        $this->db->update('settings',['description'=>$data],['type'=>'school_information']);
+        move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/school_logo.png');
+        $htmlData = $this->load->view('backend/admin/ajax_elements/school_setting_info_holder' , '', true);
+        $this->jsonMsgReturn(true,'Information Updated.',$htmlData);        
+    }
+
+    function ajax_update_favicon()
+    {
+        if(empty($_FILES['userfile']['name'])){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {    
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
+            $this->jsonMsgReturn(true,'Information Updated.');   
+        }
+    }
+
+    function ajax_upload_logo()
+    {        
+        if(empty($_FILES['userfile']['name'])){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {        
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/logo.png');
+            $this->jsonMsgReturn(true,'Information Updated.');   
+        }
+    }
+
+    function ajax_update_system_generalInfo()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+
+            $data['description'] = $this->input->post('system_name');
+            $this->db->where('type' , 'system_name');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('system_title_english');
+            $this->db->where('type' , 'system_title_english');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('system_title');
+            $this->db->where('type' , 'system_title');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('address');
+            $this->db->where('type' , 'address');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('phone');
+            $this->db->where('type' , 'phone');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('paypal_email');
+            // $data['description'] = $data['description']!=''?$data['description']:'';
+            $this->db->where('type' , 'paypal_email');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('currency');
+            $this->db->where('type' , 'currency');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('system_email');
+            $this->db->where('type' , 'system_email');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('system_name');
+            $this->db->where('type' , 'system_name');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('language');
+            $this->db->where('type' , 'language');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('text_align');
+            $this->db->where('type' , 'text_align');
+            $this->db->update('settings' , $data);
+
+            $data['description'] = $this->input->post('running_year');
+            $this->db->where('type' , 'running_year');
+            $this->db->update('settings' , $data);  
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/genarel_setting_info_holder' , '', true);
+            $this->jsonMsgReturn(true,'Information Updated.',$htmlData);         
+        }
+        
+    }
+
     function setting_menu()
     {
         $page_data['page_name']  = 'menus/setting_menu';
@@ -2721,6 +2846,102 @@ class Admin extends CI_Controller
         $this->db->update('settings' , $data);
         $this->session->set_flashdata('flash_message' , get_phrase('session_changed')); 
         redirect(base_url() . 'index.php?admin/dashboard/', 'refresh'); 
+    }
+
+    /***** UPDATE SITE COLOR *****/
+
+    function change_site_color()
+    {       
+        $mainColor = '#'.$this->input->post('main_color');
+        $hoverColor = '#'.$this->input->post('hover_color');
+        $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
+        $this->db->update('frontpages',['description'=>$hoverColor],['title'=>'hover_color']);
+        $this->flashmsg('site_color_changed');
+        redirect(base('admin', 'system_settings'));
+    }
+
+    function ajax_change_site_color()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {        
+            $mainColor = '#'.$this->input->post('main_color');
+            $hoverColor = '#'.$this->input->post('hover_color');
+            $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
+            $this->db->update('frontpages',['description'=>$hoverColor],['title'=>'hover_color']);
+            $htmlData = $this->load->view('backend/admin/ajax_elements/update_site_color_info' , $page_data, true);
+            $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
+        }
+    }
+
+    // Truncate Table Section 
+
+    function truncate_table_data()
+    {
+        $tableName = $this->input->post('truncate_table');
+        if(empty($tableName)){
+            $this->flashmsg('Please Select Table', 'error');
+            redirect(base('admin', 'system_settings'));        
+        }
+        $this->db->truncate($tableName); 
+        $tableName = ucwords(str_replace('_', ' ',$tableName));
+        $this->flashmsg('Clean '.$tableName.' Table');
+        redirect(base('admin', 'system_settings'));
+    } 
+
+    function ajax_truncate_table_data()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Select One Table.');
+        } else {           
+            $tableName = $this->input->post('truncate_table');
+            if(empty($tableName)){
+                $this->flashmsg('Please Select Table', 'error');
+                redirect(base('admin', 'system_settings'));        
+            }
+            $this->db->truncate($tableName); 
+            $this->jsonMsgReturn(true,'Truncate Table Data.'); 
+        }
+    }
+
+    // Site Status Section 
+
+    function updateSiteStatus()
+    {
+        $date = explode('-',$_POST['siteStatusTime']);
+        $data = '0|'.$date[2].'/'.$date[1].'/'.$date[0];
+    	if(!empty($_POST['status'])){
+    		$this->db->where('type','webAppStatus');
+    		$this->db->update('settings',array('description'=>1));
+    		$this->flashmsg('Now Site On');
+        	redirect(base('admin', 'system_settings'));
+    	}else{
+		    $this->db->where('type','webAppStatus');
+    		$this->db->update('settings',array('description'=>$data));
+    		$this->flashmsg('Now Site Off');
+        	redirect(base('admin', 'system_settings'));
+        }           
+    }
+
+    function ajax_update_site_status()
+    {       
+        $date = explode('-',$_POST['siteStatusTime']);
+        $data = '0|'.$date[2].'/'.$date[1].'/'.$date[0];
+    	if(!empty($_POST['status'])){
+    		$this->db->where('type','webAppStatus');
+            $this->db->update('settings',array('description'=>1));
+            
+    		$htmlData = $this->load->view('backend/admin/ajax_elements/site_status_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Now Site ON.',$htmlData);
+    	}else{
+		    $this->db->where('type','webAppStatus');
+            $this->db->update('settings',array('description'=>$data));
+            
+            $htmlData = $this->load->view('backend/admin/ajax_elements/site_status_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Now Site Off.',$htmlData);
+        }    
     }
 	
 	/***** UPDATE PRODUCT *****/

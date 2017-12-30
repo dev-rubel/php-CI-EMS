@@ -142,7 +142,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 		<div class="col-md-12 testimonial-body">
 		<input type="hidden" name="testimonial_id" value="<?php echo $std_info['testimonial_id']; ?>">
 		<input type="hidden" name="student_id" value="<?php echo $std_info['student_id']; ?>">
-			<span>This is to certify that</span><input type="text" name="student_name" value="<?php echo $std_info['student_name']; ?>" style="width: 400px;">
+			<span>This is to certify that</span><input type="text" name="student_name" value="<?php echo $std_info['student_name']; ?>" style="width: 400px;" required>
 			<span>father's name</span><input type="text" name="father_name" value="<?php echo $std_info['father_name']; ?>" style="width: 350px;">
 			<span>mother's name</span><input type="text" name="mother_name" value="<?php echo $std_info['mother_name']; ?>" style="width: 350px;">
 			<span>of Village:</span><input type="text" name="address[]" value="<?php echo $eachAddress[0]; ?>" style="width: 200px;">

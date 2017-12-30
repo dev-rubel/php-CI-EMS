@@ -119,9 +119,10 @@ $school_history = explode('+', $result['school_history']);
                                         
                                     </th>
                                     <th scope="row"><?php echo $list['title']; ?></th>
-                                    <td><button class="btn copyLink" data-clipboard-text="<?php echo base_url().'assets/otherFiles/'.$link;?>">
-    Copy to clipboard
-</button></td>
+                                    <td>
+                                        <button class="btn copyLink" data-clipboard-text="<?php echo base_url().'assets/otherFiles/'.$link;?>">
+                                        Copy to clipboard
+                                    </button></td>
                                     <td>
                                         <a href="#" class="btn btn-danger btn-xs" onclick="confirm_modal('<?php echo base('homemanage', 'delete_files'."/$id/$link"); ?>');"><?php echo lng('Delete this'); ?></a>          
                                     </td>

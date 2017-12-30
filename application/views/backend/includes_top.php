@@ -24,8 +24,10 @@
 <link rel="stylesheet" href="assets/newNav/newnavstyle.css">
 <link rel="stylesheet" href="assets/css/app.min.css">
 <link rel="stylesheet" href="assets/backend/css/slide-panel.css"> 
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"> 
 
 <script src="assets/newNav/navscrp.js" type="text/javascript"></script>
+
 <script>
 	  $(document).ready(function(){$(".vertical-nav").verticalnav({speed: 400,align: "left"});});
 </script>

@@ -119,6 +119,7 @@ $('#attendanceReportSelector').ajaxForm({
 	},  
 	success: function (data){		
 		$( "#attendance_report_section_holder" ).html( data ); 
+        $('body,html').animate({scrollTop:400},800);
 		$('#loading2').fadeOut('slow');
 		$('#overlayDiv').fadeOut('slow');  
 						

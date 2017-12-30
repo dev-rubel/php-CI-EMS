@@ -1,5 +1,5 @@
 <style>
-.panel-stat3 h2,h4{
+.extra-menu h2,h4{
     color: #fff;
 }
 .extra-menu {
@@ -110,8 +110,7 @@ function changePage(page)
             $('#manageHomeMainManu').hide();
             $('#ajaxPageContainer').html(response);
 
-            tinyMCE.init({ selector: '#tinyDes' });
-            new Clipboard('.copyLink');  
+            // tinyMCE.init({ selector: '#tinyDes' });
             $('#presentStatus').bootstrapToggle();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                

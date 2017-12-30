@@ -1,5 +1,5 @@
 <style>
-.panel-stat3 h2,h4{
+.extra-menu h2{
     color: #fff;
 }
 .extra-menu {
@@ -8,6 +8,7 @@
 }
 .extra-menu h4 {
     font-size: 13px !important;
+    color: #fff !important;
 }
 .customNavManu {
     margin-bottom: 20px;

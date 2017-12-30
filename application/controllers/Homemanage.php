@@ -376,6 +376,30 @@ class Homemanage extends CI_Controller
         $this->flashmsg('update_admission_setting');
         redirect(base('Homemanage', 'admission_query'));
     }
+
+    function ajax_update_admission_info()
+    {
+        $data = ['admission_sms_title', 'admission_sms_description', 'admission_exam_date', 'admission_exam_time', 'admission_session','admission_exam_mark'];
+
+        foreach($data as $k=>$each){
+            $this->db->where('type', $each);
+            $this->db->update('settings',array('description'=>$_POST[$each]));
+        }       
+                
+        $_POST['admission_link_status'] = !empty($_POST['admission_link_status'])?1:0;
+        $this->db->where('type', 'admission_link_status');
+        $this->db->update('settings',array('description'=>$_POST['admission_link_status']));
+
+        $page_data['nihalit'] = $_SESSION['name'] == 'NihalIT'?'Found':'';
+        $arr = ['admission_exam_date','admission_exam_time',
+        'admission_link_status','admission_sms_title',
+        'admission_sms_description','admission_session','admission_exam_mark'];
+        foreach($arr as $k=>$each){
+            $page_data[$each] = $this->db->get_where('settings',['type'=>$each])->row()->description;
+        }
+        $htmlData = $this->load->view('backend/admin/ajax_elements/update_admission_info' , $page_data, true);
+        $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
+    }
     
     //    MANAGE ADMISSION MARK
     
@@ -403,8 +427,33 @@ class Homemanage extends CI_Controller
             redirect(base('homemanage', 'admission_result'));
         endif;        
     }
+
+    function ajax_add_admission_result()
+    {
+        $session = $this->db->get_where('settings', 
+                ['type'=>'admission_session'])
+                    ->row()->description;
+        $uniq_id = $this->db->get_where('admission_result',
+                ['uniq_id'=>$_POST['uniq_id'], 'session' => $session])
+                    ->row()->id;
+        $id = $this->db->get_where('admit_std',
+                ['uniq_id'=>$_POST['uniq_id'], 'session' => $session])
+                    ->row()->id;
+        $_POST['std_id'] = $id;
+        $_POST['session'] = $session;
+        if(!empty($uniq_id)):
+            $this->db->where('std_id',$id);
+            $this->db->update('admission_result',['mark'=>$_POST['mark']]);
+            $htmlData = $this->getAdmitStdName($_POST['uniq_id'],'html');
+            $this->jsonMsgReturn(true,'Mark Updated.',$htmlData);
+        else:
+            $this->db->insert('admission_result',$_POST);            
+            $htmlData = $this->getAdmitStdName($_POST['uniq_id'],'html');
+            $this->jsonMsgReturn(true,'Mark Inserted.',$htmlData);
+        endif; 
+    }
     
-    function getAdmitStdName($value)  //ajax response
+    function getAdmitStdName($value, $html = '')  //ajax response
     {
         $session = $this->db->get_where('settings', 
                         ['type'=>'admission_session'])
@@ -436,7 +485,13 @@ class Homemanage extends CI_Controller
         $page_data['admission_year'] = $session;
         $page_data['student_id']     = $value;
 
-        $this->load->view('backend/admin/admission/ajax_admission_student_info' , $page_data);
+        if(!empty($html)){
+            $htmlData = $this->load->view('backend/admin/admission/ajax_admission_student_info' , $page_data, true);
+            return $htmlData;
+        } else {
+            $this->load->view('backend/admin/admission/ajax_admission_student_info' , $page_data);
+        }
+        
         
     }
     
@@ -476,6 +531,29 @@ class Homemanage extends CI_Controller
         $page_data['page_name']  = 'home/admission_result';
         $page_data['page_title'] = get_phrase('admission_result');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_getClassResult()
+    {
+        $group = !empty($_POST['group'])?$_POST['group']:'';
+        $session = $this->db->get_where('settings', 
+            ['type'=>'admission_session'])
+                    ->row()->description;
+        $this->db->select('*');
+        $this->db->from('admit_std');
+        $this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
+        $this->db->where('admit_std.class',$_POST['class']);
+        $this->db->where('admit_std.group', $group);
+        $this->db->where('admit_std.session', $session);
+        $this->db->order_by('admission_result.mark','desc');
+        $query = $this->db->get()->result_array();
+        if(!empty($query)):
+            $page_data['result']    = $query;
+            $htmlData = $this->load->view('backend/admin/ajax_elements/admission_result_section_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Data Found.',$htmlData);            
+        else:
+            $this->jsonMsgReturn(false,'No Data Found.');
+        endif;
     }
 
     public function transfer_admit_student()
@@ -585,6 +663,26 @@ class Homemanage extends CI_Controller
             redirect(base('admin', 'system_settings'));
         }
     }
+
+    function ajax_update_header_image()
+    {
+        $configUpload['upload_path']    = './assets/otherFiles';               
+        $configUpload['allowed_types']  = '*';     
+        $configUpload['max_size']       = '1024'; 
+        $configUpload['max_width']      = '1500';  
+        $configUpload['max_height']     = '300';    
+        $configUpload['overwrite']      = TRUE;    
+        $configUpload['file_name']      = 'header_image';                  
+        $this->upload->initialize($configUpload);   
+        if(!$this->upload->do_upload('header_img')){
+            $uploadedDetails    = $this->upload->display_errors();
+            $this->jsonMsgReturn(false,$uploadedDetails);
+        }else{
+            $uploadedDetails    = $this->upload->data(); 
+            $this->db->update('settings',array('description'=>$uploadedDetails['file_name']), array('settings_id'=>30));
+            $this->jsonMsgReturn(true,'Update Header Image');
+        }
+    }
 	
 
     
@@ -604,15 +702,7 @@ class Homemanage extends CI_Controller
     
     
     
-    function change_site_color()
-    {       
-        $mainColor = '#'.$this->input->post('main_color');
-        $hoverColor = '#'.$this->input->post('hover_color');
-        $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
-        $this->db->update('frontpages',['description'=>$hoverColor],['title'=>'hover_color']);
-        $this->flashmsg('site_color_changed');
-        redirect(base('admin', 'system_settings'));
-    }
+    
     
     function add_logo()
     {
@@ -961,24 +1051,7 @@ class Homemanage extends CI_Controller
         $this->flashmsg('Deleted');
         redirect(base('homemanage', 'gallery'));
     }
-    
-    function updateSiteStatus()
-    {
-        $date = explode('-',$_POST['siteStatusTime']);
-        $data = '0|'.$date[2].'/'.$date[1].'/'.$date[0];
-    	if(!empty($_POST['status'])){
-    		$this->db->where('type','webAppStatus');
-    		$this->db->update('settings',array('description'=>1));
-    		$this->flashmsg('Now Site On');
-        	redirect(base('admin', 'system_settings'));
-    	}else{
-		    $this->db->where('type','webAppStatus');
-    		$this->db->update('settings',array('description'=>$data));
-    		$this->flashmsg('Now Site Off');
-        	redirect(base('admin', 'system_settings'));
-    	}
-    
-    }
+
 
     function update_site_color()
     {
@@ -994,20 +1067,6 @@ class Homemanage extends CI_Controller
  
     // ======== TRUNCATE TABLE SECTION
     
-
-    function truncate_table_data()
-    {
-        $tableName = $this->input->post('truncate_table');
-        if(empty($tableName)){
-            $this->flashmsg('Please Select Table', 'error');
-            redirect(base('admin', 'system_settings'));        
-        }
-        $this->db->truncate($tableName); 
-        $tableName = ucwords(str_replace('_', ' ',$tableName));
-        $this->flashmsg('Clean '.$tableName.' Table');
-        redirect(base('admin', 'system_settings'));
-    } 
-
     function cleanAdmitStdTable()
     {
         $this->db->truncate('admit_std'); 
@@ -1032,6 +1091,12 @@ class Homemanage extends CI_Controller
     
     
     //   ========= REUSEABLE FUNCTION
+
+    function jsonMsgReturn($type, $msg, $html='') 
+    {
+        echo json_encode(['type'=>$type,'msg'=>$msg,'html'=>$html]);
+    }
+
     function flashmsg($msg,$error = '')
     {
         if(!empty($error)):

@@ -1,5 +1,5 @@
 <style>
-.panel-stat3 h2,h4{
+.extra-menu h2,h4{
     color: #fff;
 }
 .extra-menu {

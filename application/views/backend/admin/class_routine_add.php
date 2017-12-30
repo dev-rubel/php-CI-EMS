@@ -18,12 +18,12 @@
         </div>        
     </div>
 	<div class="col-md-8">
-		
-		<?php echo form_open(base_url() . 'index.php?admin/class_routine/create' , array('class' => 'form-horizontal form-groups validate','target'=>'_top'));?>
+	
+        <form id="addClassRoutine" action="<?php echo base_url() .'index.php?admin/ajax_add_class_routine'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
             <div class="form-group">
                 <label class="col-sm-2 control-label"><?php echo get_phrase('class');?></label>
                 <div class="col-sm-9">
-                    <select name="class_id" class="form-control selectboxit" style="width:100%;"
+                    <select name="class_id" class="form-control" style="width:100%;"
                         onchange="return get_class_section_subject(this.value)">
                         <option value=""><?php echo get_phrase('select_class');?></option>
                         <?php 
@@ -41,7 +41,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><?php echo get_phrase('shift');?></label>
                 <div class="col-sm-9">
-                    <select name="shift_id" class="form-control selectboxit" style="width:100%;">
+                    <select name="shift_id" class="form-control" style="width:100%;">
                         <option value=""><?php echo get_phrase('select_shift');?></option>
                         <?php 
                         $shifts = $this->db->get('shift')->result_array();
@@ -58,7 +58,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><?php echo get_phrase('teacher');?></label>
                 <div class="col-sm-9">
-                    <select id="teacher_id" name="teacher_id" onchange="getTeacherRoutine(this)" class="form-control selectboxit" style="width:100%;">
+                    <select id="teacher_id" name="teacher_id" onchange="getTeacherRoutine(this)" class="form-control" style="width:100%;">
                         <option value=""><?php echo get_phrase('select_teacher');?></option>
                         <?php 
                         $teachers = $this->db->get('teacher')->result_array();
@@ -77,7 +77,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><?php echo get_phrase('day');?></label>
                 <div class="col-sm-9">
-                    <select name="day" class="form-control selectboxit" style="width:100%;">
+                    <select name="day" class="form-control" style="width:100%;">
                         <option value="">Select Day</option>
                         <option value="sunday">sunday</option>
                         <option value="monday">monday</option>
@@ -94,7 +94,7 @@
                 <label class="col-sm-2 control-label"><?php echo get_phrase('starting_time');?></label>
                 <div class="col-sm-9">
                     <div class="col-md-3">
-                        <select name="time_start" class="form-control selectboxit">
+                        <select name="time_start" class="form-control">
                             <option value=""><?php echo get_phrase('hour');?></option>
                             <?php for($i = 0; $i <= 12 ; $i++):?>
                                 <option value="<?php echo $i;?>"><?php echo $i;?></option>
@@ -102,7 +102,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <select name="time_start_min" class="form-control selectboxit">
+                        <select name="time_start_min" class="form-control">
                             <option value=""><?php echo get_phrase('minutes');?></option>
                             <?php for($i = 0; $i <= 11 ; $i++):?>
                                 <option value="<?php echo $i * 5;?>"><?php echo $i * 5;?></option>
@@ -110,7 +110,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <select name="starting_ampm" class="form-control selectboxit">
+                        <select name="starting_ampm" class="form-control">
                             <option value="1">am</option>
                             <option value="2">pm</option>
                         </select>
@@ -121,7 +121,7 @@
                 <label class="col-sm-2 control-label"><?php echo get_phrase('ending_time');?></label>
                 <div class="col-sm-9">
                     <div class="col-md-3">
-                        <select name="time_end" class="form-control selectboxit">
+                        <select name="time_end" class="form-control">
                             <option value=""><?php echo get_phrase('hour');?></option>
                             <?php for($i = 0; $i <= 12 ; $i++):?>
                                 <option value="<?php echo $i;?>"><?php echo $i;?></option>
@@ -129,7 +129,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <select name="time_end_min" class="form-control selectboxit">
+                        <select name="time_end_min" class="form-control">
                             <option value=""><?php echo get_phrase('minutes');?></option>  
                             <?php for($i = 0; $i <= 11 ; $i++):?>
                                 <option value="<?php echo $i * 5;?>"><?php echo $i * 5;?></option>
@@ -137,7 +137,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <select name="ending_ampm" class="form-control selectboxit">
+                        <select name="ending_ampm" class="form-control">
                             <option value="1">am</option>
                             <option value="2">pm</option>
                         </select>
@@ -156,6 +156,34 @@
 
 
 <script type="text/javascript">
+
+
+$(document).ready(function() { 
+    /* Change Password */
+    // toastr.options.positionClass = 'toast-bottom-right';
+
+    $('#addClassRoutine').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg); 
+                $('#addClassRoutine').resetForm();                              
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    }); 
+
+
+});
 
     function getTeacherRoutine(data)
     {
