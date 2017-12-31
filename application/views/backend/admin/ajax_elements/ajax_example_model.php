@@ -6,7 +6,7 @@ $(document).ready(function() {
     /* Change Password */
     // toastr.options.positionClass = 'toast-bottom-right';
 
-    $('#addResult').ajaxForm({ 
+    $('#updateSmsSetting').ajaxForm({ 
         beforeSend: function() {                
                 $('#loading2').show();
                 $('#overlayDiv').show();
@@ -19,7 +19,7 @@ $(document).ready(function() {
             } else {
                 toastr.success(jData.msg);  
                 $( "#admission_result_section_holder" ).html( jData.html );
-                               
+                $('#myFormId').resetForm();               
             }   
             $('body,html').animate({scrollTop:0},800);         
             $('#loading2').fadeOut('slow');
@@ -29,6 +29,8 @@ $(document).ready(function() {
 
 
 });
+
+$('.datepicker').datepicker();
 
 </script>
 

@@ -17,13 +17,13 @@
 <br>
 <br>
 <?php 
-$links = ['teacher','teacher_class_routine'];
-$title = ['Teachers List','Teachers Class Routine'];
+$links = ['ajax_teacher_create', 'teacher','teacher_class_routine'];
+$title = ['Add New Teacher','Teachers List','Teachers Class Routine'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="teacherNavManu">
 
-<div class="col-md-3"></div>
+<div class="col-md-1"></div>
 <?php foreach($links as $k=>$each):?>
     <div class="col-sm-3 col-md-3" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
@@ -108,7 +108,7 @@ function changePage(page)
             $('#teacherMainManu').hide();
             $('#ajaxPageContainer').html(response);
 
-            
+            $('.datepicker').datepicker();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

@@ -18,7 +18,9 @@
         <br>            
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="list">
-				
+            
+            <div id="editSubjectHolder"></div>
+				<div id="subjectList">
                 <table class="table table-bordered datatable" id="table_export">
                 	<thead>
                 		<tr>
@@ -49,7 +51,7 @@
                                     
                                     <!-- EDITING LINK -->
                                     <li>
-                                        <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_edit_subject/<?php echo $row['subject_id'];?>');">
+                                        <a href="#" onclick="editSubject('<?php echo $row['subject_id'];?>')">
                                             <i class="entypo-pencil"></i>
                                                 <?php echo get_phrase('edit');?>
                                             </a>
@@ -70,6 +72,7 @@
                         <?php endforeach;?>
                     </tbody>
                 </table>
+                </div>
 			</div>
             <!----TABLE LISTING ENDS--->
             
@@ -77,7 +80,10 @@
 			<!----CREATION FORM STARTS---->
 			<div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
-                	<?php echo form_open(base_url() . 'index.php?admin/subject/create' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'), array('class_id'=>$class_id));?>
+                	
+                    <form id="createSubject" action="<?php echo base_url() .'index.php?admin/ajax_create_subject'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+
+                        <input type="hidden" name="class_id" value="<?php echo $class_id; ?>">
                         <div class="padded">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('subject_name');?></label>
@@ -134,6 +140,7 @@
                             
                             <input type="hidden" name="subject_code" value="<?php echo substr(md5(rand(0, 1000000)), 0, 5);?>">
                             <input type="hidden" name="year" value="<?php echo $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;?>">
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('teacher');?></label>
                                 <div class="col-sm-5">
@@ -244,4 +251,58 @@
        return splitStr.join('-'); 
     }
 		
+</script>
+
+<script>
+
+$(document).ready(function() {
+
+    $('#createSubject').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);  
+                $( "#subjectList" ).html( jData.html );
+                $("#table_export").dataTable();
+                $('#createSubject').resetForm();               
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    });
+    
+      
+
+
+});
+
+function editSubject(subjectID)
+    {
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_subject/'+subjectID,
+            beforeSend: function(){
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function(data){
+                var jData = JSON.parse(data); 
+                
+                toastr.success(jData.msg);  
+                $( "#editSubjectHolder" ).html( jData.html );
+                $('body,html').animate({scrollTop:350},800);         
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+    }
+
 </script>

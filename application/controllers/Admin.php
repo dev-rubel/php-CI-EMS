@@ -473,6 +473,63 @@ class Admin extends CI_Controller
         }
     }
 
+    function ajax_student_create2()
+    {   
+        $this->jsonMsgReturn(true,'Information Insert.');
+    }
+        // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
+    function ajax_student_create()
+    {
+        $running_year = $this->running_year;
+        $nameNumaric = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
+        $session = $this->db->get_where('settings', 
+        ['type'=>'admission_session'])->row()->description;
+        $year = substr($session, -2);
+
+        $this->db->like('uniq_id', $year, 'after');
+        $this->db->where('session', $session);
+        $exist = $this->db->get('admit_std')->result_array();
+        if(!empty($exist)) {     
+            $last = end($exist);
+            $uniq_id = str_pad(substr($last['uniq_id'], -4)+1, 4, '0', STR_PAD_LEFT);
+            $uniq_id = $year.$nameNumaric.$uniq_id;
+        } else {
+            $uniq_id = str_pad(1, 4, '0', STR_PAD_LEFT);
+            $uniq_id = $year.$nameNumaric.$uniq_id;
+        }
+
+        // END CREATE STUDENT ACCOUNT UNIQUE CODE
+        $this->db->insert('admit_std',
+            ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
+        
+        
+        $table1Value1 = array_slice($_POST, 0, 21);
+        $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
+        $table1Value3 = array_merge($table1Value1,$table1Value2);    
+
+        // pd($table1Value3);
+
+        //pd($table2Value1);
+        $this->db->insert('student', $table1Value3);
+        $student_id = $this->db->insert_id();
+
+
+        $table2Value1 = array_slice($_POST, 22, 5);
+        $data2['student_id']     = $student_id;
+        $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);            
+        $data2['book_no']        = $_POST['book_no'];            
+        $data2['date_added']     = strtotime(date("Y-m-d H:i:s"));
+        $data2['year']           = $running_year;
+        $table2Value2 = array_merge($data2,$table2Value1);
+
+        $this->db->insert('enroll', $table2Value2);
+        if(!empty($_FILES['userfile']['name'])){
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');        
+        }            
+        $this->jsonMsgReturn(true,'Information Insert.');
+        
+    }
+
     function student_menu()
     {
         $page_data['page_name']  = 'menus/student_menu';
@@ -1131,6 +1188,68 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_teacher');
         $this->load->view('backend/index', $page_data);
     }
+
+    function ajax_teacher_page()
+    {
+        $htmlData = $this->load->view('backend/admin/teacher/teacher' , '', true);
+        $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
+    }
+
+    function ajax_create_teacher()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['name']        = $this->input->post('name');
+            $data['birthday']    = $this->input->post('birthday');
+            $data['sex']         = $this->input->post('sex');
+            $data['address']     = $this->input->post('address');
+            $data['phone']       = $this->input->post('phone');
+            $data['email']       = $this->input->post('email');
+            $data['password']    = sha1($this->input->post('password'));
+            $this->db->insert('teacher', $data);
+            $teacher_id = $this->db->insert_id();
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $teacher_id . '.jpg');
+            $this->jsonMsgReturn(true,'Teacher Added.');
+        }
+    }
+
+    function ajax_edit_teacher()
+    {
+        $page_data['teacher_id'] = $this->uri(3);
+        $page_data['running_year'] = $this->running_year;
+        $htmlData = $this->load->view('backend/admin/teacher/teacher_edit_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad.',$htmlData);
+    }
+
+    function ajax_update_teacher()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {            
+            $teacher_id = $this->uri(3);
+            $data['name']        = $this->input->post('name');
+            $data['birthday']    = $this->input->post('birthday');
+            $data['sex']         = $this->input->post('sex');
+            $data['address']     = $this->input->post('address');
+            $data['phone']       = $this->input->post('phone');
+            $data['email']       = $this->input->post('email');
+            
+            $this->db->where('teacher_id', $teacher_id);
+            $this->db->update('teacher', $data);
+            $this->ajax_teacher_page();
+        }
+    }
+
+    function ajax_delete_teacher()
+    {
+        $teacher_id = $this->uri(3);
+        $this->db->where('teacher_id', $teacher_id);
+        $this->db->delete('teacher');        
+        $this->jsonMsgReturn(true,'Teacher Deleted');
+    }
     
     /****MANAGE SUBJECTS*****/
     function subject($param1 = '', $param2 = '' , $param3 = '')
@@ -1147,7 +1266,7 @@ class Admin extends CI_Controller
                 $_POST['group_id'] = $_POST['group_subject_name'];
                 unset($_POST['group_subject_name']);
             }
-            //pd($_POST);
+            // pd($_POST);
             $this->db->insert('subject', $_POST);
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             redirect(base_url() . 'index.php?admin/subject/'.$_POST['class_id'], 'refresh');
@@ -1174,6 +1293,49 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'subject';
         $page_data['page_title'] = get_phrase('manage_subject'.' (Class: '.$className.')');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_create_subject()
+    {
+        $class_id = $_POST['class_id'];
+        if(!empty($_POST['join_subject_code'])){
+            unset($_POST['subject_code']);
+            $_POST['subject_code'] = $_POST['join_subject_code'];
+            unset($_POST['join_subject_code']);
+        }
+        if(!empty($_POST['group_subject_name'])){
+            $_POST['group_id'] = $_POST['group_subject_name'];
+            unset($_POST['group_subject_name']);
+        }
+        
+        $this->db->insert('subject', $_POST);
+        $this->ajax_subject_table_holder($class_id);
+    }
+
+    function ajax_subject_table_holder($class_id)
+    {
+        $page_data['class_id']   = $class_id;
+        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $class_id))->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/subject_table_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Subject Updated',$htmlData);
+    }
+
+    function ajax_edit_subject()
+    {
+        $subject_id = $this->uri(3);
+        $page_data['subject_id']   = $subject_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_subject_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_subject()
+    {
+        $subject_id = $this->uri(3);
+        $class_id = $_POST['class_id'];        
+        $this->db->where('subject_id', $subject_id);
+        $this->db->update('subject', $_POST);
+
+        $this->ajax_subject_table_holder($class_id);
     }
 
     function subject_menu()
@@ -1935,7 +2097,6 @@ class Admin extends CI_Controller
 
     function ajaxClassRoutine()
     {    
-        $classID = $this->uri(3);  
         $sectionID = $this->uri(4);
         $shiftID = $this->uri(5);
         $groupID = $this->uri(6);
@@ -3027,6 +3188,18 @@ class Admin extends CI_Controller
         $this->flashmsg('information_updated');
         redirect(base('admin', 'sms_settings'));
     }
+    
+    function ajax_save_sms_setting()
+    {
+        $data['description'] = $_POST['sms_user'];
+        $this->db->where('type','nihalit_sms_user');
+        $this->db->update('settings',$data);
+        
+        $data1['description'] = $_POST['sms_password'];
+        $this->db->where('type','nihalit_sms_password');
+        $this->db->update('settings',$data1);
+        $this->jsonMsgReturn(true,'Information Updated.');
+    }
 
     function send_custom_sms($sender = '',$msg = '', $mobile = '', $arg = false)
     {
@@ -3059,6 +3232,33 @@ class Admin extends CI_Controller
             return true;
         }
         
+    }
+
+    function ajax_send_custom_sms()
+    {
+        $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
+                ->row()->description;            
+        $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
+                ->row()->description; 
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {              
+            $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
+            $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
+            $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
+            if($arg == true){
+                $msg = str_replace('2C', '0A', $msg);    
+            }
+
+            if($_POST['sms_lng']=='bangla') {
+                $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);            
+            }
+            if($_POST['sms_lng']=='english' || $arg == true) {
+                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+            }
+            $this->jsonMsgReturn(true,'SMS Send.');
+        }
     }
 
     function send_notice_sms()
@@ -3848,12 +4048,13 @@ class Admin extends CI_Controller
     {
         $this->load->view('backend/admin/code_edit');
     }
+
     
     //   ========= REUSEABLE FUNCTION
 
-    function jsonMsgReturn($type, $msg) 
+    function jsonMsgReturn($type, $msg, $html='') 
     {
-        echo json_encode(['type'=>$type,'msg'=>$msg]);
+        echo json_encode(['type'=>$type,'msg'=>$msg,'html'=>$html]);
     }
 
     function flashmsg($msg,$error = '')

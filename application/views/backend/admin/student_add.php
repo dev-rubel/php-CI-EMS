@@ -9,7 +9,9 @@
             </div>
             <div class="panel-body">
 
-                <?php echo form_open_multipart(base_url() . 'index.php?admin/student/create/', array('class' => 'form-horizontal form-groups-bordered validate', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'name' => 'studentAddForm', 'id' => 'stdAddForm')); ?>
+    
+                <form id="addStudentInfo" action="<?php echo base_url() .'index.php?admin/ajax_student_create'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype='multipart/form-data'>   
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
@@ -17,7 +19,7 @@
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="name" data-validation="required" autofocus>
+                            <input type="text" id="focusField" class="form-control" name="name" data-validation="required" autofocus>
                         </div>
                     </div>
 
@@ -434,12 +436,38 @@
 </div>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <script>
-    $.validate({
-        modules: 'security, file',
-        showErrorDialogs: false
-    });
+    // $.validate({
+    //     modules: 'security, file',
+    //     showErrorDialogs: false
+    // });
 </script>
 <script type="text/javascript">
+
+    $("#focusField").focus();
+    $('#addStudentInfo').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);
+
+            if(!jData.type) {
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);
+                $('#addStudentInfo').resetForm();
+                $("#focusField").focus();
+            }
+            $('body,html').animate({scrollTop:0},800);
+            $('#loading').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');
+        }
+    }); 
+
+
+
+
     $('.jscHolder').hide();
     $('.sectionHolder').hide();
     $('.groupHolder').hide();

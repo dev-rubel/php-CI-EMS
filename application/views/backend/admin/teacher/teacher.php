@@ -1,10 +1,6 @@
-
-            <a href="javascript:;" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_teacher_add/');" 
-            	class="btn btn-primary pull-right">
-                <i class="entypo-plus-circled"></i>
-            	<?php echo get_phrase('add_new_teacher');?>
-                </a> 
+<div id="teacherEditHolder"></div>
                 <br><br>
+				<div id="teacherList">
                <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -18,7 +14,7 @@
                         <?php 
                                 $teachers	=	$this->db->get('teacher' )->result_array();
                                 foreach($teachers as $row):?>
-                        <tr>
+                        <tr id="teacher<?php echo $row['teacher_id']; ?>">
                             <td><img src="<?php echo $this->crud_model->get_image_url('teacher',$row['teacher_id']);?>" class="img-circle" width="30" /></td>
                             <td><?php echo $row['name'];?></td>
                             <td><?php echo $row['email'];?></td>
@@ -32,7 +28,7 @@
                                         
                                         <!-- teacher EDITING LINK -->
                                         <li>
-                                        	<a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_teacher_edit/<?php echo $row['teacher_id'];?>');">
+                                        	<a href="#" onclick="editTeacher('<?php echo $row['teacher_id'];?>')">
                                             	<i class="entypo-pencil"></i>
 													<?php echo get_phrase('edit');?>
                                                	</a>
@@ -41,7 +37,7 @@
                                         
                                         <!-- teacher DELETION LINK -->
                                         <li>
-                                        	<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/teacher/delete/<?php echo $row['teacher_id'];?>');">
+                                        	<a href="#" onclick="deleteTeacher('<?php echo $row['teacher_id'];?>')">
                                             	<i class="entypo-trash"></i>
 													<?php echo get_phrase('delete');?>
                                                	</a>
@@ -54,11 +50,54 @@
                         <?php endforeach;?>
                     </tbody>
                 </table>
-
+			</div>
 
 
 <!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
+
+function editTeacher(teacherID)
+{
+	$.ajax({
+		type: 'GET',
+		url: '<?php echo base_url();?>index.php?admin/ajax_edit_teacher/'+teacherID,
+		beforeSend: function(){
+			$('#loading2').show();
+			$('#overlayDiv').show();
+		},
+		success: function(data){
+			var jData = JSON.parse(data); 
+			
+			toastr.success(jData.msg);  
+			$( "#teacherEditHolder" ).html( jData.html );
+			$('.datepicker').datepicker();
+			$('body,html').animate({scrollTop:300},800);         
+			$('#loading2').fadeOut('slow');
+			$('#overlayDiv').fadeOut('slow');
+		}
+	});
+}
+
+function deleteTeacher(teacherID)
+{
+	$.ajax({
+		type: 'GET',
+		url: '<?php echo base_url();?>index.php?admin/ajax_delete_teacher/'+teacherID,
+		beforeSend: function(){
+			$('#loading2').show();
+			$('#overlayDiv').show();
+			return confirm('Are You Sure?');
+		},
+		success: function(data){
+			var jData = JSON.parse(data); 
+			$('#teacher'+teacherID).remove();
+			toastr.success(jData.msg);  
+			$('body,html').animate({scrollTop:0},800);         
+			$('#loading2').fadeOut('slow');
+			$('#overlayDiv').fadeOut('slow');
+		}
+	});
+}
 
 	jQuery(document).ready(function($)
 	{

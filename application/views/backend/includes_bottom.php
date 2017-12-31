@@ -25,7 +25,7 @@ $url = $url[0];
 <script src="assets/js/fileinput.js"></script>
 
 <!-- Ajax Request Handle -->
-<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script src="assets/backend/js/jquery.form.js"></script> 
 
 <!--start for homemanage controller-->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>

@@ -1,8 +1,4 @@
 <hr />
-<?php
-
-
-?>
 <div class="row">
     <div class="col-md-12">
 
@@ -25,7 +21,9 @@
 
 
                 <div class="tab-pane active" id="v-home">
-                    <form class="form-horizontal form-groups-bordered validate" action="<?php echo base('admin', 'save_sms_setting');?>" method="post">
+                 
+                    <form id="updateSmsSetting" action="<?php echo base_url() .'index.php?admin/ajax_save_sms_setting'; ?>" class="form-horizontal form-groups-bordered validate" method="post">
+                    
                         <div class="form-group">
                             <label  class="col-sm-3 control-label"><?php echo get_phrase('nihalit_username'); ?></label>
                             <div class="col-sm-5">
@@ -47,7 +45,7 @@
                 </div>
 
                 <div class="tab-pane" id="v-sendsms">
-                    <form class="form-horizontal form-groups-bordered validate" action="<?php echo base('admin', 'send_custom_sms');?>" method="post">
+                    <form id="sendCustomSMS" action="<?php echo base_url() .'index.php?admin/ajax_send_custom_sms'; ?>" class="form-horizontal form-groups-bordered validate" method="post">
                         <div class="form-group">
                             <label  class="col-sm-3 control-label"><?php echo get_phrase('SMS Language'); ?></label>
                             <div class="form-check">
@@ -96,3 +94,53 @@
 
     </div>
 </div>
+
+<script>
+$(document).ready(function() { 
+
+    // update sms setting
+    
+    $('#updateSmsSetting').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);     
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    }); 
+
+    // send custom sms
+
+    $('#sendCustomSMS').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);  
+                $('#sendCustomSMS').resetForm();   
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    }); 
+
+
+});
+</script>

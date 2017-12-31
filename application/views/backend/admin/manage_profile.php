@@ -95,7 +95,8 @@
     <?php if($_SESSION['name']=='NihalIT'):?>
     <div class="tab-pane box" id="addac" style="padding: 5px">
         <div class="box-content">
-        <form id="addAccount" action="<?php echo base_url() .'index.php?admin/ajax_add_account'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data">                            
+        <form id="addAccount" action="<?php echo base_url() .'index.php?admin/ajax_add_account'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data"> 
+
                 <div class="form-group">
                 <div class="col-md-1"></div>
                     <label class="col-sm-1 control-label"><?php echo get_phrase('name');?></label>
@@ -235,6 +236,10 @@ $(document).ready(function() {
     // toastr.options.positionClass = 'toast-bottom-right';
 
     $('#changePassword').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
         success: function (data){
             var jData = JSON.parse(data);
             if(!jData.type) {    
@@ -242,12 +247,19 @@ $(document).ready(function() {
             } else {
                 toastr.success(jData.msg);
                 $('#changePassword').clearForm();
-            }                
+            }
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow'); 
         }
     }); 
 
     /* Add Account */
     $('#addAccount').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
         success: function (data){
             var jData = JSON.parse(data);
             if(!jData.type) {                    
@@ -255,49 +267,33 @@ $(document).ready(function() {
             } else {
                 toastr.success(jData.msg);                
                 $('#addAccount').resetForm();
-            }                
+            }
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow'); 
         }
     }); 
 
     /* Update Account */
     $('#updateAccount').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
         success: function (data){
             
             toastr.success('Updated');    
-            $( "#profile_info" ).html( data );  
+            $( "#profile_info" ).html( data ); 
                             
         }
+        $('body,html').animate({scrollTop:0},800);         
+        $('#loading2').fadeOut('slow');
+        $('#overlayDiv').fadeOut('slow'); 
     }); 
  
 
     
     
 }); 
-
-// $('#my-form').submit( function(e) {
-//     e.preventDefault();
-
-//     var data = new FormData(this); // <-- 'this' is your form element
-
-//     $.ajax({
-//             url: '/my_URL/',
-//             data: data,
-//             beforeSend: function() {                
-//                 $('#loading2').show();
-//                 $('#overlayDiv').show();
-//             },  
-//             cache: false,
-//             contentType: false,
-//             processData: false,
-//             type: 'POST',     
-//             success: function(data){
-//                 toastr.error("<?php //echo get_phrase('select_class_for_promotion_to_and_from');?>");
-//                 return false;
-//             }, error: function (e) {
-//                 $("#result").text(e.responseText);
-//                 console.log("ERROR : ", e);
-//                 $("#btnSubmit").prop("disabled", false);
-//             }
-//     });
 
 </script>
