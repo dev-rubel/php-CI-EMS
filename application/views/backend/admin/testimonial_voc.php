@@ -150,7 +150,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<span>Upazila:</span><input type="text" name="address[]" value="<?php echo $eachAddress[2]; ?>" style="width: 200px;">
 			<span>Dist:</span><input type="text" name="address[]" value="<?php echo $eachAddress[3]; ?>" style="width: 200px;">
 			<span>was student of this school. He passed the Vocational Examination in 20</span><input type="text" name="pass_year" value="<?php echo $std_info['pass_year']; ?>" style="width: 30px;">
-			<span> from this school bearing Roll </span><input type="text" value="Homna-1" name="pass_no" readonly>
+			<span> from this school bearing Roll </span><input type="text" value="SNRB-1" name="pass_no" readonly>
 			<span>No.</span><input type="text" value="<?php echo $std_info['pass_roll']; ?>" name="pass_roll">
 			<span>Registration No.</span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
 			<span>Session</span><input type="text" name="pass_session" value="<?php echo $std_info['pass_session']; ?>" style="width: 60px;">
@@ -215,7 +215,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<span>Upazila:</span><input type="text" name="address[]" value="<?php echo $paadress[2]; ?>" style="width: 200px;">
 			<span>Dist:</span><input type="text" name="address[]" value="<?php echo $paadress[3]; ?>" style="width: 200px;">
 			<span>was student of this school. He passed the Vocational Examination in 20</span><input type="text" name="pass_year" value="<?php echo date('y'); ?>" style="width: 30px;">
-			<span> from this school bearing Roll </span><input type="text" value="Homna-1" name="pass_no" readonly>			
+			<span> from this school bearing Roll </span><input type="text" value="SNRB-1" name="pass_no" readonly>			
 			<span>No.</span><input type="text" value="<?php echo $enroll_info['roll']; ?>" name="pass_roll">
 			<span>Registration No.</span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
 			<span>Session</span><input type="text" name="pass_session" style="width: 60px;">

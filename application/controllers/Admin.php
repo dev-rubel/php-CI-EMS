@@ -3476,13 +3476,16 @@ class Admin extends CI_Controller
             
             $this->db->where('admin_id', $this->session->userdata('admin_id'));
             $this->db->update('admin', $data);
+
             if(!empty($_FILES['userfile']['name'])){
                 move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
             }
             $page_data['edit_data']  = $this->db->get_where('admin', array(
                 'admin_id' => $this->session->userdata('admin_id')
             ))->result_array();
-            $this->load->view('backend/admin/ajax_elements/update_profile_info', $page_data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/update_profile_info', $page_data, true);
+            $this->jsonMsgReturn(true,'Successully Updated', $htmlData);
         }
     }
 

@@ -38,7 +38,7 @@
                 <div class="box-content">
 					
                         
-                        <form id="updateAccount" action="<?php echo base_url() .'index.php?admin/ajax_update_profile'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data">                            
+                        <form id="updateAccount" action="<?php echo base_url() .'index.php?admin/ajax_update_profile'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data">                            
                             
                             <div id="profile_info">
 
@@ -85,7 +85,7 @@
                               <div class="col-sm-offset-3 col-sm-5">
                                   <button type="submit" class="btn btn-info"><?php echo get_phrase('update_profile');?></button>
                               </div>
-								</div>
+                            </div>
                         </form>
 						
                 </div>
@@ -95,7 +95,7 @@
     <?php if($_SESSION['name']=='NihalIT'):?>
     <div class="tab-pane box" id="addac" style="padding: 5px">
         <div class="box-content">
-        <form id="addAccount" action="<?php echo base_url() .'index.php?admin/ajax_add_account'; ?>" class="form-horizontal form-groups-bordered validate" method="post" enctype="multipart/form-data"> 
+        <form id="addAccount" action="<?php echo base_url() .'index.php?admin/ajax_add_account'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data"> 
 
                 <div class="form-group">
                 <div class="col-md-1"></div>
@@ -186,7 +186,7 @@
         <?php 
                     foreach($edit_data as $row):
                         ?>
-                        <form id="changePassword" action="<?php echo base_url() .'index.php?admin/ajax_change_password'; ?>" class="form-horizontal form-groups-bordered validate" method="post">
+                        <form id="changePassword" action="<?php echo base_url() .'index.php?admin/ajax_change_password'; ?>" class="form-horizontal form-groups-bordered" method="post">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"><?php echo get_phrase('current_password');?></label>
                                 <div class="col-sm-5">
@@ -281,14 +281,19 @@ $(document).ready(function() {
                 $('#overlayDiv').show();
         },  
         success: function (data){
-            
-            toastr.success('Updated');    
-            $( "#profile_info" ).html( data ); 
-                            
+            var jData = JSON.parse(data);
+            if(!jData.type) {                    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);     
+                $( "#profile_info" ).html( jData.html ); 
+            }            
+
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                
         }
-        $('body,html').animate({scrollTop:0},800);         
-        $('#loading2').fadeOut('slow');
-        $('#overlayDiv').fadeOut('slow'); 
+         
     }); 
  
 
