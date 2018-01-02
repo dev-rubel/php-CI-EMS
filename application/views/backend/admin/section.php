@@ -23,6 +23,9 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="sectionlist">
 
+            <div id="editSectionHolder"></div>
+                <div id="sectionLists">
+
                 <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -60,7 +63,7 @@
 
                                             <!-- EDITING LINK -->
                                             <li>
-                                                <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/section_edit/<?php echo $row['section_id']; ?>');">
+                                                <a href="#" onclick="editSection('<?php echo $row['section_id'];?>')">
                                                     <i class="entypo-pencil"></i>
     <?php echo get_phrase('edit'); ?>
                                                 </a>
@@ -79,8 +82,9 @@
                                 </td>
                             </tr>
 <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!----TABLE LISTING ENDS--->
 
@@ -89,7 +93,7 @@
             <div class="tab-pane box" id="sectionadd" style="padding: 5px">
                 <div class="box-content">
 
-                <?php echo form_open(base_url() . 'index.php?admin/sections/create/' , array('class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data'));?>
+                <form id="createSection" action="<?php echo base_url() .'index.php?admin/ajax_create_section'; ?>" class="form-horizontal form-groups-bordered" method="post">
 	
 					<div class="form-group">
 						<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('name');?></label>
@@ -163,18 +167,54 @@
 
 
 
-<!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
+    $(document).ready(function () {
 
-    jQuery(document).ready(function ($)
-    {
+        $('#createSection').ajaxForm({
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
 
-
-        var datatable = $("#table_export").dataTable();
-
-        $(".dataTables_wrapper select").select2({
-            minimumResultsForSearch: -1
+                if (!jData.type) {
+                    toastr.error(jData.msg);
+                } else {
+                    toastr.success(jData.msg);
+                    $("#sectionLists").html(jData.html);
+                    $("#table_export").dataTable();
+                    $('#createSection').resetForm();
+                }
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
         });
+        
     });
 
+    function editSection(sectionID) {
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_section/' + sectionID,
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
+
+                toastr.success(jData.msg);
+                $("#editSectionHolder").html(jData.html);
+                $('body,html').animate({
+                    scrollTop: 350
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+    }
 </script>

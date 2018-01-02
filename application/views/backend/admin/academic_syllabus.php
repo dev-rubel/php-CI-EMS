@@ -24,6 +24,8 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="syllabuslist">
 
+                <div id="ASyllabusLists">
+
                 <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -34,6 +36,7 @@
 							<th><?php echo get_phrase('uploader');?></th>
 							<th><?php echo get_phrase('date');?></th>
 							<th><?php echo get_phrase('file');?></th>
+							<th><?php echo get_phrase('link');?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,8 +76,9 @@
 								</td>
 							</tr>
 						<?php endforeach;?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!----TABLE LISTING ENDS--->
 
@@ -83,11 +87,7 @@
             <div class="tab-pane box" id="syllabusadd" style="padding: 5px">
                 <div class="box-content">
 
-				<?php
-                echo form_open(base_url() . 'index.php?admin/upload_academic_syllabus', array(
-                    'class' => 'form-horizontal form-groups-bordered', 'target' => '_top', 'enctype' => 'multipart/form-data'
-                ));
-                ?>
+            <form id="uploadASyllabus" action="<?php echo base_url() .'index.php?admin/ajax_upload_academic_syllabus'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('title'); ?></label>
@@ -157,16 +157,34 @@
 <!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
 
-    jQuery(document).ready(function ($)
-    {
+    $(document).ready(function () {
 
+        $('#uploadASyllabus').ajaxForm({
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
 
-        var datatable = $("#table_export").dataTable();
-
-        $(".dataTables_wrapper select").select2({
-            minimumResultsForSearch: -1
+                if (!jData.type) {
+                    toastr.error(jData.msg);
+                } else {
+                    toastr.success(jData.msg);
+                    $("#ASyllabusLists").html(jData.html);
+                    $("#table_export").dataTable();
+                    $('#uploadASyllabus').resetForm();
+                }
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
         });
+
     });
+
 
 	function get_class_subject(class_id) {
 

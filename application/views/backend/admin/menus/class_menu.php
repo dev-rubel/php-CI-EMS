@@ -102,6 +102,8 @@ function changePage(page)
             $('#classNavManu').show();
             $('#classMainManu').hide();
             $('#ajaxPageContainer').html(response);
+            
+            $("#table_export").dataTable();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

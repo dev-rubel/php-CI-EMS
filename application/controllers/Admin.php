@@ -1697,6 +1697,44 @@ class Admin extends CI_Controller
 
     }
 
+    function ajax_upload_academic_syllabus()
+    {
+        $check = check_array_value($_POST, 'file_name');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+
+            $data['academic_syllabus_code'] =   substr(md5(rand(0, 1000000)), 0, 7);
+            $data['title']                  =   $this->input->post('title');
+            $data['description']            =   $this->input->post('description');
+            $data['class_id']               =   $this->input->post('class_id');
+            $data['subject_id']             =   $this->input->post('subject_id');
+            $data['uploader_type']          =   $this->session->userdata('login_type');
+            $data['uploader_id']            =   $this->session->userdata('login_user_id');
+            $data['year']                   =   $this->running_year;
+            $data['timestamp']              =   strtotime(date("Y-m-d H:i:s"));
+            //uploading file using codeigniter upload library
+            $files = $_FILES['file_name'];
+            $this->load->library('upload');
+            $config['upload_path']   =  'uploads/syllabus/';
+            $config['allowed_types'] =  '*';
+            $_FILES['file_name']['name']     = $files['name'];
+            $_FILES['file_name']['type']     = $files['type'];
+            $_FILES['file_name']['tmp_name'] = $files['tmp_name'];
+            $_FILES['file_name']['size']     = $files['size'];
+            $this->upload->initialize($config);
+            $this->upload->do_upload('file_name');
+    
+            $data['file_name'] = $_FILES['file_name']['name'];    
+            $this->db->insert('academic_syllabus', $data);
+
+            $page_data['running_year'] = $this->running_year;
+            $htmlData = $this->load->view('backend/admin/ajax_elements/academic_syllabus_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Anademic Syllabus Uploaded.',$htmlData);
+
+        }
+    }
+
     function download_academic_syllabus($academic_syllabus_code)
     {
         $file_name = $this->db->get_where('academic_syllabus', array(
@@ -1755,6 +1793,43 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase('data_deleted'));
             redirect(base_url() . 'index.php?admin/section' , 'refresh');
         }
+    }
+
+    
+    function ajax_create_section()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {      
+            $data['name']       =   $this->input->post('name');
+            $data['nick_name']  =   $this->input->post('nick_name');
+            $data['class_id']   =   $this->input->post('class_id');
+            $data['teacher_id'] =   $this->input->post('teacher_id');
+            $this->db->insert('section' , $data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/section_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Section Created.',$htmlData);
+        }
+    }
+
+    function ajax_edit_section()
+    {
+        $section_id = $this->uri(3);
+        $page_data['section_id']   = $section_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_section_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+
+    function ajax_update_section()
+    {
+        $section_id = $this->uri(3);        
+        $this->db->where('section_id', $section_id);
+        $this->db->update('section', $_POST);
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/section_table_holder', '', true);
+        $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
     }
 
     function get_class_subject($class_id)
