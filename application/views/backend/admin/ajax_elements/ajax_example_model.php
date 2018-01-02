@@ -49,4 +49,41 @@ $check = check_array_value($_POST, 'userfile');
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
         }
+
+
+function ajax_create_shift()
+{
+    $check = check_array_value($_POST);
+    if(!$check){
+        $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+    } else {      
+        $data['name']         = $this->input->post('name');
+        $this->db->insert('shift', $data);
+        $shift_id = $this->db->insert_id();
+
+        $page_data['shifts']    = $this->db->get('shift')->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Shift Created.',$htmlData);
+    }
+}
+
+function ajax_edit_shift()
+{
+    $shift_id = $this->uri(3);
+    $page_data['shift_id']   = $shift_id;
+    $htmlData = $this->load->view('backend/admin/ajax_elements/edit_shift_holder' , $page_data, true);
+    $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+}
+
+
+function ajax_update_shift()
+{
+    $class_id = $this->uri(3);        
+    $this->db->where('shift_id', $class_id);
+    $this->db->update('shift', $_POST);
+
+    $page_data['shifts']    = $this->db->get('shift')->result_array();
+    $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
+    $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+}
 ?>

@@ -6,7 +6,7 @@
 		<ul class="nav nav-tabs bordered">
 			<li>
 				<a href="#list" data-toggle="tab"><i class="entypo-menu"></i>
-					<?php echo get_phrase('result_list');?>
+				<?php echo get_phrase('result_list').' (Last 5 Days)';?>
 				</a>
 			</li>
 				<li class="active">

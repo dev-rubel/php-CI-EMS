@@ -20,6 +20,9 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="list">
 
+            <div id="editClassHolder"></div>
+				<div id="classList">
+
                 <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -52,7 +55,7 @@
 
                                             <!-- EDITING LINK -->
                                             <li>
-                                                <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_edit_class/<?php echo $row['class_id']; ?>');">
+                                                <a href="#" onclick="editClass('<?php echo $row['class_id'];?>')">
                                                     <i class="entypo-pencil"></i>
     <?php echo get_phrase('edit'); ?>
                                                 </a>
@@ -74,13 +77,16 @@
                     </tbody>
                 </table>
             </div>
+        </div>
             <!----TABLE LISTING ENDS--->
 
 
             <!----CREATION FORM STARTS---->
             <div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
-<?php echo form_open(base_url() . 'index.php?admin/classes/create', array('class' => 'form-horizontal form-groups-bordered validate', 'target' => '_top')); ?>
+
+<form id="createClass" action="<?php echo base_url() .'index.php?admin/ajax_create_classes'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+
                     <div class="padded">
                         <div class="form-group">
                             <label class="col-sm-3 control-label"><?php echo get_phrase('name'); ?></label>
@@ -97,7 +103,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label"><?php echo get_phrase('teacher'); ?></label>
                             <div class="col-sm-5">
-                                <select name="teacher_id" class="form-control select2" style="width:100%;">
+                                <select name="teacher_id" class="form-control" style="width:100%;">
                                     <option value=""><?php echo get_phrase('select_teacher'); ?></option>
                                     <?php
                                     $teachers = $this->db->get('teacher')->result_array();
@@ -129,15 +135,54 @@
 <!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
 
-    jQuery(document).ready(function ($)
-    {
+$(document).ready(function() {
 
+    $('#createClass').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
 
-        var datatable = $("#table_export").dataTable();
-
-        $(".dataTables_wrapper select").select2({
-            minimumResultsForSearch: -1
-        });
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);  
+                $( "#classList" ).html( jData.html );
+                $("#table_export").dataTable();
+                $('#createClass').resetForm();               
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
     });
+    
+      
+
+
+});
+
+function editClass(classID)
+    {
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_class/'+classID,
+            beforeSend: function(){
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function(data){
+                var jData = JSON.parse(data); 
+                
+                toastr.success(jData.msg);  
+                $( "#editClassHolder" ).html( jData.html );
+                $('body,html').animate({scrollTop:350},800);         
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+    }
 
 </script>

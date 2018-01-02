@@ -1297,19 +1297,24 @@ class Admin extends CI_Controller
 
     function ajax_create_subject()
     {
-        $class_id = $_POST['class_id'];
-        if(!empty($_POST['join_subject_code'])){
-            unset($_POST['subject_code']);
-            $_POST['subject_code'] = $_POST['join_subject_code'];
-            unset($_POST['join_subject_code']);
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {        
+            $class_id = $_POST['class_id'];
+            if(!empty($_POST['join_subject_code'])){
+                unset($_POST['subject_code']);
+                $_POST['subject_code'] = $_POST['join_subject_code'];
+                unset($_POST['join_subject_code']);
+            }
+            if(!empty($_POST['group_subject_name'])){
+                $_POST['group_id'] = $_POST['group_subject_name'];
+                unset($_POST['group_subject_name']);
+            }
+            
+            $this->db->insert('subject', $_POST);
+            $this->ajax_subject_table_holder($class_id);
         }
-        if(!empty($_POST['group_subject_name'])){
-            $_POST['group_id'] = $_POST['group_subject_name'];
-            unset($_POST['group_subject_name']);
-        }
-        
-        $this->db->insert('subject', $_POST);
-        $this->ajax_subject_table_holder($class_id);
     }
 
     function ajax_subject_table_holder($class_id)
@@ -1414,6 +1419,48 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_create_classes()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {      
+            $data['name']         = $this->input->post('name');
+            $data['name_numeric'] = $this->input->post('name_numeric');
+            $data['teacher_id']   = $this->input->post('teacher_id');
+            $this->db->insert('class', $data);
+            $class_id = $this->db->insert_id();
+            //create a section by default
+            $data2['class_id']  =   $class_id;
+            $data2['name']      =   'A';
+            $this->db->insert('section' , $data2);
+
+            $page_data['classes']    = $this->db->get('class')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/class_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Class Created.',$htmlData);
+        }
+    }
+
+    function ajax_edit_class()
+    {
+        $class_id = $this->uri(3);
+        $page_data['class_id']   = $class_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_class_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_class()
+    {
+        $class_id = $this->uri(3);        
+        $this->db->where('class_id', $class_id);
+        $this->db->update('class', $_POST);
+
+        $page_data['classes']    = $this->db->get('class')->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/class_table_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+    }
+
+
     function class_menu()
     {
         $page_data['page_name']  = 'menus/class_menu';
@@ -1484,6 +1531,43 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_shift');
         $this->load->view('backend/index', $page_data);
     }
+
+    
+    function ajax_create_shift()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {      
+            $data['name']         = $this->input->post('name');
+            $this->db->insert('shift', $data);
+            $shift_id = $this->db->insert_id();
+
+            $page_data['shifts']    = $this->db->get('shift')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Shift Created.',$htmlData);
+        }
+    }
+
+    function ajax_edit_shift()
+    {
+        $shift_id = $this->uri(3);
+        $page_data['shift_id']   = $shift_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_shift_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    
+    function ajax_update_shift()
+    {
+        $shift_id = $this->uri(3);        
+        $this->db->where('shift_id', $shift_id);
+        $this->db->update('shift', $_POST);
+
+        $page_data['shifts']    = $this->db->get('shift')->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+    }
     
     
     /****MANAGE GROUPS*****/
@@ -1525,6 +1609,46 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'groups';
         $page_data['page_title'] = get_phrase('manage_group');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_create_group()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {      
+            $data['name']         = strtolower(str_replace(' ', '-', $this->input->post('name')));
+            $data['class_id']         = $this->input->post('class_id');
+            $this->db->insert('group', $data);
+            $group_id = $this->db->insert_id();
+
+            $page_data['groups']    = $this->db->get('group')->result_array();
+            $page_data['classes']    = $this->db->get('class')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/group_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Group Created.',$htmlData);
+        }
+    }
+
+    function ajax_edit_group()
+    {
+        $group_id = $this->uri(3);
+        $page_data['group_id']   = $group_id;
+        $page_data['classes']    = $this->db->get('class')->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_group_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    
+    function ajax_update_group()
+    {
+        $group_id = $this->uri(3);        
+        $this->db->where('group_id', $group_id);
+        $this->db->update('group', $_POST);
+
+        $page_data['groups']    = $this->db->get('group')->result_array();
+        $page_data['classes']    = $this->db->get('class')->result_array();
+        $htmlData = $this->load->view('backend/admin/ajax_elements/group_table_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
     }
     
     // ACADEMIC SYLLABUS
@@ -3689,6 +3813,9 @@ class Admin extends CI_Controller
     // 
     function send_result_sms()
     {
+        $lastFiveDay = date('d-m-Y',(strtotime ( '-5 day' , strtotime ( date('d-m-Y') ) ) ));
+        $this->db->where('upload_date >=', strtotime(date('d-m-Y')));
+        $this->db->where('upload_date <=', $lastFiveDay);
         $page_data['csv_result'] = $this->db->get('csv_exam_results')->result_array();
         $page_data['page_title']    = get_phrase('Send Result');
         $page_data['page_name']     = 'send_result_sms';

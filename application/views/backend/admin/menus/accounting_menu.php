@@ -222,7 +222,7 @@ function changePage(page)
         }
 
 
-
+            $("#table_export").dataTable();
             $('.datepicker').datepicker();
             $('#tution_fee_sms_status').bootstrapToggle();
             $('#loading2').fadeOut('slow');

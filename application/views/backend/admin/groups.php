@@ -23,6 +23,9 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="grouplist">
 
+            <div id="editGroupHolder"></div>
+                <div id="groupList">
+
                 <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -48,7 +51,7 @@
 
                                             <!-- EDITING LINK -->
                                             <li>
-                                                <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_edit_group/<?php echo $row['group_id']; ?>');">
+                                                <a href="#" onclick="editGroup('<?php echo $row['group_id'];?>')">
                                                     <i class="entypo-pencil"></i>
     <?php echo get_phrase('edit'); ?>
                                                 </a>
@@ -69,6 +72,7 @@
 <?php endforeach; ?>
                     </tbody>
                 </table>
+                </div>
             </div>
             <!----TABLE LISTING ENDS--->
 
@@ -76,7 +80,9 @@
             <!----CREATION FORM STARTS---->
             <div class="tab-pane box" id="groupadd" style="padding: 5px">
                 <div class="box-content">
-<?php echo form_open(base_url() . 'index.php?admin/groups/create', array('class' => 'form-horizontal form-groups-bordered validate', 'target' => '_top')); ?>
+
+<form id="createGroup" action="<?php echo base_url() .'index.php?admin/ajax_create_group'; ?>" class="form-horizontal form-groups-bordered" method="post">
+
                 <div class="padded">
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><?php echo get_phrase('class'); ?></label>
@@ -119,18 +125,57 @@
 
 
 
-<!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
+    $(document).ready(function () {
 
-    jQuery(document).ready(function ($)
-    {
+        $('#createGroup').ajaxForm({
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
 
-
-        var datatable = $("#table_export").dataTable();
-
-        $(".dataTables_wrapper select").select2({
-            minimumResultsForSearch: -1
+                if (!jData.type) {
+                    toastr.error(jData.msg);
+                } else {
+                    toastr.success(jData.msg);
+                    $("#groupList").html(jData.html);
+                    $("#table_export").dataTable();
+                    $('#createGroup').resetForm();
+                }
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
         });
+
+
+
+
     });
 
+    function editGroup(groupID) {
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_group/' + groupID,
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
+
+                toastr.success(jData.msg);
+                $("#editGroupHolder").html(jData.html);
+                $('body,html').animate({
+                    scrollTop: 350
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+    }
 </script>
