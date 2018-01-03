@@ -1,5 +1,4 @@
 <hr />
-
 <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
 <div class="row">
@@ -21,12 +20,32 @@
 				<button id="lastpage" class="btn btn-sm btn-primary pull-right">Last Page</button>					
 				<br><br>
 
-				<table class="table table-striped table-bordered" id="incomedatasearch">
+			<form action="<?php echo base('a/accounting', 'income_date_search_result');?>" method="post" target="_blank">
+				<div class="row">
+					<div class="col-md-1">
+						<p>Date Search: </p>
+					</div>
+					<div class="col-md-2">					
+						<input type="text" class="form-control datepicker" id="fromdate" placeholder="From Date" name="fromdate">		
+					</div>
+					<div class="col-md-2">
+						<input type="text" class="form-control datepicker" placeholder="To Date" id="max" name="todate">		
+					</div>
+					<div class="col-md-2">
+						<button type="submit" class="btn btn-sm btn-info">Search</button>
+					</div>
+				</div>
+		    </form>
+			    	
+				<br>
+
+				<table class="table table-striped table-bordered" id="table_export">
                 	<thead>
                 		<tr>
                 			<th>#</th>
                     		<th><div><?php echo get_phrase('name');?></div></th>
-                    		<th><div><?php echo get_phrase('class_info');?></div></th>
+                    		<th><div><?php echo get_phrase('class_info / Description');?></div></th>
+                    		<th><div><?php echo get_phrase('class');?></div></th>
                     		<th class="sum"><div><?php echo get_phrase('total_amount');?></div></th>
                     		<th><div><?php echo get_phrase('date');?></div></th>
                     		<th><div><?php echo get_phrase('action');?></div></th>
@@ -40,12 +59,12 @@
 					        <th> </th>
 					        <th> </th>
 					        <th> </th>
+					        <th> </th>
 			            </tr>
 			        </tfoot>                   
                 </table>
 					
 				</div>
-				
 				
 			</div>
 			
@@ -62,14 +81,10 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-
-	$('.datepicker').datepicker({
-	    format: 'dd-mm-yyyy'
-	});
  
  	var table;
     //datatables
-    table = $('#incomedatasearch').DataTable({    	 
+    table = $('#table_export').DataTable({	 
     	
 
     	"lengthMenu": [[10, 50, 100, 500, -1], [10, 50, 100, 500, "All"]],
@@ -79,10 +94,10 @@ $(document).ready(function() {
 		      extend: 'print',
 		      text: '<i class="fa fa-print"></i> Print',
 		      exportOptions: {
-		        columns: [0,1,2,3]
+		        columns: [4,1,2,3,5]
 		      },
 		      footer: true,
-		      autoPrint: false
+		      autoPrint: true
 		    }
         ],
  
@@ -92,7 +107,7 @@ $(document).ready(function() {
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo base_url();?>index.php?a/accounting/ajax_list_two",
+            "url": "<?php echo base_url();?>index.php?a/accounting/ajax_list",
             "type": "POST"
         },
  
@@ -117,7 +132,7 @@ $(document).ready(function() {
  
             // Total over all pages
             total = api
-                .column( 3 )
+                .column( 4 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
@@ -125,21 +140,20 @@ $(document).ready(function() {
  
             // Total over this page
             pageTotal = api
-                .column( 3, { page: 'current'} )
+                .column( 4, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
  
- 			var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, 'TK. ' ).display;
+ 			var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, 'TK: ' ).display;
             // Update footer
-            $( api.column( 3 ).footer() ).html(
-                numFormat(pageTotal) +' ('+ numFormat(total) +' total)'
+            $( api.column( 4 ).footer() ).html(
+                numFormat(pageTotal) 
+                //+' ('+ numFormat(total) +' total)'
             );
         }
 
-        
- 
     });
 
     $('#lastpage').on('click', function () {
@@ -152,12 +166,12 @@ $(document).ready(function() {
  
 });
 
+
+
 jQuery(document).ready(function($)
-{
-	var datatable = $(".example").dataTable({
-		"sPaginationType": "bootstrap",
-		
+{	
+	$(".dataTables_wrapper select").select2({
+		minimumResultsForSearch: -1
 	});
-	
 });
 </script>

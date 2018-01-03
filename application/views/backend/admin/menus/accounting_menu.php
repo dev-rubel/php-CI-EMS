@@ -162,7 +162,7 @@ function changePage(page)
         
             //     // Load data for the table's content from an Ajax source
             //     "ajax": {
-            //         "url": "<?php echo base_url();?>index.php?a/accounting/ajax_list",
+            //         "url": "<?php // echo base_url();?>index.php?a/accounting/ajax_list",
             //         "type": "POST"
             //     },
         

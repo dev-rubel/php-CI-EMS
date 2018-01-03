@@ -24,6 +24,7 @@
 							<button type="submit" class="btn btn-info"><?php echo get_phrase('add_expense_category');?></button>
 						</div>
 					</div>
+					
                 <?php echo form_close();?>
             </div>
         </div>

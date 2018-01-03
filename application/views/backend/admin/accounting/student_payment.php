@@ -33,7 +33,9 @@
             <div class="tab-pane active" id="unpaid">
 
                 <!-- creation of single invoice -->
-                <?php echo form_open(base_url() . 'index.php?a/accounting/invoice/create' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'));?>
+               
+                <form id="createInvoice" action="<?php echo base_url() .'index.php?admin/ajax_create_invoice'; ?>" class="form-horizontal form-groups-bordered" method="post">   
+
                 <div class="row">
                     <div class="col-md-4">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
@@ -209,24 +211,7 @@
                                 </div>
 
                                 <input type="hidden" name="status" value="paid">
-                                <input type="hidden" name="method" value="1">
-                                <!--<div class="form-group">
-                                    <label class="col-sm-3 control-label"><?php echo get_phrase('status');?></label>
-                                    <div class="col-sm-9">
-                                        <select name="status" class="form-control selectboxit">
-                                            <option value="paid"><?php echo get_phrase('paid');?></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label"><?php echo get_phrase('method');?></label>
-                                    <div class="col-sm-9">
-                                        <select name="method" class="form-control selectboxit">
-                                            <option value="1"><?php echo get_phrase('cash');?></option>
-                                        </select>
-                                    </div>
-                                </div>-->
+                                <input type="hidden" name="method" value="1">                                
 
                             </div>
                         </div>
@@ -247,7 +232,9 @@
 
             </div>
             <div class="tab-pane" id="payment_setting">
-                <?php echo form_open(base_url() . 'index.php?a/accounting/tution_fee_sms_setting' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top'));?>
+
+                <form id="updateTutionSmsSetting" action="<?php echo base_url() .'index.php?admin/ajax_tution_fee_sms_setting'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+
                 <div class="col-md-offset-2 col-md-8">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
@@ -361,84 +348,129 @@
 
 
 <script type="text/javascript">
-    function get_class_students(class_id) {
-        $.ajax({
-            url: '<?php echo base_url();?>index.php?admin/get_class_students/' + class_id ,
-            success: function(response)
-            {
-                jQuery('#student_selection_holder').html(response);
-            }
-        });
-    }
 
-     function get_class_students_mass(class_id) {
-        
-        $.ajax({
-            url: '<?php echo base_url();?>index.php?admin/get_class_students_mass/' + class_id ,
-            success: function(response)
-            {
-                jQuery('#student_selection_holder_mass').html(response);
-            }
-        });
+$(document).ready(function() { 
 
-        
-    }
+    $('#createInvoice').ajaxForm({
+        beforeSend: function() {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },
+        success: function (data){
+            var jData = JSON.parse(data);
+
+            if(!jData.type) {
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);
+                $('#createInvoice').resetForm();
+                $('#studentAccountHistory').html('');
+            }   
+            $('body,html').animate({scrollTop:0},800);
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');
+        }
+    });
+
+    $('#updateTutionSmsSetting').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);              
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    }); 
+
+});
+
+function get_class_students(class_id) {
+    $.ajax({
+        url: '<?php echo base_url();?>index.php?admin/get_class_students/' + class_id ,
+        success: function(response)
+        {
+            jQuery('#student_selection_holder').html(response);
+        }
+    });
+}
+
+    function get_class_students_mass(class_id) {
+    
+    $.ajax({
+        url: '<?php echo base_url();?>index.php?admin/get_class_students_mass/' + class_id ,
+        success: function(response)
+        {
+            jQuery('#student_selection_holder_mass').html(response);
+        }
+    });
+
+    
+}
 </script>
 
 
 <script language="javascript">
-        function addRow(tableID) {
+    function addRow(tableID) {
 
-            var table = document.getElementById(tableID);
+        var table = document.getElementById(tableID);
 
-            var rowCount = table.rows.length;
-            var row = table.insertRow(rowCount);
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
 
-            var colCount = table.rows[0].cells.length;
+        var colCount = table.rows[0].cells.length;
 
-            for(var i=0; i<colCount; i++) {
+        for(var i=0; i<colCount; i++) {
 
-                var newcell = row.insertCell(i);
+            var newcell = row.insertCell(i);
 
-                newcell.innerHTML = table.rows[0].cells[i].innerHTML;
-                //alert(newcell.childNodes);
-                switch(newcell.childNodes[0].type) {
-                    case "text":
-                            newcell.childNodes[0].value = "";
-                            break;
-                    case "checkbox":
-                            newcell.childNodes[0].checked = false;
-                            break;
-                    case "select-one":
-                            newcell.childNodes[0].selectedIndex = 0;
-                            break;
-                }
-            }
-        }
-
-        function deleteRow(tableID) {
-            try {
-            var table = document.getElementById(tableID);
-            var rowCount = table.rows.length;
-
-            for(var i=0; i<rowCount; i++) {
-                var row = table.rows[i];
-                var chkbox = row.cells[0].childNodes[0];
-                if(null != chkbox && true == chkbox.checked) {
-                    if(rowCount <= 1) {
-                        alert("Cannot delete all the rows.");
+            newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+            //alert(newcell.childNodes);
+            switch(newcell.childNodes[0].type) {
+                case "text":
+                        newcell.childNodes[0].value = "";
                         break;
-                    }
-                    table.deleteRow(i);
-                    rowCount--;
-                    i--;
-                }
-
-
-            }
-            }catch(e) {
-                alert(e);
+                case "checkbox":
+                        newcell.childNodes[0].checked = false;
+                        break;
+                case "select-one":
+                        newcell.childNodes[0].selectedIndex = 0;
+                        break;
             }
         }
+    }
 
-    </script>
+    function deleteRow(tableID) {
+        try {
+        var table = document.getElementById(tableID);
+        var rowCount = table.rows.length;
+
+        for(var i=0; i<rowCount; i++) {
+            var row = table.rows[i];
+            var chkbox = row.cells[0].childNodes[0];
+            if(null != chkbox && true == chkbox.checked) {
+                if(rowCount <= 1) {
+                    alert("Cannot delete all the rows.");
+                    break;
+                }
+                table.deleteRow(i);
+                rowCount--;
+                i--;
+            }
+
+
+        }
+        }catch(e) {
+            alert(e);
+        }
+    }
+
+</script>

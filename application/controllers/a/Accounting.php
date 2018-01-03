@@ -348,6 +348,11 @@ class Accounting extends CI_Controller
         $this->loadView('accounting/invoice', 'manage_invoice/payment', $page_data);
     }
 
+    function ajax_create_invoice()
+    {
+        // Move to admin controller reason to ajax problem
+    }
+
     function edit_student_payment()
     {
         $invoice_id = $this->uri->segment(4);
@@ -370,6 +375,7 @@ class Accounting extends CI_Controller
 
     function income_category($param1 = '' , $param2 = '')
     {        
+        // Move to admin controller reason to ajax problem
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         if ($param1 == 'create') {
@@ -640,6 +646,7 @@ class Accounting extends CI_Controller
 
     function tution_fee_sms_setting()
     {
+        // Move to admin controller reason to ajax problem
         $data = $this->input->post();
         $data['tution_fee_sms_status'] = $data['tution_fee_sms_status']==''?0:1;
         $this->db->update('settings',

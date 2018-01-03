@@ -1638,7 +1638,6 @@ class Admin extends CI_Controller
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
     }
 
-    
     function ajax_update_group()
     {
         $group_id = $this->uri(3);        
@@ -1649,6 +1648,169 @@ class Admin extends CI_Controller
         $page_data['classes']    = $this->db->get('class')->result_array();
         $htmlData = $this->load->view('backend/admin/ajax_elements/group_table_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+    }
+
+    // ACCOUNTING SECTION
+
+    function ajax_income_category_create()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {        
+            $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
+            $this->db->insert('income_category' , $data);
+            $htmlData = $this->load->view('backend/admin/ajax_elements/income_category_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }
+    }
+
+    function ajax_income_category_edit()
+    {
+        $income_category_id = $this->uri(3);  
+        $page_data['income_category_id']   = $income_category_id;         
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_income_category_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_income_category()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {   
+            $income_category_id = $this->uri(3);        
+            $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
+            $this->db->where('income_category_id' , $income_category_id);
+            $this->db->update('income_category' , $data);
+            $htmlData = $this->load->view('backend/admin/ajax_elements/income_category_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }        
+    }
+
+    function ajax_expense_category_create()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {   
+            $data['name']   =   $this->input->post('name');
+            $this->db->insert('expense_category' , $data);
+            $htmlData = $this->load->view('backend/admin/ajax_elements/expense_category_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
+
+    function ajax_expense_category_edit()
+    {
+        $expense_category_id = $this->uri(3);  
+        $page_data['expense_category_id']   = $expense_category_id;         
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_expense_category_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_expense_category()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $expense_category_id = $this->uri(3);        
+            $data['name']   =   $this->input->post('name');
+            $this->db->where('expense_category_id' , $expense_category_id);
+            $this->db->update('expense_category' , $data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/expense_category_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }
+    }
+    
+    function ajax_create_invoice()
+    {
+        $student_code = $this->input->post('student_code');
+        $student_id = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
+        
+        if(!$student_id){
+            $this->jsonMsgReturn(false,'No Student Found.');
+            $student_id = '';
+        } else {
+
+            if(!empty($_POST['months'])){
+                $monthsValue = implode(',', $this->input->post('months'));
+            } else {
+                $monthsValue = '';
+            }
+    
+            // SAVE DATE IN SESSION FOR REUSE THIS DATE FOR NEXT ENTRY
+            $this->session->set_userdata('sessionSaveDate', $this->input->post('date'));
+            // END THIS
+    
+            $data['student_id']         = $student_id;
+            $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
+            $data['acc_code']           = $this->input->post('student_code');
+            $data['months']             = $monthsValue;
+            $data['fee_name']           = implode(',', $this->input->post('fee_name'));
+            $data['fee_amount']         = implode(',', $this->input->post('fee_amount'));
+            $data['description']        = $this->input->post('description');
+            $data['amount']             = $this->input->post('amount');
+            $data['amount_paid']        = $this->input->post('amount_paid');
+            $data['due']                = $data['amount'] - $data['amount_paid'];
+            $data['status']             = $this->input->post('status');
+            $data['creation_timestamp'] = strtotime($this->input->post('date'));
+            $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+    
+            $this->db->insert('invoice', $data);
+            $invoice_id = $this->db->insert_id();
+    
+            $data2['invoice_id']        =   $invoice_id;
+            $data2['student_id']        =   $student_id;
+            $data2['title']             =   'student income';
+            $data2['description']       =   $this->input->post('description');
+            $data2['payment_type']      =   'income';
+            $data2['method']            =   $this->input->post('method');
+            $data2['amount']            =   $this->input->post('amount_paid');
+            $data2['timestamp']         =   strtotime($this->input->post('date'));
+            $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+    
+            $this->db->insert('payment' , $data2);
+    
+            $tution_sms_status = $this->db->get_where('settings',['type'=>'tution_fee_sms_status'])->row()->description;
+            
+            // TUTION FEE SMS SECTION
+            // IF TUTION FEE SMS SETTING STATUS ON
+            if($tution_sms_status == 1){
+                $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
+                    ->row()
+                    ->description;            
+                $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
+                    ->row()
+                    ->description;
+                $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
+                $tution_sms_details = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
+    
+                $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;
+                $sender = urlencode($school_name);
+                $msg    = urlencode($tution_sms_details);                
+                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+            }
+            // END TUTION FEE SMS SECTION
+            $this->jsonMsgReturn(true,'Success.');
+        }
+    }
+
+    function ajax_tution_fee_sms_setting()
+    {
+        $data = $this->input->post();
+        $data['tution_fee_sms_status'] = $data['tution_fee_sms_status']==''?0:1;
+        $this->db->update('settings',
+            ['description'=>$data['tution_fee_sms_status']],
+            ['type'=>'tution_fee_sms_status']);
+        $this->db->update('settings',
+            ['description'=>$data['tution_fee_sms_details']],
+            ['type'=>'tution_fee_sms_details']);
+        $this->jsonMsgReturn(true,'Information Updated.');
     }
     
     // ACADEMIC SYLLABUS
