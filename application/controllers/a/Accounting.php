@@ -55,6 +55,10 @@ class Accounting extends CI_Controller
             
         } elseif($pageName == 'manage_bank_ac') { 
             $page_data['accounts'] = $this->db->get('bank_account')->result_array();
+        } elseif($pageName == 'bank_transaction') {
+            $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
+            $this->db->order_by('tran_id', 'DESC');
+            $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();
         }
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/accounting/'.$pageName, $page_data);

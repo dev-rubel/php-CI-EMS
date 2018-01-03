@@ -163,7 +163,7 @@
             <!----CREATION FORM STARTS---->
             <div class="tab-pane box" id="add" style="padding: 5px">
                   <form action="<?php echo base('a/accounting','add_bank_transaction'); ?>" method="post">
-                      <div class="col-md-offset-1 col-md-6">
+                      <div class="col-md-offset-1 col-md-7">
                             <h3 class="text-right">Add Transaction</h3>
 
                           <div class="form-group row">

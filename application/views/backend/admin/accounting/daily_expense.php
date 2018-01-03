@@ -1,154 +1,243 @@
 <hr />
-<style>
-	input.form-control {
-        /*min-width: 80px;*/
-        border: 1px solid lightslategray;
-    }
-    b{
-        color: black;
-    }
-    table thead tr{
-    	display:block;
-	}
-
-	table th,table td{
-	    min-width:100px; 
-	    /*fixed width*/
-	}
-
-
-	table  tbody{
-	  display:block;
-	  height:500px;
-	  overflow:auto;//set tbody to auto
-	}
-
-
-</style>
-
-<?php //pd(date('d-m-Y', '1483207200')); ?>
 <div class="row">
-	<div class="col-md-12">
-    
-    	<!------CONTROL TABS START------>
-		<ul class="nav nav-tabs bordered">
-		<?php foreach(range(1, 12) as $each): $month = date('M', mktime(0,0,0,$each, 1, date('Y')));?>
-			<li class="<?php 
-			if(isset($_SESSION['working_month'])){
-				if($_SESSION['working_month'] == $each){
-					echo 'active';
-				}
-			}else{
-				if($each == date('m')){
-					echo 'active';
-				}
-			}
-			?>">
-            	<a href="#list_<?php echo $each; ?>" data-toggle="tab"><i class="entypo-menu"></i> 
-					<?php echo get_phrase($month);?>
-            	</a>
-        	</li>
-    	<?php endforeach; ?>
-			
-		</ul>
-    	<!------ CONTROL TABS END ------>
-		<div class="tab-content">
-        <br>
+    <div class="col-md-12">
+
+        <!------CONTROL TABS START------>
+        <ul class="nav nav-tabs bordered">
+            <li class="active">
+                <a href="#list" data-toggle="tab">
+                    <i class="entypo-menu"></i>
+                    <?php echo get_phrase('daily_expense_list'); ?>
+                </a>
+            </li>
+            <li>
+                <a href="#add" data-toggle="tab">
+                    <i class="entypo-plus-circled"></i>
+                    <?php echo get_phrase('add_daily_expense'); ?>
+                </a>
+            </li>
+        </ul>
+        <!------CONTROL TABS END------>
+
+        <div class="tab-content">
+            <br>
             <!----TABLE LISTING STARTS-->
+            <div class="tab-pane box active" id="list">
 
-            <?php foreach(range(1, 12) as $eachs): ?>
+                <div id="editIncomeCategoryHolder"></div>
+                <div id="IncomeCategoryList">
 
-            <div class="tab-pane box <?php 
-			if(isset($_SESSION['working_month'])){
-				if($_SESSION['working_month'] == $eachs){
-					echo 'active';
-				}
-			}else{
-				if($eachs == date('m')){
-					echo 'active';
-				}
-			} ?>" id="list_<?php echo $eachs; ?>">
-                <table class="table">
-					<thead>
-						<tr>
-							<th>Date</th>
-							<?php foreach($expense_category as $each): ?>
-								<th><b><?php echo $each['name']; ?></b></th>
-							<?php endforeach; ?>
-							<th>Total</th>
-						</tr>
-					</thead>
-					<form action="<?php echo base('a/accounting', 'add_daily_expense'); ?>" method="post">
-						<tbody>
-
-						<?php $number = cal_days_in_month(CAL_GREGORIAN, $eachs, date('Y')); 
-							for ($i = 1; $i <= $number; $i++):
-						?>
+					<table class="table table-bordered datatable" id="table_export">
+						<thead>
 							<tr>
-								<td><b><?php echo date("$i-$eachs-Y"); ?></b></td>
-								<?php 
-								$day_total_amount = 0;
-								foreach($expense_category as $each): 
-
-							$exist = $this->db->get_where('daily_expense', array('expense_category_id' => $each['expense_category_id'], 'date' => strtotime(date("$i-$eachs-Y"))))->result_array();
-							if(!empty($exist)){
-								if($exist[0]['amount'] == 0){
-									$value = '';
-								}else{
-									$value = $exist[0]['amount'];
-								}	
-								$day_total_amount += $exist[0]['amount'];						
-							}else{
-								$value = '';
-							}
-
-									?>
-									<td>
-										<input type="text" class="form-control" value="<?php echo $value; ?>" name="<?php echo $each['expense_category_id'].'_'.strtotime(date("$i-$eachs-Y")); ?>_expense[]">
-									</td>
-								<?php endforeach; ?>
-								<td><?php echo $day_total_amount; ?></td>
+								<th><div>#</div></th>
+								<th><div><?php echo get_phrase('category');?></div></th>
+								<th><div><?php echo get_phrase('amount');?></div></th>
+								<th><div><?php echo get_phrase('date');?></div></th>
+								<th><div><?php echo get_phrase('action');?></div></th>
 							</tr>
-						<?php endfor; ?>
-						<tr>
-							<td>Total</td>
+						</thead>
+						<tbody>
 							<?php 
-							$grand_total = 0;
-							foreach($expense_category as $each): 
-
-									$this->db->select_sum('amount');
-									$this->db->where('expense_category_id', $each['expense_category_id']);
-									$this->db->where('date >=', strtotime(date("01-$eachs-Y")));
-									$this->db->where('date <=', strtotime(date("t-$eachs-Y")));
-									$category_month_total_amount = $this->db->get('daily_expense')->row();
+								$count = 1;
+								$daily_expense = $this->db->get('daily_expense')->result_array();
+								if(!empty($daily_expense)):
+								foreach ($daily_expense as $row):
 							?>
-								<td><?php echo $category_month_total_amount->amount.' TK.'; $grand_total += $category_month_total_amount->amount; ?></td>
-							<?php endforeach; ?>
-							<td><?php echo $grand_total.' TK.'; ?></td>
-						</tr>
-						<tr>
-							<td>
-								<button type="submit" class="btn btn-primary">Save</button>
-							</td>
-						</tr>
+							<tr>
+								<td><?php echo $count++;?></td>
+								<td><?php ;?></td>
+								<td><?php ?></td>
+								<td><?php ;?></td>
+								<td>
+									
+									<div class="btn-group">
+										<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+											Action <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu dropdown-default pull-right" role="menu">
+											
+											<!-- Category EDITING LINK -->
+											<li>
+												<a href="#" onclick="editIncomeCategory('<?php echo $row['daily_expense_id'];?>')">
+													<i class="entypo-pencil"></i>
+														<?php echo get_phrase('edit');?>
+													</a>
+															</li>
+											<li class="divider"></li>
+											
+											<!-- Category DELETION LINK -->
+											<li>
+												<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/income_category/delete/<?php echo $row['daily_expense_id'];?>');">
+													<i class="entypo-trash"></i>
+														<?php echo get_phrase('delete');?>
+													</a>
+															</li>
+										</ul>
+									</div>
+									
+								</td>
+							</tr>
+							<?php endforeach;endif;?>
 						</tbody>
-					</form>
-				</table>
-			</div>
+					</table>
+					
+                </div>
+            </div>
+            <!----TABLE LISTING ENDS--->
 
-			<?php endforeach; ?>
 
-		</div>
-	</div>
+            <!----CREATION FORM STARTS---->
+            <div class="tab-pane box" id="add" style="padding: 5px">
+                <div class="box-content">
+
+					<form id="createIncomeCategory" action="<?php echo base_url() .'index.php?admin/ajax_income_category_create'; ?>" class="form-horizontal form-groups-bordered" method="post">   
+		
+						<div class="form-group">
+							<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('date');?></label>
+							
+							<div class="col-sm-6">
+								<input type="text" class="form-control datepicker" name="date" id="expense_date">
+							</div>
+						</div>
+		
+						<div class="form-group">
+							<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('category');?></label>
+							
+							<div class="col-sm-6">
+								<select name="expense_category_id" class="form-control" id="">
+								<option value="">Please Select One</option>
+								<?php 
+								$categoryList = $this->db->get('expense_category')->result_array();
+								foreach($categoryList as $k=>$each):?>
+									<option value="<?php echo $each['expense_category_id'];?>"><?php echo $each['name'];?></option>
+								<?php endforeach;?>
+								</select>
+							</div>							
+						</div>
+		
+						<div class="form-group">
+							<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('amount');?></label>
+							
+							<div class="col-sm-6">
+								<input type="text" class="form-control" name="amount">
+							</div>							
+						</div>
+						
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-5">
+								<button type="submit" class="btn btn-info"><?php echo get_phrase('add_income_category');?></button>
+							</div>
+						</div>
+					<?php echo form_close();?>
+
+                </div>
+            </div>
+            <!----CREATION FORM ENDS-->
+        </div>
+
+    </div>
 </div>
 
 
 
+<script type="text/javascript">
+    $(document).ready(function () {
+		$("#expense_date").datepicker({
+            format: 'dd-mm-yyyy',
+            // startView: 1
+        });
+
+        $('#createIncomeCategory').ajaxForm({
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
+
+                if (!jData.type) {
+                    toastr.error(jData.msg);
+                } else {
+                    toastr.success(jData.msg);
+                    $("#IncomeCategoryList").html(jData.html);
+                    $("#table_export").dataTable();
+                    $('#createIncomeCategory').resetForm();
+                }
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+
+    });
+
+    function editIncomeCategory(incomeCategoryID) {
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url();?>index.php?admin/ajax_income_category_edit/' + incomeCategoryID,
+            beforeSend: function () {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+            },
+            success: function (data) {
+                var jData = JSON.parse(data);
+
+                toastr.success(jData.msg);
+                $("#editIncomeCategoryHolder").html(jData.html);
+                $('body,html').animate({
+                    scrollTop: 350
+                }, 800);
+                $('#loading2').fadeOut('slow');
+                $('#overlayDiv').fadeOut('slow');
+            }
+        });
+    }
 
 
+	jQuery(document).ready(function($)
+	{	
 
-
-
-
-
-
+		var datatable = $("#table_export").dataTable({
+			"sPaginationType": "bootstrap",
+			"sDom": "<'row'<'col-xs-3 col-left'l><'col-xs-9 col-right'<'export-data'T>f>r>t<'row'<'col-xs-3 col-left'i><'col-xs-9 col-right'p>>",
+			"oTableTools": {
+				"aButtons": [					
+					{
+						"sExtends": "xls",
+						"mColumns": [1,2,3,4,5]
+					},
+					{
+						"sExtends": "pdf",
+						"mColumns": [1,2,3,4,5]
+					},
+					{
+						"sExtends": "print",
+						"fnSetText"	   : "Press 'esc' to return",
+						"fnClick": function (nButton, oConfig) {
+							datatable.fnSetColumnVis(2, false);
+							
+							this.fnPrint( true, oConfig );
+							
+							window.print();
+							
+							$(window).keyup(function(e) {
+								  if (e.which == 27) {
+									  datatable.fnSetColumnVis(2, true);
+								  }
+							});
+						},
+						
+					},
+				]
+			},
+			
+		});
+		
+		$(".dataTables_wrapper select").select2({
+			minimumResultsForSearch: -1
+		});
+	});
+</script>
