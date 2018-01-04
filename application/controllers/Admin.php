@@ -1903,6 +1903,47 @@ class Admin extends CI_Controller
             ['type'=>'tution_fee_sms_details']);
         $this->jsonMsgReturn(true,'Information Updated.');
     }
+
+    function ajax_add_bank_transaction()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $_POST['tran_date'] = strtotime($_POST['tran_date']);
+            $this->db->insert('bank_transaction', $_POST);
+
+            $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/bank_transaction_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
+
+    function ajax_transaction_search_date_wise()
+    {
+        $check = check_array_value($_POST, 'acc_id');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $formDate = $this->input->post('fromDate');
+            $todate   = $this->input->post('toDate');
+            $acc_id   = $this->input->post('acc_id');
+            $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
+
+            if(!empty($acc_id)){ // IF INDIVIDUAL ACCOUNT SELECT
+                $this->db->where('acc_id' , $acc_id);    
+            }        
+            $this->db->where('tran_date >=', strtotime($formDate));
+            $this->db->where('tran_date <=', strtotime($todate));
+            $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();          
+            // STORE FROM AND TO DATE FOR PRINT 
+            $page_data['fromDate'] = $formDate;
+            $page_data['toDate']   = $todate;
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/bank_transaction_search_result', $page_data, true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
     
     // ACADEMIC SYLLABUS
     function academic_syllabus($class_id = '')

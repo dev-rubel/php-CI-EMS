@@ -580,6 +580,7 @@ class Accounting extends CI_Controller
 
     function add_bank_transaction()
     {
+        // Move to admin controller reason to ajax problem
         $_POST['tran_date'] = strtotime($_POST['tran_date']);
         $this->db->insert('bank_transaction', $_POST);
         $this->flashmsg('Transaction Added');

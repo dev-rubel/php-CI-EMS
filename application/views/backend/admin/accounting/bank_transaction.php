@@ -39,59 +39,64 @@
             <br>
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="acc_list">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Account Name</th>
-                    <th>Account No.</th>
-                    <th>Total Cash IN</th>
-                    <th>Total Cash OUT</th>
-                    <th>Current Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                <?php if(!empty($bank_accounts)): foreach($bank_accounts as $k=>$each): ?>
-                  <tr>
-                    <td><?php echo $k+1; ?></td>
-                    <td><?php echo $each['acc_name']; ?></td>
-                    <td><?php echo $each['acc_no']; ?></td>
-                    <td>
-                      <?php 
-                        $this->db->select_sum('tran_amount');
-                        $this->db->where('acc_id', $each['acc_id']);
-                        $this->db->where('tran_status', 1);
-                        $totalCashIN = $this->db->get('bank_transaction')->result_array();
-                        echo $totalCashIN[0]['tran_amount'];
-                      ?>
-                    </td>
-                    <td>
-                      <?php 
-                        $this->db->select_sum('tran_amount');
-                        $this->db->where('acc_id', $each['acc_id']);
-                        $this->db->where('tran_status', 2);
-                        $totalCashOUT = $this->db->get('bank_transaction')->result_array();
-                        echo $totalCashOUT[0]['tran_amount'];
-                      ?>
-                    </td>
-                    <td>
-                      <?php echo  $totalCashIN[0]['tran_amount']-$totalCashOUT[0]['tran_amount']?>
-                    </td>
-                  </tr>
-                <?php endforeach; else: ?>
-                  <tr class="text-center">
-                    <td colspan="6">No Account Found</td>
-                  </tr>
-                <?php endif; ?>
-                </tbody>
-              </table>
+
+                <div id="bankTransList">
+
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Account Name</th>
+                        <th>Account No.</th>
+                        <th>Total Cash IN</th>
+                        <th>Total Cash OUT</th>
+                        <th>Current Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($bank_accounts)): foreach($bank_accounts as $k=>$each): ?>
+                      <tr>
+                        <td><?php echo $k+1; ?></td>
+                        <td><?php echo $each['acc_name']; ?></td>
+                        <td><?php echo $each['acc_no']; ?></td>
+                        <td>
+                          <?php 
+                            $this->db->select_sum('tran_amount');
+                            $this->db->where('acc_id', $each['acc_id']);
+                            $this->db->where('tran_status', 1);
+                            $totalCashIN = $this->db->get('bank_transaction')->result_array();
+                            echo $totalCashIN[0]['tran_amount'];
+                          ?>
+                        </td>
+                        <td>
+                          <?php 
+                            $this->db->select_sum('tran_amount');
+                            $this->db->where('acc_id', $each['acc_id']);
+                            $this->db->where('tran_status', 2);
+                            $totalCashOUT = $this->db->get('bank_transaction')->result_array();
+                            echo $totalCashOUT[0]['tran_amount'];
+                          ?>
+                        </td>
+                        <td>
+                          <?php echo  $totalCashIN[0]['tran_amount']-$totalCashOUT[0]['tran_amount']?>
+                        </td>
+                      </tr>
+                    <?php endforeach; else: ?>
+                      <tr class="text-center">
+                        <td colspan="6">No Account Found</td>
+                      </tr>
+                    <?php endif; ?>
+                    </tbody>
+                  </table>
+
+
+                </div>
             </div>
 
             <div class="tab-pane box" id="list">
 
-            
+            <form id="searchBankTransaction" action="<?php echo base_url() .'index.php?admin/ajax_transaction_search_date_wise'; ?>" class="form-horizontal form-groups-bordered" method="post">
 
-            <form action="<?php echo base('a/accounting', 'transaction_search_date_wise'); ?>" method="post">
               <div class="row">
                   <div class="col-md-offset-1 col-md-2">
                     <h4>Date Search: </h4>
@@ -117,44 +122,9 @@
             </form>
               <br>
 
-                <table class="table datatable">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Account Name</th>
-                      <th>Account No.</th>
-                      <th>Transaction</th>
-                      <th class="sum">Amount</th>
-                      <th>Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  
-                  <tbody>
-                  <?php  if(!empty($bank_transactions)): 
-                      $count = 0;
-                      foreach($bank_transactions as $each): 
-                      $key = array_search($each['acc_id'], array_column($bank_accounts, 'acc_id'));
-                  ?>
-                    <tr>
-                      <td><?php echo $count += 1; ?></td>
-                      <td><?php echo $bank_accounts[$key]['acc_name'];?></td>
-                      <td><?php echo $bank_accounts[$key]['acc_no'];?></td>
-                      <td  class="<?php echo $each['tran_status'] == 1?'cash-in':'cash-out';?>"><?php echo $each['tran_status'] == 1?'Cash IN':'Cash Out'; ?></td>
-                      <td><?php echo $each['tran_amount']; ?></td>
-                      <td><?php echo date('d-m-Y', $each['tran_date']); ?></td>
-                      <td>
-                        <a href="#" class="btn btn-xs btn-danger" onclick="confirm_modal('<?php echo base('a/accounting', 'delete_acc_transaction'.'/'.$each['tran_id']);?>');">Delete</a>
-                      </td>
-                    </tr>
-                  <?php endforeach; else: ?>
-                      <tr class="text-center">
-                        <td colspan="6">No Transaction Found</td>
-                      </tr>
-                  <?php endif; ?>
-                  </tbody>
-
-                </table>
+              <div id="searchBankTransationResult"></div>
+              
+                
              
             </div>
             <!----TABLE LISTING ENDS--->
@@ -162,7 +132,9 @@
 
             <!----CREATION FORM STARTS---->
             <div class="tab-pane box" id="add" style="padding: 5px">
-                  <form action="<?php echo base('a/accounting','add_bank_transaction'); ?>" method="post">
+                 
+                  <form id="addBankTransaction" action="<?php echo base_url() .'index.php?admin/ajax_add_bank_transaction'; ?>" class="form-horizontal form-groups-bordered" method="post">
+
                       <div class="col-md-offset-1 col-md-7">
                             <h3 class="text-right">Add Transaction</h3>
 
@@ -221,6 +193,57 @@
 
 
 <script>
+
+$(document).ready(function () {
+
+  $('#addBankTransaction').ajaxForm({
+      beforeSend: function () {
+          $('#loading2').show();
+          $('#overlayDiv').show();
+      },
+      success: function (data) {
+          var jData = JSON.parse(data);
+
+          if (!jData.type) {
+              toastr.error(jData.msg);
+          } else {
+              toastr.success(jData.msg);
+              $("#bankTransList").html(jData.html);
+              $('#addBankTransaction').resetForm();
+              $('#currentBalanceHolder').hide(); 
+          }
+          $('body,html').animate({
+              scrollTop: 0
+          }, 800);
+          $('#loading2').fadeOut('slow');
+          $('#overlayDiv').fadeOut('slow');
+      }
+  });
+
+  $('#searchBankTransaction').ajaxForm({
+      beforeSend: function () {
+          $('#loading2').show();
+          $('#overlayDiv').show();
+      },
+      success: function (data) {
+          var jData = JSON.parse(data);
+
+          if (!jData.type) {
+              toastr.error(jData.msg);
+          } else {
+              toastr.success(jData.msg);
+              $("#searchBankTransationResult").html(jData.html);
+              // $('#searchBankTransaction').resetForm();
+          }
+          $('body,html').animate({
+              scrollTop: 0
+          }, 800);
+          $('#loading2').fadeOut('slow');
+          $('#overlayDiv').fadeOut('slow');
+      }
+  });
+
+});
 
     $('#currentBalanceHolder').hide();     
 
