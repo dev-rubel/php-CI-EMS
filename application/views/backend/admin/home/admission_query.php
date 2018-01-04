@@ -154,10 +154,19 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                                             <li class="divider"></li>
                                             <?php endif;?>
                                             
+                                            <!-- EDIT LINK -->
+                                            <li>
+                                                <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_std_edit/<?php echo $list['id']; ?>');">
+                                                    <i class="entypo-pencil"></i>
+    <?php echo get_phrase('edit_view'); ?>
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+
                                             <!-- DETAILS LINK -->
                                             <li>
                                                 <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_std_view/<?php echo $list['id']; ?>');">
-                                                    <i class="entypo-pencil"></i>
+                                                    <i class="entypo-plus"></i>
     <?php echo get_phrase('details_view'); ?>
                                                 </a>
                                             </li>
@@ -273,10 +282,18 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                                         <ul class="dropdown-menu dropdown-default pull-right" role="menu">
                                             
                                             
-                                            <!-- EDITING LINK -->
+                                            <!-- EDIT LINK -->
+                                            <li>
+                                                <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_std_edit/<?php echo $list['id']; ?>');">
+                                                    <i class="entypo-pencil"></i>
+    <?php echo get_phrase('edit_view'); ?>
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <!-- DETAILS LINK -->
                                             <li>
                                                 <a href="#" onclick="showAjaxModal('<?php echo base_url(); ?>index.php?modal/popup/modal_admit_std_view/<?php echo $list['id']; ?>');">
-                                                    <i class="entypo-pencil"></i>
+                                                    <i class="entypo-plus"></i>
     <?php echo get_phrase('details_view'); ?>
                                                 </a>
                                             </li>

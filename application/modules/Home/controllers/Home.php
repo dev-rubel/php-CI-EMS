@@ -208,25 +208,25 @@ class Home extends MX_Controller {
         }
 
         if(!empty($_FILES['img']['name'])):
-        $img = mt_rand().'_admitstd';
-        
-        $this->upload->initialize(upload_file(100,300,300,$img));
-        if ( ! $this->upload->do_upload('img')) 
-        {
-           $error = array('error' => $this->upload->display_errors());
-           set_flashmsg($error['error'], 'error');
-           redirect(base('Home', 'registration_online'));
-        } else {          
-           //Image Resizing            
-            $this->load->library('image_lib', resize_file(180,180));
-            if ( ! $this->image_lib->resize())
-            {               
-                set_flashmsg($this->image_lib->display_errors(), 'error');
+            $img = mt_rand().'_admitstd';
+            
+            $this->upload->initialize(upload_file(100,300,300,$img));
+            if ( ! $this->upload->do_upload('img')) 
+            {
+                $error = array('error' => $this->upload->display_errors());
+                set_flashmsg($error['error'], 'error');
                 redirect(base('Home', 'registration_online'));
+            } else {          
+            //Image Resizing            
+                $this->load->library('image_lib', resize_file(180,180));
+                if ( ! $this->image_lib->resize())
+                {               
+                    set_flashmsg($this->image_lib->display_errors(), 'error');
+                    redirect(base('Home', 'registration_online'));
+                }
             }
-        }
-        $img_name = $this->upload->file_name;
-        $_POST['img'] = $img_name;
+            $img_name = $this->upload->file_name;
+            $_POST['img'] = $img_name;
         endif;
         
         $_POST['date'] = date("Y-m-d", strtotime($_POST['date']));
@@ -246,6 +246,26 @@ class Home extends MX_Controller {
         
         endif;
     
+    }
+
+    function update_admit_student()
+    {
+        $id = $_POST['id'];
+        $this->db->where('id', $id);
+        $this->db->update('admit_std', $_POST);
+
+        if(!empty($_FILES['img']['name'])):
+            $img = $_FILES['img'];
+            
+            $this->upload->initialize(upload_file(100,300,300,$img));
+            if ($this->upload->do_upload('img')) {        
+                //Image Resizing            
+                $this->load->library('image_lib', resize_file(180,180));
+            }
+        endif;
+        
+        redirect(base('homemanage','admission_query'));    
+
     }
 	
 	function contact_mail()

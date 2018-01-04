@@ -24,8 +24,8 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box active" id="list">
 
-                <div id="editIncomeCategoryHolder"></div>
-                <div id="IncomeCategoryList">
+                <div id="editDailyExpenseHolder"></div>
+                <div id="DailyExpenseList">
 
 					<table class="table table-bordered datatable" id="table_export">
 						<thead>
@@ -41,14 +41,13 @@
 							<?php 
 								$count = 1;
 								$daily_expense = $this->db->get('daily_expense')->result_array();
-								if(!empty($daily_expense)):
 								foreach ($daily_expense as $row):
 							?>
 							<tr>
 								<td><?php echo $count++;?></td>
-								<td><?php ;?></td>
-								<td><?php ?></td>
-								<td><?php ;?></td>
+								<td><?php echo $this->db->get_where('expense_category',['expense_category_id'=>$row['expense_category_id']])->row()->name;?></td>
+								<td><?php echo $row['amount'];?></td>
+								<td><?php echo date('d/m/Y', $row['date']);?></td>
 								<td>
 									
 									<div class="btn-group">
@@ -59,7 +58,7 @@
 											
 											<!-- Category EDITING LINK -->
 											<li>
-												<a href="#" onclick="editIncomeCategory('<?php echo $row['daily_expense_id'];?>')">
+												<a href="#" onclick="editDailyExpense('<?php echo $row['daily_expense_id'];?>')">
 													<i class="entypo-pencil"></i>
 														<?php echo get_phrase('edit');?>
 													</a>
@@ -78,7 +77,7 @@
 									
 								</td>
 							</tr>
-							<?php endforeach;endif;?>
+							<?php endforeach;?>
 						</tbody>
 					</table>
 					
@@ -91,13 +90,13 @@
             <div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
 
-					<form id="createIncomeCategory" action="<?php echo base_url() .'index.php?admin/ajax_income_category_create'; ?>" class="form-horizontal form-groups-bordered" method="post">   
+					<form id="addDailyExpense" action="<?php echo base_url() .'index.php?admin/ajax_daily_expense_add'; ?>" class="form-horizontal form-groups-bordered" method="post">   
 		
 						<div class="form-group">
 							<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('date');?></label>
 							
 							<div class="col-sm-6">
-								<input type="text" class="form-control datepicker" name="date" id="expense_date">
+								<input type="text" class="datepicker form-control" name="date" readonly>
 							</div>
 						</div>
 		
@@ -126,7 +125,7 @@
 						
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-5">
-								<button type="submit" class="btn btn-info"><?php echo get_phrase('add_income_category');?></button>
+								<button type="submit" class="btn btn-info"><?php echo get_phrase('add_daily_expense');?></button>
 							</div>
 						</div>
 					<?php echo form_close();?>
@@ -143,12 +142,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-		$("#expense_date").datepicker({
-            format: 'dd-mm-yyyy',
-            // startView: 1
-        });
 
-        $('#createIncomeCategory').ajaxForm({
+
+        $('#addDailyExpense').ajaxForm({
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();
@@ -160,9 +156,9 @@
                     toastr.error(jData.msg);
                 } else {
                     toastr.success(jData.msg);
-                    $("#IncomeCategoryList").html(jData.html);
+					$("#DailyExpenseList").html(jData.html);
                     $("#table_export").dataTable();
-                    $('#createIncomeCategory').resetForm();
+                    $('#addDailyExpense').resetForm();
                 }
                 $('body,html').animate({
                     scrollTop: 0
@@ -174,10 +170,10 @@
 
     });
 
-    function editIncomeCategory(incomeCategoryID) {
+    function editDailyExpense(DailyExpenseID) {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?admin/ajax_income_category_edit/' + incomeCategoryID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_daily_expense_edit/' + DailyExpenseID,
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();
@@ -186,7 +182,8 @@
                 var jData = JSON.parse(data);
 
                 toastr.success(jData.msg);
-                $("#editIncomeCategoryHolder").html(jData.html);
+				$("#editDailyExpenseHolder").html(jData.html);
+				$('.datepicker').datepicker();
                 $('body,html').animate({
                     scrollTop: 350
                 }, 800);

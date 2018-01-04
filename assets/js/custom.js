@@ -20,7 +20,7 @@ jQuery(document).ready(function($)
 // 
 $(document).ready(function(){
 	$('.datepicker').datepicker({
-	    format: 'dd-mm-yyyy',
+	    dateFormat: 'dd-mm-yy',
 		startView: 1
 	}).on('changeDate', function(e){
 	    $(this).datepicker('hide');

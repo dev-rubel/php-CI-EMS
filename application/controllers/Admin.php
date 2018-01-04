@@ -1726,6 +1726,97 @@ class Admin extends CI_Controller
             $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
         }
     }
+
+    function ajax_daily_expense_add()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {   
+            $data = $this->input->post();
+            $data['date'] = strtotime($data['date']);
+            $data['year'] = $this->running_year;
+            $this->db->insert('daily_expense' , $data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/daily_expense_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
+
+    function ajax_daily_expense_edit()
+    {
+        $daily_expense_id = $this->uri(3);  
+        $page_data['daily_expense_id']   = $daily_expense_id;         
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_daily_expense_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_daily_expense()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $daily_expense_id = $this->uri(3);        
+            $data   =   $this->input->post();
+            $data['date'] = strtotime($data['date']);
+            $data['year'] = $this->running_year;
+            $this->db->where('daily_expense_id' , $daily_expense_id);
+            $this->db->update('daily_expense' , $data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/daily_expense_table_holder' , '', true);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }
+    }
+
+    // Bank Section
+
+    function ajax_add_bank_account()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $data = $this->input->post();
+            $this->db->insert('bank_account', $data);
+
+            $page_data['accounts'] = $this->db->get('bank_account')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/bank_ac_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
+
+    function ajax_edit_bank_ac()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $acc_id = $this->uri(3);  
+            $page_data['acc_id']   = $acc_id;  
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/edit_bank_ac_holder', $page_data, true);
+            $this->jsonMsgReturn(true,'Success.',$htmlData);
+        }
+    }
+
+    function ajax_update_bank_ac()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $acc_id = $this->uri(3);        
+            $data   =   $this->input->post();
+            $this->db->where('acc_id', $acc_id);
+            $this->db->update('bank_account', $data);
+
+            $page_data['accounts'] = $this->db->get('bank_account')->result_array();
+            $htmlData = $this->load->view('backend/admin/ajax_elements/bank_ac_table_holder' , $page_data, true);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }
+    }
     
     function ajax_create_invoice()
     {

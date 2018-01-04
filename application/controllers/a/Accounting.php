@@ -111,6 +111,7 @@ class Accounting extends CI_Controller
 
     function add_daily_expense()
     {
+        // Move to admin controller reason to ajax problem
         $result = $this->input->post(null);
         $select_month = array_keys(array_slice($result, 0, 1));
         $month_string = explode('_', $select_month[0]);
@@ -121,7 +122,7 @@ class Accounting extends CI_Controller
             $_SESSION['working_month'] = $month_name;
         }else{
             $_SESSION['working_month'] = $month_name;
-        }        
+        }
 
         foreach($result as $k=>$each){
             $index               = explode('_', $k);
