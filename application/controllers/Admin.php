@@ -1944,6 +1944,15 @@ class Admin extends CI_Controller
             $this->jsonMsgReturn(true,'Success.',$htmlData);
         }
     }
+
+    function ajax_monthly_balance_year()
+    {
+        $year = $this->uri(3);  
+        $page_data['year']   = $year; 
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/monthly_balance_table_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,"Select Year $year",$htmlData);
+    }
     
     // ACADEMIC SYLLABUS
     function academic_syllabus($class_id = '')

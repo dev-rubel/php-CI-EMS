@@ -26,7 +26,9 @@
       <th>Income</th>
       <th>Expense</th>
       <th>Balance</th>
-      <th>Bank(Current Balance)</th>
+      <th>Cash IN (Bank)</th>
+			<th>Cash OUT (Bank)</th>
+      <th>Balance (Bank)</th>
     </tr>
   </thead>
   <tbody>
@@ -54,6 +56,30 @@
 		 ?>
       </td>
       <td><?php echo $income-$expense.' tk/='; ?></td>
+			<td>
+				 <?php
+				 		// SELECT OLDEST DATE TO TODAY DATE INCOME 
+						$this->db->select_sum('tran_amount');
+						$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
+						$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+						$this->db->where('tran_status' , 1);					
+						$amount_i = $this->db->get('bank_transaction');
+						$amount_in = $amount_i->row()->tran_amount;
+						echo $amount_in;
+				 ?>
+			</td>
+			<td>
+				<?php 
+						// SELECT OLDEST DATE TO TODAY DATE EXPENSE
+						$this->db->select_sum('tran_amount');
+						$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
+						$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+						$this->db->where('tran_status' , 2);					
+						$amount_o = $this->db->get('bank_transaction');
+						$amount_out = $amount_o->row()->tran_amount;
+						echo $amount_out;
+				?>
+			</td>
       <td>
       	<?php  
       		$this->db->select_sum('tran_amount');
@@ -102,7 +128,9 @@
       <th>Income</th>
       <th>Expense</th>
       <th>Balance</th>
-      <th>Bank(Current Balance)</th>
+      <th>Cash IN (Bank)</th>
+			<th>Cash OUT (Bank)</th>
+      <th>Balance (Bank)</th>
     </tr>
   </thead>
   <tbody>
@@ -126,19 +154,47 @@
 		 ?>
       </td>
       <td><?php echo $income-$expense.' tk/='; ?></td>
+			<td>
+				 <?php
+				 	// SELECT OLDEST DATE
+					$this->db->order_by('tran_date', 'ASC');
+					$oldestDate = $this->db->get('bank_transaction', 1)->row()->tran_date;
+
+					// SELECT OLDEST DATE TO THIS MOUNTH INCOME
+      		$this->db->select_sum('tran_amount');
+					$this->db->where('tran_date >=', $oldestDate);
+					$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+					$this->db->where('tran_status' , 1);					
+					$amount_i = $this->db->get('bank_transaction');
+					$amount_in = $amount_i->row()->tran_amount;
+					echo $amount_in;
+				 ?>
+			</td>
+			<td>
+				<?php 
+					// SELECT OLDEST DATE TO THIS MOUNTH EXPENSE
+					$this->db->select_sum('tran_amount');
+					$this->db->where('tran_date >=', $oldestDate);
+					$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+					$this->db->where('tran_status' , 2);					
+					$amount_o = $this->db->get('bank_transaction');
+					$amount_out = $amount_o->row()->tran_amount;
+					echo $amount_out;
+				?>
+			</td>
       <td>
       	<?php  
       		$this->db->select_sum('tran_amount');
-			$this->db->where('tran_status' , 1);					
-			$amount_i = $this->db->get('bank_transaction');
-			$amount_in = $amount_i->row()->tran_amount;
-			
-			$this->db->select_sum('tran_amount');
-			$this->db->where('tran_status' , 2);					
-			$amount_o = $this->db->get('bank_transaction');
-			$amount_out = $amount_o->row()->tran_amount;
+					$this->db->where('tran_status' , 1);					
+					$amount_i = $this->db->get('bank_transaction');
+					$amount_in = $amount_i->row()->tran_amount;
+					
+					$this->db->select_sum('tran_amount');
+					$this->db->where('tran_status' , 2);					
+					$amount_o = $this->db->get('bank_transaction');
+					$amount_out = $amount_o->row()->tran_amount;
 
-			echo $amount_in-$amount_out.' tk/=';
+					echo $amount_in-$amount_out.' tk/=';
       	?>
       </td>
     </tr>
