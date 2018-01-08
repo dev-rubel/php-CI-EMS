@@ -62,6 +62,7 @@ function ajax_create_shift()
         $shift_id = $this->db->insert_id();
 
         $page_data['shifts']    = $this->db->get('shift')->result_array();
+        
         $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Shift Created.',$htmlData);
     }

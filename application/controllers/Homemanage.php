@@ -140,6 +140,19 @@ class Homemanage extends CI_Controller
         redirect(base('homemanage', 'notice'));
     }
 
+    function ajax_status_notice()
+    {
+        $msg = '';
+        $this->db->update('linkinfo',array('status'=>$this->uri(4)),array('id'=>$this->uri(3)));
+        if($this->uri(4)==1):
+            $msg = 'Notice Published';
+        else:
+            $msg = 'Notice Drafted';
+        endif;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/notice_table_holder', '', true);
+        $this->jsonMsgReturn(true,$msg,$htmlData);
+    }
+
     function change_imnotice_status()
     {
         $this->db->update('linkinfo',array('status'=>$this->uri(4)),array('id'=>$this->uri(3)));
@@ -149,6 +162,19 @@ class Homemanage extends CI_Controller
         $this->flashmsg('Important Notice Drafted');
         endif;
         redirect(base('homemanage', 'important_notice'));
+    }
+
+    function ajax_status_important_notice()
+    {
+        $msg = '';
+        $this->db->update('linkinfo',array('status'=>$this->uri(4)),array('id'=>$this->uri(3)));
+        if($this->uri(4)==1):
+            $msg = 'Important Notice Published';
+        else:
+            $msg = 'Important Notice Drafted';
+        endif;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/important_notice_table_holder', '', true);
+        $this->jsonMsgReturn(true,$msg,$htmlData);
     }
     
     function manage_home()
@@ -923,8 +949,7 @@ class Homemanage extends CI_Controller
             $error = array('error' => $this->upload->display_errors());
             $this->flashmsg($error['error'],'error');
             redirect(base('homemanage', 'notice'));
-        }
-        else
+        }else
         {
             $this->upload->data();
             $this->flashmsg('Inserted with PDF file');
@@ -935,6 +960,86 @@ class Homemanage extends CI_Controller
             redirect(base('homemanage', 'notice'));
         endif;
         
+    }
+
+    function ajax_add_notice()
+    {
+        $check = check_array_value($_POST,'file');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {    
+            $Insert_id = $this->dashboard_model->insert_linkinfo_table($_POST,'notice');
+            if(!empty($_FILES['file']['name'])):
+            $this->load->helper(array('form','url'));
+            $config['upload_path'] = './assets/otherFiles/';
+            $config['allowed_types'] = 'pdf';
+            $config['file_name'] = $Insert_id.'_noticepdf';
+            $config['max_size']    = 200;
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('file')) {
+                $error = array('error' => $this->upload->display_errors());                
+            } else {
+                $this->upload->data();
+                $msg = 'Inserted with PDF file';
+            }
+            else:
+                $msg = 'Inserted without file';
+            endif;
+            
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/notice_table_holder' , '', true);
+            if(!empty($error)){
+                $this->jsonMsgReturn(false,$error,$htmlData);
+            } else {
+                $this->jsonMsgReturn(true,$msg,$htmlData);
+            }
+            
+        }
+    }
+
+    function ajax_edit_notice()
+    {
+        $noticeID = $this->uri(3);
+        $page_data['noticeID']   = $noticeID;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_notice_form_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_notice()
+    {
+        $check = check_array_value($_POST,'file');
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $this->dashboard_model->update_linkinfo_table($_POST,'notice');
+            if(!empty($_FILES['file']['name'])){
+                if(file_exists('assets/otherFiles/'.$_POST['id'].'_noticepdf.pdf')==true){
+                    unlink('assets/otherFiles/'.$_POST['id'].'_noticepdf.pdf');
+                }
+                $this->load->helper(array('form','url'));
+                $config['upload_path'] = './assets/otherFiles/';
+                $config['allowed_types'] = 'pdf';
+                $config['file_name'] = $_POST['id'].'_noticepdf';
+                $config['max_size']    = 3072;
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('file')){
+                    $error = array('error' => $this->upload->display_errors());                
+                } else {
+                    $this->upload->data();
+                    $msg = 'Update with PDF file';
+                }
+            } else {
+                $msg = 'Update without file';
+            }
+
+            $htmlData['noticeHolder'] = $this->load->view('backend/admin/ajax_elements/notice_table_holder', '', true);
+            $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_notice_form_holder', '', true);
+            if(!empty($error)) {
+                $this->jsonMsgReturn(false,$error,$htmlData);
+            } else {
+                $this->jsonMsgReturn(true,$msg,$htmlData);
+            }
+        }
     }
     
     function update_notice()
@@ -984,7 +1089,46 @@ class Homemanage extends CI_Controller
 		$this->db->insert('linkinfo',$data);
 		$this->flashmsg('Insert important notice');
 		redirect(base('homemanage', 'important_notice'));
-	}
+    }
+    
+    function ajax_add_important_notice()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['track_name'] = 'imnotice';
+            $data['title'] = $_POST['title'];
+            $data['description'] = $_POST['description'];
+            $data['link'] = '';
+            $this->db->insert('linkinfo',$data);
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/important_notice_table_holder', '', true);
+            $this->jsonMsgReturn(true,'Add Success.', $htmlData);
+        }
+    }
+
+    function ajax_edit_important_notice()
+    {
+        $imNoticeId = $this->uri(3);
+        $page_data['imNoticeId']   = $imNoticeId;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_important_notice_form_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_important_notice()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $this->dashboard_model->update_linkinfo_table($_POST,'imnotice');
+
+            $htmlData['noticeHolder'] = $this->load->view('backend/admin/ajax_elements/important_notice_table_holder', '', true);
+            $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_important_notice_form_holder', '', true);
+            $this->jsonMsgReturn(true,'Update Success',$htmlData);
+        }
+    }
 	
 	function update_important_notice()
 	{
@@ -996,8 +1140,8 @@ class Homemanage extends CI_Controller
 	function delete_important_notice()
 	{
 		$this->dashboard_model->delete_linkinfo_table($this->uri(3));
-	$this->flashmsg('Deleted');
-	redirect(base('homemanage', 'important_notice'));
+        $this->flashmsg('Deleted');
+        redirect(base('homemanage', 'important_notice'));
 	}
     
     

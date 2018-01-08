@@ -1,5 +1,6 @@
 <style>
-.extra-menu h2,h4{
+.extra-menu h2,  
+.extra-menu h4{
     color: #fff;
 }
 .extra-menu {
@@ -26,11 +27,11 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 <?php foreach($links as $k=>$each):?>
     <div class="col-sm-3 col-md-2" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
-            <div class="panel-stat3 bg-info extra-menu" id="<?php echo $each;?>">
+            <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <h4><?php echo ($k+1).'. '.$title[$k];?></h4>
 
                 <div class="stat-icon">
-                    <i class="fa fa-bars"></i>
+                    <i class="customIcon fa fa-bars" id="customNavIcon<?php echo $each; ?>"></i>
                 </div>
             </div>
         </a>
@@ -39,7 +40,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 <?php endforeach;?>
 
 <div class="col-sm-3 col-md-2" style="margin-bottom: 10px;">
-    <div class="panel-stat3 bg-info extra-menu<?php //echo $color[rand(1,7)];?>">
+    <div class="panel-stat3 bg-info extra-menu" id="customNavClass">
         <h4>6. Student Information</h4>
         <select name="" id="navMenuSelect" onchange="changePage()" style="color: #000;">
         <option value="">Please Select</option>
@@ -61,7 +62,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
         </select>
 
         <div class="stat-icon">
-            <i class="fa fa-bars"></i>
+        <i class="customIcon fa fa-bars" id="customNavIcon"></i>
         </div>
     </div>
 </div>
@@ -92,7 +93,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 <?php endforeach;?>
 
     <div class="col-sm-6 col-md-3" style="margin-bottom: 10px;">
-        <div class="panel-stat3 bg-info<?php //echo $color[rand(1,7)];?>">
+        <div class="panel-stat3 bg-info" id="mainNavClass">
             <h2 class="m-top-none" id="userCount">6</h2>
             <h4>Student Information</h4>
             <select name="" onchange="changePage()" id="mainMenuSelect" style="color: #000;">
@@ -132,10 +133,24 @@ function changePage(page)
     var selectValue;
     if(page) {
         selectValue = page;
+        /* ACTIVE MANU SECTION */
+        $('.extra-menu').addClass('bg-info').removeClass('bg-success');
+        $('.customIcon').addClass('fa-bars').removeClass('fa-thumb-tack');
+        $('#customNavBg'+selectValue).addClass('bg-success').removeClass('bg-info');
+        $('#customNavIcon'+selectValue).addClass('fa-thumb-tack').removeClass('fa-bars');
+        /* END ACTIVE MANU SECTION */
     } else if(selectValueTwo) {
-        selectValue = selectValueTwo;        
+        selectValue = selectValueTwo;  
+        $('.extra-menu').addClass('bg-info').removeClass('bg-success');
+        $('.customIcon').addClass('fa-bars').removeClass('fa-thumb-tack');
+        $('#customNavClass').addClass('bg-success').removeClass('bg-info');
+        $('#customNavIcon').addClass('fa-thumb-tack').removeClass('fa-bars');      
     } else if(selectValueOne) {
         selectValue = selectValueOne;
+        $('.extra-menu').addClass('bg-info').removeClass('bg-success');
+        $('.customIcon').addClass('fa-bars').removeClass('fa-thumb-tack');
+        $('#customNavClass').addClass('bg-success').removeClass('bg-info');
+        $('#customNavIcon').addClass('fa-thumb-tack').removeClass('fa-bars');    
     }
     
     $.ajax({

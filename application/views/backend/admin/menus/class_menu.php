@@ -1,5 +1,6 @@
 <style>
-.extra-menu h2,h4{
+.extra-menu h2,  
+.extra-menu h4{
     color: #fff;
 }
 .extra-menu {
@@ -25,12 +26,12 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 <?php foreach($links as $k=>$each):?>
     <div class="col-sm-3 col-md-2" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
-            <div class="panel-stat3 bg-info extra-menu">
+            <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2>
                 <h4><?php echo $title[$k];?></h4>
 
                 <div class="stat-icon">
-                    <i class="fa fa-bars"></i>
+                    <i class="customIcon fa fa-bars" id="customNavIcon<?php echo $each; ?>"></i>
                 </div>
             </div>
         </a>
@@ -71,6 +72,12 @@ $('#classNavManu').hide();
 function changePage(page)
 {
     var selectValue = page;
+    /* ACTIVE MANU SECTION */
+    $('.extra-menu').addClass('bg-info').removeClass('bg-success');
+    $('.customIcon').addClass('fa-bars').removeClass('fa-thumb-tack');
+    $('#customNavBg'+selectValue).addClass('bg-success').removeClass('bg-info');
+    $('#customNavIcon'+selectValue).addClass('fa-thumb-tack').removeClass('fa-bars');
+    /* END ACTIVE MANU SECTION */
     
     $.ajax({
         type: "POST",
