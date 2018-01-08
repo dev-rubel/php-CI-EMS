@@ -746,6 +746,18 @@ class Homemanage extends CI_Controller
         $this->flashmsg('links_updated');
         redirect(base('homemanage', 'social_link'));
     }
+
+    function ajax_update_social_link()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $implod = implode('+', $_POST);
+            $this->dashboard_model->update_textinfo_table($implod, 'social_links');
+            $this->jsonMsgReturn(true,'Edit Success.');
+        }
+    }
     
     function add_slider()
     {
@@ -773,10 +785,43 @@ class Homemanage extends CI_Controller
         $this->flashmsg('inserted');
         redirect(base('homemanage', 'slider'));
     }
+
+    function ajax_add_slider()
+    {
+        $check = check_array_value($_POST);
+        if($check == false && empty($_FILES['img']['name'])){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $implod = implode('+', $_POST);
+            $img = mt_rand().'_slider_img';
+            $this->upload->initialize(upload_file_slider(1000,2000,2000,$img));
+            if ( ! $this->upload->do_upload('img')) {
+                $error = array('error' => $this->upload->display_errors());
+                $this->jsonMsgReturn(false,$error);
+            } else {          
+                //Image Resizing            
+                $this->load->library('image_lib', resize_file(770,400));
+                $img_name = $this->upload->file_name;
+                $this->dashboard_model->insert_imgTable($img_name,$implod,'slider');
+
+                $htmlData = $this->load->view('backend/admin/ajax_elements/slider_table_holder' , '', true);
+                $this->jsonMsgReturn(true,'Add Success.',$htmlData);
+            }            
+        }
+        
+    }
+
+    function ajax_edit_slider()
+    {
+        $slider_id = $this->uri(3);  
+        $page_data['slider_id']   = $slider_id; 
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_slider_form_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Mode.',$htmlData);
+    }
     
     function update_slider()
     {
-        //pd($_FILES);
         if(!empty($_FILES['img']['name'])){
             $id = $_POST['id'];
             $img = mt_rand().'_slider_img';
@@ -804,8 +849,7 @@ class Homemanage extends CI_Controller
             $this->dashboard_model->update_imgTable($id,$img_name,$implod,'slider');
             $this->flashmsg('Updated');
             redirect(base('homemanage', 'slider'));
-        }else{
-            
+        } else {            
             $id = $_POST['id'];
             $img_name = $_POST['Preimg'];
             unset($_POST['Preimg']);
@@ -816,6 +860,42 @@ class Homemanage extends CI_Controller
             $this->flashmsg('Updated without image');
             redirect(base('homemanage', 'slider'));
         }
+    }
+
+    function ajax_update_slider()
+    {
+        if(!empty($_FILES['img']['name'])){
+            $id = $_POST['id'];
+            $img = mt_rand().'_slider_img';
+            $this->upload->initialize(upload_file_slider(1000,2000,2000,$img));
+            if ( ! $this->upload->do_upload('img')) {
+               $error = array('error' => $this->upload->display_errors());
+               $this->jsonMsgReturn(false,$error);
+            } else {
+               //Image Resizing            
+                $this->load->library('image_lib', resize_file(770,400));                
+            }
+            unlink('assets/images/slider_image/'.$_POST['Preimg']);
+            unset($_POST['Preimg']);
+            unset($_POST['id']);
+            $implod = implode('+', $_POST);
+            $img_name = $this->upload->file_name;
+            $this->dashboard_model->update_imgTable($id,$img_name,$implod,'slider');
+            $status = 'Update With Image';
+        } else {            
+            $id = $_POST['id'];
+            $img_name = $_POST['Preimg'];
+            unset($_POST['Preimg']);
+            unset($_POST['id']);
+            unset($_POST['img']);
+            $implod = implode('+', $_POST);
+            $this->dashboard_model->update_imgTable($id,$img_name,$implod,'slider');
+            $status = 'Update With Previous Image';
+        }
+        $htmlData['imageHolder'] = $this->load->view('backend/admin/ajax_elements/slider_table_holder' , '', true);
+        $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_slider_form_holder' , '', true);
+        $this->jsonMsgReturn(true,$status,$htmlData);
+        
     }
     
     function delete_slider()
@@ -998,8 +1078,77 @@ class Homemanage extends CI_Controller
         redirect(base('homemanage', 'gallery'));  
         
     }
+
+    function ajax_add_gallery()
+    {
+        $check = check_array_value($_POST);
+        if($check == false && empty($_FILES['img']['name'])){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else { 
+            $implod = implode('+', $_POST);
+            $img = mt_rand().'_gallery_img';
+            $this->upload->initialize(upload_file_slider(1000,2000,2000,$img));
+            if ( ! $this->upload->do_upload('img')) {
+                $error = array('error' => $this->upload->display_errors());
+                $this->jsonMsgReturn(false,$error);
+            } else {          
+                //Image Resizing            
+                $this->load->library('image_lib', resize_file(700,700));
+                $img_name = $this->upload->file_name;
+                $this->dashboard_model->insert_imgTable($img_name,$implod,'gallery');
+
+                $htmlData = $this->load->view('backend/admin/ajax_elements/gallery_table_holder' , '', true);
+                $this->jsonMsgReturn(true,'Add Success.',$htmlData);
+            }            
+        }
+    }
+
+    function ajax_edit_gallery()
+    {
+        $gallery_id = $this->uri(3);  
+        $page_data['gallery_id']   = $gallery_id; 
+
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_gallery_form_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Mode.',$htmlData);
+    }
+
+    function ajax_update_gallery()
+    {
+        if(!empty($_FILES['img']['name'])){
+            $id = $_POST['id'];
+            $img = mt_rand().'_gallery_img';
+            $this->upload->initialize(upload_file_gallery(1000,2000,2000,$img));
+            if ( ! $this->upload->do_upload('img')) {
+               $error = array('error' => $this->upload->display_errors());
+               $this->jsonMsgReturn(false,$error);
+            } else {
+               //Image Resizing            
+                $this->load->library('image_lib', resize_file(700,700));              
+            }
+            unlink('assets/images/gallery_image/'.$_POST['Preimg']);
+            unset($_POST['Preimg']);
+            unset($_POST['id']);
+            $implod = implode('+', $_POST);
+            $img_name = $this->upload->file_name;
+            $this->dashboard_model->update_imgTable($id,$img_name,$implod,'gallery');
+            $status = 'Update With Image';
+        } else {            
+            $id = $_POST['id'];
+            $img_name = $_POST['Preimg'];
+            unset($_POST['Preimg']);
+            unset($_POST['id']);
+            unset($_POST['img']);
+            $implod = implode('+', $_POST);
+            $this->dashboard_model->update_imgTable($id,$img_name,$implod,'gallery');
+            $status = 'Update With Previous Image';
+        }
+        
+        $htmlData['imageHolder'] = $this->load->view('backend/admin/ajax_elements/gallery_table_holder', '', true);
+        $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_gallery_form_holder', '', true);
+        $this->jsonMsgReturn(true,$status,$htmlData);
+    }
     
-     function update_galleryInfo()
+    function update_galleryInfo()
     {
         if(!empty($_FILES['img']['name'])){
             $id = $_POST['id'];
