@@ -1,4 +1,3 @@
-<div class="editSliderHoder">
 <?php 
 $this->db->where('id', $gallery_id);
 $info = $this->db->get('images')->row()->info;
@@ -67,4 +66,3 @@ $(document).ready(function () {
 });
 
 </script>
-</div>

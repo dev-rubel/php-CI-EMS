@@ -33,6 +33,8 @@ $url = $url[0];
 <script src="assets/backend/js/bootstrap-toggle.min.js"></script>
 <script src="assets/backend/js/jscolor.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
 <!-- end for homemanage controller-->
 <script src="assets/js/jquery.dataTables.min.js"></script>
 <script src="assets/js/datatables/TableTools.min.js"></script>
@@ -51,6 +53,39 @@ $url = $url[0];
 <script src="assets/js/neon-demo.js"></script>
 <script src="assets/js/custom.js"></script>
 
+
+<script>
+// Confirm delete function
+
+function confDelete(con,func,id,id2){
+	$.confirm({
+		title: 'Confirm!',
+		content: 'Are you sure? You want to delete this.',
+		type: 'red',
+    	typeAnimated: true,
+		buttons: {
+			tryAgain: {
+				text: 'Delete',
+				btnClass: 'btn-red',
+				action: function(){
+					$.ajax({
+						url: '<?php echo base_url();?>index.php?'+con+'/'+func+'/'+id,
+						dataType: 'json',
+						method: 'get'
+					}).done(function (response) {
+						$('#'+id2).remove();
+						$.alert(response.msg);
+					}).fail(function(){
+						$.alert('Location problem.');
+					});
+				}
+			},
+			close: function () {
+			}
+		}
+	});
+}
+</script>
 
 <!-- SHOW SUCCESS TOASTR NOTIFICATION -->
 <?php if ($this->session->flashdata('flash_message') != ""):?>

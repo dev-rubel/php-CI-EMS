@@ -923,6 +923,17 @@ class Homemanage extends CI_Controller
         $this->jsonMsgReturn(true,$status,$htmlData);
         
     }
+
+    function ajax_delete_slider()
+    {
+        $id = $this->uri(3);
+        $id = explode('-',$id);
+        $id = $id[0];
+        $name = $id[1];
+        unlink('assets/images/slider_image/'.$name);
+        $this->dashboard_model->delete_imgTable_info($id);
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
     
     function delete_slider()
     {
@@ -1161,6 +1172,42 @@ class Homemanage extends CI_Controller
         $this->flashmsg('Inserted');
         redirect(base('homemanage', 'important_link'));
     }
+
+    function ajax_add_important_link()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $this->dashboard_model->insert_linkinfo_table($_POST,'link');
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/important_link_table_holder', '', true);
+            $this->jsonMsgReturn(true,'Link Created.',$htmlData);
+        }
+    }
+
+    function ajax_edit_important_link()
+    {
+        $imLink_id = $this->uri(3);
+        $page_data['imLink_id']   = $imLink_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_important_link_form_holder' , $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_important_link()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $this->dashboard_model->update_linkinfo_table($_POST,'link');
+
+            $htmlData['imLinkTable'] = $this->load->view('backend/admin/ajax_elements/important_link_table_holder', '', true);
+            $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_important_link_form_holder', '', true);
+            $this->jsonMsgReturn(true,'Update Success',$htmlData);
+        }
+
+    }
     
     function update_link()
     {
@@ -1182,6 +1229,19 @@ class Homemanage extends CI_Controller
         $this->flashmsg('Updated');
         redirect(base('homemanage', 'location'));
     }
+
+    function ajax_update_location()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $this->dashboard_model->update_textinfo_table($_POST['code'], 'location');
+
+            $htmlData = $this->load->view('backend/admin/ajax_elements/location_iframe_holder', '', true);
+            $this->jsonMsgReturn(true,'Update Location',$htmlData);
+        }
+    }
     
     function update_present_section()
     {
@@ -1193,6 +1253,19 @@ class Homemanage extends CI_Controller
         $this->dashboard_model->update_textinfo_table($status, 'present');
         $this->flashmsg('Updated');
         redirect(base('homemanage', 'present'));
+    }
+
+    function ajax_update_present_section()
+    {
+        if($_POST['status']=='on'){
+            $status = 1;
+            $msg = 'Website is now <b>Online</b>';
+        }else{
+            $status = 0;
+            $msg = 'Website is now <b>Offline</b>';
+        }
+        $this->dashboard_model->update_textinfo_table($status, 'present');
+        $this->jsonMsgReturn(true,$msg);
     }
     
     function add_gallery()

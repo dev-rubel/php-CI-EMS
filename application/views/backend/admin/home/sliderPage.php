@@ -64,7 +64,7 @@
             <?php 
       if(!empty($slider)):
       foreach($slider as $key=>$list): $info = explode('+', $list['info']); $id = $list['id']; $name = $list['img_name'];?>
-            <tr>
+            <tr id="slider<?php echo $key;?>">
               <th scope="row">
                 <?php echo $key+1;?>
               </th>
@@ -80,7 +80,7 @@
               </td>
               <td>
                 <a href="#" class="btn btn-info btn-xs" onclick="editSlider('<?php echo $id;?>')">Edit</a>
-                <a href="<?php echo base('homemanage', 'delete_slider'." /$id/$name ");?>" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to delete this item?');">
+                <a href="#" class="btn btn-danger btn-xs" onclick="confDelete('homemanage','ajax_delete_slider','<?php echo $id.'-'.$list['img_name'];?>','slider<?php echo $key;?>')">
                   <?php echo lng('Delete this');?>
                 </a>
               </td>
@@ -96,6 +96,9 @@
 
 </div>
 <!--/.row-->
+
+
+
 <script>
 $(document).ready(function () {
 
@@ -144,5 +147,6 @@ function editSlider(sliderID) {
         }
     });
 }
+
 
 </script>
