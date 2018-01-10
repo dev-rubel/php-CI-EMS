@@ -74,7 +74,6 @@ function confDelete(con,func,id,id2){
 						method: 'get'
 					}).done(function (response) {
 						$('#'+id2).remove();
-						$.alert(response.msg);
 					}).fail(function(){
 						$.alert('Location problem.');
 					});

@@ -5,7 +5,7 @@
 }
 .extra-menu {
     padding: 2px 10px !important;
-    min-height: 60px;
+    min-height: 40px;
 }
 .extra-menu h4 {
     font-size: 13px !important;
@@ -13,6 +13,13 @@
 .customNavManu {
     margin-bottom: 20px;
     border-bottom: 1px solid #EEEEEE;
+}
+.panel-stat3 .stat-icon {
+    top: 0 !important;
+}
+
+.panel-stat3 {
+    border-radius: 0px !important;
 }
 </style>
 
@@ -30,11 +37,11 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
     <div class="col-sm-3 col-md-2" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
-                <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2>
+                <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
                 <h4><?php echo $title[$k];?></h4>
 
                 <div class="stat-icon">
-                    <i class="customIcon fa fa-bars" id="customNavIcon<?php echo $each; ?>"></i>
+                    <i class="customIcon fa" id="customNavIcon<?php echo $each; ?>"></i>
                 </div>
             </div>
         </a>
@@ -46,27 +53,21 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 
 
-<div class="row"  id="manageHomeMainManu">
+<div class="row" id="manageHomeMainManu">
 
-<?php foreach($links as $k=>$each):?>
-    <div class="col-sm-6 col-md-3" style="margin-bottom: 10px;">
-        <a href="#" onclick="changePage('<?php echo $each?>')">
-            <div class="panel-stat3 bg-info<?php //echo $color[rand(1,7)];?>">
-                <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2>
-                <h4><?php echo $title[$k];?></h4>
-
-                <div class="stat-icon">
-                    <i class="fa fa-bars fa-3x"></i>
-                </div>
+    <div class="menu-navigation-icons">
+        <?php foreach($links as $k=>$each):?>
+            <div class="col-sm-6 col-md-3" style="margin-bottom: 10px;">
+                <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
+                    <i class="fa <?php echo fo_icon();?>"></i>
+                    <span><?php echo $title[$k];?></span>
+                </a>
             </div>
-        </a>
+            <!-- /.col -->
+        <?php endforeach;?>
     </div>
-    <!-- /.col -->
-<?php endforeach;?>
 
 </div>
-
-
 
 
 <div id="ajaxPageContainer"></div>
@@ -82,9 +83,9 @@ function changePage(page)
 
     /* ACTIVE MANU SECTION */
     $('.extra-menu').addClass('bg-info').removeClass('bg-success');
-    $('.customIcon').addClass('fa-bars').removeClass('fa-thumb-tack');
+    $('.customIcon').removeClass('fa-thumb-tack');
     $('#customNavBg'+selectValue).addClass('bg-success').removeClass('bg-info');
-    $('#customNavIcon'+selectValue).addClass('fa-thumb-tack').removeClass('fa-bars');
+    $('#customNavIcon'+selectValue).addClass('fa-thumb-tack');
     /* END ACTIVE MANU SECTION */
     $.ajax({
         type: "POST",

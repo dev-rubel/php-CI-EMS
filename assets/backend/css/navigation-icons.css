@@ -1,0 +1,74 @@
+.menu-navigation-icons {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size:0;
+}
+
+.menu-navigation-icons a,
+.menu-navigation-icons div#iconBG {
+    display: inline-block;
+    color: #ffffff;
+    background-color: #232526;
+    font-size: 40px;
+    font-weight: bold;
+    box-shadow: 1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    width: 100%;
+    height: 109px;
+}
+
+.menu-navigation-icons a:hover,
+.menu-navigation-icons div#iconBG:hover{
+    opacity:0.92;
+}
+
+.menu-navigation-icons a i,
+.menu-navigation-icons div#iconBG i {
+    display: block;
+    line-height: 2;
+}
+
+.menu-navigation-icons a span,
+.menu-navigation-icons div#iconBG span {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 0;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Menu colors */
+
+.menu-navigation-icons a.menu-magenta	{ background-color: #dc68bf; }
+.menu-navigation-icons div#iconBG.menu-magenta	{ background-color: #dc68bf; }
+
+.menu-navigation-icons a.menu-magenta i { color: #9d518a; }
+.menu-navigation-icons div#iconBG.menu-magenta i { color: #9d518a; }
+
+.menu-navigation-icons a.menu-blue		{ background-color: #57b2d8; }
+.menu-navigation-icons div#iconBG.menu-blue		{ background-color: #57b2d8; }
+
+.menu-navigation-icons a.menu-blue i	{ color: #3e8fb1; }
+.menu-navigation-icons div#iconBG.menu-blue i	{ color: #3e8fb1; }
+
+.menu-navigation-icons a.menu-green		{ background-color: #8ccc7a; }
+.menu-navigation-icons div#iconBG.menu-green		{ background-color: #8ccc7a; }
+
+.menu-navigation-icons a.menu-green i	{ color: #6fad5e; }
+.menu-navigation-icons div#iconBG.menu-green i	{ color: #6fad5e; }
+
+.menu-navigation-icons a.menu-yellow	{ background-color: #dadf50; }
+.menu-navigation-icons div#iconBG.menu-yellow	{ background-color: #dadf50; }
+
+.menu-navigation-icons a.menu-yellow i	{ color: #babe4a; }
+.menu-navigation-icons div#iconBG.menu-yellow i	{ color: #babe4a; }
+
+.menu-navigation-icons a.menu-red 		{ background-color: #f26262; }
+.menu-navigation-icons div#iconBG.menu-red 		{ background-color: #f26262; }
+
+.menu-navigation-icons a.menu-red i		{ color: #d34646; }
+.menu-navigation-icons div#iconBG.menu-red i		{ color: #d34646; }
+
+

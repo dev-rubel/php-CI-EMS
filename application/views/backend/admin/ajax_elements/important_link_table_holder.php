@@ -21,22 +21,22 @@ $link = $this->db->get('linkinfo')->result_array();
 	<?php 
 if(!empty($link)):
 foreach ($link as $key=>$list): $id = $list['id'];?>
-	<tr>
-	  <th scope="row">
-		<?php echo $key+1;?>
-	  </th>
-	  <td>
-		<?php echo $list['title'];?>
-	  </td>
-	  <td>
-		<?php echo $list['link'];?>
-	  </td>
-	  <td>
-		<a href="#" class="btn btn-info btn-xs" onclick="editImLink('<?php echo $id;?>')">Edit</a>
-		<a href="<?php echo base('homemanage', 'delete_link'." /$id ");?>" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to Remove?');">
-		  <?php echo lng('Delete');?>
-		</a>
-	  </td>
+	<tr id="imLink<?php echo $key;?>">
+		<th scope="row">
+			<?php echo $key+1;?>
+		</th>
+		<td>
+			<?php echo $list['title'];?>
+		</td>
+		<td>
+			<?php echo $list['link'];?>
+		</td>
+		<td>
+			<a href="#" class="btn btn-info btn-xs" onclick="editImLink('<?php echo $id;?>')">Edit</a>
+			<a href="#" class="btn btn-danger btn-xs" onclick="confDelete('homemanage','ajax_delete_link','<?php echo $id;?>','imLink<?php echo $key;?>')">
+				<?php echo lng('Delete');?>
+			</a>
+		</td>
 	</tr>
 	<?php endforeach;
 endif;

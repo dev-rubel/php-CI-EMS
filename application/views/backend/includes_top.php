@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 
 
+
 <link rel="stylesheet" href="assets/css/font-icons/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/js/vertical-timeline/css/component.css">
 <link rel="stylesheet" href="assets/js/datatables/responsive/css/datatables.responsive.css">
@@ -26,6 +27,7 @@
 <link rel="stylesheet" href="assets/backend/css/bootstrap-toggle.min.css" >
 <link rel="stylesheet" href="assets/backend/css/slide-panel.css"> 
 <link rel="stylesheet" href="assets/backend/css/toastr.min.css"> 
+<link rel="stylesheet" href="assets/backend/css/navigation-icons.css"> 
 
 <script src="assets/js/tinymce/tinymce.min.js"></script>
 <script src="assets/backend/js/jquery.uploadPreview.min.js"></script>   

@@ -1090,6 +1090,12 @@ class Homemanage extends CI_Controller
         $this->flashmsg('Deleted');
         redirect(base('homemanage', 'notice'));
     }
+
+    function ajax_delete_notice()
+    {
+        $this->dashboard_model->delete_linkinfo_table($this->uri(3));
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
     
     function add_important_notice()
 	{
@@ -1153,7 +1159,13 @@ class Homemanage extends CI_Controller
 		$this->dashboard_model->delete_linkinfo_table($this->uri(3));
         $this->flashmsg('Deleted');
         redirect(base('homemanage', 'important_notice'));
-	}
+    }
+    
+    function ajax_delete_important_notice()
+    {
+        $this->dashboard_model->delete_linkinfo_table($this->uri(3));
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
     
     
     function update_manage_pages()
@@ -1221,6 +1233,12 @@ class Homemanage extends CI_Controller
         $this->dashboard_model->delete_linkinfo_table($this->uri(3));
         $this->flashmsg('Deleted');
         redirect(base('homemanage', 'important_link'));
+    }
+
+    function ajax_delete_link()
+    {
+        $this->dashboard_model->delete_linkinfo_table($this->uri(3));
+        $this->jsonMsgReturn(true,'Delete Success');
     }
     
     function update_location()
@@ -1304,7 +1322,7 @@ class Homemanage extends CI_Controller
         } else { 
             $implod = implode('+', $_POST);
             $img = mt_rand().'_gallery_img';
-            $this->upload->initialize(upload_file_slider(1000,2000,2000,$img));
+            $this->upload->initialize(upload_file_gallery(1000,2000,2000,$img));
             if ( ! $this->upload->do_upload('img')) {
                 $error = array('error' => $this->upload->display_errors());
                 $this->jsonMsgReturn(false,$error);
@@ -1416,6 +1434,17 @@ class Homemanage extends CI_Controller
         $this->dashboard_model->delete_imgTable_info($id);
         $this->flashmsg('Deleted');
         redirect(base('homemanage', 'gallery'));
+    }
+
+    function ajax_delete_galleryImg()
+    {
+        $id = $this->uri(3);
+        $id = explode('-',$id);
+        $id = $id[0];
+        $name = $id[1];
+        unlink('assets/images/gallery_image/'.$name);
+        $this->dashboard_model->delete_imgTable_info($id);
+        $this->jsonMsgReturn(true,'Delete Success');
     }
 
 

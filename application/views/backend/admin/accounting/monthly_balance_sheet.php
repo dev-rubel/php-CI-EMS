@@ -6,15 +6,7 @@
 </style>
 
 <div class="row">
-	<div class="col-md-offset-2 col-md-7">
-		 <select name="year" id="" class="form-control" onchange="changeYear(this)">
-			 <option value="">Select Year</option>
-			 <option value="2016">2016</option>
-			 <?php for($i=1; $i <= 5 ; $i++):?>			 			
-			 		<option value="<?php echo 2016+$i;?>"><?php echo 2016+$i;?></option>
-			 <?php endfor;?>
-		 </select>
-	</div>
+	
 	<div class="col-md-10">
 		<h2>Today Balance Sheet</h2>
 	</div>
@@ -141,6 +133,15 @@
 		<div class="col-md-2">
 			<br>
 			<button class="btn btn-md btn-info" onclick="printdiv('monthly_balance_sheet','Monthly Balance Sheet')">Print</button>	
+		</div>
+		<div class="col-md-offset-4 col-md-5">
+			<select name="year" id="" class="form-control" onchange="changeYear(this)">
+				<option value="">Select Year</option>
+				<option value="2016">2016</option>
+				<?php for($i=1; $i <= 5 ; $i++):?>			 			
+						<option value="<?php echo 2016+$i;?>"><?php echo 2016+$i;?></option>
+				<?php endfor;?>
+			</select>
 		</div>
 	</div>
 <div id="monthly_balance_sheet">

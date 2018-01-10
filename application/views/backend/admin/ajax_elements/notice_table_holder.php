@@ -15,13 +15,15 @@
       <?php 
       if(!empty($notice)):
       foreach($notice as $key=>$list): $id = $list['id'];?>
-    <tr>
+    <tr id="reguNotice<?php echo $key;?>">
       <th scope="row"><?php echo $key+1;?></th>
       <td><?php echo $list['title'];?></td>
       <td><?php echo mb_substr($list['description'],0,200, "utf-8").'....';?></td>
       <td>
           <a href="#" class="btn btn-info btn-xs" onclick="editNotice('<?php echo $id;?>')">Edit</a>
-          <a href="<?php echo base('homemanage', 'delete_notice'."/$id");?>" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to delete this item?');"><?php echo lng('Delete this');?></a>     
+          <a href="#" class="btn btn-danger btn-xs" onclick="confDelete('homemanage','ajax_delete_notice','<?php echo $id;?>','reguNotice<?php echo $key;?>')">
+              <?php echo lng('Delete');?>
+          </a>     
           <?php if($list['status']==1):?>
           <a href="#" class="btn btn-success btn-xs" onclick="statusNotice('<?php echo $id;?>','0')"><?php echo lng('Published');?></a>          
         <?php else:?>
