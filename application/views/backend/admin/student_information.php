@@ -97,7 +97,7 @@ if(!empty($stdExist)):
                                     'class_id' => $class_id , 'group_id' => $group_id, 'year' => $running_year
                                 ))->result_array();
                                 foreach($students as $row):?>
-                        <tr>
+                        <tr id="student<?php echo $row['student_id'];?>">
                             <td><?php echo $row['student_id'];?></td>
                             <td>
                                 <?php if(!empty($row['roll'])):?>
@@ -164,7 +164,7 @@ if(!empty($stdExist)):
                                         <?php if($_SESSION['name']=='NihalIT'):?>
                                         <!-- STUDENT DELETION LINK -->
                                         <li>
-                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/student/delete/<?php echo $row['student_id'];?>');">
+                                            <a href="#" onclick="confDelete('admin','ajax_delete_student','<?php echo $row['student_id'];?>','student<?php echo $row['student_id'];?>')">
                                                 <i class="entypo-trash"></i>
                                                     <?php echo get_phrase('delete');?>
                                             </a>

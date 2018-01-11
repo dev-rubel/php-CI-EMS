@@ -283,6 +283,12 @@ class Homemanage extends CI_Controller
         redirect(base('Homemanage', 'admission_query'));
     }
 
+    function ajax_delete_admit_std()
+    {
+        
+
+    }
+
     function delete_files()
     {
         unlink('assets/otherFiles/'.$this->uri(4));

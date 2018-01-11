@@ -473,6 +473,19 @@ class Admin extends CI_Controller
         }
     }
 
+    function ajax_delete_student()
+    {
+        $student_id = $this->uri(3);
+        // STUDENT TABLE
+        $this->db->where('student_id', $student_id);
+        $this->db->delete('student');
+
+        // ENROLL TABLE
+        $this->db->where('student_id', $student_id);
+        $this->db->delete('enroll');
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     function ajax_student_create2()
     {   
         $this->jsonMsgReturn(true,'Information Insert.');

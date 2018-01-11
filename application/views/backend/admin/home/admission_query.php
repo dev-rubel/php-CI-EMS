@@ -100,7 +100,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                         <?php foreach($panddingStd as $key=>$list):
 								if($list1['name_numeric']==$list['class']):
                             ?>
-                            <tr>
+                            <tr id="admitStd<?php echo $list['id'];?>">
                                 <td><?php echo $key+1;?></td>
                                 <td><?php echo substr($list['uniq_id'], -4);?></td>                                
                                 <!-- <td>
@@ -183,7 +183,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
 
                                             <!-- DELETION LINK -->
                                             <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base('Homemanage', 'delete_admit_std/'.$list['id'].'/'.$list['img']); ?>');">
+                                                <a href="#" onclick="confDelete('homemanage','ajax_delete_admit_std','<?php echo $list['id'].'-'.$list['img'];?>','admitStd<?php echo $list['id'];?>')">
                                                     <i class="entypo-trash"></i>
     <?php echo get_phrase('delete'); ?>
                                                 </a>
@@ -248,7 +248,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                         <?php foreach($confirmStd as $key=>$list):
 								if($list1['name_numeric']==$list['class']):
                             ?>
-                            <tr>
+                            <tr id="admitStd<?php echo $list['id'];?>">
                                 <td><?php echo $key+1;?></td>
                                 <td><?php echo $list['id'];?></td>
                                <!--  <td>
@@ -308,7 +308,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
 											<li class="divider"></li>
                                             <!-- DELETION LINK -->
                                             <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base('Homemanage', 'delete_admit_std/'.$list['id'].'/'.$list['img']); ?>');">
+                                                <a href="#" onclick="confDelete('homemanage','ajax_delete_admit_std','<?php echo $list['id'].'-'.$list['img'];?>','admitStd<?php echo $list['id'];?>')">
                                                     <i class="entypo-trash"></i>
     <?php echo get_phrase('delete'); ?>
                                                 </a>

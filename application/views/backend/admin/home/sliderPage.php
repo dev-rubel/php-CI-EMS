@@ -5,8 +5,7 @@
     <div class="col-md-4" id="sliderFormSection">
 
       <form id="addSlider" action="<?php echo base_url() .'index.php?homemanage/ajax_add_slider'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data">
-
-        
+  
           <?php echo flash_msg();?>
           <div class="form-group">
             <label>
