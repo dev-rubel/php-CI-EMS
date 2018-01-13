@@ -284,9 +284,19 @@ class Homemanage extends CI_Controller
     }
 
     function ajax_delete_admit_std()
-    {
-        
+    {        
+        $session = ci()->db->get_where('settings', array('type' => 'admission_session'))->row()->description;
 
+        $id = $this->uri(3);
+        $id = explode('-',$id);
+        $id = $id[0];
+        $name = $id[1];
+        $dir = 'assets/images/admission_student/'.$session.'/'.$name;
+
+        unlink($dir);
+        $this->db->where('id',$id);
+        $this->db->delete('admit_std');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     function delete_files()

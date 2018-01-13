@@ -2612,6 +2612,7 @@ class Admin extends CI_Controller
 
     function ajaxClassRoutine()
     {    
+        $classID = $this->uri(3);
         $sectionID = $this->uri(4);
         $shiftID = $this->uri(5);
         $groupID = $this->uri(6);
