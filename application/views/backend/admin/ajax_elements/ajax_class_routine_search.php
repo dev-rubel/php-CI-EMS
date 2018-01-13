@@ -74,7 +74,7 @@ if(!empty($group_id)){
                             $routines   =   $this->db->get('class_routine')->result_array();
                             foreach($routines as $row2):
                             ?>
-                                    <div class="btn-group">
+                                    <div class="btn-group" id="routine<?php echo $row2['class_routine_id'];?>">
                                         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             <?php echo $this->crud_model->get_subject_name_by_id($row2['subject_id']);?>
                                             <?php
@@ -99,7 +99,7 @@ if(!empty($group_id)){
                                             </li>
 
                                             <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/class_routine/delete/<?php echo $row2['class_routine_id'];?>');">
+                                                <a href="#" onclick="confDelete('admin','ajax_delete_class_routine','<?php echo $row2['class_routine_id'];?>','routine<?php echo $row2['class_routine_id'];?>')">
                                                     <i class="entypo-trash"></i>
                                                     <?php echo get_phrase('delete');?>
                                                 </a>

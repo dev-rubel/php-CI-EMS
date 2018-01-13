@@ -1308,6 +1308,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_delete_subject()
+    {
+        $subject_id = $this->uri(3);
+        $this->db->where('subject_id', $subject_id);
+        $this->db->delete('subject');
+        $this->jsonMsgReturn(true,'Subject Deleted.');
+    }
+
     function ajax_create_subject()
     {
         $check = check_array_value($_POST);
@@ -1432,6 +1440,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_delete_classes()
+    {
+        $class_id = $this->uri(3); 
+        $this->db->where('class_id', $class_id);
+        $this->db->delete('class');  
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     function ajax_create_classes()
     {
         $check = check_array_value($_POST);
@@ -1545,6 +1561,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    function ajax_delete_shifts()
+    {
+        $shift_id = $this->uri(3); 
+        $this->db->where('shift_id', $shift_id);
+        $this->db->delete('shift');
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     
     function ajax_create_shift()
     {
@@ -1622,6 +1646,14 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'groups';
         $page_data['page_title'] = get_phrase('manage_group');
         $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_delete_groups()
+    {
+        $group_id = $this->uri(3);
+        $this->db->where('group_id', $group_id);
+        $this->db->delete('group');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     function ajax_create_group()
@@ -2111,6 +2143,14 @@ class Admin extends CI_Controller
         }
     }
 
+    function ajax_delete_section()
+    {
+        $section_id = $this->uri(3);
+        $this->db->where('section_id' , $section_id);
+        $this->db->delete('section');
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     
     function ajax_create_section()
     {
@@ -2583,6 +2623,14 @@ class Admin extends CI_Controller
         
     }
 
+    function ajax_delete_class_routine()
+    {
+        $class_routine_id = $this->uri(3);
+        $this->db->where('class_routine_id', $class_routine_id);
+        $this->db->delete('class_routine');
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     function ajax_add_class_routine()
     {
         $check = check_array_value($_POST);
@@ -2627,7 +2675,7 @@ class Admin extends CI_Controller
         $page_data['shift_id']  =   $shiftID;
         $page_data['running_year']  =   $this->running_year;
         
-        $this->load->view('backend/admin/attendance/ajax_attendance_search' , $page_data);
+        $this->load->view('backend/admin/ajax_elements/ajax_class_routine_search' , $page_data);
     }
 
     function class_routine_add()

@@ -37,7 +37,7 @@
 				
 				<!-- DELETION LINK -->
 				<li>
-					<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/subject/delete/<?php echo $row['subject_id'];?>/<?php echo $class_id;?>');">
+					<a href="#" onclick="confDelete('admin','ajax_delete_subject','<?php echo $row['subject_id'];?>','subject<?php echo $row['subject_id'];?>')">
 						<i class="entypo-trash"></i>
 							<?php echo get_phrase('delete');?>
 						</a>

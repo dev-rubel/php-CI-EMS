@@ -38,7 +38,7 @@
                     <tbody>
                         <?php $count = 1;
                         foreach ($groups as $row): ?>
-                            <tr>
+                            <tr id="groups<?php echo $row['group_id'];?>">
                                 <td><?php echo $count++; ?></td>
                                 <td><?php echo ucwords(str_replace('-', ' ', $row['name'])); ?></td>
                                 <td><?php echo $this->db->get_where('class',array('class_id'=>$row['class_id']))->row()->name;?></td>
@@ -60,7 +60,7 @@
 
                                             <!-- DELETION LINK -->
                                             <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?admin/groups/delete/<?php echo $row['group_id']; ?>');">
+                                                <a href="#" onclick="confDelete('admin','ajax_delete_groups','<?php echo $row['group_id'];?>','groups<?php echo $row['group_id'];?>')">
                                                     <i class="entypo-trash"></i>
     <?php echo get_phrase('delete'); ?>
                                                 </a>

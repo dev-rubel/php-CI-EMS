@@ -48,7 +48,7 @@
                         <tbody>
                             <?php $count = 1;
                         foreach ($shifts as $row): ?>
-                            <tr>
+                            <tr id="shifts<?php echo $row['shift_id'];?>">
                                 <td>
                                     <?php echo $count++; ?>
                                 </td>
@@ -74,7 +74,7 @@
 
                                             <!-- DELETION LINK -->
                                             <li>
-                                                <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?admin/shifts/delete/<?php echo $row['shift_id']; ?>');">
+                                                <a href="#" onclick="confDelete('admin','ajax_delete_shifts','<?php echo $row['shift_id'];?>','shifts<?php echo $row['shift_id'];?>')">
                                                     <i class="entypo-trash"></i>
                                                     <?php echo get_phrase('delete'); ?>
                                                 </a>
