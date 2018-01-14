@@ -1734,6 +1734,14 @@ class Admin extends CI_Controller
         }        
     }
 
+    function ajax_delete_income_category()
+    {
+        $income_category_id = $this->uri(3);
+        $this->db->where('income_category_id' , $income_category_id);
+        $this->db->delete('income_category');
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
+
     function ajax_expense_category_create()
     {
         $check = check_array_value($_POST);
@@ -1770,6 +1778,14 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/expense_category_table_holder' , '', true);
             $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
         }
+    }
+
+    function ajax_delete_expense_category()
+    {
+        $expense_category_id = $this->uri(3);   
+        $this->db->where('expense_category_id' , $expense_category_id);
+        $this->db->delete('expense_category');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     function ajax_daily_expense_add()
@@ -1813,6 +1829,14 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/daily_expense_table_holder' , '', true);
             $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
         }
+    }
+
+    function ajax_delete_daily_expense()
+    {
+        $daily_expense_id = $this->uri(3);   
+        $this->db->where('daily_expense_id' , $daily_expense_id);
+        $this->db->delete('daily_expense');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     // Bank Section
@@ -1861,6 +1885,14 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/bank_ac_table_holder' , $page_data, true);
             $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
         }
+    }
+
+    function ajax_delete_bank_account()
+    {
+        $acc_id = $this->uri(3);   
+        $this->db->where('acc_id' , $acc_id);
+        $this->db->delete('bank_account');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
     
     function ajax_create_invoice()
@@ -1988,6 +2020,14 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/bank_transaction_search_result', $page_data, true);
             $this->jsonMsgReturn(true,'Success.',$htmlData);
         }
+    }
+
+    function ajax_delete_acc_transaction()
+    {
+        $tran_id = $this->uri(3);   
+        $this->db->where('tran_id', $tran_id);
+        $this->db->delete('bank_transaction');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     function ajax_monthly_balance_year()
@@ -4051,6 +4091,14 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/update_profile_info', $page_data, true);
             $this->jsonMsgReturn(true,'Successully Updated', $htmlData);
         }
+    }
+
+    function ajax_delete_user()
+    {
+        $admin_id = $this->uri(3); 
+        $this->db->where('admin_id', $admin_id);
+        $this->db->delete('admin');
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     function ajax_change_password()

@@ -22,7 +22,7 @@
 	  foreach($bank_transactions as $each): 
 	  $key = array_search($each['acc_id'], array_column($bank_accounts, 'acc_id'));
   ?>
-	<tr>
+	<tr id="acc_transaction<?php echo $each['tran_id'];?>">
 	  <td><?php echo $count += 1; ?></td>
 	  <td><?php echo $bank_accounts[$key]['acc_name'];?></td>
 	  <td><?php echo $bank_accounts[$key]['acc_no'];?></td>
@@ -30,7 +30,7 @@
 	  <td><?php echo $each['tran_amount']; ?></td>
 	  <td><?php echo date('d-m-Y', $each['tran_date']); ?></td>
 	  <td>
-		<a href="#" class="btn btn-xs btn-danger" onclick="confirm_modal('<?php echo base('a/accounting', 'delete_acc_transaction'.'/'.$each['tran_id']);?>');">Delete</a>
+		<a href="#" class="btn btn-xs btn-danger" onclick="confDelete('admin','ajax_delete_acc_transaction','<?php echo $each['tran_id'];?>','acc_transaction<?php echo $each['tran_id'];?>')">Delete</a>
 	  </td>
 	</tr>
 	<?php 

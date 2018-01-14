@@ -36,7 +36,7 @@
                         <?php $count = 0;
                         if(!empty($accounts)):
                         foreach($accounts as $each): ?>
-                                <tr>
+                                <tr id="bank_account<?php echo $each['acc_id'];?>">
                                 <th scope="row"><?php echo $count++; ?></th>
                                 <td><?php echo $each['acc_name'] ?></td>
                                 <td><?php echo $each['acc_no'] ?></td>
@@ -44,7 +44,7 @@
                                 <td>
                                     <a href="#" class="btn btn-xs btn-primary" onclick="editBankAC('<?php echo $each['acc_id'];?>')">Edit</a>
                                     
-                                    <a href="#" class="btn btn-xs btn-danger" onclick="confirm_modal('<?php echo base_url().'index.php?a/accounting/delete_bank_account/'.$each['acc_id']; ?>')">Delete</a>
+                                    <a href="#" class="btn btn-xs btn-danger" onclick="confDelete('admin','ajax_delete_bank_account','<?php echo $each['acc_id'];?>','bank_account<?php echo $each['acc_id'];?>')">Delete</a>
                                 </td>
                                 </tr>
                             <?php endforeach;

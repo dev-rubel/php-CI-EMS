@@ -12,7 +12,7 @@
 		$incomes = $this->db->get('income_category')->result_array();
 		foreach ($incomes as $row):
 	?>
-	<tr>
+	<tr id="income_category<?php echo $row['income_category_id'];?>">
 		<td><?php echo $count++;?></td>
 		<td><?php echo ucwords(str_replace('_', ' ', $row['name']));?></td>
 		<td>
@@ -34,7 +34,7 @@
 					
 					<!-- Category DELETION LINK -->
 					<li>
-						<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/income_category/delete/<?php echo $row['income_category_id'];?>');">
+						<a href="#" onclick="confDelete('admin','ajax_delete_income_category','<?php echo $row['income_category_id'];?>','income_category<?php echo $row['income_category_id'];?>')">
 							<i class="entypo-trash"></i>
 								<?php echo get_phrase('delete');?>
 							</a>

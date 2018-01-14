@@ -161,15 +161,19 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Access</th>
+                    <th>Action=</th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach($list as $k=>$each):?>
-                <tr>
+                <tr id="user<?php echo $each['admin_id'];?>">
                     <td><?php echo $k+1;?></td>
                     <td><?php echo $each['name'];?></td>
                     <td><?php echo $each['email'];?></td>
                     <td><?php echo $each['level'];?></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="confDelete('admin','ajax_delete_user','<?php echo $each['admin_id'];?>','user<?php echo $each['admin_id'];?>')">Delete</button>
+                    <?php echo '';?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

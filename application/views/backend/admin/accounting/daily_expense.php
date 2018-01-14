@@ -43,7 +43,7 @@
 								$daily_expense = $this->db->get('daily_expense')->result_array();
 								foreach ($daily_expense as $row):
 							?>
-							<tr>
+							<tr id="daily_expense<?php echo $row['daily_expense_id'];?>">
 								<td><?php echo $count++;?></td>
 								<td><?php echo $this->db->get_where('expense_category',['expense_category_id'=>$row['expense_category_id']])->row()->name;?></td>
 								<td><?php echo $row['amount'];?></td>
@@ -67,7 +67,7 @@
 											
 											<!-- Category DELETION LINK -->
 											<li>
-												<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/income_category/delete/<?php echo $row['daily_expense_id'];?>');">
+												<a href="#" onclick="confDelete('admin','ajax_delete_daily_expense','<?php echo $row['daily_expense_id'];?>','daily_expense<?php echo $row['daily_expense_id'];?>')">
 													<i class="entypo-trash"></i>
 														<?php echo get_phrase('delete');?>
 													</a>

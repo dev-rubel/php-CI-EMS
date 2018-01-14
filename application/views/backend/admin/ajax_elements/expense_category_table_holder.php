@@ -12,7 +12,7 @@
 		$expenses = $this->db->get('expense_category')->result_array();
 		foreach ($expenses as $row):
 	?>
-	<tr>
+	<tr id="expense_category<?php echo $row['expense_category_id'];?>">
 		<td><?php echo $count++;?></td>
 		<td><?php echo $row['name'];?></td>
 		<td>
@@ -34,7 +34,7 @@
 					
 					<!-- Category DELETION LINK -->
 					<li>
-						<a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/expense_category/delete/<?php echo $row['expense_category_id'];?>');">
+						<a href="#" onclick="confDelete('admin','ajax_delete_expense_category','<?php echo $row['expense_category_id'];?>','expense_category<?php echo $row['expense_category_id'];?>')">
 							<i class="entypo-trash"></i>
 								<?php echo get_phrase('delete');?>
 							</a>

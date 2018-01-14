@@ -147,14 +147,6 @@
             </li>
             <?php endif; ?>
 
-            <!-- MANAGE NOTICEBOARD SECTION -->
-
-            <li class="<?php if ($page_name == 'noticeboard') echo 'active'; ?> ">
-                <a href="<?php echo base_url(); ?>index.php?admin/noticeboard">
-                    <i class="entypo-doc-text-inv"></i>
-                    <?php echo get_phrase('noticeboard'); ?>
-                </a>
-            </li>
 
             <!-- MANAGE SMS SECTION -->
 
@@ -208,6 +200,15 @@
                 <a href="<?php echo base_url(); ?>index.php?admin/transport">
                     <i class="entypo-location"></i>
                     <?php echo get_phrase('transport'); ?>
+                </a>
+            </li>
+
+             <!-- MANAGE NOTICEBOARD SECTION -->
+
+            <li class="<?php if ($page_name == 'noticeboard') echo 'active'; ?> ">
+                <a href="<?php echo base_url(); ?>index.php?admin/noticeboard">
+                    <i class="entypo-doc-text-inv"></i>
+                    <?php echo get_phrase('noticeboard'); ?>
                 </a>
             </li>
 
