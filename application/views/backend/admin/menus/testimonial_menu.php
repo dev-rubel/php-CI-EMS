@@ -25,14 +25,14 @@
 <br>
 <br>
 <?php 
-$links = ['testimonial_voc','testimonial_general'];
-$title = ['Testimonial For Vocational','Testimonial For General'];
+$links = ['testimonial_voc','testimonial_general','testimonial_list'];
+$title = ['Testimonial For Vocational','Testimonial For General','Testimonial List'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="testimonialNavManu">
 
 <?php foreach($links as $k=>$each):?>
-    <div class="col-sm-6 col-md-6" style="margin-bottom: 10px;">
+    <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
@@ -53,7 +53,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 <div class="menu-navigation-icons">
     <?php foreach($links as $k=>$each):?>
-        <div class="col-sm-6 col-md-6" style="margin-bottom: 10px;">
+        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
             <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
                 <i class="fa <?php echo fo_icon();?>"></i>
                 <span><?php echo $title[$k];?></span>
@@ -112,6 +112,7 @@ function changePage(page)
             $('#testimonialNavManu').show();
             $('#testimonialMainManu').hide();
             $('#ajaxPageContainer').html(response);
+            $("#table_export").dataTable();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

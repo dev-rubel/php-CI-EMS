@@ -863,6 +863,27 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     } 
 
+    function testimonial_list()
+    {
+        $page_data['page_name']  = 'testimonial_list';
+        $page_data['page_title'] = get_phrase('testimonial_list');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function print_testimonial()
+    {
+        $testimonial_id = $this->uri(3);
+        $course = $this->uri(4);
+        $page_data['std_info'] = $this->db->get_where('testimonial', 
+                    ['testimonial_id'=>$testimonial_id])->result_array();
+        
+        if($course == 'General'){
+            $this->print_testimonial_general($page_data);
+        }else{
+            $this->print_testimonial_voc($page_data); 
+        }
+    }
+
     function print_testimonial_voc($page_data = '')
     {
         $page_data['page_name']  = 'print_testimonial_voc';
@@ -2023,7 +2044,7 @@ class Admin extends CI_Controller
     }
 
     function ajax_delete_acc_transaction()
-    {
+    {   
         $tran_id = $this->uri(3);   
         $this->db->where('tran_id', $tran_id);
         $this->db->delete('bank_transaction');
