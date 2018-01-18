@@ -250,7 +250,7 @@ $confirmCount = array_count_values(array_column($confirmStd,'class'));
                             ?>
                             <tr id="admitStd<?php echo $list['id'];?>">
                                 <td><?php echo $key+1;?></td>
-                                <td><?php echo $list['id'];?></td>
+                                <td><?php echo substr($list['uniq_id'], -4);?></td>  
                                <!--  <td>
                                     <img src="assets/<?php //echo $list['img'];?>" width="50px" height="50px"/>
                                 </td> -->

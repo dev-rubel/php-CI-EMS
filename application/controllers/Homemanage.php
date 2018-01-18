@@ -577,6 +577,7 @@ class Homemanage extends CI_Controller
 
     function ajax_getClassResult()
     {
+        $sex = $_POST['sex'] == 1?'male':'female';
         $group = !empty($_POST['group'])?$_POST['group']:'';
         $session = $this->db->get_where('settings', 
             ['type'=>'admission_session'])
@@ -585,6 +586,7 @@ class Homemanage extends CI_Controller
         $this->db->from('admit_std');
         $this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
         $this->db->where('admit_std.class',$_POST['class']);
+        $this->db->where('admit_std.sex', $sex);
         $this->db->where('admit_std.group', $group);
         $this->db->where('admit_std.session', $session);
         $this->db->order_by('admission_result.mark','desc');
@@ -618,7 +620,7 @@ class Homemanage extends CI_Controller
         $studentInfo['jscpecinfo'] = $data[0]['jscinfo'];
         $studentInfo['birthday'] = $data[0]['date'];
         $studentInfo['mobile'] = $data[0]['mobile'];
-        $studentInfo['sex'] = 'Male';
+        $studentInfo['sex'] =  $this->db->get_where('admit_std',['uniq_id'=>$stdInfo1['uniq_id']])->row()->sex;
         $studentInfo['from_admit_std'] = 'Yes';
         $studentInfo['password'] = substr(md5(rand(0, 1000000)), 0, 7);
         $studentTable = array_merge($stdInfo1,$studentInfo);

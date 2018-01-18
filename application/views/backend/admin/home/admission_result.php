@@ -84,7 +84,15 @@
                                         <option>9</option>
                                         <option value="91">9 Voc</option>
                                     </select>
-
+                                </div>
+                        </div>
+                        <div class="col-md-3">
+                                <div class="form-group row">
+                                    <label class="col-form-label">Gender</label>
+                                    <select class="form-control" name="sex" >
+                                        <option value="1">Boy</option>
+                                        <option value="2">Girl</option>
+                                    </select>
                                 </div>
                         </div>
                         <div class="col-md-2">
@@ -103,7 +111,7 @@
                                 </div>
                         </div>
                             <div class="form-group">
-                                <button class="btn btn-primary" type="submit">Search</button>
+                                <button class="btn btn-primary" style="margin-top: 6px;" type="submit">Search</button>
                             </div>
                     </form>
                 </div>
