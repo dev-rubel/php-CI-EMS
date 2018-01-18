@@ -66,6 +66,7 @@ class Accounting extends CI_Controller
         $this->load->view('backend/admin/accounting/'.$pageName, $page_data);
     }
 
+
     public function add_student_income()
     {   
         $arrayCount = count($_POST);

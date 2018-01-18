@@ -255,7 +255,20 @@ if ($result1['description'] == 0):
                             </div>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">12. Nationality
+                            <label for="inputText3" class="control-label">12. Gender
+                                <span class="star">*</span>
+                            </label>
+
+                            <div class="col-md-8" style="float: right">
+                                <select name="sex" class="form-control" id="">
+                                    <option value="1">Boy</option>
+                                    <option value="2">Girl</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group hrline">
+                            <label for="inputText3" class="control-label">13. Nationality
                                 <span class="star">*</span>
                             </label>
                             <div class="col-md-8" style="float: right">
@@ -263,7 +276,7 @@ if ($result1['description'] == 0):
                             </div>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">13. Previous School Name
+                            <label for="inputText3" class="control-label">14. Previous School Name
                                 <span class="star">*</span>
                             </label>
                             <div class="col-md-8" style="float: right">
@@ -275,7 +288,7 @@ if ($result1['description'] == 0):
                             </span>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">14. Previous School Address
+                            <label for="inputText3" class="control-label">15. Previous School Address
                                 <span class="star">*</span>
                             </label>
                             <div class="col-md-8" style="float: right">
@@ -287,13 +300,13 @@ if ($result1['description'] == 0):
                             </span>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">15. Email</label>
+                            <label for="inputText3" class="control-label">16. Email</label>
                             <div class="col-md-8" style="float: right">
                                 <input type="text" class="form-control" name="email" placeholder="Email">
                             </div>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">16. Want to Admit Class
+                            <label for="inputText3" class="control-label">17. Want to Admit Class
                                 <span class="star">*</span>
                             </label>
                             <div class="col-md-8" style="float: right">
@@ -347,7 +360,7 @@ if ($result1['description'] == 0):
                         </div>
                         <div class="form-group hrline">
                             <!-- Date input -->
-                            <label for="inputText3 date" class="control-label">17. Date of Birth
+                            <label for="inputText3 date" class="control-label">18. Date of Birth
                                 <span class="star">*</span>
                             </label>
 
@@ -363,7 +376,7 @@ if ($result1['description'] == 0):
                             </span>
                         </div>
                         <div class="form-group hrline">
-                            <label for="inputText3" class="control-label">18. Guardian Mobile No
+                            <label for="inputText3" class="control-label">19. Guardian Mobile No
                                 <span class="star">*</span>
                             </label>
                             <div class="col-md-8" style="float: right">

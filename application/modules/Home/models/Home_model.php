@@ -95,7 +95,7 @@ class Home_model extends CI_Model{
         }
 
 
-        // pd($data);
+        $data['sex'] = $data['sex'] == 1?'male':'female';
         $this->db->insert('admit_std',$data);
         $id = $this->db->insert_id();
         

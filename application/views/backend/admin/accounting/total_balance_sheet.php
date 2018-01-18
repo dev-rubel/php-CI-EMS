@@ -159,6 +159,9 @@
 				 	// SELECT OLDEST DATE
 					$this->db->order_by('tran_date', 'ASC');
 					$oldestDate = $this->db->get('bank_transaction', 1)->row()->tran_date;
+					if(!$oldestDate){
+						$oldestDate = date('d-m-Y');
+					}
 
 					// SELECT OLDEST DATE TO THIS MOUNTH INCOME
       		$this->db->select_sum('tran_amount');
