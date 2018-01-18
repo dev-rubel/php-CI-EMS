@@ -349,8 +349,8 @@ class Homemanage extends CI_Controller
     {
         $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
         $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;        
-        $data['title'] = $this->db->get_where('settings',array('type'=>'sms_title'))->row()->description;
-        $data['desc'] = $this->db->get_where('settings',array('type'=>'sms_description'))->row()->description;
+        $data['title'] = $this->db->get_where('settings',array('type'=>'admission_sms_title'))->row()->description;
+        $data['desc'] = $this->db->get_where('settings',array('type'=>'admission_sms_description'))->row()->description;
         return $data;
     }
     
@@ -585,6 +585,7 @@ class Homemanage extends CI_Controller
         $this->db->select('*');
         $this->db->from('admit_std');
         $this->db->join('admission_result', 'admission_result.std_id = admit_std.id');
+        $this->db->where('admit_std.sex',$sex);
         $this->db->where('admit_std.class',$_POST['class']);
         $this->db->where('admit_std.sex', $sex);
         $this->db->where('admit_std.group', $group);

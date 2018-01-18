@@ -159,7 +159,11 @@
 				 	// SELECT OLDEST DATE
 					$this->db->order_by('tran_date', 'ASC');
 					$oldestDate = $this->db->get('bank_transaction', 1)->row()->tran_date;
+<<<<<<< HEAD
 					if(empty($oldestDate)){
+=======
+					if(!$oldestDate){
+>>>>>>> ce741dd8af89e4852b06d3c81d55d6860dcb3fc8
 						$oldestDate = date('d-m-Y');
 					}
 

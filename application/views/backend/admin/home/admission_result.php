@@ -95,6 +95,15 @@
                                     </select>
                                 </div>
                         </div>
+                        <div class="col-md-3 col-md-offset-1">
+                                <div class="form-group row">
+                                    <label class="col-form-label">Gender</label>
+                                    <select class="form-control" name="sex" >
+                                        <option value="1">Boys</option>
+                                        <option value="2">Girls</option>
+                                    </select>
+                                </div>
+                        </div>
                         <div class="col-md-2">
                                 <div class="form-group row groupHolder">
                                     <label class="col-md-2 col-form-label">Group</label>

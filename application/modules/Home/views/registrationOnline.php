@@ -258,14 +258,24 @@ if ($result1['description'] == 0):
                             <label for="inputText3" class="control-label">12. Gender
                                 <span class="star">*</span>
                             </label>
+<<<<<<< HEAD
                             <div class="col-md-8" style="float: right">
 
                                 <select class="form-control" name="sex">
+=======
+
+                            <div class="col-md-8" style="float: right">
+                                <select name="sex" class="form-control" id="">
+>>>>>>> ce741dd8af89e4852b06d3c81d55d6860dcb3fc8
                                     <option value="1">Boy</option>
                                     <option value="2">Girl</option>
                                 </select>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ce741dd8af89e4852b06d3c81d55d6860dcb3fc8
                         <div class="form-group hrline">
                             <label for="inputText3" class="control-label">13. Nationality
                                 <span class="star">*</span>
