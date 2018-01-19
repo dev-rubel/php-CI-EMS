@@ -6,6 +6,7 @@ $this->db->from('admit_std');
 $this->db->join('admission_result', 'admission_result.uniq_id = admit_std.uniq_id');
 $this->db->where('admit_std.session',$session);
 $this->db->where('admit_std.class',$class);
+$this->db->where('admit_std.sex',$sex);
 $this->db->where('admit_std.group', $group);
 $this->db->order_by('admission_result.mark','desc');
 $query = $this->db->get()->result_array();
@@ -27,7 +28,8 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 		.leftDiv{float: left; width: 12%; text-align: center;}
 		.centerDiv{width: 70%; float: left; line-height: 22px;}
 		.centerDiv p,h2{margin: 2px; text-align: center}
-		.rightDiv{width: 13%; float: left; text-align: center; padding-top: 0px; border: 2px solid; color: #008000}
+		.rightDiv{ font-size: 10px; width: 13%; float: left; text-align: center; padding-top: 0px; border: 2px solid; color: #008000}
+		.rightDiv h3 {padding: 2px 0px; margin: 0px;}
 		table{
 			width: 100%;
 			border:1px solid #d6d6d6;
@@ -62,14 +64,16 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 		
 		</div>
 		<div class="rightDiv">
-			<h3 style="padding: 5px;">
-		<?php 
-			echo "Class: ".$class;
-			if(!empty($group)):
-				echo "<br/>".$group;
-			endif;
-		?><br/>
-		Merit List</h3>
+			<h3><?php echo ucfirst($sex);?></h3>
+			<h3>
+				<?php 
+					echo "Class: ".$class;
+					if(!empty($group)):
+						echo "<br/>".$group;
+					endif;
+				?>
+			</h3>
+			<h3>Merit List</h3>
 		</div>
 	</div>
 	

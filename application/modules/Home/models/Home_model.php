@@ -94,12 +94,8 @@ class Home_model extends CI_Model{
             $data['uniq_id'] = $year.$class.$uniq_id;
         }
 
-
-<<<<<<< HEAD
-        // pd($data);
-=======
->>>>>>> ce741dd8af89e4852b06d3c81d55d6860dcb3fc8
         $data['sex'] = $data['sex'] == 1?'male':'female';
+        
         $this->db->insert('admit_std',$data);
         $id = $this->db->insert_id();
         

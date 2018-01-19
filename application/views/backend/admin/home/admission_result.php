@@ -38,6 +38,11 @@
                 </a>
             </li>
             <li>
+                <a href="#list2" data-toggle="tab"><i class="entypo-menu"></i> 
+                    Bulk Result Add
+                </a>
+            </li>
+            <li>
                 <a href="#list3" data-toggle="tab"><i class="entypo-menu"></i> 
                     Search
                 </a>
@@ -50,7 +55,7 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box <?php echo !empty($result)?'':'active';?>" id="list">
                 <div class="col-md-4 col-md-offset-1">
-                    <form id="addResult" action="<?php echo base_url() .'index.php?homemanage/ajax_add_admission_result'; ?>" class="form-horizontal form-groups-bordered validate" method="post">                            
+                    <form id="addResult" action="<?php echo base_url() .'index.php?homemanage/ajax_add_admission_result'; ?>" class="form-horizontal form-groups-bordered" method="post">                            
                         <div class="form-group">
                             <label>Admission Roll No.</label>
                             <input type="number" class="form-control" name="uniq_id" aria-describedby="emailHelp" placeholder="eg.29" autofocus>
@@ -69,11 +74,33 @@
          
 
             <!-- TABLE LISTING ENDS -->
+
+            <div class="tab-pane box" id="list2">
+                <form id="bulkAddResult" action="<?php echo base('homemanage','bulk_add_admission_result');?>" method="post">
+                    <div class="col-md-12">
+                        <?php foreach(range(1,10) as $k=>$each):?>
+                            <div class="col-md-3">
+                                <label>Roll</label>
+                                <input type="number" class="form-control" name="roll[<?php echo $each;?>]" id="addRoll<?php echo $each;?>" onkeyup="checkValidAddRoll('<?php echo $each;?>',this.value)"> 
+                            </div>
+                            <div class="col-md-3">
+                                <label>Mark</label>
+                                <input type="number" class="form-control mark-input" name="mark[<?php echo $each;?>]" id="addmark<?php echo $each;?>" disabled> 
+                            </div>
+                        <?php endforeach;?>
+                    </div>
+                    
+                    <div class="col-md-12 text-center">
+                        <br><br>
+                        <button class="btn btn-info" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
 			 
 			<div class="tab-pane box" id="list3">
                 
                 <div class="col-md-12">
-                    <form id="admissionResultHolder" action="<?php echo base_url() .'index.php?homemanage/ajax_getClassResult'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+                    <form id="admissionResultHolder" action="<?php echo base_url() .'index.php?homemanage/ajax_getClassResult'; ?>" class="form-horizontal form-groups-bordered" method="post">   
                         <div class="col-md-3 col-md-offset-1">
                                 <div class="form-group row">
                                     <label class="col-form-label">Search mark-sheet by class</label>
@@ -92,15 +119,6 @@
                                     <select class="form-control" name="sex" >
                                         <option value="1">Boy</option>
                                         <option value="2">Girl</option>
-                                    </select>
-                                </div>
-                        </div>
-                        <div class="col-md-3 col-md-offset-1">
-                                <div class="form-group row">
-                                    <label class="col-form-label">Gender</label>
-                                    <select class="form-control" name="sex" >
-                                        <option value="1">Boys</option>
-                                        <option value="2">Girls</option>
                                     </select>
                                 </div>
                         </div>
@@ -139,11 +157,35 @@
 
 
 <script>
+ function checkValidAddRoll(id,value){
+        if(value != ''){
+            $.ajax({
+                url: '<?php echo base_url();?>index.php?homemanage/getValidAddmisionStudent/' + value ,
+                success: function(data)
+                {
+                    var jData = JSON.parse(data);   
+                    if(jData.type){
+                        $('#addmark'+id).removeAttr('disabled');
+                        if(jData.msg){
+                            $('#addmark'+id).val(jData.msg);                            
+                        } else {
+                            $('#addmark'+id).attr("placeholder", "Not Insert Yet");
+                        }                        
+                        
+                    } else {                        
+                        $('#addmark'+id).attr('disabled','disabled');
+                        $('#addmark'+id).val('');
+                        $('#addmark'+id).attr("placeholder", "Not Found");
+                    }
+                }
+            });  
+        }      
+    }
 $(document).ready(function() { 
     /* Change Password */
     // toastr.options.positionClass = 'toast-bottom-right';
-
-    $('#addResult').ajaxForm({ 
+    
+   $('#addResult').ajaxForm({ 
         beforeSend: function() {                
                 $('#loading2').show();
                 $('#overlayDiv').show();
@@ -152,6 +194,25 @@ $(document).ready(function() {
             var jData = JSON.parse(data);            
             toastr.success(jData.msg);  
             $( "#searchAdmissionStudent" ).html( jData.html );
+            $('body,html').animate({scrollTop:0},800);
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                  
+        }
+    }); 
+
+   $('#bulkAddResult').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);            
+            toastr.success(jData.msg);  
+            $('#bulkAddResult').resetForm(); 
+            $('.mark-input').attr('disabled','disabled');
+            $('.mark-input').val('');
+            $('.mark-input').removeAttr('placeholder');
+            
             $('body,html').animate({scrollTop:0},800);
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                  

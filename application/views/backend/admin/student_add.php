@@ -522,7 +522,6 @@
                     } else {
                         $('.groupHolder').show();
                         $('.jscHolder').show();
-                        console.log(response);
                         jQuery('#group_selector_holder').html(response);
                     }
                 } else {

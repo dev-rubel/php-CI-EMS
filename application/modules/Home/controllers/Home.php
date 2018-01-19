@@ -227,9 +227,7 @@ class Home extends MX_Controller {
             }
             $img_name = $this->upload->file_name;
             $_POST['img'] = $img_name;
-        endif;
-        
-        $_POST['date'] = date("Y-m-d", strtotime($_POST['date']));
+        endif;        
         
         $token = $this->home_model->insert_admit_std_info($_POST);
         $url = base_url().'index.php?Home/check_token/'.$token;

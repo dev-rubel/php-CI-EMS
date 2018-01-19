@@ -5,10 +5,11 @@
 
 !empty($result[0]['class'])?$Oclass = $result[0]['class']:$Oclass='';
 !empty($result[0]['group'])?$Ogroup = $result[0]['group']:$Ogroup='';
+$gender = $result[0]['sex'];
 ?>
 
-<h3 class="text-center"><a href="<?php echo base('Home', 'meritlistPage/'.$Oclass.'/'.$Ogroup);?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download '.$Sclass.'-'.$Sgroup.' Mark-Sheet'?></a></h3>
-                
+<h3 class="text-center"><a href="<?php echo base('Home', 'meritlistPage/'.$Oclass.'/'.$gender.'/'.$Ogroup);?>" class="btn btn-info" target="_blank" title="Click to download marksheet"><?php echo 'Download '.$Sclass.'-'.$Sgroup.'-('.ucfirst($gender).') Mark-Sheet'?></a></h3>
+                    
 <table id="example" class="table table-bordered datatable" cellspacing="0" width="100%">
 	<thead>
 		<tr>

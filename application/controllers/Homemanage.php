@@ -494,6 +494,59 @@ class Homemanage extends CI_Controller
             $this->jsonMsgReturn(true,'Mark Inserted.',$htmlData);
         endif; 
     }
+
+    function bulk_add_admission_result()
+    {
+        $session = $this->db->get_where('settings', 
+                ['type'=>'admission_session'])
+                            ->row()->description;
+
+        foreach($_POST['roll'] as $k=>$each){
+            if($_POST['mark'][$k] != ''){      
+
+                $uniq_id = $this->db->get_where('admission_result',
+                        ['uniq_id'=>$each, 'session' => $session])
+                            ->row()->id;
+                $id = $this->db->get_where('admit_std',
+                        ['uniq_id'=>$each, 'session' => $session])
+                            ->row()->id;
+                $data['std_id'] = $id; // table id
+                $data['uniq_id'] = $each; // uniq id
+                $data['mark']   = $_POST['mark'][$k]; // mark
+                $data['session'] = $session; // running session
+                if(!empty($uniq_id)):
+                    $this->db->where('std_id',$id);
+                    $this->db->update('admission_result',['mark'=>$data['mark']]);
+                else:
+                    $this->db->insert('admission_result',$data);          
+                endif;                 
+            }
+        }
+        $this->jsonMsgReturn(true,'Mark Updated.');
+    }
+
+    function getValidAddmisionStudent()
+    {
+        $session = $this->db->get_where('settings', 
+                ['type'=>'admission_session'])
+                            ->row()->description;
+        $uniqId = $this->uri->segment(3);
+        $studentUniqId = $this->db->get_where('admit_std',
+                        ['uniq_id'=>$uniqId, 'session' => $session])
+                            ->row()->id;
+        $existMark = $this->db->get_where('admission_result',
+                        ['uniq_id'=>$uniqId, 'session' => $session])
+                            ->row()->mark;                            
+        if(!empty($studentUniqId)){
+            if(!empty($existMark)){
+                $this->jsonMsgReturn(true,$existMark);    
+            } else {
+                $this->jsonMsgReturn(true,'');    
+            }            
+        } else {
+            $this->jsonMsgReturn(false,'');    
+        }
+    }
     
     function getAdmitStdName($value, $html = '')  //ajax response
     {

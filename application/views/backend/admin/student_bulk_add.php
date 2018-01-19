@@ -2,12 +2,12 @@
 <?php echo form_open(base_url() . 'index.php?admin/student_bulk_add/add_bulk_student' , 
 			array('class' => 'form-inline validate', 'style' => 'text-align:center;'));?>
 <div class="row">
-	<div class="col-md-3"></div>
-	<div class="col-md-6">
-		<div class="form_group">
+	<div class="col-md-1"></div>
+	<div class="col-md-3">
+		<div class="form-group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class');?></label>
 			<select name="class_id" id="class_id" class="form-control" required="required"
-				onchange="get_sections(this.value)"  data-validate="required"  data-message-required="<?php echo get_phrase('value_required');?>">
+				onchange="get_class_sections(this.value)"  data-validate="required"  data-message-required="<?php echo get_phrase('value_required');?>">
 				<option value=""><?php echo get_phrase('select_class');?></option>
 				<?php
 					$classes = $this->db->get('class')->result_array();
@@ -18,8 +18,34 @@
 			</select>
 		</div>
 	</div>
-	<div id="section_holder"></div>
-	<div class="col-md-3"></div>
+
+	<div class="form-group" id="groupHolder">
+		<label for="field-1" class="col-sm-3 control-label">
+			<?php echo get_phrase('group'); ?>
+		</label>
+
+		<div class="col-sm-8">
+			<select class="form-control groupSection" name="group_id" id="group_selector_holder">
+				<option value="">
+					<?php echo get_phrase('select_group'); ?>
+				</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group" id="sectionHolder">
+		<label for="field-2" class="col-sm-3 control-label">
+			<?php echo get_phrase('section'); ?>
+		</label>
+		<div class="col-sm-8">
+			<select name="section_id" class="form-control" id="section_selector_holder">
+				<option value="">
+					<?php echo get_phrase('select_section'); ?>
+				</option>
+
+			</select>
+		</div>
+	</div>
 </div>
 <br><br>
 
@@ -112,7 +138,8 @@
 		for ($i = 0; $i<7;$i++) {
 			$("#student_entry").append(blank_student_entry);
 		}
-		
+		$('#sectionHolder').hide();
+    	$('#groupHolder').hide();	
 	});
 
 	function get_sections(class_id) {
@@ -124,6 +151,38 @@
                 jQuery('#bulk_add_form').show();
             }
         });
+	}
+
+	function get_class_sections(class_id) {
+
+		$.ajax({
+			url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
+			success: function (response) {
+				if (response) {
+					if (response == 1) {
+						$('#groupHolder').hide();
+					} else {
+						$('#groupHolder').show();
+						jQuery('#group_selector_holder').html(response);
+					}
+				} else {
+					$('#groupHolder').hide();
+				}
+			}
+		});
+
+		$.ajax({
+			url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
+			success: function (response) {
+				if (response) {
+					$('#sectionHolder').show();
+					jQuery('#section_selector_holder').html(response);
+				} else {
+					$('#sectionHolder').hide();
+				}
+			}
+		});
+
 	}
 
 
