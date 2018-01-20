@@ -1090,6 +1090,32 @@ class Admin extends CI_Controller
         }
     }
 
+    function general_testimonial_format()
+    {
+        $check = check_array_value($_POST['gen']);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {  
+            $data = implode('|',$_POST['gen']);
+            $this->db->where('type', 'general_testimonial');
+            $this->db->update('settings',['description'=>$data]);
+            $this->jsonMsgReturn(true,'General Testimonial Format Update.');
+        }
+    }
+
+    function vocational_testimonial_format()
+    {
+        $check = check_array_value($_POST['voc']);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {  
+            $data = implode('|',$_POST['voc']);
+            $this->db->where('type', 'vocational_testimonial');
+            $this->db->update('settings',['description'=>$data]);
+            $this->jsonMsgReturn(true,'Vocational Testimonial Format Update.');
+        }
+    }
+
 
      /****MANAGE PARENTS CLASSWISE*****/
     function parent($param1 = '', $param2 = '', $param3 = '')

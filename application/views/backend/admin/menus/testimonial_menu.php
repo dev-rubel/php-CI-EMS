@@ -25,14 +25,14 @@
 <br>
 <br>
 <?php 
-$links = ['testimonial_voc','testimonial_general','testimonial_list'];
-$title = ['Testimonial For Vocational','Testimonial For General','Testimonial List'];
+$links = ['testimonial_voc','testimonial_general','testimonial_list','testimonial_setting'];
+$title = ['Testimonial For Vocational','Testimonial For General','Testimonial List','Testimonial Setting'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="testimonialNavManu">
 
 <?php foreach($links as $k=>$each):?>
-    <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+    <div class="col-sm-3 col-md-3" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
