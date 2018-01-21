@@ -20,74 +20,17 @@
         <div class="tab-content">
             <br>
             <!----TABLE LISTING STARTS-->
-            <div class="tab-pane box active" id="voc">
+            <div class="tab-pane box active" id="voc">            
             <form id="addVocTestimonialFormat" action="<?php echo base('admin','vocational_testimonial_format');?>" method="post">
+                <?php 
+                    $vocFormat = $this->db->get_where('settings',['type'=>'vocational_testimonial'])->row()->description; 
+                    $vocFormat = explode('|',$vocFormat); 
+                    foreach($vocFormat as $k=>$each):           
+                ?>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
+                        <input type="text" class="form-control" name="voc[]" value="<?php echo $each; ?>" required>
                     </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="voc[]" required>
-                    </div>
+                <?php endforeach;?>
                     <div class="col-md-12 text-center">
                     <br>
                         <button class="btn btn-info" type="submit">Submit</button>
@@ -99,72 +42,15 @@
             <!----CREATION FORM STARTS---->
             <div class="tab-pane box" id="gen" style="padding: 5px">
                 <form id="addGeneralTestimonialFormat" action="<?php echo base('admin','general_testimonial_format');?>" method="post">
+                <?php 
+                    $genFormat = $this->db->get_where('settings',['type'=>'general_testimonial'])->row()->description; 
+                    $genFormat = explode('|',$genFormat);   
+                    foreach($genFormat as $k=>$each):         
+                ?>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
+                        <input type="text" class="form-control" name="gen[]" value="<?php echo $each; ?>" required>
                     </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="gen[]" required>
-                    </div>
+                    <?php endforeach; ?>
                     <div class="col-md-12 text-center">
                     <br>
                         <button class="btn btn-info" type="submit">Submit</button>

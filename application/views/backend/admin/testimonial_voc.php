@@ -1,4 +1,7 @@
-<?php //pd($std_info); 
+<?php 
+
+$vocFormat = $this->db->get_where('settings',['type'=>'vocational_testimonial'])->row()->description; 
+$vocFormat = explode('|',$vocFormat); 
 
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
@@ -142,20 +145,20 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 		<div class="col-md-12 testimonial-body">
 		<input type="hidden" name="testimonial_id" value="<?php echo $std_info['testimonial_id']; ?>">
 		<input type="hidden" name="student_id" value="<?php echo $std_info['student_id']; ?>">
-			<span>This is to certify that</span><input type="text" name="student_name" value="<?php echo $std_info['student_name']; ?>" style="width: 400px;">
-			<span>father's name</span><input type="text" name="father_name" value="<?php echo $std_info['father_name']; ?>" style="width: 350px;">
-			<span>mother's name</span><input type="text" name="mother_name" value="<?php echo $std_info['mother_name']; ?>" style="width: 350px;">
-			<span>of Village:</span><input type="text" name="address[]" value="<?php echo $eachAddress[0]; ?>" style="width: 200px;">
-			<span>P.O:</span><input type="text" name="address[]" value="<?php echo $eachAddress[1]; ?>" style="width: 200px;">
-			<span>Upazila:</span><input type="text" name="address[]" value="<?php echo $eachAddress[2]; ?>" style="width: 200px;">
-			<span>Dist:</span><input type="text" name="address[]" value="<?php echo $eachAddress[3]; ?>" style="width: 200px;">
-			<span>was student of this school. He passed the Vocational Examination in 20</span><input type="text" name="pass_year" value="<?php echo $std_info['pass_year']; ?>" style="width: 30px;">
-			<span> from this school bearing Roll </span><input type="text" value="SNRB-1" name="pass_no" readonly>
-			<span>No.</span><input type="text" value="<?php echo $std_info['pass_roll']; ?>" name="pass_roll">
-			<span>Registration No.</span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
-			<span>Session</span><input type="text" name="pass_session" value="<?php echo $std_info['pass_session']; ?>" style="width: 60px;">
-			<span>obtaining GPA</span><input type="text" name="gpa" value="<?php echo $std_info['gpa'] ?>" style="width: 60px;">
-			<span>from</span>
+			<span><?php echo $vocFormat[0]; ?></span><input type="text" name="student_name" value="<?php echo $std_info['student_name']; ?>" style="width: 400px;">
+			<span><?php echo $vocFormat[1]; ?></span><input type="text" name="father_name" value="<?php echo $std_info['father_name']; ?>" style="width: 350px;">
+			<span><?php echo $vocFormat[2]; ?></span><input type="text" name="mother_name" value="<?php echo $std_info['mother_name']; ?>" style="width: 350px;">
+			<span><?php echo $vocFormat[3]; ?></span><input type="text" name="address[]" value="<?php echo $eachAddress[0]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[4]; ?></span><input type="text" name="address[]" value="<?php echo $eachAddress[1]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[5]; ?></span><input type="text" name="address[]" value="<?php echo $eachAddress[2]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[6]; ?></span><input type="text" name="address[]" value="<?php echo $eachAddress[3]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[7]; ?></span><input type="text" name="pass_year" value="<?php echo $std_info['pass_year']; ?>" style="width: 30px;">
+			<span> <?php echo $vocFormat[8]; ?> </span><input type="text" value="<?php echo $vocFormat[9]; ?>" name="pass_no" readonly>
+			<span><?php echo $vocFormat[10]; ?></span><input type="text" value="<?php echo $std_info['pass_roll']; ?>" name="pass_roll">
+			<span><?php echo $vocFormat[11]; ?></span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
+			<span><?php echo $vocFormat[12]; ?></span><input type="text" name="pass_session" value="<?php echo $std_info['pass_session']; ?>" style="width: 60px;">
+			<span><?php echo $vocFormat[13]; ?></span><input type="text" name="gpa" value="<?php echo $std_info['gpa'] ?>" style="width: 60px;">
+			<span><?php echo $vocFormat[14]; ?></span>
 
 			<select name="trade" style="font-size: 15px;">
 			<option value="">Select One</option>
@@ -164,19 +167,19 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<?php endforeach; ?>
 			</select>
 
-			<span>Trade under Bangladesh Technical Education Board Dhaka.</span>
+			<span><?php echo $vocFormat[15]; ?></span>
 
 			<br><br>
 			
 			<?php $date_of_birth = explode('-', $std_info['birth']); ?>
-			<span>To the best of my knowlege he did not take part in any activities subversive of the state or of discipline. His date of birth as per admission register is</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[0]; ?>" style="width: 60px;">
+			<span><?php echo $vocFormat[16]; ?></span><input type="text" name="birth[]" value="<?php echo $date_of_birth[0]; ?>" style="width: 60px;">
 			<span>/</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[1]; ?>" style="width: 60px;">
 			<span>/</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[2]; ?>" style="width: 60px;">
-			<span>. He bears a good moral character and amiable dispostion.</span>
+			<span><?php echo $vocFormat[17]; ?></span>
 				
 			<br><br>
 
-			<span>I wish his bright future and successfull life.</span>
+			<span><?php echo $vocFormat[18]; ?></span>
 		</div>
 	</div>
 
@@ -187,7 +190,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<div class="col-md-4 text-center office-asse-sign">				
 				<input type="text" value="<?php echo $std_info['asset_sign']; ?>" name="asset_sign">
 				<br>
-				<span>Office Asst:</span>
+				<span><?php echo $vocFormat[19]; ?></span>
 			</div>
 			<div class="col-md-4 blank-space">
 				
@@ -195,7 +198,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<div class="col-md-4 text-center headmaster-sign">
 				<input type="text" value="<?php echo $std_info['headmaster_sign']; ?>" name="headmaster_sign">
 				<br>
-				<span>Headmaster</span>
+				<span><?php echo $vocFormat[20]; ?></span>
 			</div>
 		</div>
 	</div>
@@ -207,20 +210,20 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 	<div class="row">
 		<div class="col-md-12 testimonial-body">
 		<input type="hidden" name="student_id" value="<?php echo $std_info['student_id']; ?>">
-			<span>This is to certify that</span><input type="text" name="student_name" value="<?php echo $std_info['name']; ?>" style="width: 400px;">
-			<span>father's name</span><input type="text" name="father_name" value="<?php echo $std_info['fname']; ?>" style="width: 350px;">
-			<span>mother's name</span><input type="text" name="mother_name" value="<?php echo $std_info['mname']; ?>" style="width: 350px;">
-			<span>of Village:</span><input type="text" name="address[]" value="<?php echo $paadress[0]; ?>" style="width: 200px;">
-			<span>P.O:</span><input type="text" name="address[]" value="<?php echo $paadress[1]; ?>" style="width: 200px;">
-			<span>Upazila:</span><input type="text" name="address[]" value="<?php echo $paadress[2]; ?>" style="width: 200px;">
-			<span>Dist:</span><input type="text" name="address[]" value="<?php echo $paadress[3]; ?>" style="width: 200px;">
-			<span>was student of this school. He passed the Vocational Examination in 20</span><input type="text" name="pass_year" value="<?php echo date('y'); ?>" style="width: 30px;">
-			<span> from this school bearing Roll </span><input type="text" value="SNRB-1" name="pass_no" readonly>			
-			<span>No.</span><input type="text" value="<?php echo $enroll_info['roll']; ?>" name="pass_roll">
-			<span>Registration No.</span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
-			<span>Session</span><input type="text" name="pass_session" style="width: 60px;">
-			<span>obtaining GPA</span><input type="text" name="gpa" style="width: 60px;">
-			<span>from</span>
+			<span><?php echo $vocFormat[0]; ?></span><input type="text" name="student_name" value="<?php echo $std_info['name']; ?>" style="width: 400px;">
+			<span><?php echo $vocFormat[1]; ?></span><input type="text" name="father_name" value="<?php echo $std_info['fname']; ?>" style="width: 350px;">
+			<span><?php echo $vocFormat[2]; ?></span><input type="text" name="mother_name" value="<?php echo $std_info['mname']; ?>" style="width: 350px;">
+			<span><?php echo $vocFormat[3]; ?></span><input type="text" name="address[]" value="<?php echo $paadress[0]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[4]; ?></span><input type="text" name="address[]" value="<?php echo $paadress[1]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[5]; ?></span><input type="text" name="address[]" value="<?php echo $paadress[2]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[6]; ?></span><input type="text" name="address[]" value="<?php echo $paadress[3]; ?>" style="width: 200px;">
+			<span><?php echo $vocFormat[7]; ?></span><input type="text" name="pass_year" value="<?php echo date('y'); ?>" style="width: 30px;">
+			<span> <?php echo $vocFormat[8]; ?> </span><input type="text" value="<?php echo $vocFormat[9]; ?>" name="pass_no" readonly>			
+			<span><?php echo $vocFormat[10]; ?></span><input type="text" value="<?php echo $enroll_info['roll']; ?>" name="pass_roll">
+			<span><?php echo $vocFormat[11]; ?></span><input type="text" value="<?php echo $std_info['pass_regis_no']; ?>" name="pass_regis_no">
+			<span><?php echo $vocFormat[12]; ?></span><input type="text" name="pass_session" style="width: 60px;">
+			<span><?php echo $vocFormat[13]; ?></span><input type="text" name="gpa" style="width: 60px;">
+			<span><?php echo $vocFormat[14]; ?></span>
 
 			<?php if(isset($std_group_id)): ?>	
 				<select name="trade" style="font-size: 15px;">
@@ -238,19 +241,19 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 				</select>
 			<?php endif; ?>
 
-			<span>Trade under Bangladesh Technical Education Board Dhaka.</span>
+			<span><?php echo $vocFormat[15]; ?></span>
 
 			<br><br>
 			
 			<?php $date_of_birth = explode('-', $std_info['birthday']); ?>
-			<span>To th best of my knowlege he did not take part in any activities subversive of the state or of discipline. His date of birth as per admission register is</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[0]; ?>" style="width: 60px;">
+			<span><?php echo $vocFormat[16]; ?></span><input type="text" name="birth[]" value="<?php echo $date_of_birth[0]; ?>" style="width: 60px;">
 			<span>/</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[1]; ?>" style="width: 60px;">
 			<span>/</span><input type="text" name="birth[]" value="<?php echo $date_of_birth[2]; ?>" style="width: 60px;">
-			<span>. He bears a good moral character and amiable dispostion.</span>
+			<span><?php echo $vocFormat[17]; ?></span>
 				
 			<br><br>
 
-			<span>I wish his bright future and successfull life.</span>
+			<span><?php echo $vocFormat[18]; ?></span>
 		</div>
 	</div>
 
@@ -261,7 +264,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<div class="col-md-4 text-center office-asse-sign">				
 				<input type="text" name="asset_sign">
 				<br>
-				<span>Office Asst:</span>
+				<span><?php echo $vocFormat[19]; ?></span>
 			</div>
 			<div class="col-md-4 blank-space">
 				
@@ -269,7 +272,7 @@ list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo)
 			<div class="col-md-4 text-center headmaster-sign">
 				<input type="text" name="headmaster_sign">
 				<br>
-				<span>Headmaster</span>
+				<span><?php echo $vocFormat[20]; ?></span>
 			</div>
 		</div>
 	</div>

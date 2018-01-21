@@ -1095,7 +1095,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST['gen']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {  
+        } else {
             $data = implode('|',$_POST['gen']);
             $this->db->where('type', 'general_testimonial');
             $this->db->update('settings',['description'=>$data]);

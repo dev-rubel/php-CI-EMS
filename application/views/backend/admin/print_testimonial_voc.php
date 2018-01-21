@@ -1,4 +1,7 @@
 <?php  
+	$vocFormat = $this->db->get_where('settings',['type'=>'vocational_testimonial'])->row()->description; 
+	$vocFormat = explode('|',$vocFormat); 
+
 	$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 	list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 
@@ -31,7 +34,7 @@
 
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
     
@@ -214,32 +217,32 @@
 
 	<div class="row">
 		<div class="col-md-12 testimonial-body">
-			<span>This is to certify that</span><span class="border_bottom"><?php echo $student_name; ?></span>
-			<span>father's name</span><span class="border_bottom"><?php echo $father_name; ?></span>
-			<span>mother's name</span><span class="border_bottom"><?php echo $mother_name; ?></span>
-			<span>of Village:</span><span class="border_bottom"><?php echo $eachAdd[0]; ?></span>
-			<span>P.O:</span><span class="border_bottom"><?php echo $eachAdd[1]; ?></span>
-			<span>Upazila:</span><span class="border_bottom"><?php echo $eachAdd[2]; ?></span>
-			<span>Dist:</span><span class="border_bottom"><?php echo $eachAdd[3]; ?></span>
-			<span>was student of this school. He passed the S.S.C (Vocational) Examination in 20</span><span class="border_bottom"><?php echo $pass_year; ?></span>
-			<span> from this school bearing Roll </span><span class="border_bottom"><?php echo $pass_no; ?></span>
-			<span>No.</span><span class="border_bottom"><?php echo $pass_roll; ?></span>
-			<span>Registration No.</span><span class="border_bottom"><?php echo $pass_regis_no; ?></span>
-			<span>Session</span><span class="border_bottom"><?php echo $pass_session; ?></span>
-			<span>obtaining GPA</span><span class="border_bottom"><?php echo $gpa; ?></span>
-			<span>from</span><span class="border_bottom"><?php echo ucwords(str_replace('-', ' ', $trade_name)); ?></span>
-			<span>Trade under Bangladesh Technical Education Board Dhaka.</span>
+			<span><?php echo $vocFormat[0];?></span><span class="border_bottom"><?php echo $student_name; ?></span>
+			<span><?php echo $vocFormat[1];?></span><span class="border_bottom"><?php echo $father_name; ?></span>
+			<span><?php echo $vocFormat[2];?></span><span class="border_bottom"><?php echo $mother_name; ?></span>
+			<span><?php echo $vocFormat[3];?></span><span class="border_bottom"><?php echo $eachAdd[0]; ?></span>
+			<span><?php echo $vocFormat[4];?></span><span class="border_bottom"><?php echo $eachAdd[1]; ?></span>
+			<span><?php echo $vocFormat[5];?></span><span class="border_bottom"><?php echo $eachAdd[2]; ?></span>
+			<span><?php echo $vocFormat[6];?></span><span class="border_bottom"><?php echo $eachAdd[3]; ?></span>
+			<span><?php echo $vocFormat[7];?></span><span class="border_bottom"><?php echo $pass_year; ?></span>
+			<span> <?php echo $vocFormat[8];?> </span><span class="border_bottom"><?php echo $vocFormat[9]; ?></span>
+			<span><?php echo $vocFormat[10];?></span><span class="border_bottom"><?php echo $pass_roll; ?></span>
+			<span><?php echo $vocFormat[11];?></span><span class="border_bottom"><?php echo $pass_regis_no; ?></span>
+			<span><?php echo $vocFormat[12];?></span><span class="border_bottom"><?php echo $pass_session; ?></span>
+			<span><?php echo $vocFormat[13];?></span><span class="border_bottom"><?php echo $gpa; ?></span>
+			<span><?php echo $vocFormat[14];?></span><span class="border_bottom"><?php echo ucwords(str_replace('-', ' ', $trade_name)); ?></span>
+			<span><?php echo $vocFormat[15];?></span>
 			<br>
 			
 
-			<span>To the best of my knowlege he did not take part in any activities subversive of the state or of discipline. His date of birth as per admission register is</span><span class="border_bottom"><?php echo $eachBirth[0]; ?></span>
+			<span><?php echo $vocFormat[16];?></span><span class="border_bottom"><?php echo $eachBirth[0]; ?></span>
 			<span>/</span><span class="border_bottom"><?php echo $eachBirth[1]; ?></span>
 			<span>/</span><span class="border_bottom"><?php echo $eachBirth[2]; ?></span>
-			<span>. He bears a good moral character and amiable dispostion.</span>
+			<span><?php echo $vocFormat[18];?></span>
 				
 			<br> <br>
 
-			<span>I wish his bright future and successfull life.</span>
+			<span><?php echo $vocFormat[19];?></span>
 		</div>
 	</div>
 
@@ -249,14 +252,14 @@
 		<div class="col-xs-12">
 			<div class="col-xs-4 text-center office-asse-sign">				
 				<hr>
-				<span>Office Asst:</span>
+				<span><?php echo $vocFormat[20];?></span>
 			</div>
 			<div class="col-xs-4 blank-space">
 				
 			</div>
 			<div class="col-xs-4 text-center headmaster-sign">
 				<hr>
-				<span>Headmaster</span>
+				<span><?php echo $vocFormat[21];?></span>
 			</div>
 		</div>
 	</div>
