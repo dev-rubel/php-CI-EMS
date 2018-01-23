@@ -1349,7 +1349,7 @@ class Admin extends CI_Controller
         }
         $className = $this->db->get_where('class' , array('class_id' => $param1))->row()->name;
         $page_data['class_id']   = $param1;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $param1,'status'=>1])->result_array();
         $page_data['page_name']  = 'subject';
         $page_data['page_title'] = get_phrase('manage_subject'.' (Class: '.$className.')');
         $this->load->view('backend/index', $page_data);
@@ -1388,7 +1388,7 @@ class Admin extends CI_Controller
     function ajax_subject_table_holder($class_id)
     {
         $page_data['class_id']   = $class_id;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $class_id))->result_array();
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $class_id,'status'=>1])->result_array();
         $htmlData = $this->load->view('backend/admin/ajax_elements/subject_table_holder', $page_data, true);
         $this->jsonMsgReturn(true,'Subject Updated',$htmlData);
     }
@@ -1423,7 +1423,7 @@ class Admin extends CI_Controller
         $param1   = $_POST['pageName'];
         $pageName = 'subject';
         $page_data['class_id']   = $param1;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $class_id,'status'=>1])->result_array();
 
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = 'subject';
