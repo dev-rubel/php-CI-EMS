@@ -1364,22 +1364,27 @@ class Admin extends CI_Controller
     }
 
     function ajax_create_subject()
-    {
+    {        
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {        
             $class_id = $_POST['class_id'];
-            if(!empty($_POST['join_subject_code'])){
+            if(!empty($_POST['join_subject_code'])) {
                 unset($_POST['subject_code']);
                 $_POST['subject_code'] = $_POST['join_subject_code'];
                 unset($_POST['join_subject_code']);
             }
-            if(!empty($_POST['group_subject_name'])){
+            if(!empty($_POST['group_subject_name'])) {
                 $_POST['group_id'] = $_POST['group_subject_name'];
                 unset($_POST['group_subject_name']);
             }
-            
+
+            $subject_marks = array_slice($_POST,3,4); // MT, CQ, MCQ, PR MARKS
+            array_splice($_POST,3,4);
+            $_POST['subject_marks'] = implode('|',$subject_marks);
+
+            // pd($_POST);
             $this->db->insert('subject', $_POST);
             $this->ajax_subject_table_holder($class_id);
         }

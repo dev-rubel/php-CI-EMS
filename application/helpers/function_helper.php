@@ -283,7 +283,7 @@ function check_array_value($data, $param='')
     }
     $count = 0;
     foreach($data as $k=>$each){
-        if(!empty($each)){
+        if($each !== ''){
             $count++;
         }
     }
