@@ -59,11 +59,11 @@
                                     
                                     <!-- EDITING LINK -->
                                     <li>
-                                        <a href="#" onclick="editSubject('<?php echo $row['subject_id'];?>')">
+                                        <a href="#" onclick="editSubject('<?php echo $row['subject_id'];?>','<?php echo $row['class_id']; ?>')">
                                             <i class="entypo-pencil"></i>
                                                 <?php echo get_phrase('edit');?>
-                                            </a>
-                                                    </li>
+                                        </a>
+                                    </li>
                                     <li class="divider"></li>
                                     
                                     <!-- DELETION LINK -->
@@ -71,8 +71,8 @@
                                         <a href="#" onclick="confDelete('admin','ajax_delete_subject','<?php echo $row['subject_id'];?>','subject<?php echo $row['subject_id'];?>')">
                                             <i class="entypo-trash"></i>
                                                 <?php echo get_phrase('delete');?>
-                                            </a>
-                                                    </li>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
         					</td>
@@ -80,6 +80,7 @@
                         <?php endforeach;?>
                     </tbody>
                 </table>
+
                 </div>
 			</div>
             <!----TABLE LISTING ENDS--->
@@ -89,7 +90,7 @@
 			<div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
                 	
-                    <form action="<?php echo base_url() .'index.php?admin/ajax_create_subject'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+                    <form id="createSubject" action="<?php echo base_url() .'index.php?admin/ajax_create_subject'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
 
                         <input type="hidden" name="class_id" value="<?php echo $class_id; ?>">
                         <div class="padded">
@@ -202,8 +203,11 @@
 
 <!-----  DATA TABLE EXPORT CONFIGURATIONS ---->                      
 <script type="text/javascript">
+    $('#join_subject_holder').attr('disabled','disabled');
     $('#joinSubject').hide();
+    $('#group_subject_holder').attr('disabled','disabled');
     $('#groupSubject').hide();
+
 	jQuery(document).ready(function($)
 	{
 		var datatable = $("#table_export").dataTable();
@@ -221,7 +225,6 @@
                 url: '<?php echo base_url(); ?>index.php?admin/get_join_subject_info/' + this.class_id,
                 success: function (response)
                 {   
-
                     if(response){
                         $('#joinSubject').show();
                         $('#join_subject_holder').empty();
@@ -235,6 +238,7 @@
                         $('#joinSubject').show();                        
                         $('#join_subject_holder').append('<option value="">No Main Subject Found</option>');
                     }
+                    $('#group_subject_holder').attr('disabled','disabled');
                 }
             });
 
@@ -257,12 +261,15 @@
                         $('#groupSubject').show();
                         $('#group_subject_holder').append('<option value="">No Group Found</option>');
                     }
+                    $('#join_subject_holder').attr('disabled','disabled');
                 }
             });
 
         }else{
             $('#groupSubject').hide();
+            $('#group_subject_holder').attr('disabled','disabled');
             $('#joinSubject').hide();
+            $('#join_subject_holder').attr('disabled','disabled');
         }
         
     }
@@ -314,7 +321,7 @@ $(document).ready(function() {
                 toastr.error(jData.msg);
             } else {
                 toastr.success(jData.msg);  
-                $( "#subjectList" ).html( jData.html );
+                $("#subjectList").html( jData.html );
                 $("#table_export").dataTable();
                 $('#createSubject').resetForm();               
             }   
@@ -323,31 +330,27 @@ $(document).ready(function() {
             $('#overlayDiv').fadeOut('slow');                   
         }
     });
-    
-      
-
-
 });
 
-function editSubject(subjectID)
-    {
-        $.ajax({
-            type: 'GET',
-            url: '<?php echo base_url();?>index.php?admin/ajax_edit_subject/'+subjectID,
-            beforeSend: function(){
-                $('#loading2').show();
-                $('#overlayDiv').show();
-            },
-            success: function(data){
-                var jData = JSON.parse(data); 
-                
-                toastr.success(jData.msg);  
-                $( "#editSubjectHolder" ).html( jData.html );
-                $('body,html').animate({scrollTop:350},800);         
-                $('#loading2').fadeOut('slow');
-                $('#overlayDiv').fadeOut('slow');
-            }
-        });
-    }
+function editSubject(subjectID, classID)
+{
+    $.ajax({
+        type: 'GET',
+        url: '<?php echo base_url();?>index.php?admin/ajax_edit_subject/'+subjectID+'/'+classID,
+        beforeSend: function(){
+            $('#loading2').show();
+            $('#overlayDiv').show();
+        },
+        success: function(data){
+            var jData = JSON.parse(data); 
+            
+            toastr.success(jData.msg);  
+            $( "#editSubjectHolder" ).html( jData.html );
+            $('body,html').animate({scrollTop:350},800);         
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');
+        }
+    });
+}
 
 </script>

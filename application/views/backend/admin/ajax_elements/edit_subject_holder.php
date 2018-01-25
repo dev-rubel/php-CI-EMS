@@ -12,7 +12,7 @@ foreach ( $edit_data as $row):
             	</div>
             </div>
 			<div class="panel-body">
-                
+            <!-- id="updateSubject" -->
                 <form id="updateSubject" action="<?php echo base_url() .'index.php?admin/ajax_update_subject/'.$row['subject_id']; ?>" class="form-horizontal form-groups-bordered validate" method="post">  
 
                 <input type="hidden" name="class_id" value="<?php echo $row['class_id']; ?>">
@@ -22,8 +22,12 @@ foreach ( $edit_data as $row):
                         <input type="text" class="form-control" name="name" value="<?php echo $row['name'];?>"/>
                     </div>
                 </div>
-
-                 <div class="form-group">
+                
+                <?php 
+                    $countJoin = $this->db->get_where('subject',array('class_id'=>$row['class_id'],'subject_code'=>$row['subject_code']))->result_array();
+                    if(count($countJoin) < 2):
+                ?> 
+                    <div class="form-group">
                         <label class="col-sm-3 control-label"><?php echo get_phrase('subject_category');?></label>
                         <div class="col-sm-5">
                             <select name="subject_category" class="form-control" style="width:100%;" onchange="return get_join_subject(this.value)">
@@ -46,7 +50,7 @@ foreach ( $edit_data as $row):
                                 <?php endif; ?>                                                                  
                             </select>
                         </div>
-                    </div>
+                    </div>                    
 
                     <div class="form-group" id="joinSubject">
                         <label class="col-sm-3 control-label"><?php echo get_phrase('join_subject_list');?></label>
@@ -64,33 +68,37 @@ foreach ( $edit_data as $row):
                             </select>
                         </div>
                     </div>
+                <?php else:?>
+                    <input type="hidden" value="<?php echo $row['subject_category'];?>" name="subject_category">
+                <?php endif;?>
 
+                <?php list($mt,$cq,$mcq,$pr) = explode('|',$row['subject_marks']);?>
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('mark_distribution');?></label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control markSum" name="mt_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="MT Mark"/>
+                        <input type="number" class="form-control markSum" value="<?php echo $mt; ?>" name="mt_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="MT Mark"/>
                     </div>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control markSum" name="cq_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="CQ Mark"/>
+                        <input type="number" class="form-control markSum" value="<?php echo $cq; ?>" name="cq_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="CQ Mark"/>
                     </div>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control markSum" name="mcq_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="MCQ Mark"/>
+                        <input type="number" class="form-control markSum" value="<?php echo $mcq; ?>" name="mcq_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="MCQ Mark"/>
                     </div>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control markSum" name="pr_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="PR Mark"/>
+                        <input type="number" class="form-control markSum" value="<?php echo $pr; ?>" name="pr_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" placeholder="PR Mark"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('total_mark');?></label>
                     <div class="col-sm-5">
-                        <input type="number" class="form-control markTotal" name="total_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" readonly/>
+                        <input type="number" class="form-control markTotal" value="<?php echo $row['total_mark']; ?>" name="total_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" readonly/>
                     </div>
                     <h4 style="color: red;" class="invalidMark">Invalid Mark</h4>
                 </div>
 
-                <input type="hidden" name="subject_code" value="<?php echo substr(md5(rand(0, 1000000)), 0, 5);?>">
-                            <input type="hidden" name="year" value="<?php echo $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;?>">
+                <input type="hidden" name="subject_code" value="<?php echo $row['subject_code'];?>">
+                <input type="hidden" name="year" value="<?php echo $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;?>">
                 
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('teacher');?></label>
@@ -127,7 +135,9 @@ endforeach;
 </div>
 
 <script type="text/javascript">
+    $('#join_subject_holder').attr('disabled','disabled');
     $('#joinSubject').hide();
+    $('#group_subject_holder').attr('disabled','disabled');
     $('#groupSubject').hide();
 
     function get_join_subject(name)
@@ -138,7 +148,6 @@ endforeach;
                 url: '<?php echo base_url(); ?>index.php?admin/get_join_subject_info/' + this.class_id,
                 success: function (response)
                 {   
-
                     if(response){
                         $('#joinSubject').show();
                         $('#join_subject_holder').empty();
@@ -148,10 +157,12 @@ endforeach;
                             var div_data="<option value="+value.subject_code+">"+value.name+"</option>";
                             $(div_data).appendTo('#join_subject_holder'); 
                         });
-                    }else{
+                        $('#join_subject_holder').removeAttr('disabled');
+                    } else {
                         $('#joinSubject').show();                        
                         $('#join_subject_holder').append('<option value="">No Main Subject Found</option>');
                     }
+                    $('#group_subject_holder').attr('disabled','disabled');
                 }
             });
 
@@ -169,17 +180,21 @@ endforeach;
                         $.each(jsonvalue, function(key, value){
                             var div_data="<option value="+value.group_id+">"+titleCase(value.name)+"</option>"; 
                             $(div_data).appendTo('#group_subject_holder'); 
-                        })
-                    }else{
+                        });
+                        $('#group_subject_holder').removeAttr('disabled');
+                    } else {
                         $('#groupSubject').show();
                         $('#group_subject_holder').append('<option value="">No Group Found</option>');
                     }
+                    $('#join_subject_holder').attr('disabled','disabled');
                 }
             });
 
         }else{
             $('#groupSubject').hide();
+            $('#group_subject_holder').attr('disabled','disabled');
             $('#joinSubject').hide();
+            $('#join_subject_holder').attr('disabled','disabled');
         }
         
     }
@@ -198,11 +213,7 @@ endforeach;
 		
 </script>
 
-
-
 <script>
-$(document).ready(function() {
-
 // CALCULATE TOTAL MARK AND SET INTO SUBJECT MARK INPUT FIELD
 $(".invalidMark").hide();
 $(document).on("change", ".markSum", function() {
@@ -211,36 +222,39 @@ $(document).on("change", ".markSum", function() {
         sum += +$(this).val();
     });
     if(sum > 100) {
-        $(".invalidMark").show();
-        $(".markSaveButton").attr('disabled','disabled');
-    } else {
-        $(".invalidMark").hide();
-        $(".markSaveButton").removeAttr('disabled','disabled');
-    }
-    $(".markTotal").val(sum);
-});
-
-$('#updateSubject').ajaxForm({ 
-    beforeSend: function() {                
-            $('#loading').show();
-            $('#overlayDiv').show();
-    },  
-    success: function (data){
-        var jData = JSON.parse(data);  
-
-        if(!jData.type) {    
-            toastr.error(jData.msg);
+            $(".invalidMark").show();
+            $(".markSaveButton").attr('disabled','disabled');
         } else {
-            toastr.success(jData.msg);  
-            $( "#subjectList" ).html( jData.html );
-            $("#table_export").dataTable();
-            $( "#innerEditSubjectHoder" ).html( '' );                  
-        }   
-        $('body,html').animate({scrollTop:0},800);         
-        $('#loading').fadeOut('slow');
-        $('#overlayDiv').fadeOut('slow');                   
-    }
+            $(".invalidMark").hide();
+            $(".markSaveButton").removeAttr('disabled','disabled');
+        }
+        $(".markTotal").val(sum);
 });
+
+
+$(document).ready(function() {
+
+    $('#updateSubject').ajaxForm({ 
+        beforeSend: function() {                
+                $('#loading').show();
+                $('#overlayDiv').show();
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);  
+
+            if(!jData.type) {    
+                toastr.error(jData.msg);
+            } else {
+                toastr.success(jData.msg);  
+                $("#subjectList").html( jData.html );
+                $("#table_export").dataTable();
+                $( "#innerEditSubjectHoder" ).html( '' );                  
+            }   
+            $('body,html').animate({scrollTop:0},800);         
+            $('#loading').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');                   
+        }
+    });
 
   
 
