@@ -44,9 +44,9 @@
                             <td><?php 
                                 $subject_marks = explode('|', $row['subject_marks']);
                                 if(count($joinOrNot)>1) {                                    
-                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']+$joinOrNot[1]['total_mark']).'</b>';
+                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
                                 } else {
-                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']+$joinOrNot[1]['total_mark']).'</b>';
+                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
                                 } ?>
                             </td>
 							<td><?php echo $this->crud_model->get_type_name_by_id('teacher',$row['teacher_id']);?></td>
@@ -116,12 +116,18 @@
                                         <?php endif;?>    
                                         <?php 
                                             $countMain = $this->db->get_where('subject',array('class_id'=>$class_id,'subject_category'=>'main'))->result_array();
-                                            $countJoin = $this->db->get_where('subject',array('class_id'=>$class_id,'subject_category'=>'join'))->result_array();
-                                            if(count($countMain) > 0 && count($countJoin) <= 2):
+                                            $countJoin = $this->db->get_where('subject',array('class_id'=>$class_id,'subject_category'=>'join'))->result_array();                                            
+                                            if(count($countMain) > 0):
+                                                if(empty($countJoin)) {
+                                                    $countJoin = 0;
+                                                } else {
+                                                    $countJoin = count($countJoin);
+                                                }
+                                            if($countJoin < 2):
                                         ?>                                
                                             <option value="join">Join Subject</option>
                                                 
-                                        <?php endif; ?>                                                                  
+                                        <?php endif;endif; ?>                                                                  
                                     </select>
                                 </div>
                             </div>
@@ -164,9 +170,8 @@
                                     <input type="number" class="form-control markTotal" name="total_mark" data-validate="required" data-message-required="<?php echo get_phrase('value_required');?>" readonly/>
                                 </div>
                                 <h4 style="color: red;" class="invalidMark">Invalid Mark</h4>
-                            </div>
+                            </div>                            
                             
-                            <input type="hidden" name="subject_code" value="<?php echo substr(md5(rand(0, 1000000)), 0, 5);?>">
                             <input type="hidden" name="year" value="<?php echo $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;?>">
 
                             <div class="form-group">
@@ -232,12 +237,14 @@
                         $('#join_subject_holder').append('<option value="">Select One</option>');
                         $.each(jsonvalue, function(key, value){
                             var div_data="<option value="+value.subject_code+">"+value.name+"</option>";
-                            $(div_data).appendTo('#join_subject_holder'); 
+                            $(div_data).appendTo('#join_subject_holder');                             
                         });
+                        $("#join_subject_holder").removeAttr('disabled','disabled');
                     }else{
                         $('#joinSubject').show();                        
                         $('#join_subject_holder').append('<option value="">No Main Subject Found</option>');
                     }
+                    $('#groupSubject').hide();
                     $('#group_subject_holder').attr('disabled','disabled');
                 }
             });
@@ -256,11 +263,13 @@
                         $.each(jsonvalue, function(key, value){
                             var div_data="<option value="+value.group_id+">"+titleCase(value.name)+"</option>"; 
                             $(div_data).appendTo('#group_subject_holder'); 
-                        })
+                        });
+                        $("#group_subject_holder").removeAttr('disabled','disabled');
                     }else{
                         $('#groupSubject').show();
                         $('#group_subject_holder').append('<option value="">No Group Found</option>');
                     }
+                    $('#joinSubject').hide();
                     $('#join_subject_holder').attr('disabled','disabled');
                 }
             });
@@ -323,7 +332,12 @@ $(document).ready(function() {
                 toastr.success(jData.msg);  
                 $("#subjectList").html( jData.html );
                 $("#table_export").dataTable();
-                $('#createSubject').resetForm();               
+                $('#createSubject').resetForm(); 
+                // DISABLED AND HIDE (GROUP AND JOIN SUBJECT)
+                $('#join_subject_holder').attr('disabled','disabled');
+                $('#joinSubject').hide();
+                $('#group_subject_holder').attr('disabled','disabled');
+                $('#groupSubject').hide();              
             }   
             $('body,html').animate({scrollTop:0},800);         
             $('#loading2').fadeOut('slow');

@@ -1,3 +1,4 @@
+<?php echo $this->uri->segment(5);?>
 <hr />
 <?php echo form_open(base_url() . 'index.php?admin/marks_selector');?>
 <div class="row">
@@ -118,7 +119,16 @@
 	</div>
 
 </div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('rolls');?></label>
+			<input type="text" class="form-control" name="rolls">
+		</div>
+	</div>
+</div>
 <?php echo form_close();?>
+
 
 <hr />
 <div class="row" style="text-align: center;">

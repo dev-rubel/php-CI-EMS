@@ -1,4 +1,4 @@
-<form id="updateAdmissionInfo" action="<?php echo base_url() .'index.php?homemanage/ajax_update_admission_info'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+<form id="updateAdmissionInfo" action="<?php echo base_url() .'index.php?homemanage/ajax_update_admission_info'; ?>" method="post">   
 
 <script>
 
@@ -29,9 +29,6 @@ $(document).ready(function() {
 
 
 });
-
-
-
 
 </script>
 

@@ -1,5 +1,5 @@
 <hr />
-<?php echo form_open(base_url() . 'index.php?admin/marks_selector');?>
+<form id="markSelector" action="<?php echo base_url() .'index.php?admin/ajax_marks_selector'; ?>" method="post">   
 <div class="row">
 
 	<div class="col-md-2">
@@ -56,15 +56,52 @@
 			</center>
 		</div>
 	</div>
-
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('rolls');?> (Maximam 10)</label>
+			<input type="text" class="form-control" name="rolls" data-role="tagsinput" id="rollTags">
+		</div>
+	</div>
 </div>
 <?php echo form_close();?>
 
+<div id="studentMarkHolder"></div>
 
 
 
+<script>
+
+$('#markSelector').ajaxForm({ 
+	beforeSend: function() {                
+			$('#loading2').show();
+			$('#overlayDiv').show();
+	},  
+	success: function (data){
+		var jData = JSON.parse(data);  
+		if(!jData.type) {    
+			toastr.error(jData.msg);
+		} else {
+			toastr.success(jData.msg);  
+			$( "#studentMarkHolder" ).html( jData.html );               
+		}   
+		$('body,html').animate({scrollTop:0},800);         
+		$('#loading2').fadeOut('slow');
+		$('#overlayDiv').fadeOut('slow');                   
+	}
+}); 
+
+
+</script>
 
 <script type="text/javascript">
+
+	$("#rollTags").tagsinput({
+		maxChars: 3,
+		maxTags: 10,
+		trimValue: true
+	});
 	function get_class_subject(class_id) {
 		
 		$.ajax({

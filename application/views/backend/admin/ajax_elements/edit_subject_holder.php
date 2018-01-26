@@ -103,7 +103,7 @@ foreach ( $edit_data as $row):
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('teacher');?></label>
                     <div class="col-sm-5 controls">
-                        <select name="teacher_id" class="form-control">
+                       <select name="teacher_id" class="form-control">
                             <option value="">Select Teacher</option>
                             <?php 
                             $teachers = $this->db->get('teacher')->result_array();
@@ -162,6 +162,7 @@ endforeach;
                         $('#joinSubject').show();                        
                         $('#join_subject_holder').append('<option value="">No Main Subject Found</option>');
                     }
+                    $('#groupSubject').hide();
                     $('#group_subject_holder').attr('disabled','disabled');
                 }
             });
@@ -186,6 +187,7 @@ endforeach;
                         $('#groupSubject').show();
                         $('#group_subject_holder').append('<option value="">No Group Found</option>');
                     }
+                    $('#joinSubject').hide();
                     $('#join_subject_holder').attr('disabled','disabled');
                 }
             });

@@ -8,8 +8,8 @@
 
 <link rel="stylesheet" href="assets/css/custom.css">
 <style>
-@font-face { font-family: 'Lobster'; src: url('assets/fonts/Lobster-Regular.ttf'); } 
-@font-face { font-family: 'Noto Sans'; src: url('assets/fonts/NotoSans-Regular.ttf'); } 
+    @font-face { font-family: 'Lobster'; src: url('assets/fonts/Lobster-Regular.ttf'); } 
+    @font-face { font-family: 'Noto Sans'; src: url('assets/fonts/NotoSans-Regular.ttf'); } 
 </style>
 
 <script type="text/javascript" src="assets/backend/js/jquery_2.4/jquery.min.js"></script>
@@ -28,6 +28,8 @@
 <link rel="stylesheet" href="assets/backend/css/slide-panel.css"> 
 <link rel="stylesheet" href="assets/backend/css/toastr.min.css"> 
 <link rel="stylesheet" href="assets/backend/css/navigation-icons.css"> 
+<!-- Bootstrap Tag Input -->
+<link rel="stylesheet" href="assets/backend/css/bootstrap-tagsinput.css"> 
 
 <script src="assets/js/tinymce/tinymce.min.js"></script>
 <script src="assets/backend/js/jquery.uploadPreview.min.js"></script>   
@@ -36,19 +38,4 @@
 
 <script>
 	  $(document).ready(function(){$(".vertical-nav").verticalnav({speed: 400,align: "left"});});
-</script>
-
-
-<script>
-    function checkDelete()
-    {
-        var chk=confirm("Are You Sure To Delete This !");
-        if(chk)
-        {
-          return true;  
-        }
-        else{
-            return false;
-        }
-    }
 </script>

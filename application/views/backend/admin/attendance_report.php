@@ -1,6 +1,6 @@
 <hr />
 <?php $month = date('m');?>
-<form id="attendanceReportSelector" action="<?php echo base_url() .'index.php?admin/ajax_attendance_report_selector'; ?>" class="form-horizontal form-groups-bordered validate" method="post">  
+<form id="attendanceReportSelector" action="<?php echo base_url() .'index.php?admin/ajax_attendance_report_selector'; ?>" method="post">  
 <div class="row">
 
     <?php

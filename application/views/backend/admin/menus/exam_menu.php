@@ -113,7 +113,7 @@ function changePage(page)
             //$("#"+selectValue).removeClass("bg-info");
             //$("#"+selectValue).toggleClass("bg-primary");
             $('#examNavManu').show();
-            $('#examMainManu').hide();
+            $('#examMainManu').hide();            
             $('#ajaxPageContainer').html(response);
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                

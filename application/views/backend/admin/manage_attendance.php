@@ -2,8 +2,7 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<form id="attendanceSelector" action="<?php echo base_url() .'index.php?admin/ajax_attendance_selector'; ?>" class="form-horizontal form-groups-bordered validate"
-		    method="post">
+		<form id="attendanceSelector" action="<?php echo base_url() .'index.php?admin/ajax_attendance_selector'; ?>" method="post">
 
 			<div class="col-md-2">
 				<div class="form-group">

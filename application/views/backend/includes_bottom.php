@@ -26,6 +26,8 @@ $url = $url[0];
 
 <!-- Ajax Request Handle -->
 <script src="assets/backend/js/jquery.form.js"></script> 
+<!-- Bootstrap Tag Input -->
+<script src="assets/backend/js/bootstrap-tagsinput.js"></script> 
 
 <!--start for homemanage controller-->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>

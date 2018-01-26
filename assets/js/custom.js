@@ -21,6 +21,7 @@ jQuery(document).ready(function($)
 // DatePicker And Word Counter
 // 
 $(document).ready(function(){
+
 	$('.datepicker').datepicker({
 	    dateFormat: 'dd-mm-yy',
 		startView: 1

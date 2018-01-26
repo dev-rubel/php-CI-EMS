@@ -55,7 +55,7 @@
             <!----TABLE LISTING STARTS-->
             <div class="tab-pane box <?php echo !empty($result)?'':'active';?>" id="list">
                 <div class="col-md-4 col-md-offset-1">
-                    <form id="addResult" action="<?php echo base_url() .'index.php?homemanage/ajax_add_admission_result'; ?>" class="form-horizontal form-groups-bordered" method="post">                            
+                    <form id="addResult" action="<?php echo base_url() .'index.php?homemanage/ajax_add_admission_result'; ?>" method="post">                            
                         <div class="form-group">
                             <label>Admission Roll No.</label>
                             <input type="number" class="form-control" name="uniq_id" aria-describedby="emailHelp" placeholder="eg.29" autofocus>
@@ -100,7 +100,7 @@
 			<div class="tab-pane box" id="list3">
                 
                 <div class="col-md-12">
-                    <form id="admissionResultHolder" action="<?php echo base_url() .'index.php?homemanage/ajax_getClassResult'; ?>" class="form-horizontal form-groups-bordered" method="post">   
+                    <form id="admissionResultHolder" action="<?php echo base_url() .'index.php?homemanage/ajax_getClassResult'; ?>" method="post">   
                         <div class="col-md-3 col-md-offset-1">
                                 <div class="form-group row">
                                     <label class="col-form-label">Search mark-sheet by class</label>

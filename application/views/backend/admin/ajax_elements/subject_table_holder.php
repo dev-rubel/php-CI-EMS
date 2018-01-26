@@ -20,9 +20,9 @@
 			<td><?php 
 				$subject_marks = explode('|', $row['subject_marks']);
 				if(count($joinOrNot)>1) {                                    
-					echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']+$joinOrNot[1]['total_mark']).'</b>';
+					echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
 				} else {
-					echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']+$joinOrNot[1]['total_mark']).'</b>';
+					echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
 				} ?>
 			</td>
 			<td><?php echo $this->crud_model->get_type_name_by_id('teacher',$row['teacher_id']);?></td>
