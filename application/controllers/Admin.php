@@ -1349,7 +1349,7 @@ class Admin extends CI_Controller
         }
         $className = $this->db->get_where('class' , array('class_id' => $param1))->row()->name;
         $page_data['class_id']   = $param1;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $param1,'status'=>1])->result_array();
         $page_data['page_name']  = 'subject';
         $page_data['page_title'] = get_phrase('manage_subject'.' (Class: '.$className.')');
         $this->load->view('backend/index', $page_data);
@@ -1364,22 +1364,28 @@ class Admin extends CI_Controller
     }
 
     function ajax_create_subject()
-    {
+    {        
+        // pd($_POST);
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {        
             $class_id = $_POST['class_id'];
-            if(!empty($_POST['join_subject_code'])){
+            if(!empty($_POST['join_subject_code'])) {
                 unset($_POST['subject_code']);
                 $_POST['subject_code'] = $_POST['join_subject_code'];
                 unset($_POST['join_subject_code']);
             }
-            if(!empty($_POST['group_subject_name'])){
+            if(!empty($_POST['group_subject_name'])) {
                 $_POST['group_id'] = $_POST['group_subject_name'];
                 unset($_POST['group_subject_name']);
             }
-            
+
+            $subject_marks = array_slice($_POST,3,4); // MT, CQ, MCQ, PR MARKS
+            array_splice($_POST,3,4);
+            $_POST['subject_marks'] = implode('|',$subject_marks);
+
+            // pd($_POST);
             $this->db->insert('subject', $_POST);
             $this->ajax_subject_table_holder($class_id);
         }
@@ -1388,7 +1394,7 @@ class Admin extends CI_Controller
     function ajax_subject_table_holder($class_id)
     {
         $page_data['class_id']   = $class_id;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $class_id))->result_array();
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $class_id,'status'=>1])->result_array();
         $htmlData = $this->load->view('backend/admin/ajax_elements/subject_table_holder', $page_data, true);
         $this->jsonMsgReturn(true,'Subject Updated',$htmlData);
     }
@@ -1396,19 +1402,38 @@ class Admin extends CI_Controller
     function ajax_edit_subject()
     {
         $subject_id = $this->uri(3);
+        $class_id = $this->uri(4);
         $page_data['subject_id']   = $subject_id;
+        $page_data['class_id']   = $class_id;
         $htmlData = $this->load->view('backend/admin/ajax_elements/edit_subject_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
     }
 
     function ajax_update_subject()
-    {
-        $subject_id = $this->uri(3);
-        $class_id = $_POST['class_id'];        
-        $this->db->where('subject_id', $subject_id);
-        $this->db->update('subject', $_POST);
-
-        $this->ajax_subject_table_holder($class_id);
+    {       
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            if($_POST['join_subject_code'] == $_POST['subject_code']) {
+                $this->jsonMsgReturn(false,'Invalid Join Subject');
+            } else {
+                $subject_id = $this->uri(3);
+                if(!empty($_POST['join_subject_code'])){                
+                    $_POST['subject_code'] = $_POST['join_subject_code'];
+                    unset($_POST['join_subject_code']);
+                } 
+                
+                $subject_marks = array_slice($_POST,3,4); // MT, CQ, MCQ, PR MARKS
+                array_splice($_POST,3,4);
+                $_POST['subject_marks'] = implode('|',$subject_marks);
+                
+                $class_id = $_POST['class_id'];        
+                $this->db->where('subject_id', $subject_id);
+                $this->db->update('subject', $_POST);
+                $this->ajax_subject_table_holder($class_id);
+            }                
+        }
     }
 
     function subject_menu()
@@ -1420,10 +1445,10 @@ class Admin extends CI_Controller
 
     function ajax_subject_menu_pages()
     {
-        $param1   = $_POST['pageName'];
+        $class_id   = $_POST['classId'];
         $pageName = 'subject';
-        $page_data['class_id']   = $param1;
-        $page_data['subjects']   = $this->db->get_where('subject' , array('class_id' => $param1))->result_array();
+        $page_data['class_id']   = $class_id;
+        $page_data['subjects']   = $this->db->get_where('subject' , ['class_id' => $class_id,'status'=>1])->result_array();
 
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = 'subject';

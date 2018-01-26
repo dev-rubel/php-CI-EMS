@@ -96,7 +96,7 @@ function changePage(page)
     $.ajax({
         type: "POST",
         data: {
-            pageName : selectValue                
+            classId : selectValue                
         },
         beforeSend: function() {                
                 $('#loading2').show();
