@@ -1,15 +1,18 @@
-
+<?php echo $subject_id;
+$subject_info = $this->db->get_where('subject',['subject_id'=>$subject_id])->result_array();
+$subject_marks = $subject_info[0]['subject_marks'];
+ ?>
 <hr />
 <div class="row" style="text-align: center;">
 	<div class="col-sm-4"></div>
 	<div class="col-sm-4">
 		<div class="tile-stats tile-gray">
 			<div class="icon"><i class="entypo-chart-bar"></i></div>
-			
+
 			<h3 style="color: #696969;"><?php echo get_phrase('marks_for');?> <?php echo $this->db->get_where('exam' , array('exam_id' => $exam_id))->row()->name;?></h3>
 			<h4 style="color: #696969;">
-				<?php echo get_phrase('class: ');?> <?php echo $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;?> | 
-				<?php echo get_phrase('section: ');?> <?php echo $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;?> 
+				<?php echo get_phrase('class: ');?> <?php echo $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;?> |
+				<?php echo get_phrase('section: ');?> <?php echo $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;?>
 			</h4>
 			<h4 style="color: #696969;">
 				<?php echo get_phrase('subject');?> : <?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->name;?>
@@ -35,11 +38,11 @@
 				</thead>
 				<tbody>
 				<?php
-					
+
 					foreach($foundRolls as $k=>$each):
 					$marks_of_students = $this->db->get_where('mark' , array(
-						'class_id' => $class_id, 
-							'student_id' => $each, 
+						'class_id' => $class_id,
+							'student_id' => $each,
 								'group_id' => $group_id,
 									'section_id' => $section_id ,
 										'year' => $running_year,
@@ -57,8 +60,15 @@
 							<?php echo $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;?>
 						</td>
 						<td>
-							<input type="text" class="form-control" name="marks_obtained_<?php echo $row['mark_id'];?>"
-								value="<?php echo $row['mark_obtained'];?>">	
+							<?php foreach (explode('|',$subject_marks) as $key => $value) :
+									// if($value != 0):
+                    $arr = [0 => 'MT',1 => 'CQ', 2 => 'MCQ', 3 => 'PT'];
+								?>
+								<input type="text" class="form-control" name="marks_obtained[<?php echo $row['mark_id'];?>][]" value="<?php echo $value==0?0:''; ?>" min="1" max="<?php echo $value; ?>" <?php echo $value==0?'readonly':''; ?> placeholder="<?php echo $arr[$key].' ('.$value.')'; ?>">
+							<?php endforeach; ?>
+
+							<!-- <input type="text" class="form-control" name="marks_obtained_<?php echo $row['mark_id'];?>"
+								value="<?php echo $row['mark_obtained'];?>"> -->
 						</td>
 						<td>
 							<input type="text" class="form-control" name="comment_<?php echo $row['mark_id'];?>"
@@ -75,8 +85,7 @@
 			</button>
 		</center>
 		<?php echo form_close();?>
-		
+
 	</div>
 	<div class="col-md-2"></div>
 </div>
-

@@ -8,14 +8,14 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  *	https://www.nihalit.com
  *	info@nihalit.com
  */
- 
- 
+
+
 class Admin extends CI_Controller
 {
 
-    protected $systemTitleName;    
+    protected $systemTitleName;
     private $running_year;
-    
+
     function __construct()
     {
         parent::__construct();
@@ -24,7 +24,7 @@ class Admin extends CI_Controller
 
         $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
         $this->running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
-        
+
        /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
@@ -37,10 +37,10 @@ class Admin extends CI_Controller
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url() . 'index.php?login', 'refresh');
         if ($this->session->userdata('admin_login') == 1)
-            redirect(base_url() . 'index.php?admin/dashboard', 'refresh');        
+            redirect(base_url() . 'index.php?admin/dashboard', 'refresh');
     }
 
-    
+
     // Fetch Data To Server
 
     public function getStdClassInfo()
@@ -95,7 +95,7 @@ class Admin extends CI_Controller
                 // update status
                 $updateKey = array_search($attStdId, $localServerInfo);
                 if(is_numeric($updateKey)){
-                    $updateStatus = end(explode('@', $_POST[$updateKey])); 
+                    $updateStatus = end(explode('@', $_POST[$updateKey]));
                     if($updateStatus==2){
                         $where = array('student_id' => $attStdId, 'timestamp' => $currentStrDate);
                         $this->db->where($where);
@@ -106,11 +106,11 @@ class Admin extends CI_Controller
                         $this->db->update('attendance', array('status' =>  3));
                     }
                 }
-                
+
             }else{
                 $key = array_search($singlestd['student_id'], $localServerInfo);
                 if(is_numeric($key)){
-                    $status = end(explode('@', $_POST[$key])); 
+                    $status = end(explode('@', $_POST[$key]));
                     if($status==2){
                         //$timestamp = array_slice(explode('@', $_POST[$key]), 1, 1); // select intime
                         // Present
@@ -122,7 +122,7 @@ class Admin extends CI_Controller
                         $attn_data['shift_id']   = $singlestd['shift_id'];
                         $attn_data['student_id'] = $singlestd['student_id'];
                         $attn_data['status']     = 1;
-                        $this->db->insert('attendance' , $attn_data); 
+                        $this->db->insert('attendance' , $attn_data);
                     }else{
                         // Escaped And Absent
                         $attn_data['timestamp']  = $currentStrDate;
@@ -149,7 +149,7 @@ class Admin extends CI_Controller
                     $this->db->insert('attendance' , $attn_data);
                 }
             }
-            
+
         }
         // print_r($present);
         // echo "<br>";
@@ -160,7 +160,7 @@ class Admin extends CI_Controller
 
     // End Fetch Data To Server
 
-    
+
     /***ADMIN DASHBOARD***/
 
     function dashboard()
@@ -176,24 +176,24 @@ class Admin extends CI_Controller
 
     function ajaxStudentSearch()
     {
-        $student_id = $this->uri(3);        
+        $student_id = $this->uri(3);
         $page_data['student_info'] = [];
 
         if(!empty($student_id)){
             $this->db->limit(5);
             $this->db->like('student_code', $student_id);
-            $page_data['student_info'] = $this->db->get('student')->result_array();        
-        }            
-        
+            $page_data['student_info'] = $this->db->get('student')->result_array();
+        }
+
         $this->load->view('backend/admin/ajax_student_search' , $page_data);
     }
-    
+
     /****MANAGE STUDENTS CLASSWISE*****/
 
-    function student_add() 
+    function student_add()
     {
         if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');                        
+            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'student_add';
         $page_data['page_title'] = get_phrase('add_student');
         $this->load->view('backend/index', $page_data);
@@ -205,12 +205,12 @@ class Admin extends CI_Controller
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/'.$pageName, $page_data);
     }
-    
+
     function student_bulk_add($param1 = '')
     {
             if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        
+
         if($param1 == 'add_bulk_student') {
 
             $names     = $this->input->post('name');
@@ -252,7 +252,7 @@ class Admin extends CI_Controller
             }
             $this->session->set_flashdata('flash_message' , get_phrase('students_added'));
             redirect(base_url() . 'index.php?admin/student_information/' . $this->input->post('class_id') , 'refresh');
-        }           
+        }
 
         $page_data['page_name']  = 'student_bulk_add';
         $page_data['page_title'] = get_phrase('add_bulk_student');
@@ -264,16 +264,16 @@ class Admin extends CI_Controller
         $page_data['class_id'] = $class_id;
         $this->load->view('backend/admin/student_bulk_add_sections' , $page_data);
     }
-    
+
     function student_information($class_id = '', $group_id = '')
-    {        
+    {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         if(!empty($group_id)):
             $gname = ' || Group - ';
             $gname .= ucfirst($this->db->get_where('group', array('group_id'=>$group_id))->row()->name);
         endif;
-            
+
         $page_data['page_name']     = 'student_information';
         $page_data['page_title']    = get_phrase('student_information'). " - ".get_phrase('class')." : ".
                                             $this->crud_model->get_class_name($class_id).$gname;
@@ -288,7 +288,7 @@ class Admin extends CI_Controller
             $gname = ' || Group - ';
             $gname .= ucfirst($this->db->get_where('group', array('group_id'=>$group_id))->row()->name);
         endif;
-            
+
         $page_data['page_name']     = 'student_information';
         $page_data['page_title']    = get_phrase('student_information'). " - ".get_phrase('class')." : ".
                                             $this->crud_model->get_class_name($class_id).$gname;
@@ -298,7 +298,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/student_information', $page_data);
     }
 
-    function student_marksheet($student_id = '') 
+    function student_marksheet($student_id = '')
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
@@ -314,7 +314,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function student_marksheet_print_view($student_id , $exam_id) 
+    function student_marksheet_print_view($student_id , $exam_id)
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
@@ -328,21 +328,21 @@ class Admin extends CI_Controller
         $page_data['exam_id']    =   $exam_id;
         $this->load->view('backend/admin/student_marksheet_print_view', $page_data);
     }
-    
+
     function student($param1 = '', $param2 = '', $param3 = '')
-    {        
+    {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
         $running_year = $this->running_year;
         if ($param1 == 'create') {
-            
+
             // CREATE STUDENT ACCOUNT UNIQUE CODE --- NOT USE
 
             $cname = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$_POST['group_id']))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$_POST['section_id']))->row()->name;
             $shname = $this->db->get_where('shift', array('shift_id'=>$_POST['shift_id']))->row()->name;
-            
+
             if($cname == 9 || $cname == 10){
 
                 $acc_code = strtolower($shname[0].$cname.$sname[0].$_POST['roll'].$gname[0]);
@@ -355,19 +355,19 @@ class Admin extends CI_Controller
                 $class_name = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name;
                 $acc_code = strtolower($shname[0].$class_name[0].$_POST['roll']);
 
-            }            
+            }
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
 
             // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
 
-            $session = $this->db->get_where('settings', 
+            $session = $this->db->get_where('settings',
             ['type'=>'admission_session'])->row()->description;
             $year = substr($session, -2);
 
             $this->db->like('uniq_id', $year, 'after');
             $this->db->where('session', $session);
             $exist = $this->db->get('admit_std')->result_array();
-            if(!empty($exist)) {     
+            if(!empty($exist)) {
                 $last = end($exist);
                 $uniq_id = str_pad(substr($last['uniq_id'], -4)+1, 4, '0', STR_PAD_LEFT);
                 $uniq_id = $year.$cname.$uniq_id;
@@ -379,11 +379,11 @@ class Admin extends CI_Controller
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
             $this->db->insert('admit_std',
                  ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
-            
-            
+
+
             $table1Value1 = array_slice($_POST, 0, 21);
             $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-            $table1Value3 = array_merge($table1Value1,$table1Value2);    
+            $table1Value3 = array_merge($table1Value1,$table1Value2);
 
             // pd($table1Value3);
 
@@ -394,8 +394,8 @@ class Admin extends CI_Controller
 
             $table2Value1 = array_slice($_POST, 22, 5);
             $data2['student_id']     = $student_id;
-            $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);            
-            $data2['book_no']        = $_POST['book_no'];            
+            $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
+            $data2['book_no']        = $_POST['book_no'];
             $data2['date_added']     = strtotime(date("Y-m-d H:i:s"));
             $data2['year']           = $running_year;
             $table2Value2 = array_merge($data2,$table2Value1);
@@ -414,15 +414,15 @@ class Admin extends CI_Controller
             $std_info = $this->db->get_where('enroll', array('student_id'=> $param2))->row();
             if($std_info->group_id == 0 || empty($std_info->group_id)){
                 $group_id = '';
-            }   
-            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)  
+            }
+            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)
             // DELETE THIS SECTION ALRADY ACC CODE UPDATE FOR ALL STUDENT
 
             $cname = $this->db->get_where('class', array('class_id'=>$std_info->class_id))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$std_info->group_id))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$std_info->section_id))->row()->name;
             $shname = $this->db->get_where('shift', array('shift_id'=>$std_info->shift_id))->row()->name;
-            
+
             if($cname == 9 || $cname == 10){
 
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$std_info->roll.$gname[0]);
@@ -436,18 +436,18 @@ class Admin extends CI_Controller
                 $update_acc = strtolower($shname[0].$class_name[0].$std_info->roll);
 
             }
-            // 'acc_code'=>$update_acc, 
+            // 'acc_code'=>$update_acc,
             // END UPDATE ACCOUNT CODE SECTION
 
             $table1Value1 = array_slice($_POST, 0, 22);
             $table1Value2 = array('siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-            $table1Value3 = array_merge($table1Value1,$table1Value2);  
+            $table1Value3 = array_merge($table1Value1,$table1Value2);
 
             //pd(array('Account Code' => $update_acc));
             $this->db->where('student_id', $param2);
             $this->db->update('student', $table1Value3);
 
-            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)  
+            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)
             $book_no = array('book_no' => $_POST['book_no']) ;
             $this->db->where('student_id', $param2);
             $this->db->update('enroll', $book_no);
@@ -459,7 +459,7 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
             redirect(base_url() . 'index.php?admin/student_information/'.$param3.'/'.$group_id, 'refresh');
         }
-        
+
         if ($param1 == 'delete') {
             // STUDENT TABLE
             $this->db->where('student_id', $param2);
@@ -487,7 +487,7 @@ class Admin extends CI_Controller
     }
 
     function ajax_student_create2()
-    {   
+    {
         $this->jsonMsgReturn(true,'Information Insert.');
     }
         // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
@@ -495,14 +495,14 @@ class Admin extends CI_Controller
     {
         $running_year = $this->running_year;
         $nameNumaric = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
-        $session = $this->db->get_where('settings', 
+        $session = $this->db->get_where('settings',
         ['type'=>'admission_session'])->row()->description;
         $year = substr($session, -2);
 
         $this->db->like('uniq_id', $year, 'after');
         $this->db->where('session', $session);
         $exist = $this->db->get('admit_std')->result_array();
-        if(!empty($exist)) {     
+        if(!empty($exist)) {
             $last = end($exist);
             $uniq_id = str_pad(substr($last['uniq_id'], -4)+1, 4, '0', STR_PAD_LEFT);
             $uniq_id = $year.$nameNumaric.$uniq_id;
@@ -514,11 +514,11 @@ class Admin extends CI_Controller
         // END CREATE STUDENT ACCOUNT UNIQUE CODE
         $this->db->insert('admit_std',
             ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
-        
-        
+
+
         $table1Value1 = array_slice($_POST, 0, 21);
         $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-        $table1Value3 = array_merge($table1Value1,$table1Value2);    
+        $table1Value3 = array_merge($table1Value1,$table1Value2);
 
         // pd($table1Value3);
 
@@ -529,18 +529,18 @@ class Admin extends CI_Controller
 
         $table2Value1 = array_slice($_POST, 22, 5);
         $data2['student_id']     = $student_id;
-        $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);            
-        $data2['book_no']        = $_POST['book_no'];            
+        $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
+        $data2['book_no']        = $_POST['book_no'];
         $data2['date_added']     = strtotime(date("Y-m-d H:i:s"));
         $data2['year']           = $running_year;
         $table2Value2 = array_merge($data2,$table2Value1);
 
         $this->db->insert('enroll', $table2Value2);
         if(!empty($_FILES['userfile']['name'])){
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');        
-        }            
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');
+        }
         $this->jsonMsgReturn(true,'Information Insert.');
-        
+
     }
 
     function student_menu()
@@ -565,13 +565,13 @@ class Admin extends CI_Controller
 
         $count = 0;
         foreach($all_student as $each){
-            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)  
-            
+            // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)
+
             $cname = $this->db->get_where('class', array('class_id'=>$each['class_id']))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$each['group_id']))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$each['section_id']))->row()->name;
             $shname = $this->db->get_where('shift', array('shift_id'=>$each['shift_id']))->row()->name;
-            
+
             if($cname == 9 || $cname == 10){
 
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$each['roll'].$gname[0]);
@@ -616,13 +616,13 @@ class Admin extends CI_Controller
                     $shift_id = '';
                 }
 
-           
+
                 $data = array('shift_id' => $shift_id);
 
                 $this->db->where('student_id', $each['student_id']);
                 $this->db->update('enroll', $data);
 
-                
+
             }
         echo $count;
     }
@@ -667,8 +667,8 @@ class Admin extends CI_Controller
             redirect('login', 'refresh');
 
         if($param1 == 'promote') {
-            $running_year  =   $this->input->post('running_year');  
-            $from_class_id =   $this->input->post('promotion_from_class_id'); 
+            $running_year  =   $this->input->post('running_year');
+            $from_class_id =   $this->input->post('promotion_from_class_id');
             $students_of_promotion_class =   $this->db->get_where('enroll' , array(
                 'class_id' => $from_class_id , 'year' => $running_year
             ))->result_array();
@@ -679,7 +679,7 @@ class Admin extends CI_Controller
                 $enroll_data['year']            =   $this->input->post('promotion_year');
                 $enroll_data['date_added']      =   strtotime(date("Y-m-d H:i:s"));
                 $this->db->insert('enroll' , $enroll_data);
-            } 
+            }
             $this->session->set_flashdata('flash_message' , get_phrase('new_enrollment_successfull'));
             redirect(base_url() . 'index.php?admin/student_promotion' , 'refresh');
         }
@@ -700,8 +700,8 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function update_new_promotion_std_info() 
-    {        
+    function update_new_promotion_std_info()
+    {
         $current_year = $this->running_year;
         $student_id   = $this->uri->segment(3);
         $info = $this->input->post();
@@ -727,7 +727,7 @@ class Admin extends CI_Controller
     }
 
     function get_student_roll($classID)
-    {        
+    {
         $current_year = $this->running_year;
         if(!empty($_POST['groupid'])){
             $whereArr = array(
@@ -786,7 +786,7 @@ class Admin extends CI_Controller
         } else {
             echo null;
         }
-        
+
     }
 
     function get_class_section($class_id)
@@ -815,15 +815,15 @@ class Admin extends CI_Controller
 
     function total_student_page()
     {
-        $all_std_count = $this->db->count_all_results('enroll'); 
+        $all_std_count = $this->db->count_all_results('enroll');
         $page_data['page_title']    = 'Total Students: ('.$all_std_count.')';
         $page_data['page_name']  = 'total_student_page';
         $this->load->view('backend/index', $page_data);
     }
 
 
-    /**** TESTIMONIAL SECTION *****/ 
-    
+    /**** TESTIMONIAL SECTION *****/
+
     function testimonial_menu()
     {
         $page_data['page_name']  = 'menus/testimonial_menu';
@@ -852,8 +852,8 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'testimonial_voc';
         $page_data['page_title'] = get_phrase('testimonial_for_vocational');
         $this->load->view('backend/index', $page_data);
-    }  
-    
+    }
+
     function testimonial_general()
     {
         $class_id = $this->db->get_where('class', array('name_numeric' => 10))->row()->class_id;
@@ -861,7 +861,7 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'testimonial_general';
         $page_data['page_title'] = get_phrase('testimonial_for_general');
         $this->load->view('backend/index', $page_data);
-    } 
+    }
 
     function testimonial_list()
     {
@@ -874,13 +874,13 @@ class Admin extends CI_Controller
     {
         $testimonial_id = $this->uri(3);
         $course = $this->uri(4);
-        $page_data['std_info'] = $this->db->get_where('testimonial', 
+        $page_data['std_info'] = $this->db->get_where('testimonial',
                     ['testimonial_id'=>$testimonial_id])->result_array();
-        
+
         if($course == 'General'){
             $this->print_testimonial_general($page_data);
         }else{
-            $this->print_testimonial_voc($page_data); 
+            $this->print_testimonial_voc($page_data);
         }
     }
 
@@ -899,7 +899,7 @@ class Admin extends CI_Controller
     }
 
     function search_testimonial()
-    {   
+    {
         $group_id = $this->input->post('group_id');
         $roll     = $this->input->post('roll');
         $year     = $this->running_year;
@@ -909,15 +909,15 @@ class Admin extends CI_Controller
         if($class_name_numeric == 101 || $class_name_numeric == 91){
             $page = 'vocational';
         }
-        
+
         if(is_numeric($id)):
-            $test_data1 = $this->db->get_where('testimonial', array('student_id'=>$id))->result_array();    
+            $test_data1 = $this->db->get_where('testimonial', array('student_id'=>$id))->result_array();
 
             if(!empty($test_data1)): // FOUND WITH REGISTERED STUDENT INFO
                 unset($_SESSION['flash_message']);
                 unset($_SESSION['error']);
                 $this->flashmsg('Testimonial Found');
-                $page_data['found_test']     = 'found';             
+                $page_data['found_test']     = 'found';
                 $page_data['std_info']       = $test_data1[0];
                 $this->search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data, $page);
 
@@ -945,21 +945,21 @@ class Admin extends CI_Controller
                 unset($_SESSION['error']);
                 $this->flashmsg('Student Not Found', 'error');
             }
-            
+
             $this->search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data, $page);
         endif;
-        
+
     }
 
     function search_testimonial_reuse_func($group_id, $roll, $class_id, $id, $page_data = "", $page = "")
-    {        
+    {
         if(isset($page_data['found_test']) == false){
             $enroll_info = $this->db->get_where('enroll', array('student_id' => $id))->result_array();
             $std_info = $this->db->get_where('student', array('student_id' => $id))->result_array();
             $page_data['std_info']      =  $std_info[0];
             $page_data['enroll_info']   =  $enroll_info[0];
         }
-        
+
         if(!empty($page)){
             $class_id = $this->db->get_where('class', array('name_numeric' => 101))->row()->class_id;
             $page_data['group_name']  = $this->db->get_where('group', array('class_id' => $class_id))->result_array();
@@ -971,14 +971,14 @@ class Admin extends CI_Controller
             $page_data['page_name']  = 'testimonial_general';
             $page_data['page_title'] = get_phrase('testimonial_for_general');
         }
-        
+
         $this->load->view('backend/index', $page_data);
     }
 
     function add_testimonial()
     {
         $data['student_id']      = $this->input->post('student_id');
-        $data['student_name']    = $this->input->post('student_name');            
+        $data['student_name']    = $this->input->post('student_name');
         $data['father_name']     = $this->input->post('father_name');
         $data['mother_name']     = $this->input->post('mother_name');
         $data['address']         = implode('_', $this->input->post('address'));
@@ -996,14 +996,14 @@ class Admin extends CI_Controller
         $data['asset_sign']      = $this->input->post('asset_sign');
         $data['headmaster_sign'] = $this->input->post('headmaster_sign');
 
-        if(isset($_POST['save_new'])){ 
-                      
+        if(isset($_POST['save_new'])){
+
             $check_exist = $this->db->get_where('testimonial', array('trade' => $data['trade'], 'pass_roll' => $data['pass_roll']))->num_rows();
             if($check_exist > 0){
                 if(isset($_POST['course'])){
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
-                    $this->flashmsg('Testimonial Already Added');                    
+                    $this->flashmsg('Testimonial Already Added');
                     redirect(base('admin', 'testimonial_general'));
                 }else{
                     unset($_SESSION['flash_message']);
@@ -1023,7 +1023,7 @@ class Admin extends CI_Controller
                 redirect(base('admin', 'testimonial_general'));
             }else{
                 redirect(base('admin', 'testimonial_voc'));
-            }            
+            }
         }
 
         if(isset($_POST['update_new'])){
@@ -1048,7 +1048,7 @@ class Admin extends CI_Controller
                 if(isset($_POST['course'])){
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
-                    $this->flashmsg('Testimonial Already Added');                    
+                    $this->flashmsg('Testimonial Already Added');
                     redirect(base('admin', 'testimonial_general'));
                 }else{
                     unset($_SESSION['flash_message']);
@@ -1069,8 +1069,8 @@ class Admin extends CI_Controller
             } else {
                 $this->print_testimonial_voc($page_data);
             }
-            
-            
+
+
         }
 
         if(isset($_POST['update_print'])){
@@ -1081,11 +1081,11 @@ class Admin extends CI_Controller
 
             $page_data['std_info'] = $this->db->get_where('testimonial', array('testimonial_id'=>$testimonial_id))->result_array();
             $page_data['trade_name'] = $this->db->get_where('group', array('group_id' => $page_data['std_info'][0]['trade']))->row()->name;
-            
+
             if(isset($_POST['course'])){
                 $this->print_testimonial_general($page_data);
             }else{
-                $this->print_testimonial_voc($page_data); 
+                $this->print_testimonial_voc($page_data);
             }
         }
     }
@@ -1108,7 +1108,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST['voc']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {  
+        } else {
             $data = implode('|',$_POST['voc']);
             $this->db->where('type', 'vocational_testimonial');
             $this->db->update('settings',['description'=>$data]);
@@ -1155,8 +1155,8 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'parent';
         $this->load->view('backend/index', $page_data);
     }
-    
-    
+
+
     /****MANAGE TEACHERS*****/
 
     function teacherMenu()
@@ -1178,7 +1178,7 @@ class Admin extends CI_Controller
         $pageName = $_POST['pageName'];
         if($pageName == 'teacher') {
             $page_data['teachers']   = $this->db->get('teacher')->result_array();
-        }        
+        }
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/teacher/'.$pageName, $page_data);
@@ -1186,7 +1186,7 @@ class Admin extends CI_Controller
 
     function ajaxTeacherRoutine()
     {
-        $teacher_id = $this->uri(3);        
+        $teacher_id = $this->uri(3);
         if(!empty($teacher_id)){
             $page_data['teacher_id'] = $teacher_id;
             $page_data['teacher_routine'] = $this->db->get_where('class_routine',
@@ -1223,7 +1223,7 @@ class Admin extends CI_Controller
             $data['address']     = $this->input->post('address');
             $data['phone']       = $this->input->post('phone');
             $data['email']       = $this->input->post('email');
-            
+
             $this->db->where('teacher_id', $param2);
             $this->db->update('teacher', $data);
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $param2 . '.jpg');
@@ -1288,7 +1288,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {            
+        } else {
             $teacher_id = $this->uri(3);
             $data['name']        = $this->input->post('name');
             $data['birthday']    = $this->input->post('birthday');
@@ -1296,7 +1296,7 @@ class Admin extends CI_Controller
             $data['address']     = $this->input->post('address');
             $data['phone']       = $this->input->post('phone');
             $data['email']       = $this->input->post('email');
-            
+
             $this->db->where('teacher_id', $teacher_id);
             $this->db->update('teacher', $data);
             $this->ajax_teacher_page();
@@ -1307,10 +1307,10 @@ class Admin extends CI_Controller
     {
         $teacher_id = $this->uri(3);
         $this->db->where('teacher_id', $teacher_id);
-        $this->db->delete('teacher');        
+        $this->db->delete('teacher');
         $this->jsonMsgReturn(true,'Teacher Deleted');
     }
-    
+
     /****MANAGE SUBJECTS*****/
     function subject($param1 = '', $param2 = '' , $param3 = '')
     {
@@ -1364,12 +1364,12 @@ class Admin extends CI_Controller
     }
 
     function ajax_create_subject()
-    {        
+    {
         // pd($_POST);
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {        
+        } else {
             $class_id = $_POST['class_id'];
             if(!empty($_POST['join_subject_code'])) {
                 unset($_POST['subject_code']);
@@ -1411,7 +1411,7 @@ class Admin extends CI_Controller
     }
 
     function ajax_update_subject()
-    {       
+    {
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
@@ -1420,20 +1420,20 @@ class Admin extends CI_Controller
                 $this->jsonMsgReturn(false,'Invalid Join Subject');
             } else {
                 $subject_id = $this->uri(3);
-                if(!empty($_POST['join_subject_code'])){                
+                if(!empty($_POST['join_subject_code'])){
                     $_POST['subject_code'] = $_POST['join_subject_code'];
                     unset($_POST['join_subject_code']);
-                } 
-                
+                }
+
                 $subject_marks = array_slice($_POST,3,4); // MT, CQ, MCQ, PR MARKS
                 array_splice($_POST,3,4);
                 $_POST['subject_marks'] = implode('|',$subject_marks);
-                
-                $class_id = $_POST['class_id'];        
+
+                $class_id = $_POST['class_id'];
                 $this->db->where('subject_id', $subject_id);
                 $this->db->update('subject', $_POST);
                 $this->ajax_subject_table_holder($class_id);
-            }                
+            }
         }
     }
 
@@ -1467,7 +1467,7 @@ class Admin extends CI_Controller
         $groupInfo = $this->db->get_where('group', array('class_id'=>$class_id))->result_array();
         echo json_encode($groupInfo);
     }
-    
+
     /****MANAGE CLASSES*****/
     function classes($param1 = '', $param2 = '')
     {
@@ -1491,7 +1491,7 @@ class Admin extends CI_Controller
             $data['name']         = $this->input->post('name');
             $data['name_numeric'] = $this->input->post('name_numeric');
             $data['teacher_id']   = $this->input->post('teacher_id');
-            
+
             $this->db->where('class_id', $param2);
             $this->db->update('class', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -1515,9 +1515,9 @@ class Admin extends CI_Controller
 
     function ajax_delete_classes()
     {
-        $class_id = $this->uri(3); 
+        $class_id = $this->uri(3);
         $this->db->where('class_id', $class_id);
-        $this->db->delete('class');  
+        $this->db->delete('class');
         $this->jsonMsgReturn(true,'Delete Success.');
     }
 
@@ -1526,7 +1526,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {      
+        } else {
             $data['name']         = $this->input->post('name');
             $data['name_numeric'] = $this->input->post('name_numeric');
             $data['teacher_id']   = $this->input->post('teacher_id');
@@ -1553,7 +1553,7 @@ class Admin extends CI_Controller
 
     function ajax_update_class()
     {
-        $class_id = $this->uri(3);        
+        $class_id = $this->uri(3);
         $this->db->where('class_id', $class_id);
         $this->db->update('class', $_POST);
 
@@ -1581,13 +1581,13 @@ class Admin extends CI_Controller
             $page_data['groups']    = $this->db->get('group')->result_array();
             $page_data['classes']   = $this->db->get('class')->result_array();
         }
-        
+
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/'.$pageName, $page_data);
     }
-    
-    function get_subject($class_id) 
+
+    function get_subject($class_id)
     {
         $subject = $this->db->get_where('subject' , array(
             'class_id' => $class_id
@@ -1596,7 +1596,7 @@ class Admin extends CI_Controller
             echo '<option value="' . $row['subject_id'] . '">' . $row['name'] . '</option>';
         }
     }
-    
+
     /****MANAGE SHIFTS*****/
     function shifts($param1 = '', $param2 = '')
     {
@@ -1612,7 +1612,7 @@ class Admin extends CI_Controller
         }
         if ($param1 == 'do_update') {
             $data['name']         = $this->input->post('name');
-            
+
             $this->db->where('shift_id', $param2);
             $this->db->update('shift', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -1636,19 +1636,19 @@ class Admin extends CI_Controller
 
     function ajax_delete_shifts()
     {
-        $shift_id = $this->uri(3); 
+        $shift_id = $this->uri(3);
         $this->db->where('shift_id', $shift_id);
         $this->db->delete('shift');
         $this->jsonMsgReturn(true,'Delete Success.');
     }
 
-    
+
     function ajax_create_shift()
     {
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {      
+        } else {
             $data['name']         = $this->input->post('name');
             $this->db->insert('shift', $data);
             $shift_id = $this->db->insert_id();
@@ -1667,10 +1667,10 @@ class Admin extends CI_Controller
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
     }
 
-    
+
     function ajax_update_shift()
     {
-        $shift_id = $this->uri(3);        
+        $shift_id = $this->uri(3);
         $this->db->where('shift_id', $shift_id);
         $this->db->update('shift', $_POST);
 
@@ -1678,8 +1678,8 @@ class Admin extends CI_Controller
         $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
     }
-    
-    
+
+
     /****MANAGE GROUPS*****/
     function groups($param1 = '', $param2 = '')
     {
@@ -1698,7 +1698,7 @@ class Admin extends CI_Controller
         if ($param1 == 'do_update') {
             $data['name']         = strtolower(str_replace(' ', '-', $this->input->post('name')));
             $data['class_id']         = $this->input->post('class_id');
-            
+
             $this->db->where('group_id', $param2);
             $this->db->update('group', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -1734,7 +1734,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {      
+        } else {
             $data['name']         = strtolower(str_replace(' ', '-', $this->input->post('name')));
             $data['class_id']         = $this->input->post('class_id');
             $this->db->insert('group', $data);
@@ -1758,7 +1758,7 @@ class Admin extends CI_Controller
 
     function ajax_update_group()
     {
-        $group_id = $this->uri(3);        
+        $group_id = $this->uri(3);
         $this->db->where('group_id', $group_id);
         $this->db->update('group', $_POST);
 
@@ -1775,7 +1775,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {        
+        } else {
             $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
             $this->db->insert('income_category' , $data);
             $htmlData = $this->load->view('backend/admin/ajax_elements/income_category_table_holder' , '', true);
@@ -1785,8 +1785,8 @@ class Admin extends CI_Controller
 
     function ajax_income_category_edit()
     {
-        $income_category_id = $this->uri(3);  
-        $page_data['income_category_id']   = $income_category_id;         
+        $income_category_id = $this->uri(3);
+        $page_data['income_category_id']   = $income_category_id;
 
         $htmlData = $this->load->view('backend/admin/ajax_elements/edit_income_category_holder', $page_data, true);
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
@@ -1797,14 +1797,14 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {   
-            $income_category_id = $this->uri(3);        
+        } else {
+            $income_category_id = $this->uri(3);
             $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
             $this->db->where('income_category_id' , $income_category_id);
             $this->db->update('income_category' , $data);
             $htmlData = $this->load->view('backend/admin/ajax_elements/income_category_table_holder' , '', true);
             $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
-        }        
+        }
     }
 
     function ajax_delete_income_category()
@@ -1820,7 +1820,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {   
+        } else {
             $data['name']   =   $this->input->post('name');
             $this->db->insert('expense_category' , $data);
             $htmlData = $this->load->view('backend/admin/ajax_elements/expense_category_table_holder' , '', true);
@@ -1830,8 +1830,8 @@ class Admin extends CI_Controller
 
     function ajax_expense_category_edit()
     {
-        $expense_category_id = $this->uri(3);  
-        $page_data['expense_category_id']   = $expense_category_id;         
+        $expense_category_id = $this->uri(3);
+        $page_data['expense_category_id']   = $expense_category_id;
 
         $htmlData = $this->load->view('backend/admin/ajax_elements/edit_expense_category_holder', $page_data, true);
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
@@ -1842,8 +1842,8 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
-            $expense_category_id = $this->uri(3);        
+        } else {
+            $expense_category_id = $this->uri(3);
             $data['name']   =   $this->input->post('name');
             $this->db->where('expense_category_id' , $expense_category_id);
             $this->db->update('expense_category' , $data);
@@ -1855,7 +1855,7 @@ class Admin extends CI_Controller
 
     function ajax_delete_expense_category()
     {
-        $expense_category_id = $this->uri(3);   
+        $expense_category_id = $this->uri(3);
         $this->db->where('expense_category_id' , $expense_category_id);
         $this->db->delete('expense_category');
         $this->jsonMsgReturn(true,'Delete Success.');
@@ -1866,7 +1866,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {   
+        } else {
             $data = $this->input->post();
             $data['date'] = strtotime($data['date']);
             $data['year'] = $this->running_year;
@@ -1879,8 +1879,8 @@ class Admin extends CI_Controller
 
     function ajax_daily_expense_edit()
     {
-        $daily_expense_id = $this->uri(3);  
-        $page_data['daily_expense_id']   = $daily_expense_id;         
+        $daily_expense_id = $this->uri(3);
+        $page_data['daily_expense_id']   = $daily_expense_id;
 
         $htmlData = $this->load->view('backend/admin/ajax_elements/edit_daily_expense_holder', $page_data, true);
         $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
@@ -1891,8 +1891,8 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
-            $daily_expense_id = $this->uri(3);        
+        } else {
+            $daily_expense_id = $this->uri(3);
             $data   =   $this->input->post();
             $data['date'] = strtotime($data['date']);
             $data['year'] = $this->running_year;
@@ -1906,7 +1906,7 @@ class Admin extends CI_Controller
 
     function ajax_delete_daily_expense()
     {
-        $daily_expense_id = $this->uri(3);   
+        $daily_expense_id = $this->uri(3);
         $this->db->where('daily_expense_id' , $daily_expense_id);
         $this->db->delete('daily_expense');
         $this->jsonMsgReturn(true,'Delete Success.');
@@ -1919,7 +1919,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
+        } else {
             $data = $this->input->post();
             $this->db->insert('bank_account', $data);
 
@@ -1934,9 +1934,9 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
-            $acc_id = $this->uri(3);  
-            $page_data['acc_id']   = $acc_id;  
+        } else {
+            $acc_id = $this->uri(3);
+            $page_data['acc_id']   = $acc_id;
 
             $htmlData = $this->load->view('backend/admin/ajax_elements/edit_bank_ac_holder', $page_data, true);
             $this->jsonMsgReturn(true,'Success.',$htmlData);
@@ -1948,8 +1948,8 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
-            $acc_id = $this->uri(3);        
+        } else {
+            $acc_id = $this->uri(3);
             $data   =   $this->input->post();
             $this->db->where('acc_id', $acc_id);
             $this->db->update('bank_account', $data);
@@ -1962,17 +1962,17 @@ class Admin extends CI_Controller
 
     function ajax_delete_bank_account()
     {
-        $acc_id = $this->uri(3);   
+        $acc_id = $this->uri(3);
         $this->db->where('acc_id' , $acc_id);
         $this->db->delete('bank_account');
         $this->jsonMsgReturn(true,'Delete Success.');
     }
-    
+
     function ajax_create_invoice()
     {
         $student_code = $this->input->post('student_code');
         $student_id = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
-        
+
         if(!$student_id){
             $this->jsonMsgReturn(false,'No Student Found.');
             $student_id = '';
@@ -1983,11 +1983,11 @@ class Admin extends CI_Controller
             } else {
                 $monthsValue = '';
             }
-    
+
             // SAVE DATE IN SESSION FOR REUSE THIS DATE FOR NEXT ENTRY
             $this->session->set_userdata('sessionSaveDate', $this->input->post('date'));
             // END THIS
-    
+
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
             $data['acc_code']           = $this->input->post('student_code');
@@ -2001,10 +2001,10 @@ class Admin extends CI_Controller
             $data['status']             = $this->input->post('status');
             $data['creation_timestamp'] = strtotime($this->input->post('date'));
             $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
-    
+
             $this->db->insert('invoice', $data);
             $invoice_id = $this->db->insert_id();
-    
+
             $data2['invoice_id']        =   $invoice_id;
             $data2['student_id']        =   $student_id;
             $data2['title']             =   'student income';
@@ -2014,26 +2014,26 @@ class Admin extends CI_Controller
             $data2['amount']            =   $this->input->post('amount_paid');
             $data2['timestamp']         =   strtotime($this->input->post('date'));
             $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
-    
+
             $this->db->insert('payment' , $data2);
-    
+
             $tution_sms_status = $this->db->get_where('settings',['type'=>'tution_fee_sms_status'])->row()->description;
-            
+
             // TUTION FEE SMS SECTION
             // IF TUTION FEE SMS SETTING STATUS ON
             if($tution_sms_status == 1){
                 $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
                     ->row()
-                    ->description;            
+                    ->description;
                 $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
                     ->row()
                     ->description;
                 $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
                 $tution_sms_details = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
-    
+
                 $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;
                 $sender = urlencode($school_name);
-                $msg    = urlencode($tution_sms_details);                
+                $msg    = urlencode($tution_sms_details);
                 $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
             }
             // END TUTION FEE SMS SECTION
@@ -2059,7 +2059,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
+        } else {
             $_POST['tran_date'] = strtotime($_POST['tran_date']);
             $this->db->insert('bank_transaction', $_POST);
 
@@ -2074,19 +2074,19 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST, 'acc_id');
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else { 
+        } else {
             $formDate = $this->input->post('fromDate');
             $todate   = $this->input->post('toDate');
             $acc_id   = $this->input->post('acc_id');
             $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
 
             if(!empty($acc_id)){ // IF INDIVIDUAL ACCOUNT SELECT
-                $this->db->where('acc_id' , $acc_id);    
-            }        
+                $this->db->where('acc_id' , $acc_id);
+            }
             $this->db->where('tran_date >=', strtotime($formDate));
             $this->db->where('tran_date <=', strtotime($todate));
-            $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();          
-            // STORE FROM AND TO DATE FOR PRINT 
+            $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();
+            // STORE FROM AND TO DATE FOR PRINT
             $page_data['fromDate'] = $formDate;
             $page_data['toDate']   = $todate;
 
@@ -2096,8 +2096,8 @@ class Admin extends CI_Controller
     }
 
     function ajax_delete_acc_transaction()
-    {   
-        $tran_id = $this->uri(3);   
+    {
+        $tran_id = $this->uri(3);
         $this->db->where('tran_id', $tran_id);
         $this->db->delete('bank_transaction');
         $this->jsonMsgReturn(true,'Delete Success.');
@@ -2105,13 +2105,13 @@ class Admin extends CI_Controller
 
     function ajax_monthly_balance_year()
     {
-        $year = $this->uri(3);  
-        $page_data['year']   = $year; 
+        $year = $this->uri(3);
+        $page_data['year']   = $year;
 
         $htmlData = $this->load->view('backend/admin/ajax_elements/monthly_balance_table_holder' , $page_data, true);
         $this->jsonMsgReturn(true,"Select Year $year",$htmlData);
     }
-    
+
     // ACADEMIC SYLLABUS
     function academic_syllabus($class_id = '')
     {
@@ -2185,8 +2185,8 @@ class Admin extends CI_Controller
             $_FILES['file_name']['size']     = $files['size'];
             $this->upload->initialize($config);
             $this->upload->do_upload('file_name');
-    
-            $data['file_name'] = $_FILES['file_name']['name'];    
+
+            $data['file_name'] = $_FILES['file_name']['name'];
             $this->db->insert('academic_syllabus', $data);
 
             $page_data['running_year'] = $this->running_year;
@@ -2220,7 +2220,7 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'section';
         $page_data['page_title'] = get_phrase('manage_sections');
         $page_data['class_id']   = $class_id;
-        $this->load->view('backend/index', $page_data);    
+        $this->load->view('backend/index', $page_data);
     }
 
     function sections($param1 = '' , $param2 = '')
@@ -2264,13 +2264,13 @@ class Admin extends CI_Controller
         $this->jsonMsgReturn(true,'Delete Success.');
     }
 
-    
+
     function ajax_create_section()
     {
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {      
+        } else {
             $data['name']       =   $this->input->post('name');
             $data['nick_name']  =   $this->input->post('nick_name');
             $data['class_id']   =   $this->input->post('class_id');
@@ -2293,7 +2293,7 @@ class Admin extends CI_Controller
 
     function ajax_update_section()
     {
-        $section_id = $this->uri(3);        
+        $section_id = $this->uri(3);
         $this->db->where('section_id', $section_id);
         $this->db->update('section', $_POST);
 
@@ -2362,7 +2362,7 @@ class Admin extends CI_Controller
             $data['date']    = $this->input->post('date');
             $data['comment'] = $this->input->post('comment');
             $data['year']    = $this->running_year;
-            
+
             $this->db->where('exam_id', $param3);
             $this->db->update('exam', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -2398,8 +2398,8 @@ class Admin extends CI_Controller
             $page_data['exams']      = $this->db->get('exam')->result_array();
         } elseif($pageName == 'grade') {
             $page_data['grades']     = $this->db->get('grade')->result_array();
-        }   
-  
+        }
+
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/'.$pageName, $page_data);
@@ -2432,7 +2432,7 @@ class Admin extends CI_Controller
                         $receiver_phone = $this->db->get_where('parent' , array('parent_id' => $row['parent_id']))->row()->phone;
                     }
                 }
-                
+
 
                 $this->db->where('exam_id' , $exam_id);
                 $this->db->where('student_id' , $row['student_id']);
@@ -2440,9 +2440,9 @@ class Admin extends CI_Controller
                 $message = '';
                 foreach ($marks as $row2) {
                     $subject       = $this->db->get_where('subject' , array('subject_id' => $row2['subject_id']))->row()->name;
-                    $mark_obtained = $row2['mark_obtained'];  
+                    $mark_obtained = $row2['mark_obtained'];
                     $message      .= $row2['student_id'] . $subject . ' : ' . $mark_obtained . ' , ';
-                    
+
                 }
                 // send sms
                 $this->sms_model->send_sms( $message , $receiver_phone );
@@ -2450,7 +2450,7 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase('message_sent'));
             redirect(base_url() . 'index.php?admin/exam_marks_sms' , 'refresh');
         }
-                
+
         $page_data['page_name']  = 'exam_marks_sms';
         $page_data['page_title'] = get_phrase('send_marks_by_sms');
         $this->load->view('backend/index', $page_data);
@@ -2461,12 +2461,12 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        
+
         if ($this->input->post('operation') == 'selection') {
             $page_data['exam_id']    = $this->input->post('exam_id');
             $page_data['class_id']   = $this->input->post('class_id');
             $page_data['subject_id'] = $this->input->post('subject_id');
-            
+
             if ($page_data['exam_id'] > 0 && $page_data['class_id'] > 0 && $page_data['subject_id'] > 0) {
                 redirect(base_url() . 'index.php?admin/marks2/' . $page_data['exam_id'] . '/' . $page_data['class_id'] . '/' . $page_data['subject_id'], 'refresh');
             } else {
@@ -2479,7 +2479,7 @@ class Admin extends CI_Controller
             foreach($students as $row) {
                 $data['mark_obtained'] = $this->input->post('mark_obtained_' . $row['student_id']);
                 $data['comment']       = $this->input->post('comment_' . $row['student_id']);
-                
+
                 $this->db->where('mark_id', $this->input->post('mark_id_' . $row['student_id']));
                 $this->db->update('mark', array('mark_obtained' => $data['mark_obtained'] , 'comment' => $data['comment']));
             }
@@ -2489,9 +2489,9 @@ class Admin extends CI_Controller
         $page_data['exam_id']    = $exam_id;
         $page_data['class_id']   = $class_id;
         $page_data['subject_id'] = $subject_id;
-        
+
         $page_data['page_info'] = 'Exam marks';
-        
+
         $page_data['page_name']  = 'marks2';
         $page_data['page_title'] = get_phrase('manage_exam_marks');
         $this->load->view('backend/index', $page_data);
@@ -2537,7 +2537,7 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        // pd($_POST);    
+        // pd($_POST);
         $data['exam_id']    = $this->input->post('exam_id');
         $data['class_id']   = $this->input->post('class_id');
         if(!empty($_POST['group_id'])){
@@ -2567,7 +2567,7 @@ class Admin extends CI_Controller
             }
         }
         redirect(base_url() . 'index.php?admin/marks_manage_view/' . $data['exam_id'] . '/' . $data['class_id'] . '/' . $data['section_id'] . '/' . $data['subject_id']. '/' . $data['group_id'] , 'refresh');
-        
+
     }
 
     function ajax_marks_selector()
@@ -2606,7 +2606,7 @@ class Admin extends CI_Controller
                     ));
                     if($query->num_rows() < 1) {
                         $data['student_id'] = $student_id;
-                        $this->db->insert('mark' , $data);  
+                        $this->db->insert('mark' , $data);
                     }
                     $foundRolls[$each] = $student_id;
                 } else {
@@ -2623,10 +2623,11 @@ class Admin extends CI_Controller
             }
         }
 
-    }    
+    }
 
     function marks_update($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
     {
+      pd($_POST);
         $running_year = $this->running_year;
         $marks_of_students = $this->db->get_where('mark' , array(
             'exam_id' => $exam_id,
@@ -2650,7 +2651,7 @@ class Admin extends CI_Controller
     {
         $page_data['class_id'] = $class_id;
         $page_data['groups'] = $this->db->get_where('group', array('class_id'=>$class_id))->result_array();
-        $this->load->view('backend/admin/marks_get_subject' , $page_data); 
+        $this->load->view('backend/admin/marks_get_subject' , $page_data);
     }
 
     function marks_get_group_subject($group_id)
@@ -2658,21 +2659,21 @@ class Admin extends CI_Controller
         $class_id = $this->db->get_where('group', array('group_id'=>$group_id))->row()->class_id;
         $group_subject = $this->db->get_where('subject', array('class_id'=>$class_id, 'group_id'=>$group_id))->result_array();
         if(count($group_subject) > 0){
-            echo json_encode($group_subject);    
+            echo json_encode($group_subject);
         } else {
             echo false;
-        }        
+        }
     }
 
     // TABULATION SHEET
     function tabulation_sheet($class_id = '' , $exam_id = '') {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        
+
         if ($this->input->post('operation') == 'selection') {
             $page_data['exam_id']    = $this->input->post('exam_id');
             $page_data['class_id']   = $this->input->post('class_id');
-            
+
             if ($page_data['exam_id'] > 0 && $page_data['class_id'] > 0) {
                 redirect(base_url() . 'index.php?admin/tabulation_sheet/' . $page_data['class_id'] . '/' . $page_data['exam_id'] , 'refresh');
             } else {
@@ -2682,13 +2683,13 @@ class Admin extends CI_Controller
         }
         $page_data['exam_id']    = $exam_id;
         $page_data['class_id']   = $class_id;
-        
+
         $page_data['page_info'] = 'Exam marks';
-        
+
         $page_data['page_name']  = 'tabulation_sheet';
         $page_data['page_title'] = get_phrase('tabulation_sheet');
         $this->load->view('backend/index', $page_data);
-    
+
     }
 
     function tabulation_sheet_print_view($class_id , $exam_id) {
@@ -2698,8 +2699,8 @@ class Admin extends CI_Controller
         $page_data['exam_id']  = $exam_id;
         $this->load->view('backend/admin/tabulation_sheet_print_view' , $page_data);
     }
-    
-    
+
+
     /****MANAGE GRADES*****/
     function grade($param1 = '', $param2 = '')
     {
@@ -2721,7 +2722,7 @@ class Admin extends CI_Controller
             $data['mark_from']   = $this->input->post('mark_from');
             $data['mark_upto']   = $this->input->post('mark_upto');
             $data['comment']     = $this->input->post('comment');
-            
+
             $this->db->where('grade_id', $param2);
             $this->db->update('grade', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -2742,7 +2743,7 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('manage_grade');
         $this->load->view('backend/index', $page_data);
     }
-    
+
     /**********MANAGING CLASS ROUTINE******************/
     function class_routine($param1 = '', $param2 = '', $param3 = '')
     {
@@ -2785,7 +2786,7 @@ class Admin extends CI_Controller
             $data['time_end_min']   = $this->input->post('time_end_min');
             $data['day']            = $this->input->post('day');
             $data['year']           = $this->running_year;
-            
+
             $this->db->where('class_routine_id', $param2);
             $this->db->update('class_routine', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -2802,7 +2803,7 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase('data_deleted'));
             redirect(base_url() . 'index.php?admin/class_routine_view/' . $class_id, 'refresh');
         }
-        
+
     }
 
     function ajax_delete_class_routine()
@@ -2837,11 +2838,11 @@ class Admin extends CI_Controller
             $data['year']           = $this->running_year;
             $this->db->insert('class_routine', $data);
             $this->jsonMsgReturn(true,'Successfully Added');
-        }   
+        }
     }
 
     function ajaxClassRoutine()
-    {    
+    {
         $classID = $this->uri(3);
         $sectionID = $this->uri(4);
         $shiftID = $this->uri(5);
@@ -2856,7 +2857,7 @@ class Admin extends CI_Controller
         $page_data['class_id']  =   $classID;
         $page_data['shift_id']  =   $shiftID;
         $page_data['running_year']  =   $this->running_year;
-        
+
         $this->load->view('backend/admin/ajax_elements/ajax_class_routine_search' , $page_data);
     }
 
@@ -2879,7 +2880,7 @@ class Admin extends CI_Controller
     function class_routine_view()
     {
         if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');        
+            redirect(base_url(), 'refresh');
 
         $page_data['page_name']  = 'class_routine_view';
         $page_data['page_title'] = get_phrase('class_routine');
@@ -2969,10 +2970,10 @@ class Admin extends CI_Controller
         $page_data['running_year'] = $this->running_year;
         $this->load->view('backend/admin/manage_attendance_view', $page_data);
     }
-    
-    function get_section($class_id) 
+
+    function get_section($class_id)
     {
-          $page_data['class_id'] = $class_id; 
+          $page_data['class_id'] = $class_id;
           $this->load->view('backend/admin/manage_attendance_section_holder' , $page_data);
     }
 
@@ -2980,12 +2981,12 @@ class Admin extends CI_Controller
     {
         $groupInfo = $this->db->get_where('group',array('class_id'=>$class_id))->result_array();
         if(!empty($groupInfo)){
-            $page_data['group_info'] = $groupInfo; 
+            $page_data['group_info'] = $groupInfo;
             $this->load->view('backend/admin/manage_attendance_group_holder' , $page_data);
         }else{
             return false;
         }
-        
+
     }
 
     function attendance_selector()
@@ -3001,8 +3002,8 @@ class Admin extends CI_Controller
         $data['shift_id']   = $this->input->post('shift_id');
         $data['section_id'] = $this->input->post('section_id');
         $data['year']       = $this->input->post('year');
-        $data['timestamp']  = strtotime($this->input->post('timestamp'));        
-        
+        $data['timestamp']  = strtotime($this->input->post('timestamp'));
+
         $query = $this->db->get_where('attendance' ,array(
             'class_id'=>$data['class_id'],
                 'shift_id'=>$data['shift_id'],
@@ -3026,8 +3027,8 @@ class Admin extends CI_Controller
                 $attn_data['timestamp']  = $data['timestamp'];
                 $attn_data['section_id'] = $data['section_id'];
                 $attn_data['student_id'] = $row['student_id'];
-                $this->db->insert('attendance' , $attn_data);  
-            }            
+                $this->db->insert('attendance' , $attn_data);
+            }
         }
         redirect(base_url().'index.php?admin/manage_attendance_view/'.$data['class_id'].'/'.$data['shift_id'].'/'.$data['section_id'].'/'.$data['timestamp'].'/'.$group_id,'refresh');
     }
@@ -3045,8 +3046,8 @@ class Admin extends CI_Controller
         $data['shift_id']   = $this->input->post('shift_id');
         $data['section_id'] = $this->input->post('section_id');
         $data['year']       = $this->input->post('year');
-        $data['timestamp']  = strtotime($this->input->post('timestamp'));        
-        
+        $data['timestamp']  = strtotime($this->input->post('timestamp'));
+
         $query = $this->db->get_where('attendance' ,array(
             'class_id'=>$data['class_id'],
                 'shift_id'=>$data['shift_id'],
@@ -3070,15 +3071,15 @@ class Admin extends CI_Controller
                 $attn_data['timestamp']  = $data['timestamp'];
                 $attn_data['section_id'] = $data['section_id'];
                 $attn_data['student_id'] = $row['student_id'];
-                $this->db->insert('attendance' , $attn_data);  
-            }            
+                $this->db->insert('attendance' , $attn_data);
+            }
         }
 
         $this->ajax_manage_attendance_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['timestamp'],$group_id);
     }
 
     function attendance_update($class_id = '' , $shift_id = '', $section_id = '' , $timestamp = '', $group_id = '')
-    {        
+    {
         if(!empty($group_id)):
             $group_id = $group_id;
         else:
@@ -3109,7 +3110,7 @@ class Admin extends CI_Controller
         //redirect(base_url().'index.php?admin/manage_attendance_view/'.$class_id.'/'.$shift_id.'/'.$section_id.'/'.$timestamp.'/'.$group_id , 'refresh');
         $this->ajax_manage_attendance_view($class_id,$shift_id,$section_id,$timestamp,$group_id);
     }
-    
+
     /****** DAILY ATTENDANCE *****************/
     function manage_attendance2($date='',$month='',$year='',$class_id='' , $section_id = '' , $session = '')
     {
@@ -3118,7 +3119,7 @@ class Admin extends CI_Controller
 
         $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
         $running_year = $this->running_year;
-        
+
         if($_POST)
         {
             // Loop all the students of $class_id
@@ -3166,7 +3167,7 @@ class Admin extends CI_Controller
         $page_data['class_id']   =  $class_id;
         $page_data['section_id'] =  $section_id;
         $page_data['session']    =  $session;
-        
+
         $page_data['page_name']  =  'manage_attendance';
         $page_data['page_title'] =  get_phrase('manage_daily_attendance');
         $this->load->view('backend/index', $page_data);
@@ -3183,14 +3184,14 @@ class Admin extends CI_Controller
                                     $this->input->post('session') , 'refresh');
     }
         ///////ATTENDANCE REPORT /////
-     function attendance_report() 
+     function attendance_report()
      {
          $page_data['page_name']    = 'attendance_report';
          $page_data['page_title']   = get_phrase('attendance_report');
          $this->load->view('backend/index',$page_data);
      }
 
-     function attendance_report_view($class_id = '' ,$shift_id = '' , $section_id = '', $month = '', $group_id = '') 
+     function attendance_report_view($class_id = '' ,$shift_id = '' , $section_id = '', $month = '', $group_id = '')
      {
          if($this->session->userdata('admin_login')!=1)
             redirect(base_url() , 'refresh');
@@ -3225,7 +3226,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/attendance_report_view', $page_data);
      }
 
-     function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '') 
+     function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '')
      {
           if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
@@ -3236,7 +3237,7 @@ class Admin extends CI_Controller
         $page_data['group_id'] = $group_id;
         $this->load->view('backend/admin/attendance_report_print_view' , $page_data);
     }
-     
+
     function attendance_report_selector()
     {
         $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
@@ -3268,8 +3269,8 @@ class Admin extends CI_Controller
         $data['section_id'] = $this->input->post('section_id');
         $this->ajax_attendance_report_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['month'],$group_id);
     }
-    
-    
+
+
 
 
     /**********MANAGE LIBRARY / BOOKS********************/
@@ -3295,7 +3296,7 @@ class Admin extends CI_Controller
             $data['author']      = $this->input->post('author');
             $data['class_id']    = $this->input->post('class_id');
             //$data['status']      = $this->input->post('status');
-            
+
             $this->db->where('book_id', $param2);
             $this->db->update('book', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -3315,7 +3316,7 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'book';
         $page_data['page_title'] = get_phrase('manage_library_books');
         $this->load->view('backend/index', $page_data);
-        
+
     }
 
     /**********MANAGE TRANSPORT / VEHICLES / ROUTES********************/
@@ -3337,7 +3338,7 @@ class Admin extends CI_Controller
             $data['number_of_vehicle'] = $this->input->post('number_of_vehicle');
             $data['description']       = $this->input->post('description');
             $data['route_fare']        = $this->input->post('route_fare');
-            
+
             $this->db->where('transport_id', $param2);
             $this->db->update('transport', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -3357,7 +3358,7 @@ class Admin extends CI_Controller
         $page_data['page_name']  = 'transport';
         $page_data['page_title'] = get_phrase('manage_transport');
         $this->load->view('backend/index', $page_data);
-        
+
     }
 
     /**********MANAGE DORMITORY / HOSTELS / ROOMS ********************/
@@ -3377,7 +3378,7 @@ class Admin extends CI_Controller
             $data['name']           = $this->input->post('name');
             $data['number_of_room'] = $this->input->post('number_of_room');
             $data['description']    = $this->input->post('description');
-            
+
             $this->db->where('dormitory_id', $param2);
             $this->db->update('dormitory', $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -3397,15 +3398,15 @@ class Admin extends CI_Controller
         $page_data['page_name']   = 'dormitory';
         $page_data['page_title']  = get_phrase('manage_dormitory');
         $this->load->view('backend/index', $page_data);
-        
+
     }
-    
+
     /***MANAGE EVENT / NOTICEBOARD, WILL BE SEEN BY ALL ACCOUNTS DASHBOARD**/
     function noticeboard($param1 = '', $param2 = '', $param3 = '')
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        
+
         if ($param1 == 'create') {
             $data['notice_title']     = $this->input->post('notice_title');
             $data['notice']           = $this->input->post('notice');
@@ -3505,7 +3506,7 @@ class Admin extends CI_Controller
     }
     /* private messaging */
 
-    function message($param1 = 'message_home', $param2 = '', $param3 = '') 
+    function message($param1 = 'message_home', $param2 = '', $param3 = '')
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
@@ -3534,15 +3535,15 @@ class Admin extends CI_Controller
     }
 
 
-    
+
     /*****SITE/SYSTEM SETTINGS*********/
     function system_settings($param1 = '', $param2 = '', $param3 = '')
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url() . 'index.php?login', 'refresh');
-        
+
         if ($param1 == 'do_update') {
-			 
+
             $data['description'] = $this->input->post('system_name');
             $this->db->where('type' , 'system_name');
             $this->db->update('settings' , $data);
@@ -3591,8 +3592,8 @@ class Admin extends CI_Controller
             $data['description'] = $this->input->post('running_year');
             $this->db->where('type' , 'running_year');
             $this->db->update('settings' , $data);
-			
-            $this->session->set_flashdata('flash_message' , get_phrase('data_updated')); 
+
+            $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
         if ($param1 == 'upload_logo') {
@@ -3616,8 +3617,8 @@ class Admin extends CI_Controller
             $data['description'] = $param2;
             $this->db->where('type' , 'skin_colour');
             $this->db->update('settings' , $data);
-            $this->session->set_flashdata('flash_message' , get_phrase('theme_selected')); 
-            redirect(base_url() . 'index.php?admin/system_settings/', 'refresh'); 
+            $this->session->set_flashdata('flash_message' , get_phrase('theme_selected'));
+            redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
         $page_data['page_name']  = 'system_settings';
         $page_data['page_title'] = get_phrase('system_settings');
@@ -3626,31 +3627,31 @@ class Admin extends CI_Controller
     }
 
     function ajax_upload_school_info()
-    {        
+    {
         $data = implode('+',$_POST);
         $this->db->update('settings',['description'=>$data],['type'=>'school_information']);
         move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/school_logo.png');
         $htmlData = $this->load->view('backend/admin/ajax_elements/school_setting_info_holder' , '', true);
-        $this->jsonMsgReturn(true,'Information Updated.',$htmlData);        
+        $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
     }
 
     function ajax_update_favicon()
     {
         if(empty($_FILES['userfile']['name'])){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {    
+        } else {
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
-            $this->jsonMsgReturn(true,'Information Updated.');   
+            $this->jsonMsgReturn(true,'Information Updated.');
         }
     }
 
     function ajax_upload_logo()
-    {        
+    {
         if(empty($_FILES['userfile']['name'])){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {        
+        } else {
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/logo.png');
-            $this->jsonMsgReturn(true,'Information Updated.');   
+            $this->jsonMsgReturn(true,'Information Updated.');
         }
     }
 
@@ -3708,12 +3709,12 @@ class Admin extends CI_Controller
 
             $data['description'] = $this->input->post('running_year');
             $this->db->where('type' , 'running_year');
-            $this->db->update('settings' , $data);  
+            $this->db->update('settings' , $data);
 
             $htmlData = $this->load->view('backend/admin/ajax_elements/genarel_setting_info_holder' , '', true);
-            $this->jsonMsgReturn(true,'Information Updated.',$htmlData);         
+            $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
         }
-        
+
     }
 
     function setting_menu()
@@ -3729,10 +3730,10 @@ class Admin extends CI_Controller
         $page_data['settings']   = $this->db->get('settings')->result_array();
 
         if ($pageName == 'sms_settings') {
-            $page_data['user'] = $this->db->get_where('settings', 
+            $page_data['user'] = $this->db->get_where('settings',
                     ['type'=>'nihalit_sms_user'])
-                            ->row()->description;            
-            $page_data['pass'] = $this->db->get_where('settings', 
+                            ->row()->description;
+            $page_data['pass'] = $this->db->get_where('settings',
                     ['type'=>'nihalit_sms_password'])
                             ->row()->description;
         }
@@ -3751,14 +3752,14 @@ class Admin extends CI_Controller
         $data['description'] = $this->input->post('running_year');
         $this->db->where('type' , 'running_year');
         $this->db->update('settings' , $data);
-        $this->session->set_flashdata('flash_message' , get_phrase('session_changed')); 
-        redirect(base_url() . 'index.php?admin/dashboard/', 'refresh'); 
+        $this->session->set_flashdata('flash_message' , get_phrase('session_changed'));
+        redirect(base_url() . 'index.php?admin/dashboard/', 'refresh');
     }
 
     /***** UPDATE SITE COLOR *****/
 
     function change_site_color()
-    {       
+    {
         $mainColor = '#'.$this->input->post('main_color');
         $hoverColor = '#'.$this->input->post('hover_color');
         $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
@@ -3772,7 +3773,7 @@ class Admin extends CI_Controller
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {        
+        } else {
             $mainColor = '#'.$this->input->post('main_color');
             $hoverColor = '#'.$this->input->post('hover_color');
             $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
@@ -3782,38 +3783,38 @@ class Admin extends CI_Controller
         }
     }
 
-    // Truncate Table Section 
+    // Truncate Table Section
 
     function truncate_table_data()
     {
         $tableName = $this->input->post('truncate_table');
         if(empty($tableName)){
             $this->flashmsg('Please Select Table', 'error');
-            redirect(base('admin', 'system_settings'));        
+            redirect(base('admin', 'system_settings'));
         }
-        $this->db->truncate($tableName); 
+        $this->db->truncate($tableName);
         $tableName = ucwords(str_replace('_', ' ',$tableName));
         $this->flashmsg('Clean '.$tableName.' Table');
         redirect(base('admin', 'system_settings'));
-    } 
+    }
 
     function ajax_truncate_table_data()
     {
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Select One Table.');
-        } else {           
+        } else {
             $tableName = $this->input->post('truncate_table');
             if(empty($tableName)){
                 $this->flashmsg('Please Select Table', 'error');
-                redirect(base('admin', 'system_settings'));        
+                redirect(base('admin', 'system_settings'));
             }
-            $this->db->truncate($tableName); 
-            $this->jsonMsgReturn(true,'Truncate Table Data.'); 
+            $this->db->truncate($tableName);
+            $this->jsonMsgReturn(true,'Truncate Table Data.');
         }
     }
 
-    // Site Status Section 
+    // Site Status Section
 
     function updateSiteStatus()
     {
@@ -3829,46 +3830,46 @@ class Admin extends CI_Controller
     		$this->db->update('settings',array('description'=>$data));
     		$this->flashmsg('Now Site Off');
         	redirect(base('admin', 'system_settings'));
-        }           
+        }
     }
 
     function ajax_update_site_status()
-    {       
+    {
         $date = explode('-',$_POST['siteStatusTime']);
         $data = '0|'.$date[2].'/'.$date[1].'/'.$date[0];
     	if(!empty($_POST['status'])){
     		$this->db->where('type','webAppStatus');
             $this->db->update('settings',array('description'=>1));
-            
+
     		$htmlData = $this->load->view('backend/admin/ajax_elements/site_status_holder' , $page_data, true);
             $this->jsonMsgReturn(true,'Now Site ON.',$htmlData);
     	}else{
 		    $this->db->where('type','webAppStatus');
             $this->db->update('settings',array('description'=>$data));
-            
+
             $htmlData = $this->load->view('backend/admin/ajax_elements/site_status_holder' , $page_data, true);
             $this->jsonMsgReturn(true,'Now Site Off.',$htmlData);
-        }    
+        }
     }
-	
+
 	/***** UPDATE PRODUCT *****/
-	
-    function update( $task = '', $purchase_code = '' ) 
+
+    function update( $task = '', $purchase_code = '' )
     {
-        
+
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-            
+
         // Create update directory.
         $dir    = 'update';
         if ( !is_dir($dir) )
             mkdir($dir, 0777, true);
-        
+
         $zipped_file_name   = $_FILES["file_name"]["name"];
         $path               = 'update/' . $zipped_file_name;
-        
+
         move_uploaded_file($_FILES["file_name"]["tmp_name"], $path);
-        
+
         // Unzip uploaded update file and remove zip file.
         $zip = new ZipArchive;
         $res = $zip->open($path);
@@ -3877,16 +3878,16 @@ class Admin extends CI_Controller
             $zip->close();
             unlink($path);
         }
-        
+
         $unzipped_file_name = substr($zipped_file_name, 0, -4);
         $str                = file_get_contents('./update/' . $unzipped_file_name . '/update_config.json');
         $json               = json_decode($str, true);
-        
 
-			
+
+
 		// Run php modifications
 		require './update/' . $unzipped_file_name . '/update_script.php';
-        
+
         // Create new directories.
         if(!empty($json['directory'])) {
             foreach($json['directory'] as $directory) {
@@ -3894,13 +3895,13 @@ class Admin extends CI_Controller
                     mkdir( $directory['name'], 0777, true );
             }
         }
-        
+
         // Create/Replace new files.
         if(!empty($json['files'])) {
             foreach($json['files'] as $file)
                 copy($file['root_directory'], $file['update_directory']);
         }
-        
+
         $this->session->set_flashdata('flash_message' , get_phrase('product_updated_successfully'));
         redirect(base_url() . 'index.php?admin/system_settings');
     }
@@ -3912,7 +3913,7 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?login', 'refresh');
         $page_data['user'] = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
             ->row()
-            ->description;            
+            ->description;
         $page_data['pass'] = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
             ->row()
             ->description;
@@ -3921,26 +3922,26 @@ class Admin extends CI_Controller
         $page_data['settings']   = $this->db->get('settings')->result_array();
         $this->load->view('backend/index', $page_data);
     }
-    
+
     function save_sms_setting()
     {
         $data['description'] = $_POST['sms_user'];
         $this->db->where('type','nihalit_sms_user');
         $this->db->update('settings',$data);
-        
+
         $data1['description'] = $_POST['sms_password'];
         $this->db->where('type','nihalit_sms_password');
         $this->db->update('settings',$data1);
         $this->flashmsg('information_updated');
         redirect(base('admin', 'sms_settings'));
     }
-    
+
     function ajax_save_sms_setting()
     {
         $data['description'] = $_POST['sms_user'];
         $this->db->where('type','nihalit_sms_user');
         $this->db->update('settings',$data);
-        
+
         $data1['description'] = $_POST['sms_password'];
         $this->db->where('type','nihalit_sms_password');
         $this->db->update('settings',$data1);
@@ -3951,21 +3952,21 @@ class Admin extends CI_Controller
     {
         $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
             ->row()
-            ->description;            
+            ->description;
         $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
             ->row()
-            ->description;          
-      
+            ->description;
+
 
         $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
         $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
         $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
         if($arg == true){
-            $msg = str_replace('2C', '0A', $msg);    
+            $msg = str_replace('2C', '0A', $msg);
         }
 
         if($_POST['sms_lng']=='bangla') {
-            $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);            
+            $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);
         }
         if($_POST['sms_lng']=='english' || $arg == true) {
             $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
@@ -3973,32 +3974,32 @@ class Admin extends CI_Controller
 
         if($arg == false) {
             $this->flashmsg('SMS Send');
-            redirect(base('admin', 'sms_settings'));            
+            redirect(base('admin', 'sms_settings'));
         } else {
             return true;
         }
-        
+
     }
 
     function ajax_send_custom_sms()
     {
         $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-                ->row()->description;            
+                ->row()->description;
         $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-                ->row()->description; 
+                ->row()->description;
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-        } else {              
+        } else {
             $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
             $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
             $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
             if($arg == true){
-                $msg = str_replace('2C', '0A', $msg);    
+                $msg = str_replace('2C', '0A', $msg);
             }
 
             if($_POST['sms_lng']=='bangla') {
-                $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);            
+                $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);
             }
             if($_POST['sms_lng']=='english' || $arg == true) {
                 $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
@@ -4009,17 +4010,17 @@ class Admin extends CI_Controller
 
     function send_notice_sms()
     {
-        $user = $this->db->get_where('settings', 
-            ['type'=>'nihalit_sms_user'])->row()->description;            
-        $pass = $this->db->get_where('settings', 
-            ['type'=>'nihalit_sms_password'])->row()->description;       
+        $user = $this->db->get_where('settings',
+            ['type'=>'nihalit_sms_user'])->row()->description;
+        $pass = $this->db->get_where('settings',
+            ['type'=>'nihalit_sms_password'])->row()->description;
 
         if(empty($_POST['sms_description'])) {
             $this->flashmsg('Please input description.','error');
             redirect(base('admin', 'send_result_sms'));
         }
-        
-        $sender = urlencode($this->systemTitleName); 
+
+        $sender = urlencode($this->systemTitleName);
         $sms_description = urlencode($_POST['sms_description']);
         $file = $_FILES["xls_file"]["tmp_name"];
 
@@ -4035,7 +4036,7 @@ class Admin extends CI_Controller
                 redirect(base('admin', 'send_result_sms'));
             } else {
                 $final[] = $each[1];
-            }            
+            }
         }
 
         foreach ($final as $key => $mobile) {
@@ -4055,9 +4056,9 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
 			redirect(base_url() . 'index.php?login', 'refresh');
-		
+
 		if ($param1 == 'edit_phrase') {
-			$page_data['edit_profile'] 	= $param2;	
+			$page_data['edit_profile'] 	= $param2;
 		}
 		if ($param1 == 'update_phrase') {
 			$language	=	$param2;
@@ -4093,7 +4094,7 @@ class Admin extends CI_Controller
 				)
 			);
 			$this->dbforge->add_column('language', $fields);
-			
+
 			$this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
 			redirect(base_url() . 'index.php?admin/manage_language/', 'refresh');
 		}
@@ -4102,21 +4103,21 @@ class Admin extends CI_Controller
 			$this->load->dbforge();
 			$this->dbforge->drop_column('language', $language);
 			$this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
-			
+
 			redirect(base_url() . 'index.php?admin/manage_language/', 'refresh');
 		}
 		$page_data['page_name']        = 'manage_language';
 		$page_data['page_title']       = get_phrase('manage_language');
 		//$page_data['language_phrases'] = $this->db->get('language')->result_array();
-		$this->load->view('backend/index', $page_data);	
+		$this->load->view('backend/index', $page_data);
     }
-    
+
     /*****BACKUP / RESTORE / DELETE DATA PAGE**********/
     function backup_restore($operation = '', $type = '')
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        
+
         if ($operation == 'create') {
             $this->crud_model->create_backup($type);
         }
@@ -4130,13 +4131,13 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('backup_message', 'Data removed');
             redirect(base_url() . 'index.php?admin/backup_restore/', 'refresh');
         }
-        
+
         $page_data['page_info']  = 'Create backup / restore from backup';
         $page_data['page_name']  = 'backup_restore';
         $page_data['page_title'] = get_phrase('manage_backup_restore');
         $this->load->view('backend/index', $page_data);
     }
-    
+
     /******MANAGE OWN PROFILE AND CHANGE PASSWORD***/
     function manage_profile($param1 = '', $param2 = '', $param3 = '')
     {
@@ -4145,7 +4146,7 @@ class Admin extends CI_Controller
         if ($param1 == 'update_profile_info') {
             $data['name']  = $this->input->post('name');
             $data['email'] = $this->input->post('email');
-            
+
             $this->db->where('admin_id', $this->session->userdata('admin_id'));
             $this->db->update('admin', $data);
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
@@ -4157,7 +4158,7 @@ class Admin extends CI_Controller
             $data['email']    = $this->input->post('email');
             $data['password'] = sha1($this->input->post('password'));
             $data['level']    = 1;
-            
+
             $this->db->insert('admin', $data);
             $admin_id = $this->db->insert_id;
             move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
@@ -4168,7 +4169,7 @@ class Admin extends CI_Controller
             $data['password']             = sha1($this->input->post('password'));
             $data['new_password']         = sha1($this->input->post('new_password'));
             $data['confirm_new_password'] = sha1($this->input->post('confirm_new_password'));
-            
+
             $current_password = $this->db->get_where('admin', array(
                 'admin_id' => $this->session->userdata('admin_id')
             ))->row()->password;
@@ -4201,7 +4202,7 @@ class Admin extends CI_Controller
             $data['email']    = $this->input->post('email');
             $data['password'] = sha1($this->input->post('password'));
             $data['level']    = 1;
-            
+
             $this->db->insert('admin', $data);
             $admin_id = $this->db->insert_id;
             if(!empty($_FILES['userfile']['name'])){
@@ -4219,7 +4220,7 @@ class Admin extends CI_Controller
         } else {
             $data['name']  = $this->input->post('name');
             $data['email'] = $this->input->post('email');
-            
+
             $this->db->where('admin_id', $this->session->userdata('admin_id'));
             $this->db->update('admin', $data);
 
@@ -4237,7 +4238,7 @@ class Admin extends CI_Controller
 
     function ajax_delete_user()
     {
-        $admin_id = $this->uri(3); 
+        $admin_id = $this->uri(3);
         $this->db->where('admin_id', $admin_id);
         $this->db->delete('admin');
         $this->jsonMsgReturn(true,'Delete Success.');
@@ -4252,7 +4253,7 @@ class Admin extends CI_Controller
             $data['password']             = sha1($this->input->post('password'));
             $data['new_password']         = sha1($this->input->post('new_password'));
             $data['confirm_new_password'] = sha1($this->input->post('confirm_new_password'));
-            
+
             $current_password = $this->db->get_where('admin', array(
                 'admin_id' => $this->session->userdata('admin_id')
             ))->row()->password;
@@ -4267,9 +4268,9 @@ class Admin extends CI_Controller
                 $this->jsonMsgReturn(false,'Password Mismatch.');
             }
         }
-        
+
     }
-    
+
     // VIEW QUESTION PAPERS
     function question_paper($param1 = "", $param2 = "")
     {
@@ -4278,7 +4279,7 @@ class Admin extends CI_Controller
             $this->session->set_userdata('last_page', current_url());
             redirect(base_url(), 'refresh');
         }
-        
+
         $data['page_name']  = 'question_paper';
         $data['page_title'] = get_phrase('question_paper');
         $this->load->view('backend/index', $data);
@@ -4316,7 +4317,7 @@ class Admin extends CI_Controller
         if ($param1 == 'delete') {
             $this->db->where('librarian_id' , $param2);
             $this->db->delete('librarian');
-            
+
             $this->session->set_flashdata('flash_message' , get_phrase('data_deleted'));
             redirect(base_url() . 'index.php?admin/librarian/', 'refresh');
         }
@@ -4325,18 +4326,18 @@ class Admin extends CI_Controller
         $page_data['page_name']     = 'librarian';
         $this->load->view('backend/index', $page_data);
     }
-    
-    // SMS API FUNCTION AND API INFO    
+
+    // SMS API FUNCTION AND API INFO
     function sms_infos()
     {
         $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
         $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;
-        
+
         $data['title'] = $this->db->get_where('settings',array('type'=>'sms_title'))->row()->description;
         $data['desc'] = $this->db->get_where('settings',array('type'=>'sms_description'))->row()->description;
         return $data;
     }
-    
+
     function sms_api($user,$pass,$sender,$msg,$mobile)
     {
         $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile";
@@ -4358,15 +4359,15 @@ class Admin extends CI_Controller
         return $mystring;
     }
 
-    
+
     function sms_balance($user,$pass)
     {
         $url = "http://api.zaman-it.com/api/command?username=$user&password=$pass&cmd=Credits";
         $mystring = $this->get_data($url);
         return $mystring;
     }
-    
-    function get_data($url) 
+
+    function get_data($url)
     {
         $ch = curl_init();
         $timeout = 5;
@@ -4389,16 +4390,16 @@ class Admin extends CI_Controller
         $page_data['page_title']    = get_phrase('database_structure');
         $page_data['page_name']     = 'database_structure';
         $this->load->view('backend/index', $page_data);
-    } 
+    }
 
     function get_database_table($table_name)
-    {   
+    {
         $fields['table_name'] = $table_name;
         $fields['table_field'] = $this->db->field_data($table_name);
 
         $this->db->order_by($fields['table_field'][0]->name, 'DESC');
         $fields['table_data'] = $this->db->get($table_name)->result_array();
-        
+
         $this->load->view('backend/admin/get_database_table', $fields);
     }
 
@@ -4407,7 +4408,7 @@ class Admin extends CI_Controller
         $table_name = $this->uri->segment(3);
         $column_name = $this->uri->segment(4);
         $entitie_id = $this->uri->segment(5);
-        
+
         $this->db->where($column_name, $entitie_id);
         $this->db->delete($table_name);
 
@@ -4431,7 +4432,7 @@ class Admin extends CI_Controller
         $column_name = $this->uri->segment(4);
         $entitie_id = $this->uri->segment(5);
         $data = $this->input->post();
-        
+
         $this->db->where($column_name, $entitie_id);
         $this->db->update($table_name, $data);
 
@@ -4440,7 +4441,7 @@ class Admin extends CI_Controller
     }
 
     // Excel file to sms
-    // 
+    //
     function send_result_sms()
     {
         $lastFiveDay = date('d-m-Y',(strtotime ( '-5 day' , strtotime ( date('d-m-Y') ) ) ));
@@ -4460,77 +4461,77 @@ class Admin extends CI_Controller
         // ========= Load excel library & fetch data
         $this->load->library('excel_reader');
         $this->excel_reader->read($file);
-        $worksheet = $this->excel_reader->sheets[0];        
+        $worksheet = $this->excel_reader->sheets[0];
 
         $firstRow = $worksheet['cells'][1]; // Seperate Column Header
         unset($worksheet['cells'][1]);
 
 
 
-        
+
         if(!empty(current($worksheet['cells'])) && count(current($worksheet['cells'])) > 12) {
-            
+
             $data = [
                 'csv_id' => current($worksheet['cells'])[2],
                 'exam_date' => strtotime(current($worksheet['cells'])[1]),
-            ];    
+            ];
             // ========== Check if data already exist
             $dataExist = $this->db->get_where('csv_exam_results', $data)->result_array();
-            
+
             if(empty($dataExist)) {
 
                 // ========== Filter data to excelsheet
                 foreach($worksheet['cells'] as $key1=>$each1) {
                 if (count($each1) == 13){
-                    foreach($firstRow as $key2=>$each2) {                    
+                    foreach($firstRow as $key2=>$each2) {
                         $margedArray[$each2] = $worksheet['cells'][$key1][$key2];
                         $margedArray2[$key2] = $worksheet['cells'][$key1][$key2];
                         }
-                        $margeFinalForSms[] = $margedArray;    
-                        $margeFinalForDatabase[] = $margedArray2;    
-                    }      
+                        $margeFinalForSms[] = $margedArray;
+                        $margeFinalForDatabase[] = $margedArray2;
+                    }
                 }
 
 
 
 
                 // ========= Prepare string to send sms
-                foreach($margeFinalForSms as $key1=>$each1) {  
+                foreach($margeFinalForSms as $key1=>$each1) {
                     $subjects = [];
                     foreach($firstRow as $key2=>$each2) {
 
                         // Date And ID
-                        if($key2 == 1 || $key2 == 2) {                    
-                            $smsString .= $each2.': '.$each1[$each2].',';               
+                        if($key2 == 1 || $key2 == 2) {
+                            $smsString .= $each2.': '.$each1[$each2].',';
                         }
                         // Name
-                        if($key2 == 3) {                    
-                            $smsString .= $each2.': '.$each1[$each2].',';               
+                        if($key2 == 3) {
+                            $smsString .= $each2.': '.$each1[$each2].',';
                         }
                         // Obtain Mark
-                        if($key2 == 4 || $key2 == 7 || $key2 == 10) {                                   
+                        if($key2 == 4 || $key2 == 7 || $key2 == 10) {
                             $selectSubject = explode(' ', $each2);
-                            $smsString .= $selectSubject[0].': '.$each1[$each2]; 
+                            $smsString .= $selectSubject[0].': '.$each1[$each2];
                             $subjects[] = $each2; // Store subject for save data to database
                         }
                         // Height Mark
-                        if($key2 == 5 || $key2 == 8 || $key2 == 11) {  
-                            $smsString .= '-H:'.$each1[$each2].' ';   
+                        if($key2 == 5 || $key2 == 8 || $key2 == 11) {
+                            $smsString .= '-H:'.$each1[$each2].' ';
                         }
                         // Total Mark
-                        if($key2 == 6 || $key2 == 9 || $key2 == 12) {                            
-                            
+                        if($key2 == 6 || $key2 == 9 || $key2 == 12) {
+
                             if($key2 == 12) {
-                                $smsString .= '('.$each1[$each2].'),'.$this->systemTitleName; 
+                                $smsString .= '('.$each1[$each2].'),'.$this->systemTitleName;
                             } else {
-                                $smsString .= '('.$each1[$each2].'),';  
+                                $smsString .= '('.$each1[$each2].'),';
                             }
                         }
                     }
-                    
-                    $smsFinalString[$each1['Phone']] = $smsString;             
+
+                    $smsFinalString[$each1['Phone']] = $smsString;
                     // Send SMS
-                    $this->send_custom_sms($this->systemTitleName,$smsString, $each1['Phone'], true);   
+                    $this->send_custom_sms($this->systemTitleName,$smsString, $each1['Phone'], true);
                     $smsString = '';
                 }
 
@@ -4553,7 +4554,7 @@ class Admin extends CI_Controller
                             $data['marks'] = $each1[7].'|'.$each1[8].'|'.$each1[9];
                         } else {
                             $data['marks'] = $each1[10].'|'.$each1[11].'|'.$each1[12];
-                        }                
+                        }
                         $data['exam_type'] = $exam_type;
                         $data['phone'] = $each1[13];
                         $ForDatabase[] = $data;
@@ -4573,19 +4574,19 @@ class Admin extends CI_Controller
 
             } else {
                 $this->flashmsg('Result already send.','error');
-                redirect(base('admin', 'send_result_sms')); 
+                redirect(base('admin', 'send_result_sms'));
             }
 
         } else {
             $this->flashmsg('Please upload valid file.','error');
-            redirect(base('admin', 'send_result_sms')); 
+            redirect(base('admin', 'send_result_sms'));
         }
-        
-        
 
-        
 
-        // ============= CSV file reader laibrary 
+
+
+
+        // ============= CSV file reader laibrary
         // $this->load->library('CSVReader');
         // $csvData = $this->csvreader->parse_file($file); //path to csv file
         // echo '<pre>';
@@ -4598,15 +4599,15 @@ class Admin extends CI_Controller
         // pd($extra);
         $this->load->library('excel');
         if(!empty($extra)){
-            $class_id     = $extra['class_id'];    
+            $class_id     = $extra['class_id'];
         }else{
             $class_id     = $this->uri->segment(3);
-        }        
+        }
         $running_year = $this->uri->segment(4);
 
         $className = $this->db->get_where('class',['class_id'=>$class_id])->result_array();
         $className = $className[0]['name'];
-        
+
         // SET CUSTOM COLUMN WIDTH -- START
         $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth("20");
         $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth("20");
@@ -4615,18 +4616,18 @@ class Admin extends CI_Controller
         $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth("25");
         // SET CUSTOM COLUMN WIDTH -- END
 
-        $this->excel->setActiveSheetIndex(0); // SELECT PAGE        
-        $this->excel->getActiveSheet()->setTitle('Class '.$className); // PAGE TITLE        
+        $this->excel->setActiveSheetIndex(0); // SELECT PAGE
+        $this->excel->getActiveSheet()->setTitle('Class '.$className); // PAGE TITLE
         $this->excel->getActiveSheet()->freezePane('A2'); // FREEZE TOP ROW
         // SET TOP ROW VALUE -- START
-        $this->excel->getActiveSheet()->setCellValue('A1', 'ID');               
-        $this->excel->getActiveSheet()->setCellValue('B1', 'Name');    
-        $this->excel->getActiveSheet()->setCellValue('C1', 'Roll');    
-        $this->excel->getActiveSheet()->setCellValue('D1', 'Section');  
-        $this->excel->getActiveSheet()->setCellValue('E1', 'Group');   
-        $this->excel->getActiveSheet()->setCellValue('F1', 'Shift');   
-        $this->excel->getActiveSheet()->setCellValue('G1', 'Father Name');               
-        $this->excel->getActiveSheet()->setCellValue('H1', 'Mobile');          
+        $this->excel->getActiveSheet()->setCellValue('A1', 'ID');
+        $this->excel->getActiveSheet()->setCellValue('B1', 'Name');
+        $this->excel->getActiveSheet()->setCellValue('C1', 'Roll');
+        $this->excel->getActiveSheet()->setCellValue('D1', 'Section');
+        $this->excel->getActiveSheet()->setCellValue('E1', 'Group');
+        $this->excel->getActiveSheet()->setCellValue('F1', 'Shift');
+        $this->excel->getActiveSheet()->setCellValue('G1', 'Father Name');
+        $this->excel->getActiveSheet()->setCellValue('H1', 'Mobile');
         // SET TOW ROW VALUE -- END
 
         // SET CUSTOM STYLE -- START
@@ -4646,7 +4647,7 @@ class Admin extends CI_Controller
                     'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 ]
             ]
-        ];        
+        ];
         $this->excel->getDefaultStyle()->applyFromArray($styleArray['styleOne']);
         $this->excel->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray['styleTwo']);
         // SET CUSTOM STYLE -- END
@@ -4654,12 +4655,12 @@ class Admin extends CI_Controller
         if(!empty($extra)){
             $running_year = $this->running_year;
             $extra['year'] = $running_year;
-            $studentInfo = $this->db->get_where('enroll' , $extra)->result_array();    
+            $studentInfo = $this->db->get_where('enroll' , $extra)->result_array();
         }else{
-            $studentInfo = $this->db->get_where('enroll' , 
+            $studentInfo = $this->db->get_where('enroll' ,
             ['class_id' => $class_id, 'year'=> $running_year])->result_array();
-        }          
-        
+        }
+
         foreach($studentInfo as $key=>$each) {
             $std_id = $each['student_id'];
             $sft_id = $each['shift_id'];
@@ -4667,7 +4668,7 @@ class Admin extends CI_Controller
             if(!empty($sec_id)){
                 $sec_info = $this->db->get_where('section',['section_id'=>$sec_id])->result_array();
                 $sec_info = $sec_info[0]['name'];
-            }else {$sec_info = '';}  
+            }else {$sec_info = '';}
 
             $grp_id = $each['group_id'];
             if(!empty($grp_id)){
@@ -4678,38 +4679,38 @@ class Admin extends CI_Controller
             $sft_info = $this->db->get_where('shift',['shift_id'=>$sft_id])->result_array();
             $sft_info = $sft_info[0]['name'];
             $std_info = $this->db->get_where('student',['student_id'=>$std_id])->result_array();
-            
-            
+
+
             $key = $key+2;
             $this->excel->getActiveSheet()->getStyle("A$key:H$key")
-            ->getAlignment()->setWrapText(true); 
+            ->getAlignment()->setWrapText(true);
 
             $this->excel->getActiveSheet()->setCellValue('A'.$key, $std_id);
-            $this->excel->getActiveSheet()->setCellValue('B'.$key, $std_info[0]['name']);            
-            $this->excel->getActiveSheet()->setCellValue('C'.$key, $each['roll']); 
-            $this->excel->getActiveSheet()->setCellValue('D'.$key, $sec_info); 
-            $this->excel->getActiveSheet()->setCellValue('E'.$key, $grp_info); 
-            $this->excel->getActiveSheet()->setCellValue('F'.$key, $sft_info); 
-            $this->excel->getActiveSheet()->setCellValue('G'.$key, $std_info[0]['fname']); 
-            $this->excel->getActiveSheet()->setCellValue('H'.$key, $std_info[0]['mobile']); 
+            $this->excel->getActiveSheet()->setCellValue('B'.$key, $std_info[0]['name']);
+            $this->excel->getActiveSheet()->setCellValue('C'.$key, $each['roll']);
+            $this->excel->getActiveSheet()->setCellValue('D'.$key, $sec_info);
+            $this->excel->getActiveSheet()->setCellValue('E'.$key, $grp_info);
+            $this->excel->getActiveSheet()->setCellValue('F'.$key, $sft_info);
+            $this->excel->getActiveSheet()->setCellValue('G'.$key, $std_info[0]['fname']);
+            $this->excel->getActiveSheet()->setCellValue('H'.$key, $std_info[0]['mobile']);
         }
 
         if(!empty($extra)){
             $grp_info = !empty($grp_info)?'_Group-'.$grp_info:'';
-            $filename= 'Class-'.$className.'_Shift-'.$sft_info.$grp_info.'_Section-'.$sec_info.'-All-Students.xls';   
+            $filename= 'Class-'.$className.'_Shift-'.$sft_info.$grp_info.'_Section-'.$sec_info.'-All-Students.xls';
         }else{
             $filename= 'Class-'.$className.'-All-Students.xls';
         }
-        
+
         // SET HEADER -- START
-        header('Content-Type: application/vnd.ms-excel'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013) 
+        header('Content-Type: application/vnd.ms-excel'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013)
         header('Content-Disposition: attachment;filename="'.$filename.'"'); // SET FILE NAME
         header('Cache-Control: max-age=0');
         // SET HEADER -- END
-        
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013) 
+
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5'); // EXCEL FORMAT (CURRENT EXCEL 2007-2013)
         $objWriter->save('php://output'); // FOURCE DOWNLOAD
-        
+
     }
 
     function create_excel()
@@ -4718,22 +4719,22 @@ class Admin extends CI_Controller
         $this->excel->setActiveSheetIndex(0);
         $this->excel->getActiveSheet()->setTitle('Class 6');
         $this->excel->getActiveSheet()->freezePane('A2');
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Class 6 students');               
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Class 6 students');
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 
         //$this->excel->setActiveSheetIndex(1);
         $newSheet = $this->excel->createSheet(1);
         $newSheet->setTitle('Class 7');
         $newSheet->freezePane('A2');
-        $newSheet->setCellValue('A1', 'Class 7 students');               
+        $newSheet->setCellValue('A1', 'Class 7 students');
         $newSheet->getStyle('A1')->getFont()->setBold(true);
-        
+
         $filename='just_some_random_name.xlsx';
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'.$filename.'"'); 
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
         header('Cache-Control: max-age=0');
-                    
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');  
+
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
         $objWriter->save('php://output');
     }
 
@@ -4754,11 +4755,11 @@ class Admin extends CI_Controller
         } else {
             echo 'This section was on going development.';
         }
-        // $info = $this->db->get_where('enroll', $form_info)->result_array();       
+        // $info = $this->db->get_where('enroll', $form_info)->result_array();
     }
 
-    // FILE DERECTORY 
-    // 
+    // FILE DERECTORY
+    //
     function directory()
     {
         $this->load->helper('directory');
@@ -4787,19 +4788,19 @@ class Admin extends CI_Controller
     }
 
     // DB BACKUP
-    
+
     function db_backup()
     {
         $this->load->dbutil();
-        $prefs = array(     
-                'format'      => 'zip',             
+        $prefs = array(
+                'format'      => 'zip',
                 'filename'    => 'my_db_backup.sql'
               );
-        $backup =& $this->dbutil->backup($prefs); 
+        $backup =& $this->dbutil->backup($prefs);
         $db_name = 'backup-on-'. date("d-m-Y-H-i-s") .'.zip';
         $save = './uploads/db/'.$db_name;
         $this->load->helper('file');
-        write_file($save, $backup); 
+        write_file($save, $backup);
         $this->load->helper('download');
         force_download($db_name, $backup);
     }
@@ -4809,10 +4810,10 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/code_edit');
     }
 
-    
+
     //   ========= REUSEABLE FUNCTION
 
-    function jsonMsgReturn($type, $msg, $html='') 
+    function jsonMsgReturn($type, $msg, $html='')
     {
         echo json_encode(['type'=>$type,'msg'=>$msg,'html'=>$html]);
     }
@@ -4825,7 +4826,7 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase($msg));
         endif;
     }
-    
+
     function uri($uri)
     {
         $result = $this->uri->segment($uri);
@@ -4852,28 +4853,28 @@ class Admin extends CI_Controller
             return true;
         }
         return true;
-        
+
     }
-    
+
 
     function test()
-    {        
-        $session = $this->db->get_where('settings', 
+    {
+        $session = $this->db->get_where('settings',
             ['type'=>'admission_session'])->row()->description;
             $year = substr($session, -2);
-        
+
 
         $student_info = $this->db->get('student')->result_array();
-        foreach($student_info as $k=>$value){  
-            
+        foreach($student_info as $k=>$value){
+
             $classID = $this->db->get_where('enroll',['student_id'=>$value['student_id']])->row()->class_id;
             $cname = $this->db->get_where('class',['class_id'=>$classID])->row()->name_numeric;
             //pd($classID);
 
             // $this->db->like('student_code', $year, 'after');
             // $exist = $this->db->get('student')->result_array();
-            
-            // if(!empty($exist)) {     
+
+            // if(!empty($exist)) {
             //     $last = end($exist);
                 $uniq_id = str_pad(substr($k, -4)+1, 4, '0', STR_PAD_LEFT);
                 $uniq_id = $year.$cname.$uniq_id;
@@ -4888,19 +4889,3 @@ class Admin extends CI_Controller
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
