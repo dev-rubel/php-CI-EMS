@@ -2627,7 +2627,11 @@ class Admin extends CI_Controller
 
     function marks_update($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
     {
-      pd($_POST);
+      $student_ids = $_POST['student_rolls'];
+      foreach ($_POST['marks_obtained'] as $key => $value) {
+        $data[$key]['marks_obtained'] = implode('|',$value);
+        $data[$key]['comment'] = $_POST['comment_'.$key];
+      }
         $running_year = $this->running_year;
         $marks_of_students = $this->db->get_where('mark' , array(
             'exam_id' => $exam_id,
@@ -2638,13 +2642,12 @@ class Admin extends CI_Controller
                                 'subject_id' => $subject_id
         ))->result_array();
         foreach($marks_of_students as $row) {
-            $obtained_marks = $this->input->post('marks_obtained_'.$row['mark_id']);
-            $comment = $this->input->post('comment_'.$row['mark_id']);
             $this->db->where('mark_id' , $row['mark_id']);
-            $this->db->update('mark' , array('mark_obtained' => $obtained_marks , 'comment' => $comment));
+            $this->db->update('mark' , ['mark_obtained' => $data[$row['mark_id']]['marks_obtained'] , 'comment' => $data[$row['mark_id']]['comment']]);
         }
-        $this->session->set_flashdata('flash_message' , get_phrase('marks_updated'));
-        redirect(base_url().'index.php?admin/marks_manage_view/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id , 'refresh');
+        $this->ajax_marks_manage_view($exam_id,$class_id,$section_id,$subject_id,$group_id, $student_ids);
+        // $this->session->set_flashdata('flash_message' , get_phrase('marks_updated'));
+        // redirect(base_url().'index.php?admin/marks_manage_view/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id , 'refresh');
     }
 
     function marks_get_subject($class_id)

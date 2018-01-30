@@ -1,4 +1,4 @@
-<?php echo $subject_id;
+<?php
 $subject_info = $this->db->get_where('subject',['subject_id'=>$subject_id])->result_array();
 $subject_marks = $subject_info[0]['subject_marks'];
  ?>
@@ -24,8 +24,11 @@ $subject_marks = $subject_info[0]['subject_marks'];
 <div class="row">
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-
-		<?php echo form_open(base_url() . 'index.php?admin/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id);?>
+    
+    <form id="updateMark" action="<?php echo base_url().'index.php?admin/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id; ?>" method="post">
+      <?php foreach($foundRolls as $k=>$value): ?>
+        <input type="hidden" name="student_rolls[]" value="<?php echo $value;?>">
+      <?php endforeach; ?>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -38,7 +41,7 @@ $subject_marks = $subject_info[0]['subject_marks'];
 				</thead>
 				<tbody>
 				<?php
-
+          $keys = 0;
 					foreach($foundRolls as $k=>$each):
 					$marks_of_students = $this->db->get_where('mark' , array(
 						'class_id' => $class_id,
@@ -49,10 +52,10 @@ $subject_marks = $subject_info[0]['subject_marks'];
 											'subject_id' => $subject_id,
 												'exam_id' => $exam_id
 					))->result_array();
-					foreach($marks_of_students as $row):
+					foreach($marks_of_students as $key=>$row):
 				?>
 					<tr>
-						<td><?php echo $k+1;?></td>
+						<td><?php echo $keys += 1;?></td>
 						<td>
 							<?php echo $this->db->get_where('enroll', array('student_id'=>$row['student_id']))->row()->roll;?>
 						</td>
@@ -60,15 +63,15 @@ $subject_marks = $subject_info[0]['subject_marks'];
 							<?php echo $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;?>
 						</td>
 						<td>
-							<?php foreach (explode('|',$subject_marks) as $key => $value) :
+							<?php
+              $marks = explode('|',$row['mark_obtained']);
+              foreach (explode('|',$subject_marks) as $key => $value) :
 									// if($value != 0):
                     $arr = [0 => 'MT',1 => 'CQ', 2 => 'MCQ', 3 => 'PT'];
 								?>
-								<input type="text" class="form-control" name="marks_obtained[<?php echo $row['mark_id'];?>][]" value="<?php echo $value==0?0:''; ?>" min="1" max="<?php echo $value; ?>" <?php echo $value==0?'readonly':''; ?> placeholder="<?php echo $arr[$key].' ('.$value.')'; ?>">
+								<input type="text" class="form-control" name="marks_obtained[<?php echo $row['mark_id'];?>][]" value="<?php echo is_array($marks)==true?$marks[$key]:0; ?>" min="1" max="<?php echo $value; ?>" <?php echo $value==0?'readonly':''; ?> placeholder="<?php echo $arr[$key].' ('.$value.')'; ?>">
 							<?php endforeach; ?>
 
-							<!-- <input type="text" class="form-control" name="marks_obtained_<?php echo $row['mark_id'];?>"
-								value="<?php echo $row['mark_obtained'];?>"> -->
 						</td>
 						<td>
 							<input type="text" class="form-control" name="comment_<?php echo $row['mark_id'];?>"
@@ -89,3 +92,25 @@ $subject_marks = $subject_info[0]['subject_marks'];
 	</div>
 	<div class="col-md-2"></div>
 </div>
+
+<script type="text/javascript">
+
+$('#updateMark').ajaxForm({
+    beforeSend: function() {
+            $('#loading2').show();
+            $('#overlayDiv').show();
+    },
+    success: function (data){
+        var jData = JSON.parse(data);
+        if(!jData.type) {
+            toastr.error(jData.msg);
+        } else {
+            toastr.success(jData.msg);
+            $( "#studentMarkHolder" ).html( jData.html );
+        }
+        $('body,html').animate({scrollTop:0},800);
+        $('#loading2').fadeOut('slow');
+        $('#overlayDiv').fadeOut('slow');
+    }
+});
+</script>

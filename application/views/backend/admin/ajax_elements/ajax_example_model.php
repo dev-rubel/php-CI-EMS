@@ -2,30 +2,30 @@
 
 <script>
 
-$(document).ready(function() { 
+$(document).ready(function() {
     /* Change Password */
     // toastr.options.positionClass = 'toast-bottom-right';
 
-    $('#updateSmsSetting').ajaxForm({ 
-        beforeSend: function() {                
+    $('#updateSmsSetting').ajaxForm({
+        beforeSend: function() {
                 $('#loading2').show();
                 $('#overlayDiv').show();
-        },  
+        },
         success: function (data){
-            var jData = JSON.parse(data);  
+            var jData = JSON.parse(data);
 
-            if(!jData.type) {    
+            if(!jData.type) {
                 toastr.error(jData.msg);
             } else {
-                toastr.success(jData.msg);  
+                toastr.success(jData.msg);
                 $( "#admission_result_section_holder" ).html( jData.html );
-                $('#myFormId').resetForm();               
-            }   
-            $('body,html').animate({scrollTop:0},800);         
+                $('#myFormId').resetForm();
+            }
+            $('body,html').animate({scrollTop:0},800);
             $('#loading2').fadeOut('slow');
-            $('#overlayDiv').fadeOut('slow');                   
+            $('#overlayDiv').fadeOut('slow');
         }
-    }); 
+    });
 
 
 });
@@ -34,7 +34,7 @@ $(document).ready(function() {
 
 
 <?php
-function jsonMsgReturn($type, $msg, $html='') 
+function jsonMsgReturn($type, $msg, $html='')
 {
     echo json_encode(['type'=>$type,'msg'=>$msg,'html'=>$html]);
 }
@@ -54,13 +54,13 @@ function ajax_create_shift()
     $check = check_array_value($_POST);
     if(!$check){
         $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
-    } else {      
+    } else {
         $data['name']         = $this->input->post('name');
         $this->db->insert('shift', $data);
         $shift_id = $this->db->insert_id();
 
         $page_data['shifts']    = $this->db->get('shift')->result_array();
-        
+
         $htmlData = $this->load->view('backend/admin/ajax_elements/shift_table_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Shift Created.',$htmlData);
     }
@@ -77,7 +77,7 @@ function ajax_edit_shift()
 
 function ajax_update_shift()
 {
-    $class_id = $this->uri(3);        
+    $class_id = $this->uri(3);
     $this->db->where('shift_id', $class_id);
     $this->db->update('shift', $_POST);
 
