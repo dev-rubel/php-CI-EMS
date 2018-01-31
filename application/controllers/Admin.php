@@ -298,6 +298,13 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/student_information', $page_data);
     }
 
+    function generate_marksheet()
+    {        
+        $this->db->where('class_id',13);
+        $marks = $this->db->get('mark')->result_array();
+        pd($marks);
+    }
+
     function student_marksheet($student_id = '')
     {
         if ($this->session->userdata('admin_login') != 1)
