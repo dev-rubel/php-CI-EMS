@@ -28,8 +28,8 @@
 	</div>
 </div>
 
-
-<?php if(!empty($groups)): ?>
+<!-- 
+<?php //if(!empty($groups)): ?>
 <div class="col-md-2" id="group_holder">
 	<div class="form-group">
 	<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('subject');?></label>
@@ -38,7 +38,7 @@
 		</select>
 	</div>
 </div>
-<?php else: ?>
+<?php //else: ?> -->
 
 <div class="col-md-2">
 	<div class="form-group">
@@ -56,7 +56,7 @@
 	</div>
 </div>
 
-<?php endif; ?>
+<?php //endif; ?>
 
 <div class="col-md-2" style="margin-top: 20px;">
 	<center>
@@ -64,10 +64,10 @@
 	</center>
 </div>
 
-<?php if(!empty($groups)): ?>
+<?php //if(!empty($groups)): ?>
 	
-	<script type="text/javascript">
-	$('#subject_id_two').append('<option>Select Group</option>');
+<!-- <script type="text/javascript">
+	$('#subject_id_two').append('<option>Select Subject</option>');
 
 	$("#group_id").change(function(){
 		var groupId = this.options[this.selectedIndex].value;
@@ -93,9 +93,9 @@
 
 	});
 			
-</script>
+</script> -->
 
-<?php endif ?>
+<?php // endif; ?>
 
 <script type="text/javascript">
 	$(document).ready(function() {

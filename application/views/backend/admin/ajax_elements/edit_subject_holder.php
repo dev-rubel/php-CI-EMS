@@ -167,7 +167,7 @@ endforeach;
                 }
             });
 
-        }else if(name=='group' || name=='optional'){
+        }else if(name=='group'){
             $.ajax({
                 url: '<?php echo base_url(); ?>index.php?admin/get_group_subject_info/' + this.class_id,
                 success: function (response)

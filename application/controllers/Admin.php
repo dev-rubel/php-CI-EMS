@@ -299,10 +299,114 @@ class Admin extends CI_Controller
     }
 
     function generate_marksheet()
-    {        
-        $this->db->where('class_id',13);
+    {       
+        $this->db->where('student_id',44);
+        $std_info = $this->db->get('enroll')->result_array();
+
+        $class_id = $std_info[0]['class_id'];
+        
+        // Grade Table
+        $grades = $this->db->get('grade')->result_array();
+
+        // Subject Table
+        $this->db->where('class_id',$class_id);
+        $this->db->where('status',1);
+        $subjects = $this->db->get('subject')->result_array();
+
+        $subject_code  = array_column($subjects,'subject_code');
+
+        $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
+        $total_subject = count(array_unique($subject_code));
+        
+        // Mark Table
+        $this->db->where('student_id',44);
         $marks = $this->db->get('mark')->result_array();
-        pd($marks);
+
+        // foreach($marks as $k=>$each) {
+
+        //     $this->db->where('subject_id',$each['subject_id']);
+        //     $this->db->get('subject')->result_array();
+
+        //     $ex_marks = explode('|',$each['mark_obtained']);
+        //     $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
+        // }
+
+        $optional = '';
+        foreach($marks as $k=>$each) {
+            $subject_code = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_code;
+            $ex_marks = explode('|',$each['mark_obtained']);
+
+            if(!empty($subject_code)) {
+                if(in_array($subject_code,$join_subject)) {
+                    $student[$each['student_id']]['mark'][$subject_code][$each['subject_id']] = array_sum($ex_marks);        
+                } else {
+                    $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
+                }     
+            } else {
+                $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
+            }
+                   
+            $subj_total_mark = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->total_mark;
+            $subject_category = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_category;
+            if($subject_category == 'optional') {
+                $optional = $each['subject_id'];
+            }
+            
+
+            $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark;
+            foreach($grades as $key=>$each2) {
+                if($mark_obtain >= $each2['mark_from'] && $mark_obtain <= $each2['mark_upto']) {
+
+                    if(!empty($subject_code)) {
+                        if(in_array($subject_code,$join_subject)) {
+                            $student[$each['student_id']]['point'][$subject_code][$each['subject_id']] = $each2['grade_point'];
+                            $student[$each['student_id']]['grade'][$subject_code][$each['subject_id']] = $each2['name'];
+                        } else {
+                            $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
+                            $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
+                        }     
+                    } else {
+                        $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
+                        $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
+                    }
+                }
+            }            
+        }       
+ 
+        foreach($student[44]['mark'] as $k=>$each) {
+            if(is_array($each)) {
+                $student[44]['total_mark'] += array_sum($each);            
+            } else {
+                $student[44]['total_mark'] += $each;
+            }
+            
+        }
+
+        if(!empty($join_subject)) {
+            foreach($join_subject as $k=>$each) {
+                $join_subj_mark = array_sum($student[44]['mark'][$each]); 
+                unset($student[44]['point'][$each]);
+                unset($student[44]['grade'][$each]);
+                $join_subj_mark = $join_subj_mark/2;
+                foreach($grades as $k2=>$each2) {
+                    if($join_subj_mark >= $each2['mark_from'] && $join_subj_mark <= $each2['mark_upto']) {
+                        $student[44]['point'][$each] = $each2['grade_point'];
+                        $student[44]['grade'][$each] = $each2['name'];
+                    }
+                }
+
+            }
+        }
+        if(!empty($optional)) {
+            if($student[44]['point'][$optional] > 2)  {
+                $forthPoint = $student[44]['point'][$optional] - 2;
+            }
+            $total_subject = $total_subject - 1;
+        }
+
+        $student[44]['total_point'] = round(array_sum(($student[44]['point'])-$forthPoint)/$total_subject, 2);
+
+        pd($student);
     }
 
     function student_marksheet($student_id = '')
@@ -1430,6 +1534,10 @@ class Admin extends CI_Controller
                 if(!empty($_POST['join_subject_code'])){
                     $_POST['subject_code'] = $_POST['join_subject_code'];
                     unset($_POST['join_subject_code']);
+                }
+                if(!empty($_POST['group_subject_name'])) {
+                    $_POST['group_id'] = $_POST['group_subject_name'];
+                    unset($_POST['group_subject_name']);
                 }
 
                 $subject_marks = array_slice($_POST,3,4); // MT, CQ, MCQ, PR MARKS
