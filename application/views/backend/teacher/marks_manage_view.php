@@ -1,5 +1,6 @@
+<?php echo $this->uri->segment(5);?>
 <hr />
-<?php echo form_open(base_url() . 'index.php?teacher/marks_selector');?>
+<?php echo form_open(base_url() . 'index.php?admin/marks_selector');?>
 <div class="row">
 
 	<div class="col-md-2">
@@ -33,18 +34,34 @@
 		</div>
 	</div>
 
+	<?php if(!empty($group_id)): ?>
+	<div class="col-md-2">
+		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('groups');?></label>
+			<select name="group_id" id="group_id" class="form-control selectboxit">
+				<option value="">Select Group</option>
+				<?php
+				$listGroup = $this->db->get('group')->result_array();
+				foreach($listGroup as $row): ?>
+				<option value="<?php echo $row['group_id'];?>" <?php echo selected($row['group_id'], $group_id); ?>><?php echo ucwords($row['name']);?></option>
+				<?php endforeach;?>
+			</select>
+		</div>
+	</div>
+	<?php endif; ?>
+
 	<div id="subject_holder">
 		<div class="col-md-2">
 			<div class="form-group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
 				<select name="section_id" id="section_id" class="form-control selectboxit">
-					<?php 
+					<?php
 						$sections = $this->db->get_where('section' , array(
-							'class_id' => $class_id 
+							'class_id' => $class_id
 						))->result_array();
 						foreach($sections as $row):
 					?>
-					<option value="<?php echo $row['section_id'];?>" 
+					<option value="<?php echo $row['section_id'];?>"
 						<?php if($section_id == $row['section_id']) echo 'selected';?>>
 							<?php echo $row['name'];?>
 					</option>
@@ -52,13 +69,17 @@
 				</select>
 			</div>
 		</div>
-		<div class="col-md-3">
+
+
+		<div class="col-md-2">
 			<div class="form-group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('subject');?></label>
 				<select name="subject_id" id="subject_id" class="form-control selectboxit">
-					<?php 
+					<?php
+					if(!empty($group_id)):
+						// IF GROUP FOUND THEN SEARCH GROUP SUBJECT
 						$subjects = $this->db->get_where('subject' , array(
-							'class_id' => $class_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+							'class_id' => $class_id ,'group_id' => $group_id, 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
 						))->result_array();
 						foreach($subjects as $row):
 					?>
@@ -66,10 +87,30 @@
 						<?php if($subject_id == $row['subject_id']) echo 'selected';?>>
 							<?php echo $row['name'];?>
 					</option>
-					<?php endforeach;?>
+
+					<?php
+					endforeach;
+					else:
+					// IF GROUP NOT FOUND THEN SEARCH OTHER CLASS SUBJECT
+					$subjects = $this->db->get_where('subject' , array(
+					'class_id' => $class_id , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description
+					))->result_array();
+					foreach($subjects as $row):
+
+					?>
+
+					<option value="<?php echo $row['subject_id'];?>"
+						<?php if($subject_id == $row['subject_id']) echo 'selected';?>>
+							<?php echo $row['name'];?>
+					</option>
+					<?php
+					endforeach;
+					endif; ?>
 				</select>
 			</div>
 		</div>
+
+
 		<div class="col-md-2" style="margin-top: 20px;">
 			<center>
 				<button type="submit" class="btn btn-info"><?php echo get_phrase('manage_marks');?></button>
@@ -78,7 +119,16 @@
 	</div>
 
 </div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('rolls');?></label>
+			<input type="text" class="form-control" name="rolls">
+		</div>
+	</div>
+</div>
 <?php echo form_close();?>
+
 
 <hr />
 <div class="row" style="text-align: center;">
@@ -86,11 +136,11 @@
 	<div class="col-sm-4">
 		<div class="tile-stats tile-gray">
 			<div class="icon"><i class="entypo-chart-bar"></i></div>
-			
+
 			<h3 style="color: #696969;"><?php echo get_phrase('marks_for');?> <?php echo $this->db->get_where('exam' , array('exam_id' => $exam_id))->row()->name;?></h3>
 			<h4 style="color: #696969;">
-				<?php echo get_phrase('class');?> <?php echo $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;?> : 
-				<?php echo get_phrase('section');?> <?php echo $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;?> 
+				<?php echo get_phrase('class: ');?> <?php echo $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;?> |
+				<?php echo get_phrase('section: ');?> <?php echo $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;?>
 			</h4>
 			<h4 style="color: #696969;">
 				<?php echo get_phrase('subject');?> : <?php echo $this->db->get_where('subject' , array('subject_id' => $subject_id))->row()->name;?>
@@ -103,7 +153,7 @@
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
 
-		<?php echo form_open(base_url() . 'index.php?teacher/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id);?>
+		<?php echo form_open(base_url() . 'index.php?admin/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id);?>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -118,11 +168,12 @@
 				<?php
 					$count = 1;
 					$marks_of_students = $this->db->get_where('mark' , array(
-						'class_id' => $class_id, 
-							'section_id' => $section_id ,
-								'year' => $running_year,
-									'subject_id' => $subject_id,
-										'exam_id' => $exam_id
+						'class_id' => $class_id,
+							'group_id' => $group_id,
+								'section_id' => $section_id ,
+									'year' => $running_year,
+										'subject_id' => $subject_id,
+											'exam_id' => $exam_id
 					))->result_array();
 					foreach($marks_of_students as $row):
 				?>
@@ -136,7 +187,7 @@
 						</td>
 						<td>
 							<input type="text" class="form-control" name="marks_obtained_<?php echo $row['mark_id'];?>"
-								value="<?php echo $row['mark_obtained'];?>">	
+								value="<?php echo $row['mark_obtained'];?>">
 						</td>
 						<td>
 							<input type="text" class="form-control" name="comment_<?php echo $row['mark_id'];?>"
@@ -153,7 +204,7 @@
 			</button>
 		</center>
 		<?php echo form_close();?>
-		
+
 	</div>
 	<div class="col-md-2"></div>
 </div>
@@ -164,8 +215,8 @@
 
 <script type="text/javascript">
 	function get_class_subject(class_id) {
-		
-		$.ajax({
+
+	$.ajax({
             url: '<?php echo base_url();?>index.php?teacher/marks_get_subject/' + class_id ,
             success: function(response)
             {

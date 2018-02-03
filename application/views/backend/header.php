@@ -89,7 +89,7 @@
 	function get_session_changer()
 	{
 		$.ajax({
-            url: '<?php echo base_url();?>index.php?admin/get_session_changer/',
+            url: '<?php echo base_url();?>index.php?teacher/get_session_changer/',
             success: function(response)
             {
                 jQuery('#session_static').html(response);

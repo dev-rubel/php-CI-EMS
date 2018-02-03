@@ -11,7 +11,7 @@
             <div class="panel-body">
 
                 <?php
-                echo form_open(base_url() . 'index.php?teacher/upload_academic_syllabus', array(
+                echo form_open(base_url() . 'index.php?admin/upload_academic_syllabus', array(
                     'class' => 'form-horizontal form-groups-bordered validate', 'target' => '_top', 'enctype' => 'multipart/form-data'
                 ));
                 ?>
@@ -59,11 +59,10 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"><?php echo get_phrase('file'); ?></label>
                     <div class="col-sm-5">
-                        <input type="file" name="file_name" class="form-control btn btn-primary" data-label="<i class='glyphicon glyphicon-file'></i> Browse" 
+                        <input type="file" name="file_name" class="form-control inline btn btn-primary" data-label="<i class='glyphicon glyphicon-file'></i> Browse" 
                                data-validate="required" data-message-required="<?php echo get_phrase('required'); ?>"/>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-5">
                         <button type="submit" class="btn btn-info">
@@ -82,7 +81,7 @@
     function get_class_subject(class_id) {
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_class_subject/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?teacher/get_subject/' + class_id,
             success: function (response)
             {
                 jQuery('#subject_selector_holder').html(response);

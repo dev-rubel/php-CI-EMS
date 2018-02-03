@@ -1,23 +1,55 @@
+<?php
+//	GET SMS REMAING INFO
+$info = $this->db->query('SELECT * FROM `admit_std` WHERE DATE(`datetime`) = CURDATE()');
+$confirm = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=1');
+$pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
+
+?>
 
 <style>
 .bg-sms{
-    background-color: #9684A3;
+	background-color: #9684A3;
     color: #fff;
 }
 .bg-today-app{
-    background-color: #83D6DE;
+	background-color: #83D6DE;
     color: #fff;
 }
 .bg-confirm-app{
-    background-color: #D1D6A9;
+	background-color: #D1D6A9;
     color: #fff;
 }
 .bg-padding-app{
-    background-color: #FEC606;
+	background-color: #FEC606;
     color: #fff;
 }
+.search-box {
+    height: 40px;
+    border: 1px solid #f4f4f4;
+}
+.input-group-addon{
+    background-color: #6BAFBD;
+    color: #fff;
+}
+
 </style>
+<div class="well text-center well-sm">
+    <h3>
+        <?php echo $_SESSION['name']; ?>
+    </h3>
+</div>
 <hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">Search Student ID Wise</span>
+            <input type="text" class="form-control search-box" id="studentSearch" placeholder="Search Student ID Wise">            
+        </div>
+    </div>
+    <div class="col-md-12" id="searchStudentList"></div>
+</div>
+
+<br>
 <div class="row">
     <div class="col-sm-6 col-md-3">
         <div class="panel-stat3 bg-danger">
@@ -60,7 +92,6 @@
         </div>
     </div><!-- /.col -->
     
-    
 </div>
 
 <div class="row">
@@ -70,7 +101,7 @@
         $admission_status = $this->db->get('settings')->row()->description;
         if($admission_status):
      ?>
-    <div class="col-sm-6 col-md-3">
+	<div class="col-sm-6 col-md-3">
         <div class="panel panel-stat3 bg-today-app">
             <h2 class="m-top-none"><span id="serverloadCount"><?php echo count($info->result_array())?></span></h2>
             <h5>Today Online Application</h5>
@@ -81,7 +112,7 @@
         </div>
     </div><!-- /.col -->
 
-    <div class="col-sm-6 col-md-3">
+	<div class="col-sm-6 col-md-3">
         <div class="panel panel-stat3 bg-success">
             <h2 class="m-top-none"><span id="serverloadCount"><?php echo count($confirm->result_array())?></span></h2>
              <h5>Confim Application</h5>
@@ -92,7 +123,7 @@
         </div>
     </div><!-- /.col -->
 
-    <div class="col-sm-6 col-md-3">
+	<div class="col-sm-6 col-md-3">
         <div class="panel panel-stat3 bg-padding-app">
             <h2 class="m-top-none"><span id="serverloadCount"><?php echo count($pandding->result_array())?></span></h2>
              <h5>Pendding Application</h5>
@@ -128,11 +159,6 @@
             </div>
         </div>
     </div>
-    
-    
-    
-
-
 
 </div>
 
@@ -140,6 +166,17 @@
 
 <script>
     $(document).ready(function () {
+
+        $("#studentSearch").keyup(function(){
+            var str=  $("#studentSearch").val();
+            if(str == "") {
+                $( "#searchStudentList" ).html("");  
+            }else {
+                $.get( "<?php echo base_url();?>index.php?teacher/ajaxStudentSearch/"+str, function( data ){
+                    $( "#searchStudentList" ).html( data );  
+                });
+            }
+        }); 
 
         var calendar = $('#notice_calendar');
 
@@ -159,11 +196,11 @@
 $notices = $this->db->get('noticeboard')->result_array();
 foreach ($notices as $row):
     ?>
-                    {
-                        title: "<?php echo $row['notice_title']; ?>",
-                        start: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>),
-                        end: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>)
-                    },
+            {
+                title: "<?php echo $row['notice_title']; ?>",
+                start: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>),
+                end: new Date(<?php echo date('Y', $row['create_timestamp']); ?>, <?php echo date('m', $row['create_timestamp']) - 1; ?>, <?php echo date('d', $row['create_timestamp']); ?>)
+            },
     <?php
 endforeach
 ?>
@@ -172,5 +209,3 @@ endforeach
         });
     });
 </script>
-
-

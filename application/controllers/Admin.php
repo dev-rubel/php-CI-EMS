@@ -30,8 +30,7 @@ class Admin extends CI_Controller
         $this->output->set_header('Pragma: no-cache');
     }
 
-
-    /***default functin, redirects to login page if no admin logged in yet***/
+    
     public function index()
     {
         if ($this->session->userdata('admin_login') != 1)
