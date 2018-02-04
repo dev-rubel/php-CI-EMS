@@ -302,10 +302,38 @@ class Home extends MX_Controller {
         $fileName = ucwords(strtolower(str_replace(' ','-', $name))).'('.ucwords(strtolower(str_replace(' ','-', $fname))).')'.'.pdf';
         $this->load->library('m_pdf');
         //pd($data);
-        $html = $this->load->view('pdfPrint', $data, true);
+        $html = $this->load->view('pdfAdmissionPrint', $data, true);
         $this->m_pdf->pdf->WriteHTML($html);
         $this->m_pdf->pdf->Output($fileName,"D"); 
 	    exit;
+    }
+
+    function profile_view()
+    {
+        $this->load->library('m_pdf');
+
+        $this->db->where('student.student_id', 44);
+        $this->db->from('student');
+        $this->db->join('enroll', 'enroll.student_id = student.student_id');
+        $result = $this->db->get()->result_array();
+        $data['std_info'] = $result[0];
+        $html = $this->load->view('pdfStudentProfilePrint', $data, true);
+
+        $this->m_pdf->pdf->WriteHTML($html);
+        $this->m_pdf->pdf->Output('Student Information.pdf',"D"); 
+	    exit;
+    }
+
+    function student_idcard_view()
+    {
+        $this->load->library('m_pdf');
+        
+        $this->db->where('student.student_id', 44);
+        $this->db->from('student');
+        $this->db->join('enroll', 'enroll.student_id = student.student_id');
+        $result = $this->db->get()->result_array();
+        $data['std_info'] = $result[0];
+        $this->load->view('pdfStudentIDPrint', $data);
     }
 
     function download_blank_form()

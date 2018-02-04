@@ -297,115 +297,142 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/student_information', $page_data);
     }
 
-    function generate_marksheet()
-    {       
-        $this->db->where('student_id',44);
-        $std_info = $this->db->get('enroll')->result_array();
-
-        $class_id = $std_info[0]['class_id'];
-        
+    function generate_marksheet($student_id)
+    {   
+        $std_id = $student_id;    
+        $optional = 0; // Optional Subject Id Store
+        $forthPoint = 0; // 4th Subject Point Store
+        $totalSubjectsMark = 0; // EG: 50 or 100
+        $totalSubjectCount = 0; // EG: 12 or 10 Subject each class        
+        // Get Student Info From In enroll Table
+        $this->db->where('student_id',$std_id);
+        $std_info = $this->db->get('enroll')->result_array();        
+        // Get Class ID
+        $class_id = $std_info[0]['class_id'];        
         // Grade Table
         $grades = $this->db->get('grade')->result_array();
-
-        // Subject Table
-        $this->db->where('class_id',$class_id);
-        $this->db->where('status',1);
-        $subjects = $this->db->get('subject')->result_array();
-
-        $subject_code  = array_column($subjects,'subject_code');
-
-        $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
-        $total_subject = count(array_unique($subject_code));
-        
         // Mark Table
-        $this->db->where('student_id',44);
+        $this->db->where('student_id',$std_id);
         $marks = $this->db->get('mark')->result_array();
-
-        // foreach($marks as $k=>$each) {
-
-        //     $this->db->where('subject_id',$each['subject_id']);
-        //     $this->db->get('subject')->result_array();
-
-        //     $ex_marks = explode('|',$each['mark_obtained']);
-        //     $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
-        // }
-
-        $optional = '';
-        foreach($marks as $k=>$each) {
-            $subject_code = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_code;
-            $ex_marks = explode('|',$each['mark_obtained']);
-
-            if(!empty($subject_code)) {
-                if(in_array($subject_code,$join_subject)) {
-                    $student[$each['student_id']]['mark'][$subject_code][$each['subject_id']] = array_sum($ex_marks);        
-                } else {
-                    $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
-                }     
-            } else {
-                $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
+        if(!empty($marks)) {
+            // Find all subject those are marked for this student
+            foreach($marks as $k2=>$each2) {
+                $subject_code[] = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
             }
-                   
-            $subj_total_mark = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->total_mark;
-            $subject_category = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_category;
-            if($subject_category == 'optional') {
-                $optional = $each['subject_id'];
-            }
-            
+            $totalSubjectCount = count($subject_code); // Store total subject
+            // Find Join Subject Code in sortout subject code array
+            $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
+            // Count Total Subject in this class
+            $total_subject = count(array_unique($subject_code));
+            // Store mark against in each subject
+            foreach($marks as $k2=>$each2) {
+                $subject_code = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
+                // Expload Marks EG: MT,CQ,MCQ,PR
+                $ex_marks = explode('|',$each2['mark_obtained']);
 
-            $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark;
-            foreach($grades as $key=>$each2) {
-                if($mark_obtain >= $each2['mark_from'] && $mark_obtain <= $each2['mark_upto']) {
-
-                    if(!empty($subject_code)) {
-                        if(in_array($subject_code,$join_subject)) {
-                            $student[$each['student_id']]['point'][$subject_code][$each['subject_id']] = $each2['grade_point'];
-                            $student[$each['student_id']]['grade'][$subject_code][$each['subject_id']] = $each2['name'];
+                if(!empty($subject_code)) {
+                    if(in_array($subject_code,$join_subject)) { // Store join subject mark
+                        $student[$std_id]['mark'][$subject_code][$each2['subject_id']] = array_sum($ex_marks);        
+                    } else { // Store regular subject mark
+                        $student[$std_id]['mark'][$each2['subject_id']] = array_sum($ex_marks);
+                    }     
+                } else { // Store regular subject mark
+                    $student[$std_id]['mark'][$each2['subject_id']] = array_sum($ex_marks);
+                }
+                // Findout current subject total mark
+                $subj_total_mark = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->total_mark;
+                $totalSubjectsMark += $subj_total_mark;
+                $subject_category = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_category;
+                // Check if optional subject found
+                if($subject_category == 'optional') {
+                    $optional = $each2['subject_id'];
+                }
+                $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark; // EG: (35*100)/50 or 100
+                // Calculate point and grade for all subject
+                foreach($grades as $k3=>$each3) {
+                    if($mark_obtain >= $each3['mark_from'] && $mark_obtain <= $each3['mark_upto']) {
+                        if(!empty($subject_code)) {
+                            if(in_array($subject_code,$join_subject)) {
+                                $student[$std_id]['point'][$subject_code][$each2['subject_id']] = $each3['grade_point'];
+                                $student[$std_id]['grade'][$subject_code][$each2['subject_id']] = $each3['name'];
+                            } else {
+                                $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
+                                $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
+                            }     
                         } else {
-                            $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
-                            $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
-                        }     
-                    } else {
-                        $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
-                        $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
+                            $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
+                            $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
+                        }
+                    }
+                }            
+            }    
+            // Store total subjects mark
+            $student[$std_id]['subject_total_mark'] = $totalSubjectsMark; 
+            // Calculate Subject total 
+            foreach($student[$std_id]['mark'] as $k2=>$each2) {
+                if(is_array($each2)) {
+                    $student[$std_id]['total_mark'] += array_sum($each2);            
+                } else {
+                    $student[$std_id]['total_mark'] += $each2;
+                }            
+            }
+            // Check join subject and marge both subject
+            if(!empty($join_subject)) {
+                foreach($join_subject as $k2=>$each2) {
+                    $join_subj_mark = array_sum($student[$std_id]['mark'][$each2]); 
+                    unset($student[$std_id]['point'][$each2]);
+                    unset($student[$std_id]['grade'][$each2]);
+                    $join_subj_mark = $join_subj_mark/2;
+                    foreach($grades as $k3=>$each3) {
+                        if($join_subj_mark >= $each3['mark_from'] && $join_subj_mark <= $each3['mark_upto']) {
+                            $student[$std_id]['point'][$each2] = $each3['grade_point'];
+                            $student[$std_id]['grade'][$each2] = $each3['name'];
+                        }
                     }
                 }
-            }            
-        }       
- 
-        foreach($student[44]['mark'] as $k=>$each) {
-            if(is_array($each)) {
-                $student[44]['total_mark'] += array_sum($each);            
-            } else {
-                $student[44]['total_mark'] += $each;
             }
+            // Check optional subject for point addition or subtraction
+            if(!empty($optional)) {
+                if($student[$std_id]['point'][$optional] > 2)  {
+                    $forthPoint = $student[$std_id]['point'][$optional] - 2;
+                }
+                $total_subject = $total_subject - 1;
+                unset($student[$std_id]['point'][$optional]);
+            }
+            $point_total = array_sum($student[$std_id]['point']);
+            // Check optional subject for calculate 4th subject point
+            $student[$std_id]['total_point_with_4th'] = round(($point_total+$forthPoint)/$total_subject, 2);
+            $student[$std_id]['total_point_without_4th'] = round($point_total/$total_subject, 2);
             
-        }
-
-        if(!empty($join_subject)) {
-            foreach($join_subject as $k=>$each) {
-                $join_subj_mark = array_sum($student[44]['mark'][$each]); 
-                unset($student[44]['point'][$each]);
-                unset($student[44]['grade'][$each]);
-                $join_subj_mark = $join_subj_mark/2;
-                foreach($grades as $k2=>$each2) {
-                    if($join_subj_mark >= $each2['mark_from'] && $join_subj_mark <= $each2['mark_upto']) {
-                        $student[44]['point'][$each] = $each2['grade_point'];
-                        $student[44]['grade'][$each] = $each2['name'];
+            if(!array_search('F',$student[$std_id]['grade'])){
+                // Calculate total grade mark EG: 695/12 = 57.91 (12 for total subject) AND (695 is total obtain mark)
+                $markForTotalGrade = $student[$std_id]['total_mark']/$totalSubjectCount;
+                foreach($grades as $k2=>$each2) {                    
+                    if(!empty($grades[$k2+1])) {
+                        if($markForTotalGrade >= $grades[$k2+1]['mark_from'] && $markForTotalGrade <= $each2['mark_upto']) {
+                            $student[$std_id]['total_grade'] = $each2['name'];
+                        }
                     }
                 }
+            } else {
+                // If any subject fail
+                $student[$std_id]['total_grade'] = 'F';
+            }        
+        } // End first if condition
+        // pd($student);
+        return $student;
+    }
 
+    function generate_marksheet_class_wise()
+    {
+        $class_std = $this->db->get_where('enroll',['class_id'=>23])->result_array();
+        foreach($class_std as $std_key=>$std_each) { 
+            $students[$std_key] = $this->generate_marksheet($std_each['student_id']);
+            if(empty($students[$std_key])) {
+                unset($students[$std_key]);
             }
         }
-        if(!empty($optional)) {
-            if($student[44]['point'][$optional] > 2)  {
-                $forthPoint = $student[44]['point'][$optional] - 2;
-            }
-            $total_subject = $total_subject - 1;
-        }
-
-        $student[44]['total_point'] = round(array_sum(($student[44]['point'])-$forthPoint)/$total_subject, 2);
-
-        pd($student);
+        pd($students);
     }
 
     function student_marksheet($student_id = '')
