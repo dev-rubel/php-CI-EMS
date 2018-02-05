@@ -100,7 +100,8 @@ function changePage(page)
         success: function (response)
         {   
             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?homemanage/' + selectValue;
-            window.history.pushState({path:newurl},'',newurl);                
+            window.history.pushState({path:newurl},'',newurl); 
+                          
             // var cName = $('#'+selectValue).hasClass('bg-info'); 
             // if(cName){
             //     $("#"+selectValue).removeClass("bg-info");

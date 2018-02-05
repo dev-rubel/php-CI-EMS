@@ -1,3 +1,8 @@
+<style>
+span.mendatory {
+    color: red !important;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-primary" data-collapsed="0">
@@ -15,7 +20,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('name'); ?>
+                            <?php echo get_phrase('name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -25,7 +30,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('name_bangla'); ?>
+                            <?php echo get_phrase('name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -35,7 +40,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('father_name'); ?>
+                            <?php echo get_phrase('father_name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -45,7 +50,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('father_name_bangla'); ?>
+                            <?php echo get_phrase('father_name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -55,7 +60,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('mother_name'); ?>
+                            <?php echo get_phrase('mother_name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -65,7 +70,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('mother_name_bangla'); ?>
+                            <?php echo get_phrase('mother_name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -85,7 +90,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('permanent_address'); ?>
+                            <?php echo get_phrase('permanent_address'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -95,7 +100,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('present_address'); ?>
+                            <?php echo get_phrase('present_address'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -175,7 +180,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('birthday'); ?>
+                            <?php echo get_phrase('birthday'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -215,7 +220,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('guardian_mobile_no'); ?>
+                            <?php echo get_phrase('guardian_mobile_no'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -278,7 +283,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('want_to_admit_class'); ?>
+                            <?php echo get_phrase('want_to_admit_class'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -303,7 +308,7 @@
 
                     <div class="form-group groupHolder">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('group'); ?>
+                            <?php echo get_phrase('group'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -317,7 +322,7 @@
 
                     <div class="form-group sectionHolder">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('section'); ?>
+                            <?php echo get_phrase('section'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
                             <select name="section_id" class="form-control" id="section_selector_holder">
@@ -331,7 +336,7 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('shift'); ?>
+                            <?php echo get_phrase('shift'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
                             <select name="shift_id" class="form-control" id="shift_selector_holder">
@@ -352,7 +357,7 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('Roll'); ?>
+                            <?php echo get_phrase('Roll'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-6">
@@ -393,7 +398,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('photo'); ?>
+                            <?php echo get_phrase('photo'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">

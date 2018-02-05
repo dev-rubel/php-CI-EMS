@@ -98,7 +98,9 @@ if(!empty($stdExist)):
                                 ))->result_array();
                                 foreach($students as $row):?>
                         <tr id="student<?php echo $row['student_id'];?>">
-                            <td><?php echo $row['student_id'];?></td>
+                            <td>
+                                <?php echo $this->db->get_where('student',['student_id'=>$row['student_id']])->row()->student_code;;?>
+                            </td>
                             <td>
                                 <?php if(!empty($row['roll'])):?>
                                     <?php echo $row['roll'];?>
