@@ -4,157 +4,135 @@ extract($std_info);
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoolInfo);
 
-
-if(!empty($group)) {
-    $condition3 = '
-     <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-  <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Group : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.ucfirst($group).'</span></p> </div>
-    </div>   
-    ';
-    $jsc = explode(',', $jscinfo);
-    $condition2 = '
-        <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-        <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 650px;display:inline-block;margin: 2px 0;color: green;">JSC Information : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:normal; font-style: italic; font-size: 12px;">GPA: '.$jsc[3].', Reg No: '.$jsc[1].', Roll No: '.$jsc[2].', Year: '.$jsc[0].'</span></p>  </div>
-        </div>
-    ';
-} else {
-    $jsc = '';
-};
-if($class==91) {
-	$class = '9 Vocational';
-} else {
-	$class = $class;
-}
 $base = base_url().'uploads/';
-$stdImg = base_url().'assets/images/admission_student/'.$admission_session.'/'.$img;
-
-if(!empty($lguaridan)):
-    $condition1 = '
-          <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-      <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Legal Guardian : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.$lguaridan.'</span></p> </div></div>
-
-<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Relation : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.$relaguardian.'</span></p> </div></div>  
-    ';
-    
-endif;
 ?>
-    <html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+<style media="all">
+    @import url('https://fonts.googleapis.com/css?family=Oswald');
+    html {
+    font-family: 'Oswald', sans-serif !important;
+    line-height: 23px;
+    }
 
-    <head>
-    </head>
+    .each-card {
+        margin-top: 3% !important;
+    }
 
-    <body style="font-size: 12px;">
+    .centered {
+    /* margin: 0 auto; */
+    }
 
-        <div style="width: 100%;">
-            <!--<div class="blnk-space"></div>-->
-            <div class="hdr">
-                <div style="width: 100%; height: 150px">
-                    <div style="float: left; width: 15%; text-align: center">
-                        <img src="<?php echo $base.'school_logo.png';?>" width="100px" height="100px">
-                    </div>
-                    <div style="float: left; width: 65%; text-align: center; line-height: 12px">
-                        <h2 class="ex" style="color: green;">
-                            <?php echo $schoolName; ?>
-                        </h2>
-                        <h3 style="color: green;">
-                            <?php echo $schoolAddress; ?>
-                        </h3>
-                        <p>EIIN:
-                            <?php echo $eiin; ?>, Email:
-                            <?php echo $schoolEmail; ?>
-                        </p>
-                        <p style="margin-bottom:10px;">Phone:
-                            <?php echo $phone; ?>
-                        </p>
-                        <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Student ID Card</p>
-                    </div>
-                    <div style="float: right; width: 20%; text-align: center">
-                        <?php if(file_exists($stdImg)):?>
-                            <img src="<?php echo $stdImg;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
-                        <?php endif;?>
-                    </div>
+    .finer-print {
+    font-size: 13px;
+    }
+
+    .span2 {
+    width: 50%;
+    padding: 0;
+    float: left;
+    font-size: 16px;
+    }
+
+    .business-card {
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%), url(bg.png) repeat 0 0 !important, url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.7)), color-stop(100%,rgba(255,255,255,0.7))), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: -o-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: -ms-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+    background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
+
+
+    background-repeat: no-repeat !important;
+    background-position: center 60px !important;
+    background-size: 130px 130px !important;
+    position: relative;
+    color: #2e3436;
+    /* width: 400px; */
+    height: 230px;
+    font-size: 20px;
+    border-bottom: 2px solid #d3d7df;
+    /* margin-top: 5%; */
+    letter-spacing: 1px;
+    }
+
+    .business-card .title {
+    background: url('http://www.vector-eps.com/wp-content/gallery/great-solid-textures/great-solid-texture1.jpg') !important;
+    color: #fff !important;
+    height: 42px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 18px !important;
+    }
+
+    .business-card .content {
+    font-weight: bold;
+    padding: 15px;
+    }
+
+    .business-card .avatar {
+    float: right;
+    max-width: 100px;
+    max-height: 100px;
+    box-shadow: 0 0 1px 1px #777 !important;
+    border-radius: 3px !important;
+    }
+
+    .business-card .footer {
+    background: url('http://www.vector-eps.com/wp-content/gallery/great-solid-textures/great-solid-texture1.jpg') !important;
+    font-weight: bold;
+    color: #fff !important;
+    position: absolute;
+    text-align: center;
+    bottom: 1px;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid;
+    width: 100%;
+    letter-spacing: 1px;
+    }
+</style>
+
+<div class="row full-page">
+<?php 
+
+foreach($std_info as $k=>$each):
+?>
+    <div class="col-xs-6 each-card">
+        <!-- CARD START -->
+
+            <div class="business-card centered">
+                <div class="title">
+                    <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name; ?>
                 </div>
-                
-                <img src="<?php echo $base.'school_logo.png';?>" style="
-                            opacity: .1;
-                            margin-left: 210px;
-                            margin-top: 0px;
-                            width: 220px;
-                            height: 225px;
-                            " />
-                <div class="office-part" style="position: relative; margin-top: 100px; line-height: 10px;">
-                    <div style="margin-top: -330px;border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $name; ?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $fname;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Roll : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $roll;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $this->db->get_where('class',['class_id'=>$class_id])->row()->name;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Section : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $this->db->get_where('section',['section_id'=>$section_id])->row()->name;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    </div>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Shift : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $this->db->get_where('shift',['shift_id'=>$shift_id])->row()->name;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <?php echo $condition3;?>
-                    <?php echo $condition2;?>
-                    <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-                        <div style="margin-bottom: 4px; font-weight: bold;">
-                            <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Date of Birth : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <span style="font-weight: normal; color: black; font-size: 12px;">
-                                    <?php echo $birthday;?>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-
+                <div class="content span2">
+                    Class: <?php echo $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name; ?><br />
+                    <span class="finer-print">
+                    <?php if($each['group_id'] != 0): ?>
+                        Group: <?php $groupName = $this->db->get_where('group',['group_id'=>$each['group_id']])->row()->name; echo strtoupper($groupName); ?><br />
+                    <?php endif; ?>
+                    Roll: <?php echo $each['roll']; ?><br />
+                    Phone: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile; ?><br />
+                    </span>
                 </div>
-             
+                <div class="content span2">
+                    <img src="<?php echo base_url();?>uploads/student_image/<?php echo $each['student_id']?>.jpg" alt="avatar" class="avatar" />
+                </div>
+                <div class="footer">
+                    <?php echo ucwords($schoolName); ?>
+                </div>
             </div>
-        </div>
-        </div>
-    </body>
 
-    </html>
+
+        <!-- CARD END -->
+    </div>
+
+<?php endforeach; ?>    
+</div>
