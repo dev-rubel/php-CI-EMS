@@ -311,14 +311,16 @@ class Home extends MX_Controller {
     function profile_view()
     {
         $this->load->library('m_pdf');
-
-        $this->db->where('student.student_id', 44);
+        $student_id = $this->uri->segment(3);
+        $this->db->where('student.student_id', $student_id);
         $this->db->from('student');
         $this->db->join('enroll', 'enroll.student_id = student.student_id');
         $result = $this->db->get()->result_array();
         $data['std_info'] = $result[0];
         $this->load->view('pdfStudentProfilePrint', $data);
         // $html = $this->load->view('pdfStudentProfilePrint', $data, true);
+        // $this->load->view('pdfStudentProfilePrint', $data);
+        $html = $this->load->view('pdfStudentProfilePrint', $data, true);
 
         // $this->m_pdf->pdf->WriteHTML($html);
         // $this->m_pdf->pdf->Output('Student Information.pdf',"D"); 

@@ -154,6 +154,15 @@ if(!empty($stdExist)):
                                                     <?php echo get_phrase('profile');?>
                                                 </a>
                                         </li>
+
+                                        
+                                        <!-- STUDENT PROFILE PRINT LINK -->
+                                        <li>
+                                            <a href="<?php echo base_url(); ?>Home/profile_view/<?php echo $row['student_id'];?>" target="_blank">
+                                                <i class="entypo-print"></i>
+                                                    <?php echo get_phrase('print_profile');?>
+                                                </a>
+                                        </li>
                                         
                                         <!-- STUDENT EDITING LINK -->
                                         <li>
