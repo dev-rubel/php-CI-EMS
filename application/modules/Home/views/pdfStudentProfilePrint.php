@@ -1,17 +1,19 @@
 <style media="all">
     table.paleBlueRows {
     border: 1px solid #FFFFFF !important;
-    width: 100% !important;
+    width: 450px !important;
     height: 200px !important;
-    text-align: center !important;
+    text-align: left !important;
     border-collapse: collapse !important;
+	/* margin-left: 10% !important; */
     }
     table.paleBlueRows td, table.paleBlueRows th {
-    border: 1px solid #FFFFFF !important;
+    border: 1px solid #000 !important;
     padding: 3px 2px !important;
     }
     table.paleBlueRows tbody td {
     font-size: 13px !important;
+	padding-left: 10px; 
     }
     table.paleBlueRows tr:nth-child(even) {
     background: #D0E4F5 !important;
@@ -40,6 +42,7 @@
     }
     table.paleBlueRows tfoot td {
     font-size: 14px !important;
+	padding-left: 10px; 
     }
 </style>
 <?php
@@ -324,6 +327,10 @@ $condition1 = '
                                 </tr>
                             </tfoot>
                             <tbody>
+							<tr>
+								<td><b>Type</b></td>
+								<td><b>Amount</b></td>
+							</tr>
                             <?php foreach($tution_info_names as $k=>$each): ?>
                                 <tr>
                                     <td><?php echo ucwords(str_replace('_',' ',$each)); ?></td>
@@ -331,8 +338,7 @@ $condition1 = '
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>
-                            </table>
-                 
+						</table>              
                 
                 
 			</div>

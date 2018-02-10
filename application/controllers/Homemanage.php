@@ -662,7 +662,6 @@ class Homemanage extends CI_Controller
         $this->db->where('id',$_POST['student_id']);
         $data = $this->db->get('admit_std')->result_array();
 
-
         // pd($data[0]);
         //student table section
         $admint_student_id = $data[0]['id'];
@@ -674,7 +673,7 @@ class Homemanage extends CI_Controller
         $studentInfo['jscpecinfo'] = $data[0]['jscinfo'];
         $studentInfo['birthday'] = $data[0]['date'];
         $studentInfo['mobile'] = $data[0]['mobile'];
-        $studentInfo['sex'] =  $this->db->get_where('admit_std',['uniq_id'=>$stdInfo1['uniq_id']])->row()->sex;
+        $studentInfo['sex'] =  $this->db->get_where('admit_std',['uniq_id'=>$stdInfo1['student_code']])->row()->sex;
         $studentInfo['from_admit_std'] = 'Yes';
         $studentInfo['password'] = substr(md5(rand(0, 1000000)), 0, 7);
         $studentTable = array_merge($stdInfo1,$studentInfo);
@@ -702,33 +701,33 @@ class Homemanage extends CI_Controller
 
 
         //invoice table section
-        $invoiceInfo['student_id']         = $enrolInfo['student_id'];
-        $invoiceInfo['class_id']           = $_POST['class_id'];
-        $invoiceInfo['acc_code']           = $studentTable['student_code'];
-        $invoiceInfo['fee_name']           = 'Admission Fee';
-        $invoiceInfo['fee_amount']         = $fee;
-        $invoiceInfo['description']        = 'Admission Fee';
-        $invoiceInfo['amount']             = $fee;
-        $invoiceInfo['amount_paid']        = $fee;
-        $invoiceInfo['due']                = '';
-        $invoiceInfo['status']             = 'paid';
-        $invoiceInfo['creation_timestamp'] = strtotime(date('m/d/Y'));
-        $invoiceInfo['year']               = $this->running_year;
+        // $invoiceInfo['student_id']         = $enrolInfo['student_id'];
+        // $invoiceInfo['class_id']           = $_POST['class_id'];
+        // $invoiceInfo['acc_code']           = $studentTable['student_code'];
+        // $invoiceInfo['fee_name']           = 'Admission Fee';
+        // $invoiceInfo['fee_amount']         = $fee;
+        // $invoiceInfo['description']        = 'Admission Fee';
+        // $invoiceInfo['amount']             = $fee;
+        // $invoiceInfo['amount_paid']        = $fee;
+        // $invoiceInfo['due']                = '';
+        // $invoiceInfo['status']             = 'paid';
+        // $invoiceInfo['creation_timestamp'] = strtotime(date('m/d/Y'));
+        // $invoiceInfo['year']               = $this->running_year;
        
-        $this->db->insert('invoice', $invoiceInfo);
-        $invoice_id = $this->db->insert_id();
+        // $this->db->insert('invoice', $invoiceInfo);
+        // $invoice_id = $this->db->insert_id();
 
         //payment table section
-        $paymentInfo['invoice_id']        =   $invoice_id;
-        $paymentInfo['student_id']        =   $enrolInfo['student_id'];
-        $paymentInfo['title']             =   'Admission Fee';
-        $paymentInfo['description']       =   'Admission Fee';
-        $paymentInfo['payment_type']      =   'income';
-        $paymentInfo['method']            =   '1';
-        $paymentInfo['amount']            =   $fee;
-        $paymentInfo['timestamp']         =   strtotime(date('m/d/Y'));
-        $paymentInfo['year']              =   $this->running_year;
-        $this->db->insert('payment' , $paymentInfo);
+        // $paymentInfo['invoice_id']        =   $invoice_id;
+        // $paymentInfo['student_id']        =   $enrolInfo['student_id'];
+        // $paymentInfo['title']             =   'Admission Fee';
+        // $paymentInfo['description']       =   'Admission Fee';
+        // $paymentInfo['payment_type']      =   'income';
+        // $paymentInfo['method']            =   '1';
+        // $paymentInfo['amount']            =   $fee;
+        // $paymentInfo['timestamp']         =   strtotime(date('m/d/Y'));
+        // $paymentInfo['year']              =   $this->running_year;
+        // $this->db->insert('payment' , $paymentInfo);
 
         // UPDATE STUDENT STATUS IN ADMISSION TABLE
         $this->db->update('admit_std',['status'=>2],['uniq_id'=>$stdInfo1['student_code']]);

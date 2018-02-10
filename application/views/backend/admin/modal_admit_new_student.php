@@ -5,21 +5,16 @@ extract($result);
 //pd($result);
 ?>
 
-<div class="profile-env">
-	
-	<header class="row">
-		
-		<div class="col-sm-3">
-			
+<div class="profile-env">	
+	<header class="row">		
+		<div class="col-sm-3">			
 			<a href="#" class="profile-picture">
 				<img src="<?php echo base_url()."assets/images/admission_student/$session/".$img;?>" 
                 	class="img-responsive img-circle" />
-			</a>
-			
+			</a>			
 		</div>
 		
-		<div class="col-sm-9">
-			
+		<div class="col-sm-9">			
 			<ul class="profile-info-sections">
 				<li style="padding:0px; margin:0px;">
 					<div class="profile-name">
@@ -27,19 +22,15 @@ extract($result);
 							<h3><?php echo $namebn;?></h3>
 					</div>
 				</li>
-			</ul>
-			
-		</div>
-		
+			</ul>			
+		</div>		
 		
 	</header>
 	
-	<section class="profile-info-tabs">
-		
-		<div class="row">
-			
+	<section class="profile-info-tabs">		
+		<div class="row">			
 			<div class="">
-            		<br>
+                <br>
                 <?php echo form_open(base('homemanage','transfer_admit_student') ,'', array('student_id'=>$id));?>
                 <table class="table table-bordered" style="width: 80%; margin: 0 auto;">
                 
@@ -97,10 +88,10 @@ extract($result);
 						<button type="button" class="btn btn-info btn-sm" onclick="get_std_roll()">Find Roll</button>	
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td  width="100px">Admit Fee</td>
                         <td><input type="number" class="form-control" name="fee" data-validation="required"/></td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td><button type="submit" class="btn btn-info btn-sm">Add</button></td>
                     </tr>
@@ -121,15 +112,12 @@ extract($result);
     $('#loading').hide();
     $('#overlayDiv').hide();
 
-
-function get_std_roll(){
-
-    if(!$('#shift_selector_holder').val() || !$('#section_selector_holder').val() || !$('#class_id').val()){
+function get_std_roll() {
+    if(!$('#shift_selector_holder').val() || !$('#section_selector_holder').val() || !$('#class_id').val()) {
 
             alert('Please Select All Option Properly.');
-    }else{
-
-            $.ajax({
+    } else {
+        $.ajax({
             type: "POST",
             dataType: "json",
             data: {
@@ -158,44 +146,36 @@ function get_std_roll(){
             }
         });
     }
-
 };
         
-         
 
+function get_class_sections(class_id) {
 
-
-    
-
-
-    function get_class_sections(class_id) {
-
-        $.ajax({
-            url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
-            success: function (response)
-            {   
-                if(response){
-                    $('.groupHolder').show();
-                    jQuery('#group_selector_holder').html(response);                  
-                }else{
-                    $('.groupHolder').hide();
-                }
+    $.ajax({
+        url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
+        success: function (response)
+        {   
+            if(response) {
+                $('.groupHolder').show();
+                jQuery('#group_selector_holder').html(response);                  
+            } else {
+                $('.groupHolder').hide();
             }
-        });
+        }
+    });
 
-        $.ajax({
-            url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
-            success: function (response)
-            {
-                if(response){
-                    $('.sectionHolder').show();
-                    jQuery('#section_selector_holder').html(response);                
-                }else{
-                    $('.sectionHolder').hide();
-                }
+    $.ajax({
+        url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
+        success: function (response)
+        {
+            if(response) {
+                $('.sectionHolder').show();
+                jQuery('#section_selector_holder').html(response);                
+            } else {
+                $('.sectionHolder').hide();
             }
-        });
-
-    }
+        }
+    });
+}
 
 </script>
