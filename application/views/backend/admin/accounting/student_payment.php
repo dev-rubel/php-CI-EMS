@@ -7,6 +7,9 @@
     input.form-control {
         border: 1px solid lightslategray;
     }
+    .panel {
+        margin: 5px 0px;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -36,20 +39,8 @@
                
                 <form id="createInvoice" action="<?php echo base_url() .'index.php?admin/ajax_create_invoice'; ?>" class="form-horizontal form-groups-bordered" method="post">   
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="panel panel-default panel-shadow" data-collapsed="0">
-                            <div class="panel-heading">
-                                <div class="panel-title">
-                                    <?php echo get_phrase('student_tution_fee_info');?>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <div id="studentAccountHistory"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
+                <div class="row">                    
+                    <div class="col-md-7">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -157,7 +148,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-5">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -226,7 +217,23 @@
 
 
                 </div>
+
                 <?php echo form_close();?>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="0">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <?php echo get_phrase('student_tution_fee_info');?>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="studentAccountHistory"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- creation of single invoice -->
 
