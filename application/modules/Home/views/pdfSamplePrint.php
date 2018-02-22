@@ -22,13 +22,13 @@ $base = base_url().'uploads/';
             <!--<div class="blnk-space"></div>-->
             <div class="hdr">
                 <div style="width: 100%; height: 150px">
-                    <div style="float: left; width: 15%; text-align: center">
-                        <img src="<?php echo $base.'school_logo.png';?>" width="100px" height="100px">
+                    <div style="float: left; width: 18%; text-align: center">
+                        <img src="<?php echo $base.'school_logo.png';?>" width="140px" height="140px">
                         <div style="margin-top: 15px;"> Serial No:
                             <?php echo substr($uniq_id, -4); ?>
                         </div>
                     </div>
-                    <div style="float: left; width: 65%; text-align: center; line-height: 15px">
+                    <div style="float: left; width: 64%; text-align: center; line-height: 15px">
                         <h2 class="ex" style="color: green;">
                             <?php echo $schoolName; ?>
                         </h2>
@@ -44,8 +44,8 @@ $base = base_url().'uploads/';
                         </p>
                         <p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admission Form</p>
                     </div>
-                    <div style="float: right; width: 20%; text-align: center">
-                        
+                    <div style="float: right; width: 18%; text-align: center">
+                        <img src="https://dummyimage.com/115x120/efedf5/000000.png&text=Attach+Photo" style="border: 1px solid;padding: 2px">
                     </div>
                 </div>
                 <div class="office-part" style="position: relative; line-height: 10px;">
@@ -233,11 +233,21 @@ $base = base_url().'uploads/';
                     <p style="margin-left: 15px">The Head Teachers orders to admit .......................................................... in class
                         ..........................................
                     </p>
-                    <p style="margin-left: 15px">Admission No in Register : </p>
-                    <p style="margin-left: 15px">Class Roll No : </p>
+                    <p style="margin-left: 15px">Admission No in Register ...........................  Class Roll No .......................</p>
 
                 </div>
-                <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No:
+
+                <div style="width: 100%; height: 70px; margin-top: 0px;">
+                    <div style="float: left; width: 15%; text-align: center">
+                        
+                    </div>
+                    <br><br>
+                    <div style="float: right; width: 20%; text-align: center">
+                        <p style="border-top: 1px solid gray; border-width: 2px;">Principal Sign</p>
+                    </div>
+                </div>
+
+                <p style="position: absolute; bottom: 0; margin: 0 0 0 300px; width: 100%;">Page No:
                     <?php echo 1;?>
                 </p>
 
@@ -246,13 +256,13 @@ $base = base_url().'uploads/';
 
                 <div style="padding-top: 10px; height: 500px;">
                     <div style="width: 100%; padding-top: 0px;">
-                        <div style="float: left; width: 15%; text-align: center">
-                            <img src="<?php echo $base.'school_logo.png' ;?>" width="100px" height="100px">
+                        <div style="float: left; width: 18%; text-align: center">
+                            <img src="<?php echo $base.'school_logo.png' ;?>" width="140px" height="140px">
                             <div style="margin-top: 15px;"> Serial No:
                                 <?php echo substr($uniq_id, -4); ?>
                             </div>
                         </div>
-                        <div style="float: left; width: 65%; text-align: center; line-height: 15px">
+                        <div style="float: left; width: 64%; text-align: center; line-height: 15px">
 
                             <h2 class="ex" style="color: green;">
                                 <?php echo $schoolName; ?>
@@ -269,8 +279,8 @@ $base = base_url().'uploads/';
                             </p>
                             <p style="font-size: 13px; width: 240px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Admit Card of Admission Exam</p>
                         </div>
-                        <div style="float: right; width: 20%; text-align: center">
-                           
+                        <div style="float: right; width: 18%; text-align: center">
+                           <img src="https://dummyimage.com/115x120/efedf5/000000.png&text=Attach+Photo" style="border: 1px solid;padding: 2px">
                         </div>
                     </div>
                     <br/>
@@ -360,13 +370,13 @@ $base = base_url().'uploads/';
                         </div>
                     </div>
                     <div style="width: 100%; height: 150px; margin-top: 0px;">
-                        <div style="float: left; width: 15%; text-align: center">
-                            <p style="border-top: 1px solid gray; border-width: 2px;">Office Seal</p>
+                        <div style="float: left; width: 20%; text-align: center">
+                            <p style="border-top: 1px solid gray; border-width: 2px;">Vice-Principal Sign</p>
                         </div>
-                        <div style="float: left; width: 65%; text-align: center; line-height: 15px">
+                        <div style="float: left; width: 60%; text-align: center; line-height: 15px">
                         </div>
                         <div style="float: right; width: 20%; text-align: center">
-                            <p style="border-top: 1px solid gray; border-width: 2px;">Headteacher Sign</p>
+                            <p style="border-top: 1px solid gray; border-width: 2px;">Principal Sign</p>
                         </div>
                     </div>
 
@@ -431,6 +441,9 @@ $base = base_url().'uploads/';
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <br>
+                    <br>
                     <p style="position: absolute; bottom: 0; margin-left: 300px; width: 100%;">Page No:
                         <?php echo 2;?>
                     </p>

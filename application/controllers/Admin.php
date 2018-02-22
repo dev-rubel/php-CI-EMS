@@ -106,7 +106,7 @@ class Admin extends CI_Controller
                     }
                 }
 
-            }else{
+            } else {
                 $key = array_search($singlestd['student_id'], $localServerInfo);
                 if(is_numeric($key)){
                     $status = end(explode('@', $_POST[$key]));
@@ -207,8 +207,8 @@ class Admin extends CI_Controller
 
     function student_bulk_add($param1 = '')
     {
-            if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
+        if ($this->session->userdata('admin_login') != 1)
+        redirect(base_url(), 'refresh');
 
         if($param1 == 'add_bulk_student') {
 
