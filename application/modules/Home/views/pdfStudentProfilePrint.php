@@ -120,7 +120,9 @@ $condition1 = '
 						</div>
 						<div style="float: right; width: 20%; text-align: center">
 							<?php if(file_exists($stdImg)):?>
-							<img src="<?php echo $stdImg2;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+								<img src="<?php echo $stdImg2;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+							<?php else: ?>		
+								<img src="https://dummyimage.com/115x125/efedf5/000000.png&text=Attach+Photo" style="border: 1px solid;padding: 2px">
 							<?php endif;?>
 						</div>
 					</div>
