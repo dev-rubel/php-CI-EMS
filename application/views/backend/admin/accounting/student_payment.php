@@ -56,7 +56,7 @@
                                         <?php echo get_phrase('input_student_id');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Shift Class Section Roll Group"
+                                        <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Student Uniqe ID"
                                             required="required" autofocus/>
                                     </div>
                                 </div>
@@ -104,9 +104,6 @@
                                             <input type="checkbox" name="months[]" value="december" class="custom-control-input">
                                             <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
                                         </div>
-
-
-
                                     </div>
                                 </div>
 
@@ -225,7 +222,7 @@
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
                                 <div class="panel-title">
-                                    <?php echo get_phrase('student_tution_fee_info');?>
+                                    <?php echo get_phrase('student_tution_fee_history');?>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -463,7 +460,8 @@ function get_class_students(class_id) {
         for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
             var chkbox = row.cells[0].childNodes[0];
-            if(null != chkbox && true == chkbox.checked) {
+            // console.log(chkbox);
+            if(null != chkbox && true == chkbox.nextSibling.checked) {
                 if(rowCount <= 1) {
                     alert("Cannot delete all the rows.");
                     break;

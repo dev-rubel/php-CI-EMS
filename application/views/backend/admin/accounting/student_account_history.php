@@ -17,18 +17,20 @@
     </thead>
     <tbody>
     <?php if(!empty($student_payment)): 
-    $totalAmount = 0; 
+    $totalAmountPaid = 0; 
     $dueTotal = 0; 
+    $totalAmount = 0;
     foreach($student_payment as $k=>$each):
         $multipleValue = strpos($each['fee_name'], ','); 
         $dueTotal += $each['due'];
-
+        $totalAmountPaid += $each['amount_paid'];
+        $totalAmount += $each['amount'];   
+        
         if($multipleValue !== false): 
         $multiplefee_name = explode(',',$each['fee_name']); 
         $multipleAmount = explode(',',$each['fee_amount']);  
-        $multipleMonths = explode(',',$each['months']);          
-            foreach($multiplefee_name as $k2=>$each2): 
-                $totalAmount += $multipleAmount[$k2];    
+        $multipleMonths = explode(',',$each['months']);            
+            foreach($multiplefee_name as $k2=>$each2):  
                 
         ?>
         <tr valign="middle">      
@@ -49,7 +51,7 @@
                 </td>
             <?php endif; ?>
         </tr>
-    <?php endforeach; else: $totalAmount += $each['amount'];?>
+    <?php endforeach; else: ?>
         <tr>      
             <td><?php echo date('d-m-y', $each['creation_timestamp']);?></td>
             <td><?php echo ucwords(str_replace('_',' ',$each['fee_name']));?></td>
@@ -70,8 +72,8 @@
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td><?php echo $totalAmount;?></td>
+            <td><?php echo $totalAmount; ?></td>
+            <td><?php echo $totalAmountPaid;?></td>
             <td><?php echo $dueTotal; ?></td>
         </tr>
     </tbody>

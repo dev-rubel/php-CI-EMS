@@ -297,7 +297,7 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/student_information', $page_data);
     }
 
-    function generate_marksheet($student_id)
+    function generate_marksheet($student_id,$exam_id)
     {   
         $std_id = $student_id;    
         $optional = 0; // Optional Subject Id Store
@@ -313,6 +313,8 @@ class Admin extends CI_Controller
         $grades = $this->db->get('grade')->result_array();
         // Mark Table
         $this->db->where('student_id',$std_id);
+        $this->db->where('year',$this->running_year);
+        $this->db->where('exam_id',$exam_id);
         $marks = $this->db->get('mark')->result_array();
         if(!empty($marks)) {
             // Find all subject those are marked for this student
@@ -324,12 +326,15 @@ class Admin extends CI_Controller
             $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
             // Count Total Subject in this class
             $total_subject = count(array_unique($subject_code));
-            // Store mark against in each subject
+            // Inisilize FailCount 
+            $student[$std_id]['failCount'] = 0;
+            // Store mark against in each subject            
             foreach($marks as $k2=>$each2) {
                 $subject_code = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
                 // Expload Marks EG: MT,CQ,MCQ,PR
                 $ex_marks = explode('|',$each2['mark_obtained']);
-
+                // Store Obtain Mark
+                $student[$std_id]['obtain_mark'][$each2['subject_id']] = $each2['mark_obtained'];
                 if(!empty($subject_code)) {
                     if(in_array($subject_code,$join_subject)) { // Store join subject mark
                         $student[$std_id]['mark'][$subject_code][$each2['subject_id']] = array_sum($ex_marks);        
@@ -349,8 +354,12 @@ class Admin extends CI_Controller
                 }
                 $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark; // EG: (35*100)/50 or 100
                 // Calculate point and grade for all subject
+                
                 foreach($grades as $k3=>$each3) {
                     if($mark_obtain >= $each3['mark_from'] && $mark_obtain <= $each3['mark_upto']) {
+                        if($each3['grade_point'] == 0) { // If Point 0 Found
+                            $student[$std_id]['failCount'] += 1;
+                        }
                         if(!empty($subject_code)) {
                             if(in_array($subject_code,$join_subject)) {
                                 $student[$std_id]['point'][$subject_code][$each2['subject_id']] = $each3['grade_point'];
@@ -397,6 +406,7 @@ class Admin extends CI_Controller
                     $forthPoint = $student[$std_id]['point'][$optional] - 2;
                 }
                 $total_subject = $total_subject - 1;
+                $optionalPoint = $student[$std_id]['point'][$optional];
                 unset($student[$std_id]['point'][$optional]);
             }
             $point_total = array_sum($student[$std_id]['point']);
@@ -417,22 +427,38 @@ class Admin extends CI_Controller
             } else {
                 // If any subject fail
                 $student[$std_id]['total_grade'] = 'F';
-            }        
+            }      
+            // Reset optional point
+            if(!empty($optional)) {  
+                $student[$std_id]['point'][$optional] = $optionalPoint;
+            }
         } // End first if condition
         // pd($student);
         return $student;
     }
 
-    function generate_marksheet_class_wise()
+    function generate_marksheet_class_wise($classID,$examID)
     {
-        $class_std = $this->db->get_where('enroll',['class_id'=>23])->result_array();
+        $class_std = $this->db->get_where('enroll',['class_id'=>$classID,'year'=>$this->running_year])->result_array();
         foreach($class_std as $std_key=>$std_each) { 
-            $students[$std_key] = $this->generate_marksheet($std_each['student_id']);
+            $students[$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
             if(empty($students[$std_key])) {
                 unset($students[$std_key]);
             }
-        }
-        pd($students);
+        }     
+        return $students;
+    }
+
+    function marksheet_single()
+    {
+        $data['exam_id'] = 1;
+        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        $this->load->view('backend/admin/marksheet_single', $data);
+    }
+
+    function invoice_single()
+    {
+        $this->load->view('backend/admin/invoice_single');
     }
 
     function student_marksheet($student_id = '')
