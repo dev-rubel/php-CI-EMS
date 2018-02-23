@@ -205,6 +205,30 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/'.$pageName, $page_data);
     }
 
+    function update_student_profile_image()
+    {
+        $notJPG = 0;
+        foreach($_FILES['files']['name'] as $k=>$eachName) {
+            $ext = explode('.',$eachName);
+            if($ext[1] !== 'jpg') {
+                $notJPG += 1;
+            }
+        }
+
+        if($notJPG > 0) {
+            $this->session->set_flashdata('flash_message' , get_phrase('please_upload_only_jpg_format_size_270x300'));        
+            redirect(base_url() . 'index.php?admin/student_menu');
+        } else {
+            foreach($_FILES['files']['name'] as $k=>$eachName) {
+                move_uploaded_file($_FILES['files']['tmp_name'][$k], 'uploads/student_image/'.$eachName);    
+            }
+            $this->session->set_flashdata('flash_message' , get_phrase('image_add_success'));        
+            redirect(base_url() . 'index.php?admin/student_menu');            
+        }
+        
+    }
+
+
     function student_bulk_add($param1 = '')
     {
         if ($this->session->userdata('admin_login') != 1)
@@ -458,7 +482,8 @@ class Admin extends CI_Controller
 
     function invoice_single()
     {
-        $this->load->view('backend/admin/invoice_single');
+        $invoice_id['invoice_id'] = $this->uri(3);
+        $this->load->view('backend/admin/invoice_single',$invoice_id);
     }
 
     function student_marksheet($student_id = '')
@@ -657,11 +682,13 @@ class Admin extends CI_Controller
     function ajax_student_create()
     {
         $running_year = $this->running_year;
-        $nameNumaric = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
+        $nameNumaric = $this->db->get_where('class', 
+            ['class_id'=>$_POST['class_id']])->row()->name_numeric;
         $session = $this->db->get_where('settings',
-        ['type'=>'admission_session'])->row()->description;
+            ['type'=>'admission_session'])->row()->description;
         $year = substr($session, -2);
 
+        // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
         $this->db->like('uniq_id', $year, 'after');
         $this->db->where('session', $session);
         $exist = $this->db->get('admit_std')->result_array();
@@ -675,32 +702,51 @@ class Admin extends CI_Controller
         }
 
         // END CREATE STUDENT ACCOUNT UNIQUE CODE
+        // INSERT STUDENT UNIQUE ID INTO ADMIT STUDENT TABLE
         $this->db->insert('admit_std',
             ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
 
+        // INSERT INFO INTO STUDENT TABLE
+        $student_tableCol = $this->db->list_fields('student');
+        $_POST['student_code'] = $uniq_id;
+        $_POST['siblinginfo']  = implode('|', $_POST['siblinginfo']);
+        $_POST['jscpecinfo']   = implode(',', $_POST['jscpecinfo']);
 
-        $table1Value1 = array_slice($_POST, 0, 21);
-        $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-        $table1Value3 = array_merge($table1Value1,$table1Value2);
+        foreach ($student_tableCol as $key => $value) {
+            if(!empty($_POST[$value])){
+                $student_tableVal[$value] = $_POST[$value];
+            } else {
+                $student_tableVal[$value] = '';
+            }
+        }
 
-        // pd($table1Value3);
-
-        //pd($table2Value1);
-        $this->db->insert('student', $table1Value3);
+        $this->db->insert('student', $student_tableVal);
         $student_id = $this->db->insert_id();
 
+        // INSERT INFO INTO ENROLL TABLE
+        $enroll_tableCol = $this->db->list_fields('enroll');        
+        $_POST['student_id']     = $student_id;
+        $_POST['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
+        $_POST['book_no']        = $_POST['book_no'];
+        $_POST['date_added']     = strtotime(date("Y-m-d H:i:s"));
+        $_POST['year']           = $running_year;
+        
+        foreach ($enroll_tableCol as $key => $value) {
+            if(!empty($_POST[$value])){
+                $enroll_tableVal[$value] = $_POST[$value];
+            } elseif(!isset($_POST[$value])) {
+                unset($_POST[$value]);
+            } else {
+                $enroll_tableVal[$value] = '';
+            }
+        }        
 
-        $table2Value1 = array_slice($_POST, 22, 5);
-        $data2['student_id']     = $student_id;
-        $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
-        $data2['book_no']        = $_POST['book_no'];
-        $data2['date_added']     = strtotime(date("Y-m-d H:i:s"));
-        $data2['year']           = $running_year;
-        $table2Value2 = array_merge($data2,$table2Value1);
+        $this->db->insert('enroll', $enroll_tableVal);
 
-        $this->db->insert('enroll', $table2Value2);
+        // INSERT IMAGE IF EXIST
         if(!empty($_FILES['userfile']['name'])){
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');
+            // $ext = explode('.', $_FILES['userfile']['name']);
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id.'.jpg');
         }
         $this->jsonMsgReturn(true,'Information Insert.');
 

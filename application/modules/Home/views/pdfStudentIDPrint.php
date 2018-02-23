@@ -120,10 +120,11 @@ foreach($std_info as $k=>$each):
                     <?php endif; ?>
                     Roll: <?php echo $each['roll']; ?><br />
                     Phone: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile; ?><br />
+                    Student ID: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code; ?><br />
                     </span>
                 </div>
                 <div class="content span2">
-                    <img src="<?php echo base_url();?>uploads/student_image/<?php echo $each['student_id']?>.jpg" alt="avatar" class="avatar" />
+                    <img src="<?php echo $this->crud_model->get_image_url('student',$student_id); ?>" alt="avatar" class="avatar" />                    
                 </div>
                 <div class="footer">
                     <?php echo ucwords($schoolName); ?>

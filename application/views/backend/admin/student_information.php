@@ -108,7 +108,15 @@ if(!empty($stdExist)):
                                     <a href="<?php echo base('admin','set_new_promotion_std_info/').$class_id.'/'.$row['student_id'];?>">Set Roll</a>
                                 <?php endif;?>
                             </td>
-                            <td><img src="<?php echo $this->crud_model->get_image_url('student',$row['student_id']);?>" class="img-circle" width="30" /></td>
+                            <td>
+                            <?php $img_url = $this->crud_model->get_image_url2('student',$row['student_id']);
+                                if($img_url): 
+                             ?>
+                            <img src="<?php echo $img_url;?>" class="img-circle" width="30" /></td>
+                                <?php else: 
+                                    echo $row['student_id'].'.jpg';    
+                                endif;
+                                ?>
                             <td>
                                 <?php 
                                     echo $this->db->get_where('student' , array(

@@ -48,7 +48,7 @@ $months = explode(',', $invoice_info[0]['months']);
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><?php echo get_phrase('input_student_id');?></label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="acc_code" id="acc_student_id" placeholder="Shift Class Section Roll Group" value="<?php echo $acc_code;?>" autofocus/>
+                            <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Shift Class Section Roll Group" value="<?php echo $student_code;?>" autofocus/>
                         </div>
                     </div>
 

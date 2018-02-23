@@ -18,8 +18,15 @@
 	           			<a href="#" style="color: #696969;"
 	           				<?php if($account_type == 'admin'):?> 
 	           				onclick="get_session_changer()"
-	           			<?php endif;?>>
-	           				<?php echo get_phrase('running_session');?> : <?php echo substr($running_year, 0, -5);?>
+	           			<?php endif; $single_running_year = substr($running_year, 0, -5); $currentYear = date('Y');?>>
+						   <?php if($single_running_year == $currentYear): ?>
+						   		<h4><?php echo get_phrase('running_session');?> : <?php echo $single_running_year;?></h4>
+						   <?php else: ?>
+								<h4 style="color: red;">
+									<?php echo 'Current session ('.$currentYear.')'.' You changed ('.$single_running_year.')'; ?>
+								</h4>								
+						   <?php endif; ?>
+	           				
 	           			</a>
 	           		</h4>
 	           </li>
@@ -29,8 +36,8 @@
         
 		<ul class="list-inline links-list pull-right">
 		
-		<li>
-                        <a href="<?php echo base_url();?>" target="_blank">
+			<li>
+				<a href="<?php echo base_url();?>" target="_blank">
 					Homepage <i class="fa fa-home"></i>
 				</a>
 			</li>

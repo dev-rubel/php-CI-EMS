@@ -288,7 +288,7 @@ class Accounting extends CI_Controller
             
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
-            $data['student_code']           = $student_code;
+            $data['acc_code']           = $student_code;
             $data['months']             = implode(',', $this->input->post('months'));
             $data['fee_name']           = implode(',', $this->input->post('fee_name'));
             $data['fee_amount']         = implode(',', $this->input->post('fee_amount'));

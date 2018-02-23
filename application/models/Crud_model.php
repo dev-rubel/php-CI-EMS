@@ -239,6 +239,15 @@ class Crud_model extends CI_Model {
         return $image_url;
     }
 
+    function get_image_url2($type = '', $id = '', $optional = '') {
+        if (file_exists('uploads/' . $type . '_image/' . $id . '.jpg')){
+            $image_url = base_url() . 'uploads/' . $type . '_image/' . $id . '.jpg';
+        } else {
+            $image_url = '';
+        }
+        return $image_url;
+    }
+
     ////////STUDY MATERIAL//////////
     function save_study_material_info()
     {

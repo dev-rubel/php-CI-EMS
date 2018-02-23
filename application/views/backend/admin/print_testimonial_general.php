@@ -39,7 +39,7 @@
 <head>
     
 <meta http-equiv="Content-Type" content="charset=UTF-8" />
-<link rel="stylesheet" href="assets/css/bootstrap.css">
+<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
 
 <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <style>
@@ -61,7 +61,7 @@
 
 
 		    color: #000;
-		    width: 100% ;
+		    width: 100%;
 		    height: 100%;
 		    display: block;
 		    position: relative;
@@ -95,11 +95,11 @@
 	.logo img{
 		max-width: 100px;
 		max-height: 100px;
-		float: right;
+		/* float: right; */
 	}
 	.testimonial-wrapper:after {
  	  content: "";
-	  background: url(<?php echo base_url(); ?>uploads/school_logo.png);
+	  background: url(<?php echo base_url(); ?>uploads/school_logo.png) !important;
 	  opacity: 0.1;
 	  top: 100px;
 	  left: 0;
@@ -107,8 +107,8 @@
 	  right: 0;
 	  position: absolute;
 	  background-size: 550px 400px;
-	  background-repeat: no-repeat;
-	  background-position: center center;
+	  background-repeat: no-repeat !important;
+	  background-position: center center !important;
 	}
 
 	span.border_bottom{
@@ -175,43 +175,37 @@
 </style>
 
 </head>
-<body onload="window.print()">
+<body>
 		
 
 <div class="testimonial-wrapper" id="printID">
 
 	<div class="row">
-		<div class="col-xs-12 text-center">
-			<div class="col-xs-3 text-right logo">
-				<img src="<?php echo base_url(); ?>uploads/school_logo.png" alt="" class="img-responsive">
+			<div class="col-sm-3">
+				<img src="<?php echo base_url(); ?>uploads/school_logo.png" width="100px" height="100px" alt="">
 			</div>
-			<div class="col-xs-6 header-title">
-				<div class="text-center">
+			<div class="col-sm-6">
 					<h2><?php echo $schoolName; ?></h2>
 					<p>EIIN: <?php echo $eiin; ?></p>
-					<p><?php echo $schoolAddress; ?></p>
-				</div>				
+					<p><?php echo $schoolAddress; ?></p>	
 			</div>
-			<div class="col-xs-3">
+			<div class="col-sm-3">
 				
 			</div>
-		</div>
 	</div>
 	
 	<div class="row">
-		<div class="col-xs-12 text-center">
-			<div class="col-xs-4 sl-no">
+			<div class="col-sm-4">
 				<p>Sl No.
 					<span><?php echo $testimonial_id; ?></span>
 				</p>
 			</div>
-			<div class="col-xs-4 title">
+			<div class="col-sm-4 title">
 				<h1>Testimonial</h1>
 			</div>
-			<div class="col-xs-4 date">
+			<div class="col-sm-4 date">
 				<p>Date: <?php echo date('d-m-Y'); ?></p>
 			</div>
-		</div>
 	</div>
 
 <br>
@@ -249,18 +243,16 @@
 	<br>
 
 	<div class="row">
-		<div class="col-xs-12">
-			<div class="col-xs-4 text-center office-asse-sign">				
-				<hr>
-				<span><?php echo $genFormat[20];?></span>
-			</div>
-			<div class="col-xs-4 blank-space">
-				
-			</div>
-			<div class="col-xs-4 text-center headmaster-sign">
-				<hr>
-				<span><?php echo $genFormat[21];?></span>
-			</div>
+		<div class="col-sm-4 text-center office-asse-sign">				
+			<hr>
+			<span><?php echo $genFormat[20];?></span>
+		</div>
+		<div class="col-sm-4 blank-space">
+			
+		</div>
+		<div class="col-sm-4 text-center headmaster-sign">
+			<hr>
+			<span><?php echo $genFormat[21];?></span>
 		</div>
 	</div>
 </div>

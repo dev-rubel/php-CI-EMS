@@ -24,8 +24,8 @@
 </style>
 
 <?php 
-$links = ['student_add','student_bulk_add','total_student_page','student_promotion','download_excel'];
-$title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Download Excel'];
+$links = ['student_add','student_bulk_add','total_student_page','student_promotion','download_excel','update_student_image'];
+$title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Download Excel','Update Student Image'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 

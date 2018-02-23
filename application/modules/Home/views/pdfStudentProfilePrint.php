@@ -79,9 +79,9 @@ if($class==91) {
 	$class = $class;
 }
 $base = base_url().'uploads/';
-$stdImg2 = base_url().'uploads/student_image/'.$student_id.'.jpg';
+// $stdImg2 = base_url().'uploads/student_image/'.$student_id.'.jpg';
 // For Loacl User (REMOVE IT WHENE USE IN SERVER)
-$stdImg = $_SERVER['DOCUMENT_ROOT'].'/nihalit-ems/uploads/student_image/'.$student_id.'.jpg';
+// $stdImg = $_SERVER['DOCUMENT_ROOT'].'/nihalit-ems/uploads/student_image/'.$student_id.'.jpg';
 if(!empty($lguaridan)):
 $condition1 = '
 <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
@@ -119,8 +119,10 @@ $condition1 = '
 							<p style="font-size: 13px; width: 150px; padding: 10px; background-color: green; text-align: center; margin: 0 auto; color: white; border: 1px solid black;">Student Information</p>
 						</div>
 						<div style="float: right; width: 20%; text-align: center">
-							<?php if(file_exists($stdImg)):?>
-								<img src="<?php echo $stdImg2;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
+							<?php
+								$img_url = $this->crud_model->get_image_url2('student',$student_id);
+							if(!empty($img_url)):?>
+								<img src="<?php echo $img_url;?>" width="115px" height="125px" style="border: 1px solid;padding: 2px">
 							<?php else: ?>		
 								<img src="https://dummyimage.com/115x125/efedf5/000000.png&text=Attach+Photo" style="border: 1px solid;padding: 2px">
 							<?php endif;?>

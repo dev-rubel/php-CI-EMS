@@ -1,5 +1,7 @@
 <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css"
 />
+
+
 <style>
 	.container {
 		padding-top: 30px;
@@ -53,7 +55,31 @@
 		font-size: 15px !important;
 	}
 </style>
+<?php 
+$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoolInfo);
 
+
+$invoice_info = $this->db->get_where('invoice', array('invoice_id' => $invoice_id))->result_array();
+foreach ($invoice_info as $row):
+
+	$class_id = $this->db->get_where('enroll' , array(
+		'student_id' => $row['student_id'],
+			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
+	))->row()->class_id;
+	$shift_id = $this->db->get_where('enroll' , array(
+		'student_id' => $row['student_id'],
+			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
+	))->row()->shift_id;
+	$section_id = $this->db->get_where('enroll' , array(
+		'student_id' => $row['student_id'],
+			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
+	))->row()->section_id;
+	$std_roll = $this->db->get_where('enroll' , array(
+		'student_id' => $row['student_id'],
+			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
+	))->row()->roll;
+?>
 <div class="container">
 	<div class="row">
 		<!-- OFFICE COPY -->
@@ -73,9 +99,9 @@
 
 				<div class="col-sm-9">
 					<address class="bg-light text-center">
-						<strong>Sonar Bangla High School</strong>
-						<br> Banglabazar, Sonargaon, Narayangonj - 1440
-						<br> Phone: 01715386301
+						<strong><?php echo $schoolName ?></strong>
+						<br> <?php echo $schoolAddress ?>
+						<br> Phone: <?php echo $phone; ?>
 						<br>
 					</address>
 				</div>
@@ -85,13 +111,13 @@
 				<div class="col-sm-6">
 					<h6 class="text-left">
 						SL No.
-						<?php echo 55; ?>
+						<?php echo $invoice_id; ?>
 					</h6>
 				</div>
 				<div class="col-sm-6">
 					<h6 class="text-right">
 						Date:
-						<?php echo date('d-m-Y'); ?>
+						<?php echo date('d-m-Y', $row['creation_timestamp']); ?>
 					</h6>
 				</div>
 			</div>
@@ -104,19 +130,19 @@
 								<td class="pull-right">
 									<strong>Name: </strong>
 								</td>
-								<td>Student Name</td>
+								<td><?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>Class: </strong>
 								</td>
-								<td>Class</td>
+								<td><?php echo $this->db->get_where('class', array('class_id' => $class_id))->row()->name; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>Section: </strong>
 								</td>
-								<td>Section</td>
+								<td><?php echo $this->db->get_where('section', array('section_id' => $section_id))->row()->name; ?></td>
 							</tr>
 						</tbody>
 					</table>
@@ -124,24 +150,28 @@
 				<div class="col-sm-6 well invoice-author">
 					<table class="invoice-head">
 						<tbody>
-
+						<?php 
+							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
+                            if(strlen($group_name) > 0):
+						?>
 							<tr>
 								<td class="pull-right">
 									<strong>Group: </strong>
 								</td>
-								<td>Group</td>
+								<td><?php echo $group_name ?></td>
 							</tr>
+							<?php endif; ?>
 							<tr>
 								<td class="pull-right">
 									<strong>Roll: </strong>
 								</td>
-								<td>Roll</td>
+								<td><?php echo $std_roll; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>ID No.: </strong>
 								</td>
-								<td>ID No.</td>
+								<td><?php echo $row['acc_code']; ?></td>
 							</tr>
 						</tbody>
 					</table>
@@ -157,10 +187,18 @@
 							</tr>
 						</thead>
 						<tbody>
+						<?php $fee_names = explode(',', $row['fee_name']); foreach($fee_names as $k=>$name): ?>
 							<tr>
-								<td>Service request</td>
-								<td>$1000.00</td>
+								<td><?php 
+								if($name=='tution_fee'){
+									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', ucwords(str_replace(',', ' ', $row['months']))).')';     
+								} else {
+									echo ucwords(str_replace('_', ' ', $name));     
+								}?></td>
+								<?php $fee_amounts = explode(',', $row['fee_amount']); ?>
+                    			<td><?php echo $fee_amounts[$k]; ?></td>
 							</tr>
+						<?php endforeach; ?>
 							<tr>
 								<td></td>
 								<td></td>
@@ -170,7 +208,7 @@
 									<strong>Total</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<strong><?php echo $row['amount_paid'].' TK.'; ?></strong>
 								</td>
 							</tr>
 							<tr>
@@ -178,7 +216,11 @@
 									<strong>Due</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<?php if(!empty($row['due'])): $dueAmount = $row['due'];?>
+										<strong><?php echo $row['due'].' TK.'; ?></strong>
+									<?php else: $dueAmount = 0;?>
+										<strong>0 TK.</strong>
+									<?php endif; ?>									
 								</td>
 							</tr>
 							<tr>
@@ -186,7 +228,7 @@
 									<strong>Grand Total</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<strong><?php echo $row['amount']; ?> TK.</strong>
 								</td>
 							</tr>
 						</tbody>
@@ -221,9 +263,9 @@
 
 				<div class="col-sm-9">
 					<address class="bg-light text-center">
-						<strong>Sonar Bangla High School</strong>
-						<br> Banglabazar, Sonargaon, Narayangonj - 1440
-						<br> Phone: 01715386301
+						<strong><?php echo $schoolName ?></strong>
+						<br> <?php echo $schoolAddress ?>
+						<br> Phone: <?php echo $phone; ?>
 						<br>
 					</address>
 				</div>
@@ -233,13 +275,13 @@
 				<div class="col-sm-6">
 					<h6 class="text-left">
 						SL No.
-						<?php echo 55; ?>
+						<?php echo $invoice_id; ?>
 					</h6>
 				</div>
 				<div class="col-sm-6">
 					<h6 class="text-right">
 						Date:
-						<?php echo date('d-m-Y'); ?>
+						<?php echo date('d-m-Y', $row['creation_timestamp']); ?>
 					</h6>
 				</div>
 			</div>
@@ -252,19 +294,19 @@
 								<td class="pull-right">
 									<strong>Name: </strong>
 								</td>
-								<td>Student Name</td>
+								<td><?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>Class: </strong>
 								</td>
-								<td>Class</td>
+								<td><?php echo $this->db->get_where('class', array('class_id' => $class_id))->row()->name; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>Section: </strong>
 								</td>
-								<td>Section</td>
+								<td><?php echo $this->db->get_where('section', array('section_id' => $section_id))->row()->name; ?></td>
 							</tr>
 						</tbody>
 					</table>
@@ -272,24 +314,28 @@
 				<div class="col-sm-6 well invoice-author">
 					<table class="invoice-head">
 						<tbody>
-
+						<?php 
+							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
+                            if(strlen($group_name) > 0):
+						?>
 							<tr>
 								<td class="pull-right">
 									<strong>Group: </strong>
 								</td>
-								<td>Group</td>
+								<td><?php echo $group_name ?></td>
 							</tr>
+							<?php endif; ?>
 							<tr>
 								<td class="pull-right">
 									<strong>Roll: </strong>
 								</td>
-								<td>Roll</td>
+								<td><?php echo $std_roll; ?></td>
 							</tr>
 							<tr>
 								<td class="pull-right">
 									<strong>ID No.: </strong>
 								</td>
-								<td>ID No.</td>
+								<td><?php echo $row['acc_code']; ?></td>
 							</tr>
 						</tbody>
 					</table>
@@ -305,10 +351,18 @@
 							</tr>
 						</thead>
 						<tbody>
+						<?php $fee_names = explode(',', $row['fee_name']); foreach($fee_names as $k=>$name): ?>
 							<tr>
-								<td>Service request</td>
-								<td>$1000.00</td>
+								<td><?php 
+								if($name=='tution_fee'){
+									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', ucwords(str_replace(',', ' ', $row['months']))).')';     
+								} else {
+									echo ucwords(str_replace('_', ' ', $name));     
+								}?></td>
+								<?php $fee_amounts = explode(',', $row['fee_amount']); ?>
+                    			<td><?php echo $fee_amounts[$k]; ?></td>
 							</tr>
+						<?php endforeach; ?>
 							<tr>
 								<td></td>
 								<td></td>
@@ -318,7 +372,7 @@
 									<strong>Total</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<strong><?php echo $row['amount_paid'].' TK.'; ?></strong>
 								</td>
 							</tr>
 							<tr>
@@ -326,7 +380,11 @@
 									<strong>Due</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<?php if(!empty($row['due'])): $dueAmount = $row['due'];?>
+										<strong><?php echo $row['due'].' TK.'; ?></strong>
+									<?php else: $dueAmount = 0;?>
+										<strong>0 TK.</strong>
+									<?php endif; ?>									
 								</td>
 							</tr>
 							<tr>
@@ -334,7 +392,7 @@
 									<strong>Grand Total</strong>
 								</td>
 								<td>
-									<strong>$1000.00</strong>
+									<strong><?php echo $row['amount']; ?> TK.</strong>
 								</td>
 							</tr>
 						</tbody>
@@ -354,3 +412,5 @@
 		<!-- END STUDENT COPY -->
 	</div>
 </div>
+
+<?php endforeach; ?>
