@@ -119,11 +119,11 @@
                     	<tr>
                         	<td><?php echo ucwords($field);?></td>
                         	<td>
-                            	<a href="<?php echo base_url();?>index.php?teacher/manage_language/edit_phrase/<?php echo $field;?>"
+                            	<a href="<?php echo base_url();?>index.php?admin/manage_language/edit_phrase/<?php echo $field;?>"
                                 	rel="tooltip" data-placement="top" data-original-title="<?php echo get_phrase('edit_phrase');?>" class="btn btn-blue">
                                 		<i class="icon-wrench"></i>
                                 </a>
-                            	<a href="<?php echo base_url();?>index.php?teacher/manage_language/delete_language/<?php echo $field;?>"
+                            	<a href="<?php echo base_url();?>index.php?admin/manage_language/delete_language/<?php echo $field;?>"
                                 	rel="tooltip" data-placement="top" data-original-title="<?php echo get_phrase('delete_language');?>" class="btn btn-gray" onclick="return confirm('Delete Language ?');">
                                 		<i class="icon-trash"></i>
                                 </a>

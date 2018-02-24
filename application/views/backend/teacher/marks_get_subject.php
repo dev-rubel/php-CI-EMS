@@ -72,7 +72,7 @@
 	$("#group_id").change(function(){
 		var groupId = this.options[this.selectedIndex].value;
 		$.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/marks_get_group_subject/' + groupId ,
+            url: '<?php echo base_url();?>index.php?admin/marks_get_group_subject/' + groupId ,
             success: function(response)
             {
                 

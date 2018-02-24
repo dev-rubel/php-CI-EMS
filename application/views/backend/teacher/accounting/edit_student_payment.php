@@ -48,7 +48,7 @@ $months = explode(',', $invoice_info[0]['months']);
                     <div class="form-group">
                         <label class="col-sm-3 control-label"><?php echo get_phrase('input_student_id');?></label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="acc_code" id="acc_student_id" placeholder="Shift Class Section Roll Group" value="<?php echo $acc_code;?>" autofocus/>
+                            <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Shift Class Section Roll Group" value="<?php echo $student_code;?>" autofocus/>
                         </div>
                     </div>
 
@@ -293,7 +293,7 @@ $months = explode(',', $invoice_info[0]['months']);
 <script type="text/javascript">
     function get_class_students(class_id) {
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_class_students/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/get_class_students/' + class_id ,
             success: function(response)
             {
                 jQuery('#student_selection_holder').html(response);
@@ -304,7 +304,7 @@ $months = explode(',', $invoice_info[0]['months']);
      function get_class_students_mass(class_id) {
         
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_class_students_mass/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/get_class_students_mass/' + class_id ,
             success: function(response)
             {
                 jQuery('#student_selection_holder_mass').html(response);

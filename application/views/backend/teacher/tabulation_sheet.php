@@ -146,7 +146,7 @@
 			</tbody>
 		</table>
 		<center>
-			<a href="<?php echo base_url();?>index.php?teacher/tabulation_sheet_print_view/<?php echo $class_id;?>/<?php echo $exam_id;?>" 
+			<a href="<?php echo base_url();?>index.php?admin/tabulation_sheet_print_view/<?php echo $class_id;?>/<?php echo $exam_id;?>" 
 				class="btn btn-primary" target="_blank">
 				<?php echo get_phrase('print_tabulation_sheet');?>
 			</a>

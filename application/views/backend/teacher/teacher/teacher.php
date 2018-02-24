@@ -30,12 +30,17 @@
 						<?php echo get_phrase('email');?>
 					</div>
 				</th>
+				<th>
+					<div>
+						<?php echo get_phrase('options');?>
+					</div>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php 
-				$teachers	=	$this->db->get('teacher' )->result_array();
-				foreach($teachers as $row):?>
+                                $teachers	=	$this->db->get('teacher' )->result_array();
+                                foreach($teachers as $row):?>
 			<tr id="teacher<?php echo $row['teacher_id'];?>">
 				<td>
 					<img src="<?php echo $this->crud_model->get_image_url('teacher',$row['teacher_id']);?>" class="img-circle" width="30"
@@ -53,6 +58,35 @@
 				<td>
 					<?php echo $row['email'];?>
 				</td>
+				<td>
+
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+							Action
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-default pull-right" role="menu">
+
+							<!-- teacher EDITING LINK -->
+							<li>
+								<a href="#" onclick="editTeacher('<?php echo $row['teacher_id'];?>')">
+									<i class="entypo-pencil"></i>
+									<?php echo get_phrase('edit');?>
+								</a>
+							</li>
+							<li class="divider"></li>
+
+							<!-- teacher DELETION LINK -->
+							<li>
+								<a href="#" onclick="confDelete('admin','ajax_delete_teacher','<?php echo $row['teacher_id'];?>','teacher<?php echo $row['teacher_id'];?>')">
+									<i class="entypo-trash"></i>
+									<?php echo get_phrase('delete');?>
+								</a>
+							</li>
+						</ul>
+					</div>
+
+				</td>
 			</tr>
 			<?php endforeach;?>
 		</tbody>
@@ -65,7 +99,7 @@
 	function editTeacher(teacherID) {
 		$.ajax({
 			type: 'GET',
-			url: '<?php echo base_url();?>index.php?teacher/ajax_edit_teacher/' + teacherID,
+			url: '<?php echo base_url();?>index.php?admin/ajax_edit_teacher/' + teacherID,
 			beforeSend: function () {
 				$('#loading2').show();
 				$('#overlayDiv').show();

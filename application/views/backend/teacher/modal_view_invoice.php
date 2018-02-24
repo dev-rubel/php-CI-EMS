@@ -5,7 +5,7 @@ $edit_data = $this->db->get_where('invoice', array('invoice_id' => $param2))->re
 foreach ($edit_data as $row):
 ?>
 <center>
-    <a onClick="PrintElem('#invoice_print')" class="btn btn-default btn-icon icon-left hidden-print pull-right">
+    <a href="<?php echo base_url();?>/index.php?admin/invoice_single/<?php echo $param2;?>" class="btn btn-default btn-icon icon-left hidden-print pull-right" target="_blank">
         Print Invoice
         <i class="entypo-print"></i>
     </a>

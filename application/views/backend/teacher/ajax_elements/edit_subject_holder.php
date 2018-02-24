@@ -145,7 +145,7 @@ endforeach;
         this.class_id = <?php echo $class_id;?>;
         if(name=='join'){
             $.ajax({
-                url: '<?php echo base_url(); ?>index.php?teacher/get_join_subject_info/' + this.class_id,
+                url: '<?php echo base_url(); ?>index.php?admin/get_join_subject_info/' + this.class_id,
                 success: function (response)
                 {   
                     if(response){
@@ -169,7 +169,7 @@ endforeach;
 
         }else if(name=='group'){
             $.ajax({
-                url: '<?php echo base_url(); ?>index.php?teacher/get_group_subject_info/' + this.class_id,
+                url: '<?php echo base_url(); ?>index.php?admin/get_group_subject_info/' + this.class_id,
                 success: function (response)
                 {   
 

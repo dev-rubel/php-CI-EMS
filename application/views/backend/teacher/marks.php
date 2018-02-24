@@ -44,7 +44,7 @@
 	function get_class_subject(class_id) {
 		
 		$.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/marks_get_subject/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/marks_get_subject/' + class_id ,
             success: function(response)
             {
                 jQuery('#subject_holder').html(response);

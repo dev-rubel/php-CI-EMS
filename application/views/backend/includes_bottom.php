@@ -5,6 +5,19 @@ $url = explode('/', $url[1]);
 $url = $url[0];
 ?>
 
+<!-- FOR BANGLA TEXT -->
+<script type="text/javascript" src="assets/js/driver.phonetic.js"></script>
+<script type="text/javascript" src="assets/js/driver.unijoy.js"></script>
+<script type="text/javascript" src="assets/js/engine.js"></script>
+<!-- END BANGLA TEXT -->
+<script>
+ $(document).ready(function () {
+	$(".bangla").bnKb({
+		'switchkey': 'y',
+		'driver': unijoy
+	});
+});
+</script>
 
 <link rel="stylesheet" href="assets/js/select2/select2-bootstrap.css">
 <link rel="stylesheet" href="assets/js/select2/select2.css">

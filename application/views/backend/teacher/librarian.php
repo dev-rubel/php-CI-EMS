@@ -40,7 +40,7 @@
                             <li class="divider"></li>
                             
                             <li>
-                                <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/librarian/delete/<?php echo $row['librarian_id']; ?>');">
+                                <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/librarian/delete/<?php echo $row['librarian_id']; ?>');">
                                     <i class="entypo-trash"></i>
                                     <?php echo get_phrase('delete');?>
                                 </a>

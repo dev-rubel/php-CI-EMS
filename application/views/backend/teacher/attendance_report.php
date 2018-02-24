@@ -130,7 +130,7 @@ function select_section(class_id) {
     $('#group_holder').hide();
 
     $.ajax({
-        url: '<?php echo base_url(); ?>index.php?teacher/get_group/' + class_id,
+        url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
         success:function (response)
         {
             if(response){
@@ -143,7 +143,7 @@ function select_section(class_id) {
     });
 
     $.ajax({
-        url: '<?php echo base_url(); ?>index.php?teacher/get_section/' + class_id,
+        url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
         success: function (response)
         {
 

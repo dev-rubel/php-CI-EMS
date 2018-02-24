@@ -194,7 +194,7 @@ $edit_data		=	$this->db->get_where('class_routine' , array('class_routine_id' =>
 <script type="text/javascript">
     function section_subject_select(class_id , class_routine_id) {
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/section_subject_edit/' + class_id + '/' + class_routine_id ,
+            url: '<?php echo base_url();?>index.php?admin/section_subject_edit/' + class_id + '/' + class_routine_id ,
             success: function(response)
             {
                 jQuery('#section_subject_edit_holder').html(response);

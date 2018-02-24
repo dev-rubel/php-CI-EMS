@@ -16,7 +16,7 @@
            </tr>
        </thead>
 		<tbody>
-        	<form method="post" action="<?php echo base_url();?>index.php?teacher/attendance_selector" class="form">
+        	<form method="post" action="<?php echo base_url();?>index.php?admin/attendance_selector" class="form">
             	<tr class="gradeA">
                     <td>
                     	<select name="date" class="form-control selectboxit">
@@ -204,7 +204,7 @@
 
 <!-- STUDENT's attendance submission form here -->
 <form method="post" 
-    action="<?php echo base_url();?>index.php?teacher/manage_attendance/<?php echo $date.'/'.$month.'/'.$year.'/'.$class_id.'/'.$section_id.'/'.$session;?>">
+    action="<?php echo base_url();?>index.php?admin/manage_attendance/<?php echo $date.'/'.$month.'/'.$year.'/'.$class_id.'/'.$section_id.'/'.$session;?>">
     <div class="col-sm-offset-3 col-md-6">
         <table  class="table table-bordered">
     		<thead>

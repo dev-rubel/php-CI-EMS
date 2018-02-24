@@ -173,7 +173,7 @@
     function editDailyExpense(DailyExpenseID) {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_daily_expense_edit/' + DailyExpenseID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_daily_expense_edit/' + DailyExpenseID,
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();

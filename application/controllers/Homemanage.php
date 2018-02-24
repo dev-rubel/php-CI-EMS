@@ -29,16 +29,6 @@ class Homemanage extends CI_Controller
     }
     
     
-    
-    
-    /***default functin, redirects to login page if no admin logged in yet***/
-    public function index()
-    {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url() . 'index.php?login', 'refresh');
-        if ($this->session->userdata('admin_login') == 1)
-            redirect(base_url() . 'index.php?homemanage/dashboard', 'refresh');
-    }
 
     function admission_menu()
     {
@@ -49,8 +39,6 @@ class Homemanage extends CI_Controller
 
     function manageHomeMenu()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'menus/manage_home_menu';
         $page_data['page_title'] = get_phrase('manage_website');
         $this->load->view('backend/index', $page_data);
@@ -76,9 +64,7 @@ class Homemanage extends CI_Controller
     }
     
     function change_logo()
-    {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
+    {        
         $page_data['page_name']  = 'home/logoPage';
         $page_data['page_title'] = get_phrase('change_logo');
         $this->load->view('backend/index', $page_data);
@@ -86,8 +72,6 @@ class Homemanage extends CI_Controller
     
     function school_name()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/schoolNamePage';
         $page_data['page_title'] = get_phrase('school_name');
         $this->load->view('backend/index', $page_data);
@@ -95,8 +79,6 @@ class Homemanage extends CI_Controller
     
     function social_link()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/socialLinkPage';
         $page_data['page_title'] = get_phrase('social_links');
         $this->load->view('backend/index', $page_data);
@@ -104,8 +86,6 @@ class Homemanage extends CI_Controller
     
     function slider()
     {   
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/sliderPage';
         $page_data['page_title'] = get_phrase('sliders');
         $this->load->view('backend/index', $page_data);
@@ -113,8 +93,6 @@ class Homemanage extends CI_Controller
     
     function important_notice()
 	{
-		if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/importantNoticePage';
         $page_data['page_title'] = get_phrase('important_notice');
         $this->load->view('backend/index', $page_data);
@@ -122,8 +100,6 @@ class Homemanage extends CI_Controller
     
     function notice()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/noticePage';
         $page_data['page_title'] = get_phrase('notice');
         $this->load->view('backend/index', $page_data);
@@ -179,8 +155,6 @@ class Homemanage extends CI_Controller
     
     function manage_home()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_data'] = $this->db->get_where('linkinfo',array('track_name'=>'files'))->result_array();
         $page_data['page_name']  = 'home/manageHomePage';
         $page_data['page_title'] = get_phrase('manage_home');
@@ -189,8 +163,6 @@ class Homemanage extends CI_Controller
     
     function important_link()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/importantLinkPage';
         $page_data['page_title'] = get_phrase('inportant_links');
         $this->load->view('backend/index', $page_data);
@@ -198,8 +170,6 @@ class Homemanage extends CI_Controller
     
     function location()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/locationPage';
         $page_data['page_title'] = get_phrase('location');
         $this->load->view('backend/index', $page_data);
@@ -207,8 +177,6 @@ class Homemanage extends CI_Controller
     
     function present()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/presentPage';
         $page_data['page_title'] = get_phrase('student_present_section');
         $this->load->view('backend/index', $page_data);
@@ -216,8 +184,6 @@ class Homemanage extends CI_Controller
     
     function gallery()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/galleryPage';
         $page_data['page_title'] = get_phrase('gallery_section');
         $this->load->view('backend/index', $page_data);
@@ -225,8 +191,6 @@ class Homemanage extends CI_Controller
     
     function admission_query()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/admission_query';
         $page_data['page_title'] = get_phrase('admission_query');
         $this->load->view('backend/index', $page_data);
@@ -592,8 +556,6 @@ class Homemanage extends CI_Controller
     
     function admission_result()
     {
-        if ($this->session->userdata('admin_login') != 1)
-            redirect(base_url(), 'refresh');
         $page_data['page_name']  = 'home/admission_result';
         $page_data['page_title'] = get_phrase('admission_result');
         $this->load->view('backend/index', $page_data);

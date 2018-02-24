@@ -87,7 +87,7 @@
                                                          </li>
                                                          
                                                          <li>
-                                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/class_routine/delete/<?php echo $row2['class_routine_id'];?>');">
+                                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/class_routine/delete/<?php echo $row2['class_routine_id'];?>');">
                                                                 <i class="entypo-trash"></i>
                                                                     <?php echo get_phrase('delete');?>
                                                                 </a>
@@ -227,7 +227,7 @@
 <script type="text/javascript">
     function get_class_section_subject(class_id) {
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_class_section_subject/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/get_class_section_subject/' + class_id ,
             success: function(response)
             {
                 jQuery('#section_subject_selection_holder').html(response);

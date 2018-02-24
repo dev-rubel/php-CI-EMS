@@ -50,7 +50,7 @@ function editShift(shiftID)
     {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_edit_shift/'+shiftID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_shift/'+shiftID,
             beforeSend: function(){
                 $('#loading2').show();
                 $('#overlayDiv').show();

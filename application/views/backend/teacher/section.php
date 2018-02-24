@@ -11,10 +11,10 @@
                 <a href="#sectionlist" data-toggle="tab"><i class="entypo-menu"></i> 
                     <?php echo get_phrase('section_list'); ?>
                 </a></li>
-            <!-- <li>
+            <li>
                 <a href="#sectionadd" data-toggle="tab"><i class="entypo-plus-circled"></i>
                     <?php echo get_phrase('add_section'); ?>
-                </a></li> -->
+                </a></li>
         </ul>
         <!------ CONTROL TABS END ------>
 
@@ -34,6 +34,7 @@
                             <th><?php echo get_phrase('section_name'); ?></th>
                             <th><?php echo get_phrase('nick_name'); ?></th>
                             <th><?php echo get_phrase('teacher'); ?></th>
+                            <th><?php echo get_phrase('options'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +53,33 @@
                                     if ($row['teacher_id'] != '' || $row['teacher_id'] != 0)
                                         echo $this->db->get_where('teacher', array('teacher_id' => $row['teacher_id']))->row()->name;
                                     ?>
-                                </td>                                
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-default pull-right" role="menu">
+
+                                            <!-- EDITING LINK -->
+                                            <li>
+                                                <a href="#" onclick="editSection('<?php echo $row['section_id'];?>')">
+                                                    <i class="entypo-pencil"></i>
+    <?php echo get_phrase('edit'); ?>
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+
+                                            <!-- DELETION LINK -->
+                                            <li>
+                                                <a href="#" onclick="confDelete('admin','ajax_delete_section','<?php echo $row['section_id'];?>','section<?php echo $row['section_id'];?>')">
+                                                    <i class="entypo-trash"></i>
+    <?php echo get_phrase('delete'); ?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
 <?php endforeach; ?>
                         </tbody>
@@ -172,7 +199,7 @@
     function editSection(sectionID) {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_edit_section/' + sectionID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_section/' + sectionID,
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();

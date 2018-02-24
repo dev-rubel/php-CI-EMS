@@ -107,7 +107,7 @@
                         ?>
 
                     <br> <br>
-                    <a href="<?php echo base_url();?>index.php?teacher/student_marksheet_print_view/<?php echo $student_id;?>/<?php echo $row2['exam_id'];?>" 
+                    <a href="<?php echo base_url();?>index.php?admin/student_marksheet_print_view/<?php echo $student_id;?>/<?php echo $row2['exam_id'];?>" 
                         class="btn btn-primary" target="_blank">
                         <?php echo get_phrase('print_marksheet');?>
                     </a>

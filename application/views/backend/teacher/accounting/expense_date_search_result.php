@@ -56,7 +56,7 @@
                                 <i class="entypo-pencil"></i>
                                     <?php echo get_phrase('edit');?>
                                 </a>
-                                <a href="#" class="btn btn-xs btn-danger" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/expense/delete/<?php echo $row['payment_id'];?>');">
+                                <a href="#" class="btn btn-xs btn-danger" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/expense/delete/<?php echo $row['payment_id'];?>');">
                                 <i class="entypo-trash"></i>
                                     <?php echo get_phrase('delete');?>
                                 </a>

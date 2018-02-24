@@ -64,7 +64,7 @@
                                     
                                     <!-- DELETION LINK -->
                                     <li>
-                                        <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/transport/delete/<?php echo $row['transport_id'];?>');">
+                                        <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/transport/delete/<?php echo $row['transport_id'];?>');">
                                             <i class="entypo-trash"></i>
                                                 <?php echo get_phrase('delete');?>
                                             </a>

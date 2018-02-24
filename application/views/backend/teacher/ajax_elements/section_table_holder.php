@@ -64,7 +64,7 @@ function editSection(sectionID)
     {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_edit_section/'+sectionID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_section/'+sectionID,
             beforeSend: function(){
                 $('#loading2').show();
                 $('#overlayDiv').show();

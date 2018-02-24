@@ -145,7 +145,7 @@
     function editExpenseCategory(ExpenseCategoryID) {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_expense_category_edit/' + ExpenseCategoryID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_expense_category_edit/' + ExpenseCategoryID,
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();

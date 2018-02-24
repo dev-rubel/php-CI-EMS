@@ -7,6 +7,9 @@
     input.form-control {
         border: 1px solid lightslategray;
     }
+    .panel {
+        margin: 5px 0px;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -36,20 +39,8 @@
                
                 <form id="createInvoice" action="<?php echo base_url() .'index.php?admin/ajax_create_invoice'; ?>" class="form-horizontal form-groups-bordered" method="post">   
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="panel panel-default panel-shadow" data-collapsed="0">
-                            <div class="panel-heading">
-                                <div class="panel-title">
-                                    <?php echo get_phrase('student_tution_fee_info');?>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <div id="studentAccountHistory"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
+                <div class="row">                    
+                    <div class="col-md-7">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -65,7 +56,7 @@
                                         <?php echo get_phrase('input_student_id');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Shift Class Section Roll Group"
+                                        <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Student Uniqe ID"
                                             required="required" autofocus/>
                                     </div>
                                 </div>
@@ -113,9 +104,6 @@
                                             <input type="checkbox" name="months[]" value="december" class="custom-control-input">
                                             <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
                                         </div>
-
-
-
                                     </div>
                                 </div>
 
@@ -157,7 +145,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-5">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
                             <div class="panel-heading">
                                 <div class="panel-title">
@@ -226,7 +214,23 @@
 
 
                 </div>
+
                 <?php echo form_close();?>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default panel-shadow" data-collapsed="0">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <?php echo get_phrase('student_tution_fee_history');?>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="studentAccountHistory"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- creation of single invoice -->
 
@@ -395,7 +399,7 @@ $(document).ready(function() {
 
 function get_class_students(class_id) {
     $.ajax({
-        url: '<?php echo base_url();?>index.php?teacher/get_class_students/' + class_id ,
+        url: '<?php echo base_url();?>index.php?admin/get_class_students/' + class_id ,
         success: function(response)
         {
             jQuery('#student_selection_holder').html(response);
@@ -406,7 +410,7 @@ function get_class_students(class_id) {
     function get_class_students_mass(class_id) {
     
     $.ajax({
-        url: '<?php echo base_url();?>index.php?teacher/get_class_students_mass/' + class_id ,
+        url: '<?php echo base_url();?>index.php?admin/get_class_students_mass/' + class_id ,
         success: function(response)
         {
             jQuery('#student_selection_holder_mass').html(response);
@@ -456,7 +460,8 @@ function get_class_students(class_id) {
         for(var i=0; i<rowCount; i++) {
             var row = table.rows[i];
             var chkbox = row.cells[0].childNodes[0];
-            if(null != chkbox && true == chkbox.checked) {
+            // console.log(chkbox);
+            if(null != chkbox && true == chkbox.nextSibling.checked) {
                 if(rowCount <= 1) {
                     alert("Cannot delete all the rows.");
                     break;

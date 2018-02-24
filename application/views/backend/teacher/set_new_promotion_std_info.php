@@ -138,7 +138,7 @@ function get_std_roll(){
                     $('#loading').show();
                     $('#overlayDiv').show();
             },  
-            url: '<?php echo base_url(); ?>index.php?teacher/get_student_roll',
+            url: '<?php echo base_url(); ?>index.php?admin/get_student_roll',
             success: function (response)
             {   
                 $('#roll_selector_holder').empty();
@@ -158,7 +158,7 @@ function get_std_roll(){
     function get_class_sections(class_id) {
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_class_group/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
             success: function (response)
             {   
                 if(response){
@@ -179,7 +179,7 @@ function get_std_roll(){
         });
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_class_section/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
             success: function (response)
             {
                 if(response){

@@ -117,7 +117,7 @@ function changePage(page)
             $('#teacherNavManu').show();
             $('#teacherMainManu').hide();
             $('#ajaxPageContainer').html(response);
-
+            
             $('.datepicker').datepicker();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                

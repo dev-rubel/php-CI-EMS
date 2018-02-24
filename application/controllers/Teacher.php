@@ -1,7 +1,5 @@
 <?php
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
-
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
  *	@author 	: Nihal-IT Team
@@ -10,12 +8,14 @@ if (!defined('BASEPATH'))
  *	https://www.nihalit.com
  *	info@nihalit.com
  */
- 
+
 
 class Teacher extends CI_Controller
 {
-    
-    
+
+    protected $systemTitleName;
+    private $running_year;
+
     function __construct()
     {
         parent::__construct();
@@ -29,8 +29,8 @@ class Teacher extends CI_Controller
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
     }
+
     
- 
     public function index()
     {
         if ($this->session->userdata('teacher_login') != 1)
@@ -38,14 +38,18 @@ class Teacher extends CI_Controller
         if ($this->session->userdata('teacher_login') == 1)
             redirect(base_url() . 'index.php?teacher/dashboard', 'refresh');
     }
-    
-    /***TEACHER DASHBOARD***/
+
+
+    /***ADMIN DASHBOARD***/
+
     function dashboard()
     {
         if ($this->session->userdata('teacher_login') != 1)
             redirect(base_url(), 'refresh');
+        $data = $this->sms_infos();
+        $page_data['sms_info'] = $this->sms_balance($data['user'],$data['pass']);
         $page_data['page_name']  = 'dashboard';
-        $page_data['page_title'] = get_phrase('teacher_dashboard');
+        $page_data['page_title'] = get_phrase('admin_dashboard');
         $this->load->view('backend/index', $page_data);
     }
 
@@ -81,10 +85,34 @@ class Teacher extends CI_Controller
         $this->load->view('backend/teacher/'.$pageName, $page_data);
     }
 
+    function update_student_profile_image()
+    {
+        $notJPG = 0;
+        foreach($_FILES['files']['name'] as $k=>$eachName) {
+            $ext = explode('.',$eachName);
+            if($ext[1] !== 'jpg') {
+                $notJPG += 1;
+            }
+        }
+
+        if($notJPG > 0) {
+            $this->session->set_flashdata('flash_message' , get_phrase('please_upload_only_jpg_format_size_270x300'));        
+            redirect(base_url() . 'index.php?teacher/student_menu');
+        } else {
+            foreach($_FILES['files']['name'] as $k=>$eachName) {
+                move_uploaded_file($_FILES['files']['tmp_name'][$k], 'uploads/student_image/'.$eachName);    
+            }
+            $this->session->set_flashdata('flash_message' , get_phrase('image_add_success'));        
+            redirect(base_url() . 'index.php?teacher/student_menu');            
+        }
+        
+    }
+
+
     function student_bulk_add($param1 = '')
     {
-            if ($this->session->userdata('teacher_login') != 1)
-            redirect(base_url(), 'refresh');
+        if ($this->session->userdata('teacher_login') != 1)
+        redirect(base_url(), 'refresh');
 
         if($param1 == 'add_bulk_student') {
 
@@ -173,115 +201,169 @@ class Teacher extends CI_Controller
         $this->load->view('backend/teacher/student_information', $page_data);
     }
 
-    function generate_marksheet()
-    {       
-        $this->db->where('student_id',44);
-        $std_info = $this->db->get('enroll')->result_array();
-
-        $class_id = $std_info[0]['class_id'];
-        
+    function generate_marksheet($student_id,$exam_id)
+    {   
+        $std_id = $student_id;    
+        $optional = 0; // Optional Subject Id Store
+        $forthPoint = 0; // 4th Subject Point Store
+        $totalSubjectsMark = 0; // EG: 50 or 100
+        $totalSubjectCount = 0; // EG: 12 or 10 Subject each class        
+        // Get Student Info From In enroll Table
+        $this->db->where('student_id',$std_id);
+        $std_info = $this->db->get('enroll')->result_array();        
+        // Get Class ID
+        $class_id = $std_info[0]['class_id'];        
         // Grade Table
         $grades = $this->db->get('grade')->result_array();
-
-        // Subject Table
-        $this->db->where('class_id',$class_id);
-        $this->db->where('status',1);
-        $subjects = $this->db->get('subject')->result_array();
-
-        $subject_code  = array_column($subjects,'subject_code');
-
-        $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
-        $total_subject = count(array_unique($subject_code));
-        
         // Mark Table
-        $this->db->where('student_id',44);
+        $this->db->where('student_id',$std_id);
+        $this->db->where('year',$this->running_year);
+        $this->db->where('exam_id',$exam_id);
         $marks = $this->db->get('mark')->result_array();
-
-        // foreach($marks as $k=>$each) {
-
-        //     $this->db->where('subject_id',$each['subject_id']);
-        //     $this->db->get('subject')->result_array();
-
-        //     $ex_marks = explode('|',$each['mark_obtained']);
-        //     $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
-        // }
-
-        $optional = '';
-        foreach($marks as $k=>$each) {
-            $subject_code = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_code;
-            $ex_marks = explode('|',$each['mark_obtained']);
-
-            if(!empty($subject_code)) {
-                if(in_array($subject_code,$join_subject)) {
-                    $student[$each['student_id']]['mark'][$subject_code][$each['subject_id']] = array_sum($ex_marks);        
-                } else {
-                    $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
-                }     
-            } else {
-                $student[$each['student_id']]['mark'][$each['subject_id']] = array_sum($ex_marks);
+        if(!empty($marks)) {
+            // Find all subject those are marked for this student
+            foreach($marks as $k2=>$each2) {
+                $subject_code[] = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
             }
-                   
-            $subj_total_mark = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->total_mark;
-            $subject_category = $this->db->get_where('subject',['subject_id'=>$each['subject_id']])->row()->subject_category;
-            if($subject_category == 'optional') {
-                $optional = $each['subject_id'];
-            }
-            
-
-            $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark;
-            foreach($grades as $key=>$each2) {
-                if($mark_obtain >= $each2['mark_from'] && $mark_obtain <= $each2['mark_upto']) {
-
-                    if(!empty($subject_code)) {
-                        if(in_array($subject_code,$join_subject)) {
-                            $student[$each['student_id']]['point'][$subject_code][$each['subject_id']] = $each2['grade_point'];
-                            $student[$each['student_id']]['grade'][$subject_code][$each['subject_id']] = $each2['name'];
+            $totalSubjectCount = count($subject_code); // Store total subject
+            // Find Join Subject Code in sortout subject code array
+            $join_subject  = array_unique(array_diff_assoc($subject_code, array_unique($subject_code)));
+            // Count Total Subject in this class
+            $total_subject = count(array_unique($subject_code));
+            // Inisilize FailCount 
+            $student[$std_id]['failCount'] = 0;
+            // Store mark against in each subject            
+            foreach($marks as $k2=>$each2) {
+                $subject_code = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
+                // Expload Marks EG: MT,CQ,MCQ,PR
+                $ex_marks = explode('|',$each2['mark_obtained']);
+                // Store Obtain Mark
+                $student[$std_id]['obtain_mark'][$each2['subject_id']] = $each2['mark_obtained'];
+                if(!empty($subject_code)) {
+                    if(in_array($subject_code,$join_subject)) { // Store join subject mark
+                        $student[$std_id]['mark'][$subject_code][$each2['subject_id']] = array_sum($ex_marks);        
+                    } else { // Store regular subject mark
+                        $student[$std_id]['mark'][$each2['subject_id']] = array_sum($ex_marks);
+                    }     
+                } else { // Store regular subject mark
+                    $student[$std_id]['mark'][$each2['subject_id']] = array_sum($ex_marks);
+                }
+                // Findout current subject total mark
+                $subj_total_mark = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->total_mark;
+                $totalSubjectsMark += $subj_total_mark;
+                $subject_category = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_category;
+                // Check if optional subject found
+                if($subject_category == 'optional') {
+                    $optional = $each2['subject_id'];
+                }
+                $mark_obtain = (array_sum($ex_marks)*100)/$subj_total_mark; // EG: (35*100)/50 or 100
+                // Calculate point and grade for all subject
+                
+                foreach($grades as $k3=>$each3) {
+                    if($mark_obtain >= $each3['mark_from'] && $mark_obtain <= $each3['mark_upto']) {
+                        if($each3['grade_point'] == 0) { // If Point 0 Found
+                            $student[$std_id]['failCount'] += 1;
+                        }
+                        if(!empty($subject_code)) {
+                            if(in_array($subject_code,$join_subject)) {
+                                $student[$std_id]['point'][$subject_code][$each2['subject_id']] = $each3['grade_point'];
+                                $student[$std_id]['grade'][$subject_code][$each2['subject_id']] = $each3['name'];
+                            } else {
+                                $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
+                                $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
+                            }     
                         } else {
-                            $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
-                            $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
-                        }     
-                    } else {
-                        $student[$each['student_id']]['point'][$each['subject_id']] = $each2['grade_point'];
-                        $student[$each['student_id']]['grade'][$each['subject_id']] = $each2['name'];
+                            $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
+                            $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
+                        }
+                    }
+                }            
+            }    
+            // Store total subjects mark
+            $student[$std_id]['subject_total_mark'] = $totalSubjectsMark; 
+            // Calculate Subject total 
+            foreach($student[$std_id]['mark'] as $k2=>$each2) {
+                if(is_array($each2)) {
+                    $student[$std_id]['total_mark'] += array_sum($each2);            
+                } else {
+                    $student[$std_id]['total_mark'] += $each2;
+                }            
+            }
+            // Check join subject and marge both subject
+            if(!empty($join_subject)) {
+                foreach($join_subject as $k2=>$each2) {
+                    $join_subj_mark = array_sum($student[$std_id]['mark'][$each2]); 
+                    unset($student[$std_id]['point'][$each2]);
+                    unset($student[$std_id]['grade'][$each2]);
+                    $join_subj_mark = $join_subj_mark/2;
+                    foreach($grades as $k3=>$each3) {
+                        if($join_subj_mark >= $each3['mark_from'] && $join_subj_mark <= $each3['mark_upto']) {
+                            $student[$std_id]['point'][$each2] = $each3['grade_point'];
+                            $student[$std_id]['grade'][$each2] = $each3['name'];
+                        }
                     }
                 }
-            }            
-        }       
- 
-        foreach($student[44]['mark'] as $k=>$each) {
-            if(is_array($each)) {
-                $student[44]['total_mark'] += array_sum($each);            
-            } else {
-                $student[44]['total_mark'] += $each;
             }
+            // Check optional subject for point addition or subtraction
+            if(!empty($optional)) {
+                if($student[$std_id]['point'][$optional] > 2)  {
+                    $forthPoint = $student[$std_id]['point'][$optional] - 2;
+                }
+                $total_subject = $total_subject - 1;
+                $optionalPoint = $student[$std_id]['point'][$optional];
+                unset($student[$std_id]['point'][$optional]);
+            }
+            $point_total = array_sum($student[$std_id]['point']);
+            // Check optional subject for calculate 4th subject point
+            $student[$std_id]['total_point_with_4th'] = round(($point_total+$forthPoint)/$total_subject, 2);
+            $student[$std_id]['total_point_without_4th'] = round($point_total/$total_subject, 2);
             
-        }
-
-        if(!empty($join_subject)) {
-            foreach($join_subject as $k=>$each) {
-                $join_subj_mark = array_sum($student[44]['mark'][$each]); 
-                unset($student[44]['point'][$each]);
-                unset($student[44]['grade'][$each]);
-                $join_subj_mark = $join_subj_mark/2;
-                foreach($grades as $k2=>$each2) {
-                    if($join_subj_mark >= $each2['mark_from'] && $join_subj_mark <= $each2['mark_upto']) {
-                        $student[44]['point'][$each] = $each2['grade_point'];
-                        $student[44]['grade'][$each] = $each2['name'];
+            if(!array_search('F',$student[$std_id]['grade'])){
+                // Calculate total grade mark EG: 695/12 = 57.91 (12 for total subject) AND (695 is total obtain mark)
+                $markForTotalGrade = $student[$std_id]['total_mark']/$totalSubjectCount;
+                foreach($grades as $k2=>$each2) {                    
+                    if(!empty($grades[$k2+1])) {
+                        if($markForTotalGrade >= $grades[$k2+1]['mark_from'] && $markForTotalGrade <= $each2['mark_upto']) {
+                            $student[$std_id]['total_grade'] = $each2['name'];
+                        }
                     }
                 }
-
+            } else {
+                // If any subject fail
+                $student[$std_id]['total_grade'] = 'F';
+            }      
+            // Reset optional point
+            if(!empty($optional)) {  
+                $student[$std_id]['point'][$optional] = $optionalPoint;
             }
-        }
-        if(!empty($optional)) {
-            if($student[44]['point'][$optional] > 2)  {
-                $forthPoint = $student[44]['point'][$optional] - 2;
+        } // End first if condition
+        // pd($student);
+        return $student;
+    }
+
+    function generate_marksheet_class_wise($classID,$examID)
+    {
+        $class_std = $this->db->get_where('enroll',['class_id'=>$classID,'year'=>$this->running_year])->result_array();
+        foreach($class_std as $std_key=>$std_each) { 
+            $students[$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
+            if(empty($students[$std_key])) {
+                unset($students[$std_key]);
             }
-            $total_subject = $total_subject - 1;
-        }
+        }     
+        return $students;
+    }
 
-        $student[44]['total_point'] = round(array_sum(($student[44]['point'])-$forthPoint)/$total_subject, 2);
+    function marksheet_single()
+    {
+        $data['exam_id'] = 1;
+        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        $this->load->view('backend/teacher/marksheet_single', $data);
+    }
 
-        pd($student);
+    function invoice_single()
+    {
+        $invoice_id['invoice_id'] = $this->uri(3);
+        $this->load->view('backend/teacher/invoice_single',$invoice_id);
     }
 
     function student_marksheet($student_id = '')
@@ -480,11 +562,13 @@ class Teacher extends CI_Controller
     function ajax_student_create()
     {
         $running_year = $this->running_year;
-        $nameNumaric = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
+        $nameNumaric = $this->db->get_where('class', 
+            ['class_id'=>$_POST['class_id']])->row()->name_numeric;
         $session = $this->db->get_where('settings',
-        ['type'=>'admission_session'])->row()->description;
+            ['type'=>'admission_session'])->row()->description;
         $year = substr($session, -2);
 
+        // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
         $this->db->like('uniq_id', $year, 'after');
         $this->db->where('session', $session);
         $exist = $this->db->get('admit_std')->result_array();
@@ -498,32 +582,51 @@ class Teacher extends CI_Controller
         }
 
         // END CREATE STUDENT ACCOUNT UNIQUE CODE
+        // INSERT STUDENT UNIQUE ID INTO ADMIT STUDENT TABLE
         $this->db->insert('admit_std',
             ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
 
+        // INSERT INFO INTO STUDENT TABLE
+        $student_tableCol = $this->db->list_fields('student');
+        $_POST['student_code'] = $uniq_id;
+        $_POST['siblinginfo']  = implode('|', $_POST['siblinginfo']);
+        $_POST['jscpecinfo']   = implode(',', $_POST['jscpecinfo']);
 
-        $table1Value1 = array_slice($_POST, 0, 21);
-        $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
-        $table1Value3 = array_merge($table1Value1,$table1Value2);
+        foreach ($student_tableCol as $key => $value) {
+            if(!empty($_POST[$value])){
+                $student_tableVal[$value] = $_POST[$value];
+            } else {
+                $student_tableVal[$value] = '';
+            }
+        }
 
-        // pd($table1Value3);
-
-        //pd($table2Value1);
-        $this->db->insert('student', $table1Value3);
+        $this->db->insert('student', $student_tableVal);
         $student_id = $this->db->insert_id();
 
+        // INSERT INFO INTO ENROLL TABLE
+        $enroll_tableCol = $this->db->list_fields('enroll');        
+        $_POST['student_id']     = $student_id;
+        $_POST['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
+        $_POST['book_no']        = $_POST['book_no'];
+        $_POST['date_added']     = strtotime(date("Y-m-d H:i:s"));
+        $_POST['year']           = $running_year;
+        
+        foreach ($enroll_tableCol as $key => $value) {
+            if(!empty($_POST[$value])){
+                $enroll_tableVal[$value] = $_POST[$value];
+            } elseif(!isset($_POST[$value])) {
+                unset($_POST[$value]);
+            } else {
+                $enroll_tableVal[$value] = '';
+            }
+        }        
 
-        $table2Value1 = array_slice($_POST, 22, 5);
-        $data2['student_id']     = $student_id;
-        $data2['enroll_code']    = substr(md5(rand(0, 1000000)), 0, 7);
-        $data2['book_no']        = $_POST['book_no'];
-        $data2['date_added']     = strtotime(date("Y-m-d H:i:s"));
-        $data2['year']           = $running_year;
-        $table2Value2 = array_merge($data2,$table2Value1);
+        $this->db->insert('enroll', $enroll_tableVal);
 
-        $this->db->insert('enroll', $table2Value2);
+        // INSERT IMAGE IF EXIST
         if(!empty($_FILES['userfile']['name'])){
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');
+            // $ext = explode('.', $_FILES['userfile']['name']);
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id.'.jpg');
         }
         $this->jsonMsgReturn(true,'Information Insert.');
 
@@ -990,12 +1093,12 @@ class Teacher extends CI_Controller
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
                     $this->flashmsg('Testimonial Already Added');
-                    redirect(base('teacher', 'testimonial_general'));
+                    redirect(base('admin', 'testimonial_general'));
                 }else{
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
                     $this->flashmsg('Testimonial Already Added');
-                    redirect(base('teacher', 'testimonial_voc'));
+                    redirect(base('admin', 'testimonial_voc'));
                 }
             }
 
@@ -1006,9 +1109,9 @@ class Teacher extends CI_Controller
             unset($_SESSION['error']);
             $this->flashmsg('Successfully Save');
             if(isset($_POST['course'])){
-                redirect(base('teacher', 'testimonial_general'));
+                redirect(base('admin', 'testimonial_general'));
             }else{
-                redirect(base('teacher', 'testimonial_voc'));
+                redirect(base('admin', 'testimonial_voc'));
             }
         }
 
@@ -1022,9 +1125,9 @@ class Teacher extends CI_Controller
             unset($_SESSION['error']);
             $this->flashmsg('Update Successfully Save');
             if(isset($_POST['course'])){
-                redirect(base('teacher', 'testimonial_general'));
+                redirect(base('admin', 'testimonial_general'));
             }else{
-                redirect(base('teacher', 'testimonial_voc'));
+                redirect(base('admin', 'testimonial_voc'));
             }
         }
 
@@ -1035,12 +1138,12 @@ class Teacher extends CI_Controller
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
                     $this->flashmsg('Testimonial Already Added');
-                    redirect(base('teacher', 'testimonial_general'));
+                    redirect(base('admin', 'testimonial_general'));
                 }else{
                     unset($_SESSION['flash_message']);
                     unset($_SESSION['error']);
                     $this->flashmsg('Testimonial Already Added');
-                    redirect(base('teacher', 'testimonial_voc'));
+                    redirect(base('admin', 'testimonial_voc'));
                 }
             }
 
@@ -3758,7 +3861,7 @@ class Teacher extends CI_Controller
         $this->db->update('frontpages',['description'=>$mainColor],['title'=>'main_color']);
         $this->db->update('frontpages',['description'=>$hoverColor],['title'=>'hover_color']);
         $this->flashmsg('site_color_changed');
-        redirect(base('teacher', 'system_settings'));
+        redirect(base('admin', 'system_settings'));
     }
 
     function ajax_change_site_color()
@@ -3783,12 +3886,12 @@ class Teacher extends CI_Controller
         $tableName = $this->input->post('truncate_table');
         if(empty($tableName)){
             $this->flashmsg('Please Select Table', 'error');
-            redirect(base('teacher', 'system_settings'));
+            redirect(base('admin', 'system_settings'));
         }
         $this->db->truncate($tableName);
         $tableName = ucwords(str_replace('_', ' ',$tableName));
         $this->flashmsg('Clean '.$tableName.' Table');
-        redirect(base('teacher', 'system_settings'));
+        redirect(base('admin', 'system_settings'));
     }
 
     function ajax_truncate_table_data()
@@ -3800,7 +3903,7 @@ class Teacher extends CI_Controller
             $tableName = $this->input->post('truncate_table');
             if(empty($tableName)){
                 $this->flashmsg('Please Select Table', 'error');
-                redirect(base('teacher', 'system_settings'));
+                redirect(base('admin', 'system_settings'));
             }
             $this->db->truncate($tableName);
             $this->jsonMsgReturn(true,'Truncate Table Data.');
@@ -3817,12 +3920,12 @@ class Teacher extends CI_Controller
     		$this->db->where('type','webAppStatus');
     		$this->db->update('settings',array('description'=>1));
     		$this->flashmsg('Now Site On');
-        	redirect(base('teacher', 'system_settings'));
+        	redirect(base('admin', 'system_settings'));
     	}else{
 		    $this->db->where('type','webAppStatus');
     		$this->db->update('settings',array('description'=>$data));
     		$this->flashmsg('Now Site Off');
-        	redirect(base('teacher', 'system_settings'));
+        	redirect(base('admin', 'system_settings'));
         }
     }
 
@@ -3926,7 +4029,7 @@ class Teacher extends CI_Controller
         $this->db->where('type','nihalit_sms_password');
         $this->db->update('settings',$data1);
         $this->flashmsg('information_updated');
-        redirect(base('teacher', 'sms_settings'));
+        redirect(base('admin', 'sms_settings'));
     }
 
     function ajax_save_sms_setting()
@@ -3967,7 +4070,7 @@ class Teacher extends CI_Controller
 
         if($arg == false) {
             $this->flashmsg('SMS Send');
-            redirect(base('teacher', 'sms_settings'));
+            redirect(base('admin', 'sms_settings'));
         } else {
             return true;
         }
@@ -4010,7 +4113,7 @@ class Teacher extends CI_Controller
 
         if(empty($_POST['sms_description'])) {
             $this->flashmsg('Please input description.','error');
-            redirect(base('teacher', 'send_result_sms'));
+            redirect(base('admin', 'send_result_sms'));
         }
 
         $sender = urlencode($this->systemTitleName);
@@ -4026,7 +4129,7 @@ class Teacher extends CI_Controller
         foreach($rows as $k=>$each) {
             if(empty($each[1]) || strlen($each[1]) < 11){
                 $this->flashmsg('Please input valid phone number.','error');
-                redirect(base('teacher', 'send_result_sms'));
+                redirect(base('admin', 'send_result_sms'));
             } else {
                 $final[] = $each[1];
             }
@@ -4039,7 +4142,7 @@ class Teacher extends CI_Controller
         // pd($final);
 
         $this->flashmsg('Send SMS Successfully.');
-        redirect(base('teacher', 'send_result_sms'));
+        redirect(base('admin', 'send_result_sms'));
 
     }
 
@@ -4140,9 +4243,9 @@ class Teacher extends CI_Controller
             $data['name']  = $this->input->post('name');
             $data['email'] = $this->input->post('email');
 
-            $this->db->where('teacher_id', $this->session->userdata('teacher_id'));
-            $this->db->update('teacher', $data);
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $this->session->userdata('teacher_id') . '.jpg');
+            $this->db->where('admin_id', $this->session->userdata('admin_id'));
+            $this->db->update('admin', $data);
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
             $this->session->set_flashdata('flash_message', get_phrase('account_updated'));
             redirect(base_url() . 'index.php?teacher/manage_profile/', 'refresh');
         }
@@ -4152,9 +4255,9 @@ class Teacher extends CI_Controller
             $data['password'] = sha1($this->input->post('password'));
             $data['level']    = 1;
 
-            $this->db->insert('teacher', $data);
-            $teacher_id = $this->db->insert_id;
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $teacher_id . '.jpg');
+            $this->db->insert('admin', $data);
+            $admin_id = $this->db->insert_id;
+            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
             $this->session->set_flashdata('flash_message', get_phrase('new_account_added'));
             redirect(base_url() . 'index.php?teacher/manage_profile/', 'refresh');
         }
@@ -4163,12 +4266,12 @@ class Teacher extends CI_Controller
             $data['new_password']         = sha1($this->input->post('new_password'));
             $data['confirm_new_password'] = sha1($this->input->post('confirm_new_password'));
 
-            $current_password = $this->db->get_where('teacher', array(
-                'teacher_id' => $this->session->userdata('teacher_id')
+            $current_password = $this->db->get_where('admin', array(
+                'admin_id' => $this->session->userdata('admin_id')
             ))->row()->password;
             if ($current_password == $data['password'] && $data['new_password'] == $data['confirm_new_password']) {
-                $this->db->where('teacher_id', $this->session->userdata('teacher_id'));
-                $this->db->update('teacher', array(
+                $this->db->where('admin_id', $this->session->userdata('admin_id'));
+                $this->db->update('admin', array(
                     'password' => $data['new_password']
                 ));
                 $this->session->set_flashdata('flash_message', get_phrase('password_updated'));
@@ -4179,8 +4282,8 @@ class Teacher extends CI_Controller
         }
         $page_data['page_name']  = 'manage_profile';
         $page_data['page_title'] = get_phrase('manage_profile');
-        $page_data['edit_data']  = $this->db->get_where('teacher', array(
-            'teacher_id' => $this->session->userdata('teacher_id')
+        $page_data['edit_data']  = $this->db->get_where('admin', array(
+            'admin_id' => $this->session->userdata('admin_id')
         ))->result_array();
         $this->load->view('backend/index', $page_data);
     }
@@ -4196,10 +4299,10 @@ class Teacher extends CI_Controller
             $data['password'] = sha1($this->input->post('password'));
             $data['level']    = 1;
 
-            $this->db->insert('teacher', $data);
-            $teacher_id = $this->db->insert_id;
+            $this->db->insert('admin', $data);
+            $admin_id = $this->db->insert_id;
             if(!empty($_FILES['userfile']['name'])){
-                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $teacher_id . '.jpg');
+                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
             }
             $this->jsonMsgReturn(true,'Success.');
         }
@@ -4214,14 +4317,14 @@ class Teacher extends CI_Controller
             $data['name']  = $this->input->post('name');
             $data['email'] = $this->input->post('email');
 
-            $this->db->where('teacher_id', $this->session->userdata('teacher_id'));
-            $this->db->update('teacher', $data);
+            $this->db->where('admin_id', $this->session->userdata('admin_id'));
+            $this->db->update('admin', $data);
 
             if(!empty($_FILES['userfile']['name'])){
-                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $this->session->userdata('teacher_id') . '.jpg');
+                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
             }
-            $page_data['edit_data']  = $this->db->get_where('teacher', array(
-                'teacher_id' => $this->session->userdata('teacher_id')
+            $page_data['edit_data']  = $this->db->get_where('admin', array(
+                'admin_id' => $this->session->userdata('admin_id')
             ))->result_array();
 
             $htmlData = $this->load->view('backend/teacher/ajax_elements/update_profile_info', $page_data, true);
@@ -4231,9 +4334,9 @@ class Teacher extends CI_Controller
 
     function ajax_delete_user()
     {
-        $teacher_id = $this->uri(3);
-        $this->db->where('teacher_id', $teacher_id);
-        $this->db->delete('teacher');
+        $admin_id = $this->uri(3);
+        $this->db->where('admin_id', $admin_id);
+        $this->db->delete('admin');
         $this->jsonMsgReturn(true,'Delete Success.');
     }
 
@@ -4247,13 +4350,13 @@ class Teacher extends CI_Controller
             $data['new_password']         = sha1($this->input->post('new_password'));
             $data['confirm_new_password'] = sha1($this->input->post('confirm_new_password'));
 
-            $current_password = $this->db->get_where('teacher', array(
-                'teacher_id' => $this->session->userdata('teacher_id')
+            $current_password = $this->db->get_where('admin', array(
+                'admin_id' => $this->session->userdata('admin_id')
             ))->row()->password;
 
             if ($current_password == $data['password'] && $data['new_password'] == $data['confirm_new_password']) {
-                $this->db->where('teacher_id', $this->session->userdata('teacher_id'));
-                $this->db->update('teacher', array(
+                $this->db->where('admin_id', $this->session->userdata('admin_id'));
+                $this->db->update('admin', array(
                     'password' => $data['new_password']
                 ));
                 $this->jsonMsgReturn(true,'Password Update.');
@@ -4406,7 +4509,7 @@ class Teacher extends CI_Controller
         $this->db->delete($table_name);
 
         $this->flashmsg('Delete '.$table_name.' Entities');
-        redirect(base('teacher', 'database_structure'));
+        redirect(base('admin', 'database_structure'));
     }
 
     function add_data_to_database()
@@ -4416,7 +4519,7 @@ class Teacher extends CI_Controller
 
         $this->db->insert($table_name, $data);
         $this->flashmsg('Data Inserted In '.$table_name.' Table');
-        redirect(base('teacher', 'database_structure'));
+        redirect(base('admin', 'database_structure'));
     }
 
     function edit_data_to_database()
@@ -4430,7 +4533,7 @@ class Teacher extends CI_Controller
         $this->db->update($table_name, $data);
 
         $this->flashmsg('Data Updated In '.$table_name.' Table');
-        redirect(base('teacher', 'database_structure'));
+        redirect(base('admin', 'database_structure'));
     }
 
     // Excel file to sms
@@ -4563,16 +4666,16 @@ class Teacher extends CI_Controller
                 // die();
 
                 $this->flashmsg('SMS Send');
-                redirect(base('teacher', 'send_result_sms'));
+                redirect(base('admin', 'send_result_sms'));
 
             } else {
                 $this->flashmsg('Result already send.','error');
-                redirect(base('teacher', 'send_result_sms'));
+                redirect(base('admin', 'send_result_sms'));
             }
 
         } else {
             $this->flashmsg('Please upload valid file.','error');
-            redirect(base('teacher', 'send_result_sms'));
+            redirect(base('admin', 'send_result_sms'));
         }
 
 
@@ -4773,10 +4876,10 @@ class Teacher extends CI_Controller
 
         if(unlink('./'.$f_path)) {
              $this->flashmsg('Successfully Deleted.');
-             redirect(base('teacher', 'directory'));
+             redirect(base('admin', 'directory'));
         }else{
              $this->flashmsg('Error Delete File.', 'error');
-             redirect(base('teacher', 'directory'));
+             redirect(base('admin', 'directory'));
         }
     }
 
@@ -4879,4 +4982,6 @@ class Teacher extends CI_Controller
             $this->db->update('student',['student_code'=>$uniq_id],['student_id'=>$value['student_id']]);
         }
     }
+
+
 }

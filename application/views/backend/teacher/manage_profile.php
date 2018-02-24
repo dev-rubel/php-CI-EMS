@@ -38,7 +38,7 @@
                 <div class="box-content">
 					
                         
-                        <form id="updateAccount" action="<?php echo base_url() .'index.php?teacher/ajax_update_profile'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data">                            
+                        <form id="updateAccount" action="<?php echo base_url() .'index.php?admin/ajax_update_profile'; ?>" class="form-horizontal form-groups-bordered" method="post" enctype="multipart/form-data">                            
                             
                             <div id="profile_info">
 

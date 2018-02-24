@@ -144,7 +144,7 @@
 
 	function get_sections(class_id) {
 		$.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_sections/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/get_sections/' + class_id ,
             success: function(response)
             {
                 jQuery('#section_holder').html(response);
@@ -156,7 +156,7 @@
 	function get_class_sections(class_id) {
 
 		$.ajax({
-			url: '<?php echo base_url(); ?>index.php?teacher/get_class_group/' + class_id,
+			url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
 			success: function (response) {
 				if (response) {
 					if (response == 1) {
@@ -172,7 +172,7 @@
 		});
 
 		$.ajax({
-			url: '<?php echo base_url(); ?>index.php?teacher/get_class_section/' + class_id,
+			url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
 			success: function (response) {
 				if (response) {
 					$('#sectionHolder').show();

@@ -62,7 +62,7 @@
                                     
                                     <!-- DELETION LINK -->
                                     <li>
-                                        <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/dormitory/delete/<?php echo $row['dormitory_id'];?>');">
+                                        <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/dormitory/delete/<?php echo $row['dormitory_id'];?>');">
                                             <i class="entypo-trash"></i>
                                                 <?php echo get_phrase('delete');?>
                                             </a>

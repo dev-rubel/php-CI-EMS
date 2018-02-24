@@ -132,7 +132,7 @@
             </tbody>
         </table>
         <center>
-            <a href="<?php echo base_url(); ?>index.php?teacher/attendance_report_print_view/<?php echo $class_id; ?>/<?php echo $shift_id; ?>/<?php echo $section_id; ?>/<?php echo $month; ?>/<?php echo $group_id; ?>"
+            <a href="<?php echo base_url(); ?>index.php?admin/attendance_report_print_view/<?php echo $class_id; ?>/<?php echo $shift_id; ?>/<?php echo $section_id; ?>/<?php echo $month; ?>/<?php echo $group_id; ?>"
                 class="btn btn-primary" target="_blank">
                 <?php echo get_phrase('print_attendance_sheet'); ?>
             </a>

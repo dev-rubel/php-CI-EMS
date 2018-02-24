@@ -8,10 +8,10 @@
             	<a href="#list" data-toggle="tab"><i class="entypo-menu"></i> 
 					<?php echo get_phrase('grade_list');?>
                     	</a></li>
-			<!-- <li>
+			<li>
             	<a href="#add" data-toggle="tab"><i class="entypo-plus-circled"></i>
 					<?php echo get_phrase('add_grade');?>
-                    	</a></li> -->
+                    	</a></li>
 		</ul>
     	<!------CONTROL TABS END------>
 		<div class="tab-content">
@@ -28,6 +28,7 @@
                     		<th><div><?php echo get_phrase('mark_from');?></div></th>
                     		<th><div><?php echo get_phrase('mark_upto');?></div></th>
                     		<th><div><?php echo get_phrase('comment');?></div></th>
+                    		<th><div><?php echo get_phrase('options');?></div></th>
 						</tr>
 					</thead>
                     <tbody>
@@ -38,7 +39,33 @@
 							<td><?php echo $row['grade_point'];?></td>
 							<td><?php echo $row['mark_from'];?></td>
 							<td><?php echo $row['mark_upto'];?></td>
-							<td><?php echo $row['comment'];?></td>							
+							<td><?php echo $row['comment'];?></td>
+							<td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    Action <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-default pull-right" role="menu">
+                                    
+                                    <!-- EDITING LINK -->
+                                    <li>
+                                        <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_edit_grade/<?php echo $row['grade_id'];?>');">
+                                            <i class="entypo-pencil"></i>
+                                                <?php echo get_phrase('edit');?>
+                                            </a>
+                                                    </li>
+                                    <li class="divider"></li>
+                                    
+                                    <!-- DELETION LINK -->
+                                    <li>
+                                        <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/grade/delete/<?php echo $row['grade_id'];?>');">
+                                            <i class="entypo-trash"></i>
+                                                <?php echo get_phrase('delete');?>
+                                            </a>
+                                                    </li>
+                                </ul>
+                            </div>
+        					</td>
                         </tr>
                         <?php endforeach;?>
                     </tbody>

@@ -476,7 +476,7 @@ class Admin extends CI_Controller
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        $data['students'] = $this->generate_marksheet_class_wise(13,1);
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 

@@ -184,7 +184,10 @@ function changePage(page)
             $('#studentMainManu').hide();
             $('#ajaxPageContainer').html(response);
             
-            
+            $(".bangla").bnKb({
+                'switchkey': 'y',
+                'driver': unijoy
+            });
             
             $('.datepicker').datepicker();
             $('#loading2').fadeOut('slow');

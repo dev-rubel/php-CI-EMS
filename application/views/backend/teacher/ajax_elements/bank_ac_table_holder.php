@@ -39,7 +39,7 @@
 function editBankAC(BankACID) {
 	$.ajax({
 		type: 'GET',
-		url: '<?php echo base_url();?>index.php?teacher/ajax_edit_bank_ac/' + BankACID,
+		url: '<?php echo base_url();?>index.php?admin/ajax_edit_bank_ac/' + BankACID,
 		beforeSend: function () {
 			$('#loading2').show();
 			$('#overlayDiv').show();

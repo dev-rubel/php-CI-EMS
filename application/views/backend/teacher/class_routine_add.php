@@ -188,7 +188,7 @@ $(document).ready(function() {
     function getTeacherRoutine(data)
     {
         if(data.value) {
-            $.get( "<?php echo base_url();?>index.php?teacher/ajaxTeacherRoutine/"+data.value, function( data ){
+            $.get( "<?php echo base_url();?>index.php?admin/ajaxTeacherRoutine/"+data.value, function( data ){
                 $( "#teacher_routine_info" ).html( data );  
             });
         }
@@ -198,7 +198,7 @@ $(document).ready(function() {
 
     function get_class_section_subject(class_id) {
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_class_section_subject/' + class_id ,
+            url: '<?php echo base_url();?>index.php?admin/get_class_section_subject/' + class_id ,
             success: function(response)
             {
                 jQuery('#section_subject_selection_holder').html(response);

@@ -32,7 +32,7 @@ if(!empty($group_id)){
 
                     <?php echo get_phrase('shift');?> -
                     <?php echo $this->db->get_where('shift' , array('shift_id' => $shift_id))->row()->name;?>
-                    <a href="<?php echo base_url();?>index.php?teacher/class_routine_print_view/<?php echo 
+                    <a href="<?php echo base_url();?>index.php?admin/class_routine_print_view/<?php echo 
                 $class_id.'/'.
                 $row['section_id'].'/'.
                 $shift_id.'/'.

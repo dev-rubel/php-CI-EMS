@@ -34,7 +34,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?php echo base_url() ?>index.php?teacher/noticeboard/mark_as_archive/<?php echo $row['notice_id'] ?>">
+                            <a href="<?php echo base_url() ?>index.php?admin/noticeboard/mark_as_archive/<?php echo $row['notice_id'] ?>">
                                 <i class="entypo-box"></i>
                                 <?php echo get_phrase('mark_archive'); ?>
                             </a>
@@ -51,7 +51,7 @@
 
                         <!-- DELETION LINK -->
                         <li>
-                            <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?teacher/noticeboard/delete/<?php echo $row['notice_id']; ?>');">
+                            <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?admin/noticeboard/delete/<?php echo $row['notice_id']; ?>');">
                                 <i class="entypo-trash"></i>
                                 <?php echo get_phrase('delete'); ?>
                             </a>

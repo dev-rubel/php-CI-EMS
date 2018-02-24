@@ -81,7 +81,7 @@
     function get_class_subject(class_id) {
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_subject/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_subject/' + class_id,
             success: function (response)
             {
                 jQuery('#subject_selector_holder').html(response);

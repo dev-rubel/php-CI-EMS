@@ -33,7 +33,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url() ?>index.php?teacher/noticeboard/remove_from_archived/<?php echo $row['notice_id'] ?>" >
+                            <a href="<?php echo base_url() ?>index.php?admin/noticeboard/remove_from_archived/<?php echo $row['notice_id'] ?>" >
                                 <i class="entypo-home"></i>
                                 <?php echo get_phrase('remove_from_archive'); ?>
                             </a>
@@ -50,7 +50,7 @@
 
                         <!-- DELETION LINK -->
                         <li>
-                            <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?teacher/noticeboard/delete/<?php echo $row['notice_id']; ?>');">
+                            <a href="#" onclick="confirm_modal('<?php echo base_url(); ?>index.php?admin/noticeboard/delete/<?php echo $row['notice_id']; ?>');">
                                 <i class="entypo-trash"></i>
                                 <?php echo get_phrase('delete'); ?>
                             </a>

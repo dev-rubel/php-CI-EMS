@@ -1,4 +1,10 @@
 
+            <a href="javascript:;" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_parent_add/');" 
+                class="btn btn-primary pull-right">
+                <i class="entypo-plus-circled"></i>
+                <?php echo get_phrase('add_new_parent');?>
+                </a> 
+                <br><br>
                <table class="table table-bordered datatable" id="table_export">
                     <thead>
                         <tr>
@@ -40,7 +46,7 @@
                                         
                                         <!-- teacher DELETION LINK -->
                                         <li>
-                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/parent/delete/<?php echo $row['parent_id'];?>');">
+                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/parent/delete/<?php echo $row['parent_id'];?>');">
                                                 <i class="entypo-trash"></i>
                                                     <?php echo get_phrase('delete');?>
                                                 </a>

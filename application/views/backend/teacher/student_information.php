@@ -8,6 +8,22 @@
         color: black;
     }
 </style>
+<hr />
+<br>
+<!-- <a href="<?php echo base_url();?>index.php?admin/student_add"
+    class="btn btn-primary pull-right">
+        <i class="entypo-plus-circled"></i>
+        <?php echo get_phrase('add_new_student');?>
+    </a>  -->
+
+<?php $stdExist =  $this->db->get_where('enroll' , ['class_id' => $class_id, 'year'=> $running_year])->result_array();
+if(!empty($stdExist)):
+?>    
+<a href="<?php echo base_url().'index.php?admin/export_student_info_excel/'.$class_id.'/'.$running_year;?>"
+    class="btn btn-info pull-right">
+        <?php echo get_phrase('export_to_excel');?>
+</a> 
+<?php endif;?>
 <br>
 
 <div class="row">
@@ -82,7 +98,9 @@
                                 ))->result_array();
                                 foreach($students as $row):?>
                         <tr id="student<?php echo $row['student_id'];?>">
-                            <td><?php echo $row['student_id'];?></td>
+                            <td>
+                                <?php echo $this->db->get_where('student',['student_id'=>$row['student_id']])->row()->student_code;;?>
+                            </td>
                             <td>
                                 <?php if(!empty($row['roll'])):?>
                                     <?php echo $row['roll'];?>
@@ -90,7 +108,15 @@
                                     <a href="<?php echo base('admin','set_new_promotion_std_info/').$class_id.'/'.$row['student_id'];?>">Set Roll</a>
                                 <?php endif;?>
                             </td>
-                            <td><img src="<?php echo $this->crud_model->get_image_url('student',$row['student_id']);?>" class="img-circle" width="30" /></td>
+                            <td>
+                            <?php $img_url = $this->crud_model->get_image_url2('student',$row['student_id']);
+                                if($img_url): 
+                             ?>
+                            <img src="<?php echo $img_url;?>" class="img-circle" width="30" /></td>
+                                <?php else: 
+                                    echo $row['student_id'].'.jpg';    
+                                endif;
+                                ?>
                             <td>
                                 <?php 
                                     echo $this->db->get_where('student' , array(
@@ -122,7 +148,7 @@
 
                                         <!-- STUDENT MARKSHEET LINK  -->
                                         <li>
-                                            <a href="<?php echo base_url();?>index.php?teacher/student_marksheet/<?php echo $row['student_id'];?>">
+                                            <a href="<?php echo base_url();?>index.php?admin/student_marksheet/<?php echo $row['student_id'];?>">
                                                 <i class="entypo-chart-bar"></i>
                                                     <?php echo get_phrase('mark_sheet');?>
                                                 </a>
@@ -134,6 +160,23 @@
                                             <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_profile/<?php echo $row['student_id'];?>');">
                                                 <i class="entypo-user"></i>
                                                     <?php echo get_phrase('profile');?>
+                                                </a>
+                                        </li>
+
+                                        
+                                        <!-- STUDENT PROFILE PRINT LINK -->
+                                        <li>
+                                            <a href="<?php echo base_url(); ?>index.php?Home/profile_view/<?php echo $row['student_id'];?>" target="_blank">
+                                                <i class="entypo-print"></i>
+                                                    <?php echo get_phrase('print_profile');?>
+                                                </a>
+                                        </li>
+                                        
+                                        <!-- STUDENT EDITING LINK -->
+                                        <li>
+                                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_edit/<?php echo $row['student_id'];?>');">
+                                                <i class="entypo-pencil"></i>
+                                                    <?php echo get_phrase('edit');?>
                                                 </a>
                                         </li>
 
@@ -226,7 +269,7 @@
 
                                         <!-- STUDENT MARKSHEET LINK  -->
                                         <li>
-                                            <a href="<?php echo base_url();?>index.php?teacher/student_marksheet/<?php echo $row['student_id'];?>">
+                                            <a href="<?php echo base_url();?>index.php?admin/student_marksheet/<?php echo $row['student_id'];?>">
                                                 <i class="entypo-chart-bar"></i>
                                                     <?php echo get_phrase('mark_sheet');?>
                                                 </a>
@@ -239,7 +282,14 @@
                                                     <?php echo get_phrase('profile');?>
                                                 </a>
                                         </li>
-                                      
+                                        
+                                        <!-- STUDENT EDITING LINK -->
+                                        <li>
+                                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php?modal/popup/modal_student_edit/<?php echo $row['student_id'];?>');">
+                                                <i class="entypo-pencil"></i>
+                                                    <?php echo get_phrase('edit');?>
+                                                </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 

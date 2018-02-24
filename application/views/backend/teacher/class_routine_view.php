@@ -109,7 +109,7 @@
         }
         $.ajax({
             type: 'GET',
-            url: "<?php echo base_url();?>index.php?teacher/ajaxClassRoutine/" + classID + "/" + sectionID + "/" +
+            url: "<?php echo base_url();?>index.php?admin/ajaxClassRoutine/" + classID + "/" + sectionID + "/" +
                 shiftID + "/" + groupID,
             beforeSend: function () {
                 $('#loading2').show();
@@ -129,7 +129,7 @@
 
     function add_students_class_routine() {
         $.ajax({
-            url: "<?php echo base_url();?>index.php?teacher/ajax_class_routine_add/",
+            url: "<?php echo base_url();?>index.php?admin/ajax_class_routine_add/",
             beforeSend: function () {
                 $('#loading2').show();
                 $('#overlayDiv').show();
@@ -148,7 +148,7 @@
     function select_section(class_id) {
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_group/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
             success: function (response) {
                 if (response) {
                     $('#group_holder').show();
@@ -160,7 +160,7 @@
         });
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_section/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
             success: function (response) {
                 jQuery('#section_holder').html(response);
             }

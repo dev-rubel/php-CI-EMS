@@ -42,7 +42,7 @@
 			</td>
 			<td align="center">
 				<a class="btn btn-default btn-xs"
-					href="<?php echo base_url();?>index.php?teacher/download_academic_syllabus/<?php echo $row['academic_syllabus_code'];?>">
+					href="<?php echo base_url();?>index.php?admin/download_academic_syllabus/<?php echo $row['academic_syllabus_code'];?>">
 					<i class="entypo-download"></i> <?php echo get_phrase('download');?>
 				</a>
 			</td>

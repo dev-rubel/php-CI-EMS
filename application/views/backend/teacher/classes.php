@@ -8,12 +8,12 @@
                 <a href="#list" data-toggle="tab"><i class="entypo-menu"></i> 
                     <?php echo get_phrase('class_list'); ?>
                 </a></li>
-            <!-- <li>
+            <li>
                 <a href="#add" data-toggle="tab"><i class="entypo-plus-circled"></i>
                     <?php echo get_phrase('add_class'); ?>
-                </a></li> -->
+                </a></li>
         </ul>
-        <!--  CONTROL TABS END  -->
+        <!------CONTROL TABS END------>
 
         <div class="tab-content">
             <br>
@@ -30,6 +30,7 @@
                             <th><div><?php echo get_phrase('class_name'); ?></div></th>
                             <th><div><?php echo get_phrase('numeric_name'); ?></div></th>
                             <th><div><?php echo get_phrase('teacher'); ?></div></th>
+                            <th><div><?php echo get_phrase('options'); ?></div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,9 +45,35 @@
                                     if ($row['teacher_id'] != '' || $row['teacher_id'] != 0)
                                         echo $this->crud_model->get_type_name_by_id('teacher', $row['teacher_id']);
                                     ?>
-                                </td>                                
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-default pull-right" role="menu">
+
+                                            <!-- EDITING LINK -->
+                                            <li>
+                                                <a href="#" onclick="editClass('<?php echo $row['class_id'];?>')">
+                                                    <i class="entypo-pencil"></i>
+    <?php echo get_phrase('edit'); ?>
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+
+                                            <!-- DELETION LINK -->
+                                            <li>
+                                                <a href="#" onclick="confDelete('admin','ajax_delete_classes','<?php echo $row['class_id'];?>','classes<?php echo $row['class_id'];?>')">
+                                                    <i class="entypo-trash"></i>
+    <?php echo get_phrase('delete'); ?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
-                        <?php endforeach; ?>
+<?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -58,7 +85,7 @@
             <div class="tab-pane box" id="add" style="padding: 5px">
                 <div class="box-content">
 
-        <form id="createClass" action="<?php echo base_url() .'index.php?admin/ajax_create_classes'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+<form id="createClass" action="<?php echo base_url() .'index.php?admin/ajax_create_classes'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
 
                     <div class="padded">
                         <div class="form-group">
@@ -141,7 +168,7 @@ function editClass(classID)
     {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_edit_class/'+classID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_class/'+classID,
             beforeSend: function(){
                 $('#loading2').show();
                 $('#overlayDiv').show();

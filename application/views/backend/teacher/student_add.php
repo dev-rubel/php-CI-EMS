@@ -1,3 +1,8 @@
+<style>
+span.mendatory {
+    color: red !important;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-primary" data-collapsed="0">
@@ -15,7 +20,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('name'); ?>
+                            <?php echo get_phrase('name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -25,17 +30,17 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('name_bangla'); ?>
+                            <?php echo get_phrase('name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="namebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="namebn" data-validation="required">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('father_name'); ?>
+                            <?php echo get_phrase('father_name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -45,17 +50,17 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('father_name_bangla'); ?>
+                            <?php echo get_phrase('father_name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="fnamebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="fnamebn" data-validation="required">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('mother_name'); ?>
+                            <?php echo get_phrase('mother_name'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -65,11 +70,11 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('mother_name_bangla'); ?>
+                            <?php echo get_phrase('mother_name_bangla'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="mnamebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="mnamebn" data-validation="required">
                         </div>
                     </div>
 
@@ -85,7 +90,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('permanent_address'); ?>
+                            <?php echo get_phrase('permanent_address'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -95,7 +100,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('present_address'); ?>
+                            <?php echo get_phrase('present_address'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -175,7 +180,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('birthday'); ?>
+                            <?php echo get_phrase('birthday'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -215,7 +220,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('guardian_mobile_no'); ?>
+                            <?php echo get_phrase('guardian_mobile_no'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -278,7 +283,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('want_to_admit_class'); ?>
+                            <?php echo get_phrase('want_to_admit_class'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -303,7 +308,7 @@
 
                     <div class="form-group groupHolder">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('group'); ?>
+                            <?php echo get_phrase('group'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -317,7 +322,7 @@
 
                     <div class="form-group sectionHolder">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('section'); ?>
+                            <?php echo get_phrase('section'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
                             <select name="section_id" class="form-control" id="section_selector_holder">
@@ -331,7 +336,7 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('shift'); ?>
+                            <?php echo get_phrase('shift'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
                             <select name="shift_id" class="form-control" id="shift_selector_holder">
@@ -352,7 +357,7 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('Roll'); ?>
+                            <?php echo get_phrase('Roll'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-6">
@@ -393,7 +398,7 @@
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('photo'); ?>
+                            <?php echo get_phrase('photo'); ?> <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
@@ -494,7 +499,7 @@
                     $('#loading').show();
                     $('#overlayDiv').show();
                 },
-                url: '<?php echo base_url(); ?>index.php?teacher/get_student_roll',
+                url: '<?php echo base_url(); ?>index.php?admin/get_student_roll',
                 success: function (response) {
                     $('#roll_selector_holder').empty();
                     $('#roll_selector_holder').append('<option value="">Available Rolls</option>');
@@ -513,7 +518,7 @@
     function get_class_sections(class_id) {
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_class_group/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_class_group/' + class_id,
             success: function (response) {
                 if (response) {
                     if (response == 1) {
@@ -532,7 +537,7 @@
         });
 
         $.ajax({
-            url: '<?php echo base_url(); ?>index.php?teacher/get_class_section/' + class_id,
+            url: '<?php echo base_url(); ?>index.php?admin/get_class_section/' + class_id,
             success: function (response) {
                 if (response) {
                     $('.sectionHolder').show();

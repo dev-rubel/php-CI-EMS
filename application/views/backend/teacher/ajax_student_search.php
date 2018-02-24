@@ -30,7 +30,7 @@
 
                         <!-- STUDENT MARKSHEET LINK  -->
                         <li>
-                            <a href="<?php echo base_url();?>index.php?teacher/student_marksheet/<?php echo 1;?>">
+                            <a href="<?php echo base_url();?>index.php?admin/student_marksheet/<?php echo 1;?>">
                                 <i class="entypo-chart-bar"></i>
                                     <?php echo get_phrase('mark_sheet');?>
                                 </a>
@@ -64,7 +64,7 @@
                         <?php if($_SESSION['name']=='NihalIT'):?>
                         <!-- STUDENT DELETION LINK -->
                         <li>
-                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?teacher/student/delete/<?php echo $each['student_id'];?>');">
+                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>index.php?admin/student/delete/<?php echo $each['student_id'];?>');">
                                 <i class="entypo-trash"></i>
                                     <?php echo get_phrase('delete');?>
                             </a>

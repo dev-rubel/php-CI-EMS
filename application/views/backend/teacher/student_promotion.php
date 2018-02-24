@@ -80,7 +80,7 @@
             return false;
         }
         $.ajax({
-            url: '<?php echo base_url();?>index.php?teacher/get_students_to_promote/' + from_class_id + '/' + to_class_id + '/' + running_year + '/' + promotion_year,
+            url: '<?php echo base_url();?>index.php?admin/get_students_to_promote/' + from_class_id + '/' + to_class_id + '/' + running_year + '/' + promotion_year,
             success: function(response)
             {
                 jQuery('#students_for_promotion_holder').html(response);

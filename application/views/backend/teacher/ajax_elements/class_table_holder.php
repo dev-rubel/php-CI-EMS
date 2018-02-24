@@ -59,7 +59,7 @@ function editClass(classID)
     {
         $.ajax({
             type: 'GET',
-            url: '<?php echo base_url();?>index.php?teacher/ajax_edit_class/'+classID,
+            url: '<?php echo base_url();?>index.php?admin/ajax_edit_class/'+classID,
             beforeSend: function(){
                 $('#loading2').show();
                 $('#overlayDiv').show();

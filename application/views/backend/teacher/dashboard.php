@@ -31,13 +31,7 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
     background-color: #6BAFBD;
     color: #fff;
 }
-
 </style>
-<div class="well text-center well-sm">
-    <h3>
-        <?php echo $_SESSION['name']; ?>
-    </h3>
-</div>
 <hr />
 <div class="row">
     <div class="col-md-12">
@@ -95,6 +89,16 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
 </div>
 
 <div class="row">
+	<div class="col-sm-6 col-md-3">
+        <div class="panel panel-stat3 bg-sms">
+            <h2 class="m-top-none"><span id="serverloadCount"><?php echo floor($sms_info)/40; ?></span></h2>
+            <h5>SMS Balance</h5>
+            
+            <div class="stat-icon">
+                <i class="fa fa-telegram fa-3x"></i>
+            </div>
+        </div>
+    </div><!-- /.col -->
 
     <?php 
         $this->db->where('type', 'link_status');
@@ -172,7 +176,7 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
             if(str == "") {
                 $( "#searchStudentList" ).html("");  
             }else {
-                $.get( "<?php echo base_url();?>index.php?teacher/ajaxStudentSearch/"+str, function( data ){
+                $.get( "<?php echo base_url();?>index.php?admin/ajaxStudentSearch/"+str, function( data ){
                     $( "#searchStudentList" ).html( data );  
                 });
             }

@@ -8,10 +8,10 @@
             	<a href="#list" data-toggle="tab"><i class="entypo-menu"></i> 
 					<?php echo get_phrase('subject_list');?>
                     	</a></li>
-			<!-- <li>
+			<li>
             	<a href="#add" data-toggle="tab"><i class="entypo-plus-circled"></i>
 					<?php echo get_phrase('add_subject');?>
-                    	</a></li> -->
+                    	</a></li>
 		</ul>
     	<!------CONTROL TABS END------>
 		<div class="tab-content">
@@ -29,6 +29,7 @@
                             <th><div><?php echo get_phrase('subject_name');?></div></th>
                     		<th><div><?php echo get_phrase('mark_distribution');?></div></th>
                     		<th><div><?php echo get_phrase('teacher');?></div></th>
+                    		<th><div><?php echo get_phrase('options');?></div></th>
 						</tr>
 					</thead>
                     <tbody>
@@ -49,7 +50,32 @@
                                 } ?>
                             </td>
 							<td><?php echo $this->crud_model->get_type_name_by_id('teacher',$row['teacher_id']);?></td>
-							
+							<td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    Action <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-default pull-right" role="menu">
+                                    
+                                    <!-- EDITING LINK -->
+                                    <li>
+                                        <a href="#" onclick="editSubject('<?php echo $row['subject_id'];?>','<?php echo $row['class_id']; ?>')">
+                                            <i class="entypo-pencil"></i>
+                                                <?php echo get_phrase('edit');?>
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    
+                                    <!-- DELETION LINK -->
+                                    <li>
+                                        <a href="#" onclick="confDelete('admin','ajax_delete_subject','<?php echo $row['subject_id'];?>','subject<?php echo $row['subject_id'];?>')">
+                                            <i class="entypo-trash"></i>
+                                                <?php echo get_phrase('delete');?>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+        					</td>
                         </tr>
                         <?php endforeach;?>
                     </tbody>
@@ -201,7 +227,7 @@
         this.class_id = <?php echo $class_id;?>;
         if(name=='join'){
             $.ajax({
-                url: '<?php echo base_url(); ?>index.php?teacher/get_join_subject_info/' + this.class_id,
+                url: '<?php echo base_url(); ?>index.php?admin/get_join_subject_info/' + this.class_id,
                 success: function (response)
                 {   
                     if(response){
@@ -225,7 +251,7 @@
 
         }else if(name=='group'){
             $.ajax({
-                url: '<?php echo base_url(); ?>index.php?teacher/get_group_subject_info/' + this.class_id,
+                url: '<?php echo base_url(); ?>index.php?admin/get_group_subject_info/' + this.class_id,
                 success: function (response)
                 {   
 
@@ -324,7 +350,7 @@ function editSubject(subjectID, classID)
 {
     $.ajax({
         type: 'GET',
-        url: '<?php echo base_url();?>index.php?teacher/ajax_edit_subject/'+subjectID+'/'+classID,
+        url: '<?php echo base_url();?>index.php?admin/ajax_edit_subject/'+subjectID+'/'+classID,
         beforeSend: function(){
             $('#loading2').show();
             $('#overlayDiv').show();

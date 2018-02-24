@@ -166,7 +166,7 @@
 	function editIncomeCategory(incomeCategoryID) {
 		$.ajax({
 			type: 'GET',
-			url: '<?php echo base_url();?>index.php?teacher/ajax_income_category_edit/' + incomeCategoryID,
+			url: '<?php echo base_url();?>index.php?admin/ajax_income_category_edit/' + incomeCategoryID,
 			beforeSend: function () {
 				$('#loading2').show();
 				$('#overlayDiv').show();
