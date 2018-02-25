@@ -465,18 +465,24 @@ class Admin extends CI_Controller
     {
         $class_std = $this->db->get_where('enroll',['class_id'=>$classID,'year'=>$this->running_year])->result_array();
         foreach($class_std as $std_key=>$std_each) { 
-            $students[$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
-            if(empty($students[$std_key])) {
-                unset($students[$std_key]);
+            $students['mark_info'][$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
+            if(empty($students['mark_info'][$std_key])) {
+                unset($students['mark_info'][$std_key]);
+            } else {
+                $std_id = key($students['mark_info'][$std_key]);
+                $students['class_position'][] = $students['mark_info'][$std_key][$std_id]['total_mark'];
             }
         }     
+        // SORTING MARK HEIGH TO LOW
+        rsort($students['class_position']);
         return $students;
     }
 
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(13,1);
+        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        pd($data);
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 

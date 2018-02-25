@@ -87,8 +87,9 @@ function accSum($grades='')
     }
 </style>
 
-<?php if(!empty($students)): 
-	foreach($students as $rootIndex=>$each):	
+<?php if(!empty($students['mark_info'])): 
+	foreach($students['mark_info'] as $rootIndex=>$each):
+		$achiveTotalMark = 0;	
 		foreach($each as $studentID=>$each2):
 			// GET STUDENT ALL INFORMATION
 			$this->db->select('*');
@@ -231,7 +232,7 @@ function accSum($grades='')
 				?>
 				<tr>
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->name; ?></td>
-					<td class="text-center"><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->total_mark; ?></td>
+					<td class="text-center"><?php $singleSubjectMark = $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->total_mark; $achiveTotalMark += $singleSubjectMark; echo $singleSubjectMark; ?></td>
 					<td></td>
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID2]); 
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
@@ -259,7 +260,7 @@ function accSum($grades='')
 			<?php endforeach; else: // If Single Subject 	?>
 				<tr>
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID])->row()->name; ?></td>
-					<td class="text-center"><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID])->row()->total_mark; ?></td>
+					<td class="text-center"><?php $singleSubjectMark = $this->db->get_where('subject',['subject_id'=>$subjectID])->row()->total_mark; $achiveTotalMark += $singleSubjectMark; echo $singleSubjectMark; ?></td>
 					<td></td>
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID]); 
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
@@ -273,7 +274,7 @@ function accSum($grades='')
 
 			<tr>
 				<td class="text-right">Total Exam Marks</td>
-				<td class="text-center">1150</td>
+				<td class="text-center"><?php echo $achiveTotalMark; ?></td>
 				<td colspan="5" class="text-right">Obtained Marks & GPA</td>				
 				<td class="text-center"><?php echo $each2['total_mark'] ?></td>
 				<td class="text-center"><?php echo $each2['total_grade'] ?></td>
@@ -289,7 +290,7 @@ function accSum($grades='')
 			<table class="table table-bordered">
 				<tr>
 					<td>Class Position</td>
-					<td></td>
+					<td><?php $class_position = array_search($each2['total_mark'],$students['class_position']); echo $class_position+1; ?></td>
 				</tr>
 				<tr>
 					<td>GPA (Without 4th)</td>
