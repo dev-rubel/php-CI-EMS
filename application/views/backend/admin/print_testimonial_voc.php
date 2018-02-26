@@ -39,31 +39,32 @@
 <head>
     
 <meta http-equiv="Content-Type" content="charset=UTF-8" />
-<link rel="stylesheet" href="assets/css/bootstrap.css">
+<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
 
 <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <style>
 	.col-md-12.testimonial-body {
-	    min-height: 230px !important;
+	    min-height: 270px !important;
 	}
 	.testimonial-wrapper{
 		font-family: 'Lobster', cursive;
 	    line-height: 27px;
 	    text-align: center;
-	    padding: 0;
+	    padding: 0px !important;
+		margin: 0px !important;
 	    
 	    border-style: solid;
-		border-width: 60px 63px 63px 60px;
-		-moz-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		-webkit-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		-o-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 fill repeat;
+		border-width: 55px 60px 60px 55px;
+		-moz-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		-webkit-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		-o-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 fill repeat;
 
-
-		    color: #000;
-		    width: 100% height: 100%;
-		    display: block;
-		    position: relative;
+		color: #000;
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: relative;
 	}
 	h1, h2{
 		color: #000;
@@ -94,11 +95,11 @@
 	.logo img{
 		max-width: 100px;
 		max-height: 100px;
-		float: right;
+		/* float: right; */
 	}
 	.testimonial-wrapper:after {
  	  content: "";
-	  background: url(<?php echo base_url(); ?>uploads/school_logo.png);
+	  background: url(<?php echo base_url(); ?>uploads/school_logo.png) !important;
 	  opacity: 0.1;
 	  top: 100px;
 	  left: 0;
@@ -106,8 +107,8 @@
 	  right: 0;
 	  position: absolute;
 	  background-size: 550px 400px;
-	  background-repeat: no-repeat;
-	  background-position: center center;
+	  background-repeat: no-repeat !important;
+	  background-position: center center !important;
 	}
 
 	span.border_bottom{
@@ -161,7 +162,7 @@
 		    text-shadow: none !important;
 		    background: url(<?php echo base_url(); ?>uploads/school_logo.png) !important;
 		    box-shadow: none !important;
-		    background-size: 550px 400px !important;
+		    background-size: 400px 400px !important;
 		  	background-repeat: no-repeat !important;
 		  	background-position: center center !important;
 		}
@@ -180,36 +181,32 @@
 <div class="testimonial-wrapper" id="printID">
 
 	<div class="row">
-		<div class="col-xs-12 text-center">
-			<div class="col-xs-3 text-right logo">
-				<img src="<?php echo base_url(); ?>uploads/school_logo.png" alt="" class="img-responsive">
-			</div>
-			<div class="col-xs-6 header-title">
-				<div class="text-center">
-					<h2><?php echo $schoolName; ?></h2>
-					<p>EIIN: <?php echo $eiin; ?></p>
-					<p><?php echo $schoolAddress; ?></p>	
-				</div>				
-			</div>
-			<div class="col-xs-3">
-				
-			</div>
+		<div class="col-xs-3">
+			<img src="<?php echo base_url(); ?>uploads/school_logo.png" width="100px" height="100px" alt="">
+		</div>
+		<div class="col-xs-6 header-title">
+			<div class="text-center">
+				<h2><?php echo $schoolName; ?></h2>
+				<p>EIIN: <?php echo $eiin; ?></p>
+				<p><?php echo $schoolAddress; ?></p>	
+			</div>				
+		</div>
+		<div class="col-xs-3">
+			
 		</div>
 	</div>
 	
 	<div class="row">
-		<div class="col-xs-12 text-center">
-			<div class="col-xs-4 sl-no">
-				<p>Sl No.
-					<span><?php echo $testimonial_id; ?></span>
-				</p>
-			</div>
-			<div class="col-xs-4 title">
-				<h1>Testimonial</h1>
-			</div>
-			<div class="col-xs-4 date">
-				<p>Date: <?php echo date('d-m-Y'); ?></p>
-			</div>
+		<div class="col-xs-4">
+			<p>Sl No.
+				<span><?php echo $testimonial_id; ?></span>
+			</p>
+		</div>
+		<div class="col-xs-4 title">
+			<h1>Testimonial</h1>
+		</div>
+		<div class="col-xs-4 date">
+			<p>Date: <?php echo date('d-m-Y'); ?></p>
 		</div>
 	</div>
 
@@ -242,25 +239,23 @@
 				
 			<br> <br>
 
-			<span><?php echo $vocFormat[19];?></span>
+			<span><?php //echo $vocFormat[19];?></span>
 		</div>
 	</div>
 
 	<br>
 
 	<div class="row">
-		<div class="col-xs-12">
-			<div class="col-xs-4 text-center office-asse-sign">				
-				<hr>
-				<span><?php echo $vocFormat[20];?></span>
-			</div>
-			<div class="col-xs-4 blank-space">
-				
-			</div>
-			<div class="col-xs-4 text-center headmaster-sign">
-				<hr>
-				<span><?php echo $vocFormat[21];?></span>
-			</div>
+		<div class="col-xs-4 text-center office-asse-sign">				
+			<hr>
+			<span><?php echo $vocFormat[19];?></span>
+		</div>
+		<div class="col-xs-4 blank-space">
+			
+		</div>
+		<div class="col-xs-4 text-center headmaster-sign">
+			<hr>
+			<span><?php echo $vocFormat[20];?></span>
 		</div>
 	</div>
 </div>

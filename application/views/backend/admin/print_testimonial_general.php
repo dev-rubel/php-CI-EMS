@@ -39,32 +39,32 @@
 <head>
     
 <meta http-equiv="Content-Type" content="charset=UTF-8" />
-<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
 
 <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <style>
 	.col-md-12.testimonial-body {
-	    min-height: 230px !important;
+	    min-height: 270px !important;
 	}
 	.testimonial-wrapper{
 		font-family: 'Lobster', cursive;
 	    line-height: 27px;
 	    text-align: center;
-	    padding: 0;
+	    padding: 0px !important;
+		margin: 0px !important;
 	    
 	    border-style: solid;
-		border-width: 60px 63px 63px 60px;
-		-moz-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		-webkit-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		-o-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 repeat;
-		border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 60 63 63 60 fill repeat;
+		border-width: 55px 60px 60px 55px;
+		-moz-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		-webkit-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		-o-border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 repeat;
+		border-image: url(<?php echo base_url(); ?>assets/images/border-img.gif) 55 60 60 55 fill repeat;
 
-
-		    color: #000;
-		    width: 100%;
-		    height: 100%;
-		    display: block;
-		    position: relative;
+		color: #000;
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: relative;
 	}
 	h1, h2{
 		color: #000;
@@ -175,37 +175,37 @@
 </style>
 
 </head>
-<body>
+<body onload="window.print()">
 		
 
 <div class="testimonial-wrapper" id="printID">
 
 	<div class="row">
-			<div class="col-sm-3">
-				<img src="<?php echo base_url(); ?>uploads/school_logo.png" width="100px" height="100px" alt="">
-			</div>
-			<div class="col-sm-6">
-					<h2><?php echo $schoolName; ?></h2>
-					<p>EIIN: <?php echo $eiin; ?></p>
-					<p><?php echo $schoolAddress; ?></p>	
-			</div>
-			<div class="col-sm-3">
-				
-			</div>
+		<div class="col-xs-3">
+			<img src="<?php echo base_url(); ?>uploads/school_logo.png" width="100px" height="100px" alt="">
+		</div>
+		<div class="col-xs-6">
+				<h2><?php echo $schoolName; ?></h2>
+				<p>EIIN: <?php echo $eiin; ?></p>
+				<p><?php echo $schoolAddress; ?></p>	
+		</div>
+		<div class="col-xs-3">
+			
+		</div>
 	</div>
 	
 	<div class="row">
-			<div class="col-sm-4">
-				<p>Sl No.
-					<span><?php echo $testimonial_id; ?></span>
-				</p>
-			</div>
-			<div class="col-sm-4 title">
-				<h1>Testimonial</h1>
-			</div>
-			<div class="col-sm-4 date">
-				<p>Date: <?php echo date('d-m-Y'); ?></p>
-			</div>
+		<div class="col-xs-4">
+			<p>Sl No.
+				<span><?php echo $testimonial_id; ?></span>
+			</p>
+		</div>
+		<div class="col-xs-4 title">
+			<h1>Testimonial</h1>
+		</div>
+		<div class="col-xs-4 date">
+			<p>Date: <?php echo date('d-m-Y'); ?></p>
+		</div>
 	</div>
 
 <br>
@@ -228,29 +228,29 @@
 		<span> <?php echo $genFormat[15];?></span><span class="border_bottom"><?php echo ucwords(str_replace('-', ' ', $trade_name)); ?></span>
 		<span><?php echo $genFormat[16];?></span>
 			
+		<br>
+		<span><?php echo $genFormat[17];?></span><span class="border_bottom"><?php echo $eachBirth[0]; ?></span>
+		<span>/</span><span class="border_bottom"><?php echo $eachBirth[1]; ?></span>
+		<span>/</span><span class="border_bottom"><?php echo $eachBirth[2]; ?></span>
+		<span><?php echo $genFormat[18];?></span>
+			
+		<br> 
 
-			<span><?php echo $genFormat[17];?></span><span class="border_bottom"><?php echo $eachBirth[0]; ?></span>
-			<span>/</span><span class="border_bottom"><?php echo $eachBirth[1]; ?></span>
-			<span>/</span><span class="border_bottom"><?php echo $eachBirth[2]; ?></span>
-			<span><?php echo $genFormat[18];?></span>
-				
-			<br> 
-
-			<span><?php echo $genFormat[19];?></span>
+		<span><?php echo $genFormat[19];?></span>
 		</div>
 	</div>
 
 	<br>
 
 	<div class="row">
-		<div class="col-sm-4 text-center office-asse-sign">				
+		<div class="col-xs-4 text-center office-asse-sign">				
 			<hr>
 			<span><?php echo $genFormat[20];?></span>
 		</div>
-		<div class="col-sm-4 blank-space">
+		<div class="col-xs-4 blank-space">
 			
 		</div>
-		<div class="col-sm-4 text-center headmaster-sign">
+		<div class="col-xs-4 text-center headmaster-sign">
 			<hr>
 			<span><?php echo $genFormat[21];?></span>
 		</div>

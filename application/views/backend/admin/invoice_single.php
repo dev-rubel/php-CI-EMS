@@ -1,10 +1,10 @@
-<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css"
+<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
 />
 
 
 <style>
 	.container {
-		padding-top: 30px;
+		/* padding-top: 30px; */
 	}
 
 	.invoice-body {
@@ -83,21 +83,21 @@ foreach ($invoice_info as $row):
 <div class="container">
 	<div class="row">
 		<!-- OFFICE COPY -->
-		<div class="col-sm-6 office-copy">
+		<div class="col-xs-6 office-copy">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6>Invoice</h5>
 				</div>
-				<div class="col-sm-6 text-right">
+				<div class="col-xs-6 text-right">
 					<h6>Office Copy</h6>
 				</div>
 			</div>
 			<div class="row header-area">
-				<div class="col-sm-3 text-center">
-					<img src="https://image3.mouthshut.com/images/imagesp/925732934s.png" width="120px" height="100px" class="img-responsive logo">
+				<div class="col-xs-3 text-center">
+					<img src="<?php echo base_url();?>uploads/school_logo.png" width="100px" height="100px" class="img-responsive logo">
 				</div>
 
-				<div class="col-sm-9">
+				<div class="col-xs-9">
 					<address class="bg-light text-center">
 						<strong><?php echo $schoolName ?></strong>
 						<br> <?php echo $schoolAddress ?>
@@ -108,13 +108,13 @@ foreach ($invoice_info as $row):
 			</div>
 			<hr>
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6 class="text-left">
 						SL No.
 						<?php echo $invoice_id; ?>
 					</h6>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6 class="text-right">
 						Date:
 						<?php echo date('d-m-Y', $row['creation_timestamp']); ?>
@@ -123,23 +123,23 @@ foreach ($invoice_info as $row):
 			</div>
 			<hr>
 			<div class="row">
-				<div class="col-sm-6 well invoice-author">
+				<div class="col-xs-6 invoice-author">
 					<table class="invoice-head">
 						<tbody>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Name: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Class: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('class', array('class_id' => $class_id))->row()->name; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Section: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('section', array('section_id' => $section_id))->row()->name; ?></td>
@@ -147,7 +147,7 @@ foreach ($invoice_info as $row):
 						</tbody>
 					</table>
 				</div>
-				<div class="col-sm-6 well invoice-author">
+				<div class="col-xs-6 invoice-author">
 					<table class="invoice-head">
 						<tbody>
 						<?php 
@@ -155,20 +155,20 @@ foreach ($invoice_info as $row):
                             if(strlen($group_name) > 0):
 						?>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Group: </strong>
 								</td>
 								<td><?php echo $group_name ?></td>
 							</tr>
 							<?php endif; ?>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Roll: </strong>
 								</td>
 								<td><?php echo $std_roll; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>ID No.: </strong>
 								</td>
 								<td><?php echo $row['acc_code']; ?></td>
@@ -178,7 +178,7 @@ foreach ($invoice_info as $row):
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 well">
+				<div class="col-xs-12">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -236,10 +236,10 @@ foreach ($invoice_info as $row):
 				</div>
 			</div>
 			<div class="row pt-3">
-				<div class="col-sm-6 invoice-thank text-left">
+				<div class="col-xs-6 invoice-thank text-left">
 					<p class="bg-light student-sign">Student Sign</p>
 				</div>
-				<div class="col-sm-6 invoice-thank text-right">
+				<div class="col-xs-6 invoice-thank text-right">
 					<p class="bg-light office-sign">Office Sign</p>
 				</div>
 			</div>
@@ -247,21 +247,21 @@ foreach ($invoice_info as $row):
 		</div>
 		<!-- END OFFICE COPY -->
 		<!-- STUDENT COPY -->
-		<div class="col-sm-6 student-copy">
+		<div class="col-xs-6 student-copy">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6>Invoice</h5>
 				</div>
-				<div class="col-sm-6 text-right">
+				<div class="col-xs-6 text-right">
 					<h6>Student Copy</h6>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-3 text-center">
-					<img src="https://image3.mouthshut.com/images/imagesp/925732934s.png" width="120px" height="100px" class="img-responsive logo">
+				<div class="col-xs-3 text-center">
+					<img src="<?php echo base_url();?>uploads/school_logo.png" width="100px" height="100px" class="img-responsive logo">
 				</div>
 
-				<div class="col-sm-9">
+				<div class="col-xs-9">
 					<address class="bg-light text-center">
 						<strong><?php echo $schoolName ?></strong>
 						<br> <?php echo $schoolAddress ?>
@@ -272,13 +272,13 @@ foreach ($invoice_info as $row):
 			</div>
 			<hr>
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6 class="text-left">
 						SL No.
 						<?php echo $invoice_id; ?>
 					</h6>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-xs-6">
 					<h6 class="text-right">
 						Date:
 						<?php echo date('d-m-Y', $row['creation_timestamp']); ?>
@@ -287,23 +287,23 @@ foreach ($invoice_info as $row):
 			</div>
 			<hr>
 			<div class="row">
-				<div class="col-sm-6 well invoice-author">
+				<div class="col-xs-6 invoice-author">
 					<table class="invoice-head">
 						<tbody>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Name: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Class: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('class', array('class_id' => $class_id))->row()->name; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Section: </strong>
 								</td>
 								<td><?php echo $this->db->get_where('section', array('section_id' => $section_id))->row()->name; ?></td>
@@ -311,7 +311,7 @@ foreach ($invoice_info as $row):
 						</tbody>
 					</table>
 				</div>
-				<div class="col-sm-6 well invoice-author">
+				<div class="col-xs-6 invoice-author">
 					<table class="invoice-head">
 						<tbody>
 						<?php 
@@ -319,20 +319,20 @@ foreach ($invoice_info as $row):
                             if(strlen($group_name) > 0):
 						?>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Group: </strong>
 								</td>
 								<td><?php echo $group_name ?></td>
 							</tr>
 							<?php endif; ?>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>Roll: </strong>
 								</td>
 								<td><?php echo $std_roll; ?></td>
 							</tr>
 							<tr>
-								<td class="pull-right">
+								<td class="">
 									<strong>ID No.: </strong>
 								</td>
 								<td><?php echo $row['acc_code']; ?></td>
@@ -342,7 +342,7 @@ foreach ($invoice_info as $row):
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 well invoice-body">
+				<div class="col-xs-12 invoice-body">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -400,10 +400,10 @@ foreach ($invoice_info as $row):
 				</div>
 			</div>
 			<div class="row pt-3">
-				<div class="col-sm-6 invoice-thank text-left">
+				<div class="col-xs-6 invoice-thank text-left">
 					<p class="bg-light student-sign">Student Sign</p>
 				</div>
-				<div class="col-sm-6 invoice-thank text-right">
+				<div class="col-xs-6 invoice-thank text-right">
 					<p class="bg-light office-sign">Office Sign</p>
 				</div>
 			</div>
