@@ -481,7 +481,7 @@ class Admin extends CI_Controller
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        $data['students'] = $this->generate_marksheet_class_wise(13,1);
         pd($data);
         $this->load->view('backend/admin/marksheet_single', $data);
     }
@@ -2791,6 +2791,8 @@ class Admin extends CI_Controller
 
     function ajax_marks_selector()
     {
+        // pd($_POST);
+        // $this->jsonMsgReturn(true,'hello',$_POST);
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
@@ -2860,6 +2862,7 @@ class Admin extends CI_Controller
                             'year' => $running_year,
                                 'subject_id' => $subject_id
         ))->result_array();
+        
         foreach($marks_of_students as $row) {
             $this->db->where('mark_id' , $row['mark_id']);
             $this->db->update('mark' , ['mark_obtained' => $data[$row['mark_id']]['marks_obtained'] , 'comment' => $data[$row['mark_id']]['comment']]);

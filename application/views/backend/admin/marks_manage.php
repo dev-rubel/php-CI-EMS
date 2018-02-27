@@ -84,6 +84,7 @@ $('#markSelector').ajaxForm({
 			toastr.error(jData.msg);
 		} else {
 			toastr.success(jData.msg);  
+			// console.log(jData.html);
 			$( "#studentMarkHolder" ).html( jData.html );               
 		}   
 		$('body,html').animate({scrollTop:0},800);         
