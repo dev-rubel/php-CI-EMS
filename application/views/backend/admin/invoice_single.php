@@ -3,6 +3,10 @@
 
 
 <style>
+	body {
+		font-size: 12px;
+	}
+
 	.container {
 		/* padding-top: 30px; */
 	}
@@ -25,7 +29,7 @@
 	}
 
 	.student-copy .row {
-		border-left: 1px dotted;
+		/* border-left: 1px dotted; */
 	}
 
 	.student-sign {
@@ -40,11 +44,12 @@
 
 	.table td,
 	.table th {
-		padding: 5px !important;
+		padding: 2px !important;
+		font-size: 12px;
 	}
 
 	hr {
-		margin: 5px 0px;
+		margin: 0px 0px;
 	}
 
 	table.invoice-head {
@@ -53,6 +58,29 @@
 
 	.table-bordered {
 		font-size: 15px !important;
+	}
+	.bottom-sign {
+		margin-top: 80px;
+	}
+	.borderless td, .borderless th {
+		border: none !important;
+	}
+
+	.table {
+		margin-bottom: 0px !important;
+	}
+
+	.border-div {
+		margin: 0 auto;
+		width: 1px;
+		height: 100%;
+		border: 1px dotted;
+	}
+	
+	@media print {
+		.container {
+			width:100%;
+		}
 	}
 </style>
 <?php 
@@ -83,7 +111,7 @@ foreach ($invoice_info as $row):
 <div class="container">
 	<div class="row">
 		<!-- OFFICE COPY -->
-		<div class="col-xs-6 office-copy">
+		<div class="col-xs-5 office-copy">
 			<div class="row">
 				<div class="col-xs-6">
 					<h6>Invoice</h5>
@@ -96,7 +124,7 @@ foreach ($invoice_info as $row):
 				<div class="col-xs-3 text-center">
 					<img src="<?php echo base_url();?>uploads/school_logo.png" width="100px" height="100px" class="img-responsive logo">
 				</div>
-
+			
 				<div class="col-xs-9">
 					<address class="bg-light text-center">
 						<strong><?php echo $schoolName ?></strong>
@@ -106,6 +134,7 @@ foreach ($invoice_info as $row):
 					</address>
 				</div>
 			</div>
+			<br>
 			<hr>
 			<div class="row">
 				<div class="col-xs-6">
@@ -124,7 +153,7 @@ foreach ($invoice_info as $row):
 			<hr>
 			<div class="row">
 				<div class="col-xs-6 invoice-author">
-					<table class="invoice-head">
+					<table class="table borderless invoice-head">
 						<tbody>
 							<tr>
 								<td class="">
@@ -148,7 +177,7 @@ foreach ($invoice_info as $row):
 					</table>
 				</div>
 				<div class="col-xs-6 invoice-author">
-					<table class="invoice-head">
+					<table class="table borderless invoice-head">
 						<tbody>
 						<?php 
 							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
@@ -235,7 +264,7 @@ foreach ($invoice_info as $row):
 					</table>
 				</div>
 			</div>
-			<div class="row pt-3">
+			<div class="row pt-3 bottom-sign">
 				<div class="col-xs-6 invoice-thank text-left">
 					<p class="bg-light student-sign">Student Sign</p>
 				</div>
@@ -246,8 +275,11 @@ foreach ($invoice_info as $row):
 
 		</div>
 		<!-- END OFFICE COPY -->
+		<div class="col-xs-2">
+			<div class="border-div"></div>
+		</div>
 		<!-- STUDENT COPY -->
-		<div class="col-xs-6 student-copy">
+		<div class="col-xs-5 student-copy">
 			<div class="row">
 				<div class="col-xs-6">
 					<h6>Invoice</h5>
@@ -270,6 +302,7 @@ foreach ($invoice_info as $row):
 					</address>
 				</div>
 			</div>
+			<br>
 			<hr>
 			<div class="row">
 				<div class="col-xs-6">
@@ -288,7 +321,7 @@ foreach ($invoice_info as $row):
 			<hr>
 			<div class="row">
 				<div class="col-xs-6 invoice-author">
-					<table class="invoice-head">
+					<table class="table borderless invoice-head">
 						<tbody>
 							<tr>
 								<td class="">
@@ -312,7 +345,7 @@ foreach ($invoice_info as $row):
 					</table>
 				</div>
 				<div class="col-xs-6 invoice-author">
-					<table class="invoice-head">
+					<table class="table borderless invoice-head">
 						<tbody>
 						<?php 
 							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
@@ -399,7 +432,7 @@ foreach ($invoice_info as $row):
 					</table>
 				</div>
 			</div>
-			<div class="row pt-3">
+			<div class="row pt-3 bottom-sign">
 				<div class="col-xs-6 invoice-thank text-left">
 					<p class="bg-light student-sign">Student Sign</p>
 				</div>
