@@ -189,7 +189,9 @@ function changePage(page)
                 'driver': unijoy
             });
             
-            $('.datepicker').datepicker();
+            $('.datepicker').datepicker({
+            	format: 'dd-mm-yyyy',
+            });
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

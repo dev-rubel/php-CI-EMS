@@ -3444,7 +3444,7 @@ class Admin extends CI_Controller
         $page_data['running_year'] = $this->running_year;
         $page_data['class_id'] = $class_id;
         $page_data['shift_id'] = $shift_id;
-        $page_data['group_id'] = $group_id==''?0:'';
+        $page_data['group_id'] = $group_id;
         $page_data['month']    = $month;
         $page_data['page_name'] = 'attendance_report_view';
         $page_data['section_id'] = $section_id;

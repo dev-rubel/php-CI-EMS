@@ -116,6 +116,10 @@ function changePage(page)
             $('#attendanceNavManu').show();
             $('#attendanceMainManu').hide();
             $('#ajaxPageContainer').html(response);
+
+            $('.datepicker').datepicker({
+            	format: 'dd-mm-yyyy',
+            });
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

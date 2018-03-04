@@ -118,7 +118,9 @@ function changePage(page)
             $('#teacherMainManu').hide();
             $('#ajaxPageContainer').html(response);
             
-            $('.datepicker').datepicker();
+            $('.datepicker').datepicker({
+            	format: 'dd-mm-yyyy',
+            });
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }
