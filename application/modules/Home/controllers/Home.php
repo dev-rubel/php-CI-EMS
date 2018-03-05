@@ -48,6 +48,11 @@ class Home extends MX_Controller {
     {
         $this->detailsPage();
     }
+
+    function syllabus()
+    {
+        $this->load_page('syllabusPage', 'Syllabus');
+    }
     
     function registration_online()
     {

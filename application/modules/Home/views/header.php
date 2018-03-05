@@ -71,6 +71,9 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
                                     <a href="index.php?Home/massageDetails/pathTica">পাঠ টীকা</a>
                                 </li>
                                 <li>
+                                    <a href="index.php?Home/syllabus">সিলেবাস</a>
+                                </li>
+                                <li>
                                     <a href="index.php?Home/massageDetails/studentPresent">উপস্থিতি</a>
                                 </li>
                                 <li>
