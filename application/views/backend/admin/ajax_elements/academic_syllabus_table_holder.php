@@ -19,10 +19,10 @@
 		foreach ($syllabus as $row):
 	?>
 		<tr>
-			<td><?php echo $count++;?></td>
+			<td><?php echo $count += 1;?></td>
 			<td><?php echo $row['title'];?></td>
 			<td><?php echo $row['description'];?></td>
-											<td>
+			<td>
 				<?php 
 					echo $this->db->get_where('subject' , array(
 						'subject_id' => $row['subject_id']
@@ -38,7 +38,12 @@
 			</td>
 			<td><?php echo date("d/m/Y" , $row['timestamp']);?></td>
 			<td>
-				<?php echo substr($row['file_name'], 0, 20);?><?php if(strlen($row['file_name']) > 20) echo '...';?>
+				<?php echo mb_substr($row['file_name'], 0, 20, 'utf-8');?>
+				<?php 
+				if(mb_strlen($row['file_name'], 'utf-8') > 20) {
+					echo '...';
+				}
+					?>
 			</td>
 			<td align="center">
 				<a class="btn btn-default btn-xs"
