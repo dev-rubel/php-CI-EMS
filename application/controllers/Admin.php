@@ -3260,6 +3260,7 @@ class Admin extends CI_Controller
 
     function ajax_attendance_selector()
     {
+        // pd(strtotime($this->input->post('timestamp')));
         $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
         if(!empty($className)):
             !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id='';

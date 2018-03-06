@@ -25,14 +25,14 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         <meta name="author" content="Nihal-IT">
         <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800' rel='stylesheet' type='text/css'>
         <!-- CSS Bootstrap & Custom -->
-        <link href="assets/css/allcss.min.css" rel="stylesheet" media="all">
+        <link href="assets/front/css/allcss.min.css" rel="stylesheet" media="all">
         <link href="assets/css/banglafont.min.css" rel="stylesheet" media="all">
         <!-- LIGHTBOX 2 -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/css/lightbox.min.css" rel="stylesheet" media="all">
+        <link href="assets/front/css/lightbox.min.css" rel="stylesheet" media="all">
         <!-- Favicons -->
         <link rel="shortcut icon" href="uploads/favicon.png">
         <!-- JavaScripts -->
-        <script src="assets/js/alljs.min.js"></script>
+        <script src="assets/front/js/alljs.min.js"></script>
         <link rel="stylesheet" href="assets/siteColor.php"> 
 
         <!--[if lt IE 8]>
@@ -225,10 +225,10 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         <!-- Include js plugin -->
 
         <!-- LIGHTBOX 2 -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.9.0/js/lightbox.min.js"></script>
+        <script src="assets/front/js/lightbox.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
-        <script src="assets/js/frontCustom.js"></script>
+        <script src="assets/front/js/moment.min.js"></script>
+        <script src="assets/front/js/frontCustom.js"></script>
 
     </body>
 

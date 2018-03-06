@@ -4,13 +4,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Home extends MX_Controller {
 
     protected $systemTitleName;
+    private $running_year;
+
      function __construct() {
         parent::__construct();
         
         $this->load->database();
         $this->load->model('home_model');
         $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
-        
+        $this->running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
         
     }
     function index()
@@ -21,7 +23,8 @@ class Home extends MX_Controller {
         $exists = file_exists('assets/siteColor.txt');        
         write_file('assets/siteColor.txt', $mainColor.'|'.$hoverColor);        
         
-       	$this->load_page('content', 'Home Page');
+        $data['running_year'] = $this->running_year;
+       	$this->load_page('content', 'Home Page', $data);
         
     }
     
@@ -51,7 +54,20 @@ class Home extends MX_Controller {
 
     function syllabus()
     {
-        $this->load_page('syllabusPage', 'Syllabus');
+        $data['running_year'] = $this->running_year;
+        $this->load_page('syllabusPage', 'Syllabus', $data);
+    }
+
+    function download_academic_syllabus($academic_syllabus_code)
+    {
+        $file_name = $this->db->get_where('academic_syllabus', array(
+            'academic_syllabus_code' => $academic_syllabus_code
+        ))->row()->file_name;
+        $this->load->helper('download');
+        $data = file_get_contents("uploads/syllabus/" . $file_name);
+        $name = $file_name;
+
+        force_download($name, $data);
     }
     
     function registration_online()

@@ -212,7 +212,7 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
     </div>
 </div>
 
-<?php if ($contentInfo['textInfo']['present'] == 1): ?>
+<?php if ($contentInfo['textInfo']['present'] == 1):?>
     <div class="container counter-bg" data-stellar-background-ratio="0.5" style="border: 1px solid white;border-top: 0px;border-bottom: 0px;box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);padding-left: 5px;padding-right: 5px;">
         <div class="col-md-12">
            
@@ -220,30 +220,30 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
                 <div class="stat wow flipInY" data-wow-duration="3s" style="/*padding-top: 26px;*/">
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
                         <div class="milestone-counter"> <i class="fa fa-users fa-3x"></i> <span class="stat-count highlight"><?php
-                        echo $count_std = $this->db->count_all('enroll'); 
+                        $count_std = $this->db->get_where('enroll',['year'=>$running_year])->num_rows(); 
+                        echo $count_std;
                         ?></span>
                             <div class="milestone-details">মোট ছাত্র</div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
                         <div class="milestone-counter"> <i class="fa fa-user fa-3x"></i> <span class="stat-count highlight"><?php 
-                        $today_present = $this->db->get_where('attendance', array('timestamp', strtotime(date('d-m-Y'))))->result_array();
-                        echo count($today_present);
+                        $today_present = $this->db->get_where('attendance', ['timestamp'=> strtotime(date('d-m-Y')),'status'=>1])->num_rows();
+                        echo $today_present;
                          ?></span>
                             <div class="milestone-details">আজকে উপস্থিত</div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
                         <div class="milestone-counter"> <i class="fa fa-user-times fa-3x"></i> <span class="stat-count highlight"><?php 
-                        echo $count_std - count($today_present);
+                        echo $count_std - $today_present;
                         ?></span>
                             <div class="milestone-details">আজকে অনুপস্থিত</div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
                         <div class="milestone-counter"> <i class="fa fa-percent fa-3x"></i> <span class="stat-count highlight"><?php 
-                        echo round((count($today_present) / $count_std) * 100);
-                        echo '0';
+                        echo round(($today_present / $count_std) * 100);
                         ?></span>
                             <div class="milestone-details">পার্সেন্টিজ</div>
                         </div>
