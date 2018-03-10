@@ -481,8 +481,8 @@ class Admin extends CI_Controller
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(13,1);
-        pd($data);
+        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        // pd($data);
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 
@@ -4989,7 +4989,7 @@ class Admin extends CI_Controller
     function directory()
     {
         $this->load->helper('directory');
-        $page_data['map'] = directory_map('/home2/mralam/public_html/anauv.edu.bd');
+        $page_data['map'] = directory_map(APPPATH.'views/');
 
         $page_data['page_title']    = get_phrase('directory');
         $page_data['page_name']     = 'get_directory_stracture';

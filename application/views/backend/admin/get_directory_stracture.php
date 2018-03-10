@@ -79,46 +79,65 @@
 </style>
 
    <?php 
-		function get_all($key, $value, $path='')
-		{
-            ksort($value);
-			if(is_array($value)){
-                $path .= $key;
-                echo '<li><a href="#">'.$key.'</a>';
-                echo '<ul>';
-                foreach($value as $k=>$each){
-                    echo '<li>'.get_all($k, $each, $path).'</li>';
-                }
-                echo '</ul></li>';
-            }else{
-                echo '<li><a href="#">'.$value.'</a>
-                <a href="'.base_url().'index.php?admin/edit_file/'.$path.$value.'"><i class="fa fa-pencil-square-o"></i></a>
-                <a href="'.base_url().'index.php?admin/delete_file/'.$path.$value.'" onclick="return confirm("Are you sure you want to delete this file?");"><i class="fa fa-trash-o"></i></a>
-                </li>';
+
+   $this->load->helper('file');
+   $folder = get_dir_file_info(APPPATH.'views/');
+
+    function get_all($key, $value, $path='')
+    {
+        ksort($value);
+        if(is_array($value)){
+            $key = str_replace('\\','',$key);
+            $path .= $key;            
+            
+            echo '<li><a href="#">'.$key.'</a>';
+            echo '<ul>';
+            foreach($value as $k=>$each){
+                echo '<li>'.get_all($k, $each, $path).'</li>';
             }
-		}
+            echo '</ul></li>';
+        }else{
+            $path = str_replace('/','',$path);
+            $value2 = str_replace('/','',$value);
+            echo '<li><a href="#">'.$value.'</a>
+            <a href="'.base_url().'index.php?admin/edit_file/'.$path.'/'.$value2.'"><i class="fa fa-pencil-square-o"></i></a>
+            <a href="'.base_url().'index.php?admin/delete_file/'.$path.'/'.$value2.'" onclick="return confirm("Are you sure you want to delete this file?");"><i class="fa fa-trash-o"></i></a>
+            </li>';
+        }
+    }
    ?>
 
     <div class="row">
-        <div class="col-md-6 well">
+        <div class="col-md-12 well">
             <ul id="tree1">
                 <?php foreach($map as $k=>$each){
                         echo '<li>';
-                            get_all($k, $each);
+                            //get_all($k, $each);
                         echo '</li>';
                     } ?>
             </ul>
         </div>
-        
-        <div class="col-md-6">
-        <textarea name="" class="form-control" id="editor">
-echo 'hello';
-        </textarea>
-        </div>
-        
 
-        
-        
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?php 
+                    
+                    $file = file_get_contents(APPPATH.'views/test.ini', FILE_USE_INCLUDE_PATH); 
+                    echo '<pre>';
+                    // Parse without sections
+                    $ini_array = parse_ini_file(APPPATH.'views/test.ini');
+                    // print_r($ini_array);
+
+                    // Parse with sections
+                    $ini_array = parse_ini_file(APPPATH.'views/test.ini', true);
+                    // print_r($ini_array);
+            ?>
+            <textarea name="" class="form-control" id="editor">
+                <?php echo $file; ?>
+            </textarea>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -126,7 +145,7 @@ echo 'hello';
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/html");
+        editor.getSession().setMode("ace/mode/ini");
     </script>
 
 

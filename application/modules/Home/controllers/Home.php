@@ -350,12 +350,18 @@ class Home extends MX_Controller {
 
     function student_idcard_view()
     {
-        $this->load->library('m_pdf');
-        
-        $this->db->where('class_id', 13);
-        $result = $this->db->get('enroll')->result_array();
-        $data['std_info'] = $result;
-        $this->load->view('pdfStudentIDPrint', $data);
+        $class_id = $this->input->post('class_id');
+        $this->db->where('class_id', $class_id);
+        $query = $this->db->get('enroll');
+
+        if($query->num_rows() > 0) {
+            // $this->load->library('m_pdf');
+            $result = $query->result_array();
+            $data['std_info'] = $result;
+            $this->load->view('pdfStudentIDPrint', $data);
+        } else {
+            echo 'No Student Found.';
+        }        
     }
 
     function download_blank_form()

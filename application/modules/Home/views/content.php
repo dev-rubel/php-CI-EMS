@@ -215,7 +215,6 @@ echo strtok($Shistory->description, '@@') . '<a href="index.php?Home/massageDeta
 <?php if ($contentInfo['textInfo']['present'] == 1):?>
     <div class="container counter-bg" data-stellar-background-ratio="0.5" style="border: 1px solid white;border-top: 0px;border-bottom: 0px;box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);padding-left: 5px;padding-right: 5px;">
         <div class="col-md-12">
-           
             <div class="bottom-counter" style="min-height: 180px;">
                 <div class="stat wow flipInY" data-wow-duration="3s" style="/*padding-top: 26px;*/">
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-8">
