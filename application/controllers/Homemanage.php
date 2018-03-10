@@ -253,12 +253,12 @@ class Homemanage extends CI_Controller
 
         $id = $this->uri(3);
         $id = explode('-',$id);
-        $id = $id[0];
+        $img_id = $id[0];
         $name = $id[1];
         $dir = 'assets/images/admission_student/'.$session.'/'.$name;
 
         unlink($dir);
-        $this->db->where('id',$id);
+        $this->db->where('id',$img_id);
         $this->db->delete('admit_std');
         $this->jsonMsgReturn(true,'Delete Success.');
     }
@@ -857,9 +857,12 @@ class Homemanage extends CI_Controller
             if ( ! $this->upload->do_upload('img')) {
                 $error = array('error' => $this->upload->display_errors());
                 $this->jsonMsgReturn(false,$error);
-            } else {          
-                //Image Resizing            
+            } else {      
+                $ext = explode('.',$_FILES['img']['name']);    
+                //Image Resizing    
+
                 $this->load->library('image_lib', resize_file(770,400));
+                $this->image_lib->resize();
                 $img_name = $this->upload->file_name;
                 $this->dashboard_model->insert_imgTable($img_name,$implod,'slider');
 
@@ -932,7 +935,8 @@ class Homemanage extends CI_Controller
                $this->jsonMsgReturn(false,$error);
             } else {
                //Image Resizing            
-                $this->load->library('image_lib', resize_file(770,400));                
+                $this->load->library('image_lib', resize_file(770,400));  
+                $this->image_lib->resize();              
             }
             unlink('assets/images/slider_image/'.$_POST['Preimg']);
             unset($_POST['Preimg']);
@@ -961,10 +965,10 @@ class Homemanage extends CI_Controller
     {
         $id = $this->uri(3);
         $id = explode('-',$id);
-        $id = $id[0];
+        $img_id = $id[0];
         $name = $id[1];
         unlink('assets/images/slider_image/'.$name);
-        $this->dashboard_model->delete_imgTable_info($id);
+        $this->dashboard_model->delete_imgTable_info($img_id);
         $this->jsonMsgReturn(true,'Delete Success');
     }
     
@@ -1362,6 +1366,8 @@ class Homemanage extends CI_Controller
             } else {          
                 //Image Resizing            
                 $this->load->library('image_lib', resize_file(700,700));
+                $this->image_lib->resize();
+
                 $img_name = $this->upload->file_name;
                 $this->dashboard_model->insert_imgTable($img_name,$implod,'gallery');
 
@@ -1391,7 +1397,8 @@ class Homemanage extends CI_Controller
                $this->jsonMsgReturn(false,$error);
             } else {
                //Image Resizing            
-                $this->load->library('image_lib', resize_file(700,700));              
+                $this->load->library('image_lib', resize_file(700,700));   
+                $this->image_lib->resize();           
             }
             unlink('assets/images/gallery_image/'.$_POST['Preimg']);
             unset($_POST['Preimg']);
@@ -1473,11 +1480,11 @@ class Homemanage extends CI_Controller
     {
         $id = $this->uri(3);
         $id = explode('-',$id);
-        $id = $id[0];
+        $img_id = $id[0];
         $name = $id[1];
         unlink('assets/images/gallery_image/'.$name);
-        $this->dashboard_model->delete_imgTable_info($id);
-        $this->jsonMsgReturn(true,'Delete Success');
+        $this->dashboard_model->delete_imgTable_info($img_id);
+        $this->jsonMsgReturn(true,'Delete Success',$name);
     }
 
 

@@ -205,9 +205,10 @@ function resize_file($w,$h)
 {
     $config['image_library']  = 'gd2';
     $config['source_image']   = ci()->upload->upload_path.ci()->upload->file_name;
-    $config['maintain_ratio'] = TRUE;
+	$config['maintain_ratio'] = FALSE;
+	$config['quality'] 		  = '50%';	
     $config['width']          = $w;
-    $config['height']         = $h;
+	$config['height']         = $h;
     return $config;
 }
 

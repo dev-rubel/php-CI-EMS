@@ -88,6 +88,7 @@ function confDelete(con,func,id,id2){
 						dataType: 'json',
 						method: 'get'
 					}).done(function (response) {
+						console.log(response);
 						$('#'+id2).remove();
 					}).fail(function(){
 						$.alert('Location problem.');
