@@ -26,6 +26,7 @@
 
 	address {
 		margin-top: 0px;
+		font-size: 17px;
 	}
 
 	.student-copy .row {
@@ -45,7 +46,7 @@
 	.table td,
 	.table th {
 		padding: 2px !important;
-		font-size: 12px;
+		font-size: 13px;
 	}
 
 	hr {
@@ -75,6 +76,10 @@
 		width: 1px;
 		height: 100%;
 		border: 1px dotted;
+	}
+
+	.h6, h6 {
+		font-size: 13px !important;
 	}
 	
 	@media print {
@@ -220,7 +225,7 @@ foreach ($invoice_info as $row):
 							<tr>
 								<td><?php 
 								if($name=='tution_fee'){
-									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', ucwords(str_replace(',', ' ', $row['months']))).')';     
+									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', substr(ucwords(str_replace(',', ' ', $row['months'])),0,3)).')';     
 								} else {
 									echo ucwords(str_replace('_', ' ', $name));     
 								}?></td>
@@ -388,7 +393,7 @@ foreach ($invoice_info as $row):
 							<tr>
 								<td><?php 
 								if($name=='tution_fee'){
-									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', ucwords(str_replace(',', ' ', $row['months']))).')';     
+									echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', substr(ucwords(str_replace(',', ' ', $row['months'])),0,3)).')';     
 								} else {
 									echo ucwords(str_replace('_', ' ', $name));     
 								}?></td>

@@ -343,9 +343,9 @@ class Home extends MX_Controller {
         // $this->load->view('pdfStudentProfilePrint', $data);
         $html = $this->load->view('pdfStudentProfilePrint', $data, true);
 
-        // $this->m_pdf->pdf->WriteHTML($html);
-        // $this->m_pdf->pdf->Output('Student Information.pdf',"D"); 
-	    // exit;
+        $this->m_pdf->pdf->WriteHTML($html);
+        $this->m_pdf->pdf->Output('Student Information.pdf',"D"); 
+	    exit;
     }
 
     function student_idcard_view()

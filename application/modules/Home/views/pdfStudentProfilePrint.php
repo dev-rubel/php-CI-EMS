@@ -34,14 +34,14 @@
     }
 
     table.paleBlueRows tfoot {
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: bold !important;
     color: #333333 !important;
     background: #D0E4F5 !important;
     border-top: 3px solid #444444 !important;
     }
     table.paleBlueRows tfoot td {
-    font-size: 14px !important;
+    font-size: 13px !important;
 	padding-left: 10px; 
     }
 </style>
@@ -59,7 +59,7 @@ if($group_id > 0) {
     $group_name = $this->db->get_where('group',['group_id'=>$group_id])->row()->name;
     $condition3 = '
     <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Group : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.ucfirst($group_name).'</span></p> </div>
+            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Group : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 13px">'.ucfirst($group_name).'</span></p> </div>
     </div>
     ';
 }
@@ -67,7 +67,7 @@ if(strlen($jscpecinfo) > 4) {
     $jsc = explode(',', $jscinfo);
     $condition2 = '
     <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 650px;display:inline-block;margin: 2px 0;color: green;">JSC Information : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:normal; font-style: italic; font-size: 12px;">GPA: '.$jsc[3].', Reg No: '.$jsc[1].', Roll No: '.$jsc[2].', Year: '.$jsc[0].'</span></p></div>
+            <div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 650px;display:inline-block;margin: 2px 0;color: green;">JSC Information : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:normal; font-style: italic; font-size: 13px">GPA: '.$jsc[3].', Reg No: '.$jsc[1].', Roll No: '.$jsc[2].', Year: '.$jsc[0].'</span></p></div>
     </div>
     ';
 } else {
@@ -85,8 +85,8 @@ $base = base_url().'uploads/';
 if(!empty($lguaridan)):
 $condition1 = '
 <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
-		<div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Legal Guardian : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.$lguaridan.'</span></p> </div></div>
-		<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Relation : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 12px;">'.$relaguardian.'</span></p> </div></div>
+		<div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Legal Guardian : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 13px">'.$lguaridan.'</span></p> </div></div>
+		<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;"><div style="margin-bottom: 4px; font-weight: bold;"><p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Relation : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: normal; color: black; font-size: 13px">'.$relaguardian.'</span></p> </div></div>
 		';
 		
 		endif;
@@ -94,7 +94,7 @@ $condition1 = '
 	<html>
 		<head>
 		</head>
-		<body style="font-size: 12px;">
+		<body style="font-size: 13px">
 			<div style="width: 100%;">
 				<!--<div class="blnk-space"></div>-->
 				<div class="hdr">
@@ -139,7 +139,7 @@ $condition1 = '
 						<div style="margin-top: -330px;border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $name; ?>
 									</span>
 								</p>
@@ -148,7 +148,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Student Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 14px;">
+									<span style="font-weight: normal; color: black; font-size: 17px">
 										<?php echo $namebn;?>
 									</span>
 								</p>
@@ -157,7 +157,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $fname;?>
 									</span>
 								</p>
@@ -166,7 +166,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Fathers Name (Bangla): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 14px;">
+									<span style="font-weight: normal; color: black; font-size: 17px">
 										<?php echo $fnamebn;?>
 									</span>
 								</p>
@@ -175,7 +175,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $mname;?>
 									</span>
 								</p>
@@ -184,7 +184,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Mothers Name (Bangla):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 14px;">
+									<span style="font-weight: normal; color: black; font-size: 17px">
 										<?php echo $mnamebn;?>
 									</span>
 								</p>
@@ -193,7 +193,7 @@ $condition1 = '
 						<div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Present Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $paadress;?>
 									</span>
 								</p>
@@ -202,7 +202,7 @@ $condition1 = '
 						<div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Permanent Address : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $praddress;?>
 									</span>
 								</p>
@@ -211,7 +211,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Religion : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $religion;?>
 									</span>
 								</p>
@@ -222,7 +222,7 @@ $condition1 = '
                             <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
                                 <div style="margin-bottom: 4px; font-weight: bold;">
                                     <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Email : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <span style="font-weight: normal; color: black; font-size: 12px;">
+                                        <span style="font-weight: normal; color: black; font-size: 13px">
                                             <?php echo $email;?>
                                         </span>
                                     </p>
@@ -232,7 +232,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Class : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $this->db->get_where('class',['class_id'=>$class_id])->row()->name;?>
 									</span>
 								</p>
@@ -242,7 +242,7 @@ $condition1 = '
 						<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 							<div style="margin-bottom: 4px; font-weight: bold;">
 								<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Section : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<span style="font-weight: normal; color: black; font-size: 12px;">
+									<span style="font-weight: normal; color: black; font-size: 13px">
 										<?php echo $this->db->get_where('section',['section_id'=>$section_id])->row()->name;?>
 									</span>
 								</p>
@@ -252,7 +252,7 @@ $condition1 = '
 					<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 						<div style="margin-bottom: 4px; font-weight: bold;">
 							<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Shift : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<span style="font-weight: normal; color: black; font-size: 12px;">
+								<span style="font-weight: normal; color: black; font-size: 13px">
 									<?php echo $this->db->get_where('shift',['shift_id'=>$shift_id])->row()->name;?>
 								</span>
 							</p>
@@ -261,7 +261,7 @@ $condition1 = '
 					<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 						<div style="margin-bottom: 4px; font-weight: bold;">
 							<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Roll : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<span style="font-weight: normal; color: black; font-size: 12px;">
+								<span style="font-weight: normal; color: black; font-size: 13px">
 									<?php echo $roll;?>
 								</span>
 							</p>
@@ -272,7 +272,7 @@ $condition1 = '
                         <div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
                             <div style="margin-bottom: 4px; font-weight: bold;">
                                 <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <span style="font-weight: normal; color: black; font-size: 13px">
                                         <?php echo $preschoolname;?>
                                     </span>
                                 </p>
@@ -283,7 +283,7 @@ $condition1 = '
                         <div style="border-bottom: 1px dotted !important; font-size: 13px; margin-bottom: 5px;">
                             <div style="margin-bottom: 4px; font-weight: bold;">
                                 <p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Previous School Address : &nbsp;&nbsp;
-                                    <span style="font-weight: normal; color: black; font-size: 12px;">
+                                    <span style="font-weight: normal; color: black; font-size: 13px">
                                         <?php echo $preschooladd;?>
                                     </span>
                                 </p>
@@ -293,7 +293,7 @@ $condition1 = '
 					<div style="border-bottom: 1px solid; border-bottom-style:dotted; font-size: 13px; margin-bottom: 5px;">
 						<div style="margin-bottom: 4px; font-weight: bold;">
 							<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Date of Birth : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<span style="font-weight: normal; color: black; font-size: 12px;">
+								<span style="font-weight: normal; color: black; font-size: 13px">
 									<?php echo $birthday;?>
 								</span>
 							</p>
@@ -302,7 +302,7 @@ $condition1 = '
 					<div style="font-size: 13px; margin-bottom: 5px;">
 						<div style="margin-bottom: 4px; font-weight: bold;">
 							<p style="width: 100%;display:inline-block;margin: 2px 0;color: green;">Guardian Mobile No : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<span style="font-weight: normal; color: black; font-size: 12px;">
+								<span style="font-weight: normal; color: black; font-size: 13px">
 									<?php echo $mobile;?>
 								</span>
 							</p>

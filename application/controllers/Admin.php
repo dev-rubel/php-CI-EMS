@@ -2427,6 +2427,18 @@ class Admin extends CI_Controller
         force_download($name, $data);
     }
 
+    function ajax_delete_academic_syllabus($academic_syllabus_id)
+    {
+        $this->db->where('academic_syllabus_id',$academic_syllabus_id);
+        $fileName = $this->db->get('academic_syllabus')->row()->file_name;
+        unlink('uploads/syllabus/'.$fileName);
+
+        $this->db->where('academic_syllabus_id',$academic_syllabus_id);
+        $this->db->delete('academic_syllabus');
+        
+        $this->jsonMsgReturn(true,'Delete Success.');
+    }
+
     /****MANAGE SECTIONS*****/
     function section($class_id = '')
     {
