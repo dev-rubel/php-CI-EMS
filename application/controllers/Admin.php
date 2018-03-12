@@ -951,12 +951,12 @@ class Admin extends CI_Controller
                 'section_id' => $_POST['sectionid'],
                 'shift_id' => $_POST['shiftid'],
                 'year' => $current_year
-                );
+            );
 
             $this->db->where($whereArr);
             $result = $this->db->get('enroll')->result_array();
             $databaseRoll = array_column($result,'roll');
-            $oneTohundred = range(1,100);
+            $oneTohundred = range(1,300);
             foreach($oneTohundred as $k=>$list){
                 foreach($databaseRoll as $list2){
                     if($list==$list2){
@@ -976,7 +976,7 @@ class Admin extends CI_Controller
             $this->db->where($whereArr);
             $result = $this->db->get('enroll')->result_array();
             $databaseRoll = array_column($result,'roll');
-            $oneTohundred = range(1,100);
+            $oneTohundred = range(1,300);
             foreach($oneTohundred as $k=>$list){
                 foreach($databaseRoll as $list2){
                     if($list==$list2){
