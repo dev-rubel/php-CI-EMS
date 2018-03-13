@@ -15,12 +15,22 @@ $base = base_url().'uploads/';
     }
 
     .each-card {
-        min-height: 230px !important;
+        min-height: 240px !important;
         margin-bottom: 25px;
     }
 
+    .school-card {
+        min-height: 240px !important;
+    }
+    .title h5 {
+        font-size: 16px !important;
+        color: #fff !important;
+        padding: 2px 0px;
+        margin: 0;
+    }
+
     .title.text-center p {
-        font-size: 11px;
+        font-size: 11px !important;
         color: #fff !important;
     }
 
@@ -42,8 +52,19 @@ $base = base_url().'uploads/';
         font-size: 13px;
     }
 
+    .content.span1 {
+        letter-spacing: -0.5px;
+        min-height: 68px;
+        padding-bottom: 0;
+    }
+
+    .content .span2 img {
+        width: 130px !important;
+        height: 170px !important;
+    }
+
     .span3 {
-        width: 70%;
+        width: 80%;
         margin: 0 auto;
     }
 
@@ -51,7 +72,7 @@ $base = base_url().'uploads/';
         font-size: 11px;
         border-top: 1px dotted;
         padding: 3px !important;
-        margin-top: 8px !important;
+        margin-top: 25px !important;
     }
 
     .principal-sign p {
@@ -132,8 +153,8 @@ foreach($std_info as $k=>$each):
         <div class="school-card centered">
             <!-- CARD HEADER -->
             <div class="title text-center">
-                <?php echo ucwords($schoolName); ?><br> 
-                <p><?php echo $schoolAddress; ?></p>                    
+                <h5><?php echo ucwords($schoolName); ?></h5> 
+                <p>Student ID: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code; ?></p>                    
             </div>
             <!-- STUDENT INFORMATION -->
             <div class="content span1">
@@ -148,12 +169,12 @@ foreach($std_info as $k=>$each):
                 <?php endif; ?>
                 Roll: <?php echo $each['roll']; ?><br />
                 Phone: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile; ?><br />                
-                Student ID: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code; ?><br />                
+                
                 </span>
             </div>
             <!-- STUDENT IMAGE -->
             <div class="content span2">
-                <img src="<?php echo $this->crud_model->get_image_url('student',$student_id); ?>" alt="avatar" class="avatar" />                    
+                <img src="<?php echo $this->crud_model->get_image_url('student',$each['student_id']); ?>" alt="avatar" class="avatar" />                    
             </div>
             <!-- BOTTOM LEFT BLANK -->
             <div class="content span1"></div>
