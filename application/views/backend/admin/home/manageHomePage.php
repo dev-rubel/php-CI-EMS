@@ -142,7 +142,7 @@ $school_history = explode('+', $result['school_history']);
 
 
 </div><!--/.row-->
-
+<script src="assets/js/tinymce/tinymce.min.js"></script>
 <script src="assets/js/clipboard.min.js"></script>
     <script>
          $(document).ready(function () {
@@ -150,24 +150,11 @@ $school_history = explode('+', $result['school_history']);
             tinyMCE.init({ 
                 selector: '#tinyDes',
                 height: 500,
-                plugins: 'table image',
-                style_formats: [
-                    { title: 'Bold text', inline: 'strong' },
-                    { title: 'Red text', inline: 'span', styles: { color: '#ff0000' } },
-                    { title: 'Red header', block: 'h1', styles: { color: '#ff0000' } },
-                    { title: 'Badge', inline: 'span', styles: { display: 'inline-block', border: '1px solid #2276d2', 'border-radius': '5px', padding: '2px 5px', margin: '0 2px', color: '#2276d2' } },
-                    { title: 'Table row 1', selector: 'tr', classes: 'tablerow1' }
-                ],
-                formats: {
-                    alignleft: { selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'left' },
-                    aligncenter: { selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'center' },
-                    alignright: { selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'right' },
-                    alignfull: { selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'full' },
-                    bold: { inline: 'span', 'classes': 'bold' },
-                    italic: { inline: 'span', 'classes': 'italic' },
-                    underline: { inline: 'span', 'classes': 'underline', exact: true },
-                    strikethrough: { inline: 'del' }
-                },            
+                content_css: 'https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css',
+                plugins: ["table image code visualblocks"],
+                valid_elements : '*[*]',
+                toolbar: "undo redo | styleselect | bold italic | fontsizeselect | alignleft aligncenter alignright alignjustify | preview",
+                schema: "html5",           
             });     
         });
         

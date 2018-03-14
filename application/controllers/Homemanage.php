@@ -195,6 +195,15 @@ class Homemanage extends CI_Controller
         $page_data['page_title'] = get_phrase('admission_query');
         $this->load->view('backend/index', $page_data);
     }
+
+    function search_query_list()
+    {   
+        $class_id = $_POST['class_id'];
+        $msg = 'Clsss: '.$this->db->get_where('class',['class_id'=>$class_id])->row()->name;
+        $page_data['class_id']  = $class_id;
+        $htmlData = $this->load->view('backend/admin/home/admission_query_list', $page_data, true);
+        $this->jsonMsgReturn(true,$msg,$htmlData);
+    }
             
     function confirm_std()
     {

@@ -31,7 +31,6 @@
 <!-- Bootstrap Tag Input -->
 <link rel="stylesheet" href="assets/backend/css/bootstrap-tagsinput.css"> 
 
-<script src="assets/js/tinymce/tinymce.min.js"></script>
 <script src="assets/backend/js/jquery.uploadPreview.min.js"></script>   
 <script type="text/javascript" src="assets/newNav/navscrp.js"></script>
 <link rel="shortcut icon" href="assets/images/favicon.png">

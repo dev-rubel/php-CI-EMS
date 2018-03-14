@@ -89,6 +89,26 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
+                            <?php echo get_phrase('shift'); ?>
+                        </label>
+                        <div class="col-sm-6">
+                            <select name="year" class="form-control">
+                                <?php $running_year = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;?>
+                                <option value="">
+                                    <?php echo get_phrase('select_running_session');?>
+                                </option>
+                                <?php for($i = 0; $i < 10; $i++):?>
+                                <option value="<?php echo (2016+$i).'-'.(2016+$i+1);?>" <?php if($running_year==( 2016+$i). '-'.(2016+$i+1)) echo
+                                    'selected';?>>
+                                    <?php echo substr((2016+$i).'-'.(2016+$i+1), 0, -5);?>
+                                </option>
+                                <?php endfor;?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="field-2" class="col-sm-3 control-label">
                             <?php echo get_phrase('download'); ?>
                         </label>
                         <div class="col-sm-6">
