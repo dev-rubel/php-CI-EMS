@@ -824,20 +824,17 @@ class Admin extends CI_Controller
 
             if($section_name == 'Boys'){
                     $shift_id = 2;
-                }elseif($section_name == 'Girls'){
+                } elseif ($section_name == 'Girls') {
                     $shift_id = 1;
                     $count++;
-                }else{
+                } else {
                     $shift_id = '';
                 }
-
 
                 $data = array('shift_id' => $shift_id);
 
                 $this->db->where('student_id', $each['student_id']);
                 $this->db->update('enroll', $data);
-
-
             }
         echo $count;
     }
