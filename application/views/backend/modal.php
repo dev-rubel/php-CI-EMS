@@ -109,7 +109,7 @@
                 
                 
                 <div class="modal-footer" style="margin:0px; border-top:0px; text-align:center;">
-                    <a href="#" class="btn btn-success" id="confirm_link"><?php echo get_phrase('confirm');?></a>
+                    <a href="#" class="btn btn-success" id="confirm_link" target="_blank"><?php echo get_phrase('confirm');?></a>
                     <button type="button" class="btn btn-info" data-dismiss="modal"><?php echo get_phrase('cancel');?></button>
                 </div>
             </div>

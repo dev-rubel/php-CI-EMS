@@ -94,17 +94,10 @@
 
 				// SELECT OLDEST DATE
 				$this->db->order_by('tran_date', 'ASC');
-<<<<<<< HEAD
 				$oldestDate = $this->db->get('bank_transaction', 1)->row()->tran_date;
 				if(empty($oldestDate)){
 					$oldestDate = date('d-m-Y');
 				}
-=======
-				$oldestDate = $this->db->get('bank_transaction', 1)->row()->tran_date;	
-				if(!$oldestDate){
-					$oldestDate = date('d-m-Y');
-				}			
->>>>>>> ce741dd8af89e4852b06d3c81d55d6860dcb3fc8
 
 				// SELECT OLDEST DATE TO TODAY DATE INCOME 
 				$this->db->select_sum('tran_amount');

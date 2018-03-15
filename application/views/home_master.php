@@ -26,7 +26,7 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
         <!-- <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800' rel='stylesheet' type='text/css'> -->
         <!-- CSS Bootstrap & Custom -->
         <link href="assets/front/css/allcss.min.css" rel="stylesheet" media="all">
-        <link href="assets/css/banglafont.css" rel="stylesheet" media="all">
+        <!-- <link href="assets/css/banglafont.css" rel="stylesheet" media="all"> -->
         <!-- LIGHTBOX 2 -->
         <link href="assets/front/css/lightbox.min.css" rel="stylesheet" media="all">
         <!-- Favicons -->

@@ -228,7 +228,7 @@ class Crud_model extends CI_Model {
             $this->db->truncate($type);
         }
     }
-
+    // $image_url = base_url() . 'uploads/user.jpg';
     ////////IMAGE URL//////////
     function get_image_url($type = '', $id = '') {
         if (file_exists('uploads/' . $type . '_image/' . $id . '.jpg')){

@@ -26,14 +26,14 @@
 <br>
 <br>
 <?php 
-$links = ['admission_query','admission_result'];
-$title = ['Admission Query','Admission Result'];
+$links = ['admission_query','admission_result','admission_setting'];
+$title = ['Admission Query','Admission Result','Admission Setting'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="admissionNavManu">
 
 <?php foreach($links as $k=>$each):?>
-    <div class="col-sm-6 col-md-4" style="margin-bottom: 10px;">
+    <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
@@ -48,7 +48,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
     <!-- /.col -->
 <?php endforeach;?>
 
-    <div class="col-sm-6 col-md-4" style="margin-bottom: 10px;">
+    <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
         <a href="<?php echo base_url(); ?>index.php?Home/download_blank_form"> 
             <div class="panel-stat3 bg-info extra-menu<?php //echo $color[rand(1,7)];?>">
                 <!-- <h2 class="m-top-none" id="userCount">3</h2> -->
@@ -74,7 +74,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
     <div class="menu-navigation-icons">
         <?php foreach($links as $k=>$each):?>
-            <div class="col-sm-6 col-md-4" style="margin-bottom: 10px;">
+            <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
                 <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
                     <i class="fa <?php echo fo_icon();?>"></i>
                     <span><?php echo $title[$k];?></span>
@@ -83,7 +83,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
             <!-- /.col -->
         <?php endforeach;?>
 
-        <div class="col-sm-6 col-md-4" style="margin-bottom: 10px;">
+        <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
             <a href="<?php echo base_url(); ?>index.php?Home/download_blank_form" class="<?php echo manuColor(1);?>" onclick="changePage('<?php echo $each?>')">
                 <i class="fa <?php echo fo_icon();?>"></i>
                 <span>Download Admission Form</span>

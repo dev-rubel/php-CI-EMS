@@ -87,7 +87,7 @@ foreach ($edit_data as $row):
             <?php $fee_names = explode(',', $row['fee_name']); foreach($fee_names as $k=>$name):?>
                 <tr>                
                     <td><?php 
-                    if($name=='tution_fee'){
+                    if($name=='tuition_fee'){
                         echo ucwords(str_replace('_', ' ', $name)).' ('.str_replace(' ', ', ', ucwords(str_replace(',', ' ', $row['months']))).')';     
                     }else{
                         echo ucwords(str_replace('_', ' ', $name));     

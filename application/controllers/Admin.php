@@ -39,6 +39,19 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/dashboard', 'refresh');
     }
 
+    public function barcode()
+	{
+        // https://github.com/dwisetiyadi/CodeIgniter-PHP-QR-Code
+
+        $this->load->library('ciqrcode');        
+        $params['data'] = 'This is a text';
+        $params['level'] = 'H';
+        $params['size'] = 3;
+        $params['savename'] = FCPATH.'tes.png';
+        $this->ciqrcode->generate($params);
+        echo '<img src="'.base_url().'tes.png" />';
+	}
+
 
     // Fetch Data To Server
 
@@ -2422,6 +2435,18 @@ class Admin extends CI_Controller
         $name = $file_name;
 
         force_download($name, $data);
+    }
+
+    function ajax_delete_academic_syllabus($academic_syllabus_id)
+    {
+        $this->db->where('academic_syllabus_id',$academic_syllabus_id);
+        $fileName = $this->db->get('academic_syllabus')->row()->file_name;
+        unlink('uploads/syllabus/'.$fileName);
+
+        $this->db->where('academic_syllabus_id',$academic_syllabus_id);
+        $this->db->delete('academic_syllabus');
+        
+        $this->jsonMsgReturn(true,'Delete Success.');
     }
 
     /****MANAGE SECTIONS*****/
@@ -4821,22 +4846,26 @@ class Admin extends CI_Controller
     {
         // pd($extra);
         $this->load->library('excel');
-        if(!empty($extra)){
-            $class_id     = $extra['class_id'];
-        }else{
+        if(!empty($extra)) {
+            $class_id         = $extra['class_id'];
+            $running_year     = $extra['year'];
+        } else {
             $class_id     = $this->uri->segment(3);
-        }
-        $running_year = $this->uri->segment(4);
+            $running_year = $this->uri->segment(4);
+        }        
 
         $className = $this->db->get_where('class',['class_id'=>$class_id])->result_array();
         $className = $className[0]['name'];
 
         // SET CUSTOM COLUMN WIDTH -- START
         $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth("20");
-        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth("20");
-        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth("20");
-        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth("25");
-        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth("25");
+        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth("10");
+        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth("10");
+        $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth("15");
+        $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth("20");
+        $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth("20");
         // SET CUSTOM COLUMN WIDTH -- END
 
         $this->excel->setActiveSheetIndex(0); // SELECT PAGE
@@ -4851,6 +4880,7 @@ class Admin extends CI_Controller
         $this->excel->getActiveSheet()->setCellValue('F1', 'Shift');
         $this->excel->getActiveSheet()->setCellValue('G1', 'Father Name');
         $this->excel->getActiveSheet()->setCellValue('H1', 'Mobile');
+        $this->excel->getActiveSheet()->setCellValue('I1', 'Year');
         // SET TOW ROW VALUE -- END
 
         // SET CUSTOM STYLE -- START
@@ -4872,11 +4902,10 @@ class Admin extends CI_Controller
             ]
         ];
         $this->excel->getDefaultStyle()->applyFromArray($styleArray['styleOne']);
-        $this->excel->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray['styleTwo']);
+        $this->excel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($styleArray['styleTwo']);
         // SET CUSTOM STYLE -- END
 
         if(!empty($extra)){
-            $running_year = $this->running_year;
             $extra['year'] = $running_year;
             $studentInfo = $this->db->get_where('enroll' , $extra)->result_array();
         }else{
@@ -4916,6 +4945,7 @@ class Admin extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('F'.$key, $sft_info);
             $this->excel->getActiveSheet()->setCellValue('G'.$key, $std_info[0]['fname']);
             $this->excel->getActiveSheet()->setCellValue('H'.$key, $std_info[0]['mobile']);
+            $this->excel->getActiveSheet()->setCellValue('I'.$key, substr($running_year,0,4));
         }
 
         if(!empty($extra)){

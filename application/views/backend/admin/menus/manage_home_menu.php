@@ -118,8 +118,7 @@ function changePage(page)
             $('#manageHomeNavManu').show();
             $('#manageHomeMainManu').hide();
             $('#ajaxPageContainer').html(response);
-
-            // tinyMCE.init({ selector: '#tinyDes' });
+    
             $('#presentStatus').bootstrapToggle();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                

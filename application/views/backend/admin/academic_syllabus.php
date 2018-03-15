@@ -46,7 +46,7 @@
 							])->result_array();
 							foreach ($syllabus as $row):
 						?>
-							<tr>
+							<tr id="syllabus<?php echo $row['academic_syllabus_id'];?>">
 								<td><?php echo $count++;?></td>
 								<td><?php echo $row['title'];?></td>
 								<td><?php echo $row['description'];?></td>
@@ -72,6 +72,9 @@
 									<a class="btn btn-default btn-xs"
 										href="<?php echo base_url();?>index.php?admin/download_academic_syllabus/<?php echo $row['academic_syllabus_code'];?>">
 										<i class="entypo-download"></i> <?php echo get_phrase('download');?>
+									</a>
+									<a class="btn btn-default btn-xs" onclick="confDelete('admin','ajax_delete_academic_syllabus','<?php echo $row['academic_syllabus_id'];?>','syllabus<?php echo $row['academic_syllabus_id'];?>')">
+										<i class="entypo-cancel"></i> <?php echo get_phrase('delete');?>
 									</a>
 								</td>
 							</tr>

@@ -687,7 +687,7 @@ class Accounting extends CI_Controller
 
     function getAccStdInfo($value)  //ajax response
     {
-        $name = $this->db->get_where('student',array('student_code'=>$value))->row()->namebn;
+        $name = $this->db->get_where('student',array('student_code'=>$value))->row()->name;
         $stdId = $this->db->get_where('student',array('student_code'=>$value))->row()->student_id;
         $classId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->class_id;
         $roll = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->roll;

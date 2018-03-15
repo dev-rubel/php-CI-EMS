@@ -1,8 +1,5 @@
 <div class="row">
 
-<div id="overlayDiv" style="width: 99%;height: 100%;background-color: white;position: absolute;top: 0;z-index: 11; opacity: .7;"></div>
-<img src="<?php echo base_url();?>assets/backend/loader.gif" id="loading" style="position: absolute; top: 70%; left: 40%; z-index: 1111;"/>  
-
     <div class="col-md-8">
         <div class="panel panel-primary" data-collapsed="0">
             <div class="panel-heading">
@@ -110,7 +107,7 @@
 </div>
 
 <script type="text/javascript">
-$('.jscHolder').hide();
+    $('.jscHolder').hide();
     $('.sectionHolder').hide();
     $('.groupHolder').hide();
     $('#loading').hide();
@@ -168,7 +165,6 @@ function get_std_roll(){
                     }else{
                         $('.groupHolder').show();
                         $('.jscHolder').show();
-                        console.log(response);
                         jQuery('#group_selector_holder').html(response);                      
                     }  
                 }else{
