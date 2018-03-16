@@ -26,14 +26,14 @@
 <br>
 <br>
 <?php 
-$links = ['admission_query','admission_result','admission_setting'];
-$title = ['Admission Query','Admission Result','Admission Setting'];
+$links = ['download_student_idcard', 'download_admit_card','download_seat_plan','download_excel'];
+$title = ['Download ID Card','Download Admit Card','Download Seat Plan','Download Excel'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
-<div class="row customNavManu" id="admissionNavManu">
+<div class="row customNavManu" id="documentNavManu">
 
 <?php foreach($links as $k=>$each):?>
-    <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+    <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
@@ -47,39 +47,54 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
     </div>
     <!-- /.col -->
 <?php endforeach;?>
+    <div class="col-sm-4 col-md-3" style="margin-bottom: 10px;">
+        <a href="<?php echo base_url(); ?>index.php?Home/download_blank_form" target="_blank"> 
+            <div class="panel-stat3 bg-info extra-menu<?php //echo $color[rand(1,7)];?>">
+                <!-- <h2 class="m-top-none" id="userCount">3</h2> -->
+                <h4>Download Admission Form</h4>
 
-
-</div>
-
-
-
-
-
-
-
-
-<div class="row" id="admissionMainManu">
-
-    <div class="menu-navigation-icons">
-        <?php foreach($links as $k=>$each):?>
-            <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
-                <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
-                    <i class="fa <?php echo fo_icon();?>"></i>
-                    <span><?php echo $title[$k];?></span>
-                </a>
+                <div class="stat-icon">
+                    <i class="customIcon fa" id="customNavIcon"></i>
+                </div>
             </div>
-            <!-- /.col -->
-        <?php endforeach;?>
-
+        </a>
     </div>
 
 </div>
+
+
+
+
+<div class="row" id="documentMainManu">
+
+    <div class="menu-navigation-icons">
+    <?php foreach($links as $k=>$each):?>
+        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+            <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
+                <i class="fa <?php echo fo_icon();?>"></i>
+                <span><?php echo $title[$k];?></span>
+            </a>
+        </div>
+        <!-- /.col -->
+    <?php endforeach;?>
+        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+            <a href="<?php echo base_url(); ?>index.php?Home/download_blank_form" class="<?php echo manuColor(1);?>" target="_blank">
+                <i class="fa <?php echo fo_icon();?>"></i>
+                <span>Download Admission Form</span>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+
 
 <div id="ajaxPageContainer"></div>
 
 
 <script>
-$('#admissionNavManu').hide();
+
+$('#documentNavManu').hide();
 function changePage(page)
 {
     var selectValue = page;
@@ -99,30 +114,19 @@ function changePage(page)
                 $('#loading2').show();
                 $('#overlayDiv').show();
         },  
-        url: '<?php echo base_url(); ?>index.php?homemanage/ajax_admission_menu_pages',
+        url: '<?php echo base_url(); ?>index.php?admin/ajax_document_download_menu_pages',
         success: function (response)
         {   
-            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?homemanage/' + selectValue;
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?admin/' + selectValue;
             window.history.pushState({path:newurl},'',newurl);                
-            // var cName = $('#'+selectValue).hasClass('bg-info'); 
-            // if(cName){
-            //     $("#"+selectValue).removeClass("bg-info");
-            //     $("#"+selectValue).addClass("bg-primary");
-            // } else {
-            //     $("#"+selectValue).addClass("bg-info");
-            //     $("#"+selectValue).removeClass("bg-primary");
-            // }
-            // if(cName.contains("bg-info")){
-            //     console.log("String Found");
-            // }
-            //$("#"+selectValue).removeClass("bg-info");
-            //$("#"+selectValue).toggleClass("bg-primary");
-            $('#admissionNavManu').show();
-            $('#admissionMainManu').hide();
+            
+            $('#documentNavManu').show();
+            $('#documentMainManu').hide();
             $('#ajaxPageContainer').html(response);
-
-            $('#admission_link_status').bootstrapToggle();
-            $(".admissionTable").dataTable();
+            
+            $('.datepicker').datepicker({
+            	format: 'dd-mm-yyyy',
+            });
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

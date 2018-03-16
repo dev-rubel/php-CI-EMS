@@ -40,6 +40,15 @@
                 </a>
             </li>
 
+            <!-- DOWNLOAD DOCUMENT SECTION -->
+
+            <li class="<?php if ($page_name == 'menus/download_document_menu') echo 'active'; ?> ">
+                <a href="<?php echo base_url(); ?>index.php?admin/download_document_menu">
+                    <i class="entypo-download"></i>
+                    <?php echo get_phrase('download'); ?>
+                </a>
+            </li>
+
             <!-- MANAGE ADMISSION SECTION -->
 
             <li class="<?php if ($page_name == 'menus/admission_menu') echo 'active'; ?> ">

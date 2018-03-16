@@ -15,16 +15,27 @@ $base = base_url().'uploads/';
     }
 
     .each-card {
-        min-height: 230px !important;
-        margin-bottom: 25px;
+        min-height: 280px !important;
+        padding-bottom: 25px;
+        border-bottom: 2px dashed;
+        padding-top: 25px;
     }
 
     .school-card {
-        min-height: 230px !important;
+        min-height: 280px !important;
     }
+    
     .title h5 {
-        font-size: 16px !important;
+        font-size: 22px !important;
         color: #fff !important;
+        padding: 2px 0px;
+        margin: 0;
+    }
+    
+    .title h6 {
+        font-size: 18px !important;
+        color: #fff !important;
+        font-weight: bold;
         padding: 2px 0px;
         margin: 0;
     }
@@ -45,6 +56,15 @@ $base = base_url().'uploads/';
         font-size: 13px;
     }
 
+    .span1-1,
+    .span1-2 {
+        width: 35%;
+        padding: 0;
+        float: left;
+        font-size: 13px;
+        letter-spacing: 0px;
+    }
+
     .span2 {
         width: 30%;
         padding: 0;
@@ -52,7 +72,10 @@ $base = base_url().'uploads/';
         font-size: 13px;
     }
 
-    .content.span1 {
+    .content.span1,
+    .content.span1-1,
+    .content.span1-2,
+     {
         letter-spacing: -0.5px;
         min-height: 68px;
         padding-bottom: 0;
@@ -68,7 +91,7 @@ $base = base_url().'uploads/';
         margin: 0 auto;
     }
 
-    .principal-sign {
+    .principal-sign, .teacher-sign {
         font-size: 11px;
         border-top: 1px dotted;
         padding: 3px !important;
@@ -88,7 +111,7 @@ $base = base_url().'uploads/';
         background: -ms-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
         background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
         background-repeat: no-repeat !important;
-        background-position: center 60px !important;
+        background-position: center 70px !important;
         background-size: 130px 130px !important;
         position: relative;
         color: #2e3436;
@@ -104,7 +127,7 @@ $base = base_url().'uploads/';
     .school-card-back .title {
         background: url('http://www.vector-eps.com/wp-content/gallery/great-solid-textures/great-solid-texture1.jpg') !important;
         color: #fff !important;
-        height: 42px;
+        height: 55px;
         padding: 1px;
         font-weight: bold;
         font-size: 12px !important;
@@ -114,16 +137,20 @@ $base = base_url().'uploads/';
     .school-card-back .content {
         font-weight: bold;
         padding: 15px;
-        height: 150px;
+        height: 160px;
         padding-bottom: 0 !important;
     }
 
     .school-card .avatar {
         float: right;
-        max-width: 100px;
-        max-height: 100px;
+        width: 90px !important;
+        height: 100px !important;
         box-shadow: 0 0 1px 1px #777 !important;
         border-radius: 3px !important;
+    }
+
+    .school-card .qrcode {
+        margin-right: 15px !important;
     }
 
     .school-card .footer,
@@ -148,69 +175,77 @@ $base = base_url().'uploads/';
 
 foreach($std_info as $k=>$each):
 ?>
-    <!-- CARD START -->
-    <!-- CARD FRONT SIDE START -->
-    <div class="each">
-    <div class="col-xs-6 each-card">        
+    <!-- ADMIT CARD START -->
+    <!-- ADMIT CARD FRONT SIDE START -->
+    <div class="col-xs-12 each-card">        
         <div class="school-card centered">
-            <!-- CARD HEADER -->
+            <!-- ADMIT CARD HEADER -->
             <div class="title text-center">
                 <h5><?php echo ucwords($schoolName); ?></h5> 
-                <p>Student ID: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code; ?></p>                    
+                <h6>Admit Card</h6> 
+                <!-- <p>Student ID: <?php //echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code; ?></p>                     -->
             </div>
             <!-- STUDENT INFORMATION -->
-            <div class="content span1">
+            <div class="content span1-1">
                 Name: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name; ?>
                 <br>
                 Father: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->fname; ?>
                 <br>
-                Class: <?php echo $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name; ?><br />
+                Roll: <?php echo $each['roll']; ?><br />                
+                Section: <?php echo $this->db->get_where('section',['section_id'=>$each['section_id']])->row()->name; ?><br />                
                 <span class="finer-print">
                 <?php if($each['group_id'] != 0): ?>
                     Group: <?php $groupName = $this->db->get_where('group',['group_id'=>$each['group_id']])->row()->name; echo strtoupper($groupName); ?><br />
-                <?php endif; ?>
-                Roll: <?php echo $each['roll']; ?><br />
+                <?php endif; ?>                
+                Shift: <?php echo $this->db->get_where('shift',['shift_id'=>$each['shift_id']])->row()->name; ?><br />                
+                
                 Phone: <?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile; ?><br />                
                 
+                
+                </span>
+            </div>
+            <div class="content span1-2">
+                <?php if($each['group_id'] != 0): ?>
+                    <br>
+                <?php endif; ?>
+                <br>
+                <br>
+                <br>
+                Class: <?php echo $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name; ?>
+                <br />
+                Year: <?php echo date('Y'); ?>
+                <br>
+                Exam Name: <?php echo $this->db->get_where('exam',['exam_id'=>$exam_id])->row()->name; ?>                
                 </span>
             </div>
             <!-- STUDENT IMAGE -->
             <div class="content span2">
-                <img src="<?php echo $this->crud_model->get_image_url('student',$each['student_id']); ?>" alt="avatar" class="avatar" />                    
+                <img src="<?php echo $this->crud_model->get_image_url('student',$each['student_id']); ?>" alt="qrcode" class="avatar" />                    
+                <img src="<?php echo base_url().'uploads/qrcode/'.$each['student_id'].'.png'; ?>" alt="avatar" class="avatar qrcode" />                    
             </div>
             <!-- BOTTOM LEFT BLANK -->
+            <!-- SIGN SECTION -->
             <div class="row">
-                <div class="col-xs-8"></div>
                 <div class="col-xs-4">
-                    <!-- SIGN SECTION -->
+                    <div class="text-left teacher-sign">
+                        <p>Teacher Sign</p>
+                    </div>
+                </div>
+                <div class="col-xs-4"></div>
+                <div class="col-xs-4">
                     <div class="text-right principal-sign">
                         <p>Principal Sign</p>
-                    </div>    
+                    </div>
                 </div>
             </div>
             
-            <!-- CARD FOOTER -->
-            <div class="footer"></div>
+            <!-- ADMIT CARD FOOTER -->
+            <div class="footer"><?php echo $schoolAddress; ?></div>
         </div>
     </div>
-    <!-- CARD FRONT SIDE END -->
+    <!-- ADMIT CARD FRONT SIDE END -->
 
-    <!-- CARD BACK SIDE START -->
-    <div class="col-xs-6 each-card">        
-        <div class="school-card-back centered">
-            <!-- CARD HEADER -->
-            <div class="title text-center">
-                <br><br>                 
-            </div>
-            <div class="content span3 text-center">
-                <h5>Don’t say you don’t have enough time. You have exactly the same number of hours per day that were given to Helen Keller, Pasteur, Michelangelo, Mother Teresea, Leonardo da Vinci, Thomas Jefferson, and Albert Einstein. <br> – H. Jackson Brown Jr.</h5>
-            </div>
-            <!-- CARD FOOTER -->
-            <div class="footer"></div>
-        </div>
-    </div>
-    <!-- CARD BACK SIDE END -->
-    <!-- CARD END -->
-    </div>
+    <!-- ADMIT CARD END -->
+
 <?php endforeach; ?>    
 </div>

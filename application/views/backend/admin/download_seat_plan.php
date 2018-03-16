@@ -5,13 +5,13 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <i class="entypo-plus-circled"></i>
-                    <?php echo get_phrase('download_excel'); ?>
+                    <?php echo get_phrase('download_seat_plan'); ?>
                 </div>
             </div>
             <div class="panel-body">
 
 
-                <form action="<?php echo base('admin', 'download_excel_formet');?>" method="post" class="form-horizontal form-groups-bordered validate">
+                <form action="<?php echo base('admin', 'download_seat_plan');?>" method="post" class="form-horizontal form-groups-bordered validate" target="_blank">
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
@@ -89,35 +89,25 @@
 
                     <div class="form-group">
                         <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('year'); ?>
+                            <?php echo get_phrase('exam'); ?>
                         </label>
                         <div class="col-sm-6">
-                            <select name="year" class="form-control">
-                                <?php $running_year = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;?>
+                            <select name="exam_id" class="form-control" id="exam_selector_holder">
                                 <option value="">
-                                    <?php echo get_phrase('select_running_session');?>
+                                    <?php echo get_phrase('select_exam'); ?>
                                 </option>
-                                <?php for($i = 0; $i < 10; $i++):?>
-                                <option value="<?php echo (2016+$i).'-'.(2016+$i+1);?>" <?php if($running_year==( 2016+$i). '-'.(2016+$i+1)) echo
-                                    'selected';?>>
-                                    <?php echo substr((2016+$i).'-'.(2016+$i+1), 0, -5);?>
+                                <?php $examList = $this->db->get('exam')->result_array();
+                    foreach($examList as $list):
+                ?>
+                                <option value="<?php echo $list['exam_id'];?>">
+                                    <?php echo $list['name'];?>
                                 </option>
-                                <?php endfor;?>
-                            </select>
-                        </div>
-                    </div>
+                                <?php endforeach;?>
 
-                    <div class="form-group">
-                        <label for="field-2" class="col-sm-3 control-label">
-                            <?php echo get_phrase('download'); ?>
-                        </label>
-                        <div class="col-sm-6">
-                            <select name="download" class="form-control">
-                                <option value="student_information">Student Information</option>
-                                <option value="result_format">Result Format</option>
                             </select>
                         </div>
                     </div>
+                   
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">

@@ -39,17 +39,18 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/dashboard', 'refresh');
     }
 
-    public function barcode()
+    public function barcode($txt,$name)
 	{
         // https://github.com/dwisetiyadi/CodeIgniter-PHP-QR-Code
 
-        $this->load->library('ciqrcode');        
-        $params['data'] = 'This is a text';
-        $params['level'] = 'H';
-        $params['size'] = 3;
-        $params['savename'] = FCPATH.'tes.png';
+        $this->load->library('ciqrcode');
+
+        $params['data']     = $txt;
+        $params['level']    = 'H';
+        $params['size']     = 3;
+        $params['savename'] = FCPATH.'/uploads/qrcode/'.$name.'.png';
+        $params['cacheable']	= false;
         $this->ciqrcode->generate($params);
-        echo '<img src="'.base_url().'tes.png" />';
 	}
 
 
@@ -332,6 +333,65 @@ class Admin extends CI_Controller
         $page_data['group_id']  = $group_id;
         $page_data['running_year'] = $this->running_year;
         $this->load->view('backend/admin/student_information', $page_data);
+    }
+
+    function download_document_menu()
+    {
+        $page_data['page_name']  = 'menus/download_document_menu';
+        $page_data['page_title'] = get_phrase('download_document');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function ajax_document_download_menu_pages()
+    {
+        $pageName = $_POST['pageName'];
+        $page_data['running_year'] = $this->running_year;
+        $page_data['page_name'] = $pageName;
+        $this->load->view('backend/admin/'.$pageName, $page_data);
+    }
+
+    function download_admit_card()
+    {
+        $class_id = $this->input->post('class_id');
+        $exam_id = $this->input->post('exam_id');
+        $this->db->where('class_id', $class_id);
+        $query = $this->db->get('enroll');
+        if($query->num_rows() > 0) {
+            $this->load->helper('file');
+            delete_files('./uploads/qrcode/');
+            // $this->load->library('m_pdf');
+            $result = $query->result_array();
+            foreach($result as $k=>$each) {
+                $name = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name;
+                $class = $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name;
+                $roll = $each['roll'];
+                $phone = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile;
+                $txt = "Name: $name Class: $class   Roll: $roll Phone: $phone";
+                $this->barcode($txt,$each['student_id']);
+            }
+            $data['std_info'] = $result;
+            $data['exam_id'] = $exam_id;
+            
+            $this->load->view('backend/admin/download_admit_card_print', $data);
+        } else {
+            echo 'No Student Found.';
+        }        
+    }
+
+    function download_seat_plan()
+    {
+        $class_id = $this->input->post('class_id');
+        $exam_id = $this->input->post('exam_id');
+        $this->db->where('class_id', $class_id);
+        $query = $this->db->get('enroll');
+        if($query->num_rows() > 0) {
+            $data['std_info'] = $query->result_array();
+            $data['exam_id'] = $exam_id;
+            
+            $this->load->view('backend/admin/download_seat_plan_print', $data);
+        } else {
+            echo 'No Student Found.';
+        }        
     }
 
     function generate_marksheet($student_id,$exam_id)

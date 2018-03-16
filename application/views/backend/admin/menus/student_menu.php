@@ -24,8 +24,8 @@
 </style>
 
 <?php 
-$links = ['student_add','student_bulk_add','total_student_page','student_promotion','download_excel','update_student_image','download_student_idcard'];
-$title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Download Excel','Update Student Image','Download Student IdCard'];
+$links = ['student_add','student_bulk_add','total_student_page','student_promotion','update_student_image'];
+$title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Update Student Image'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 
@@ -167,19 +167,7 @@ function changePage(page)
         {   
             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?admin/' + selectValue;
             window.history.pushState({path:newurl},'',newurl);                
-            // var cName = $('#'+selectValue).hasClass('bg-info'); 
-            // if(cName){
-            //     $("#"+selectValue).removeClass("bg-info");
-            //     $("#"+selectValue).addClass("bg-primary");
-            // } else {
-            //     $("#"+selectValue).addClass("bg-info");
-            //     $("#"+selectValue).removeClass("bg-primary");
-            // }
-            // if(cName.contains("bg-info")){
-            //     console.log("String Found");
-            // }
-            //$("#"+selectValue).removeClass("bg-info");
-            //$("#"+selectValue).toggleClass("bg-primary");
+            
             $('#studentNavManu').show();
             $('#studentMainManu').hide();
             $('#ajaxPageContainer').html(response);
