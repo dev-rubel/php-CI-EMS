@@ -56,9 +56,16 @@ $base = base_url().'uploads/';
         font-size: 13px;
     }
 
+    .span1-1 {
+        width: 35%;
+    }
+
+    .span1-2 {
+        width: 30%;
+    }
+
     .span1-1,
     .span1-2 {
-        width: 35%;
         padding: 0;
         float: left;
         font-size: 13px;
@@ -66,7 +73,7 @@ $base = base_url().'uploads/';
     }
 
     .span2 {
-        width: 30%;
+        width: 35%;
         padding: 0;
         float: left;
         font-size: 13px;
@@ -79,11 +86,6 @@ $base = base_url().'uploads/';
         letter-spacing: -0.5px;
         min-height: 68px;
         padding-bottom: 0;
-    }
-
-    .content .span2 img {
-        width: 130px !important;
-        height: 170px !important;
     }
 
     .span3 {
@@ -143,8 +145,8 @@ $base = base_url().'uploads/';
 
     .school-card .avatar {
         float: right;
-        width: 90px !important;
-        height: 100px !important;
+        width: 85px !important;
+        height: 95px !important;
         box-shadow: 0 0 1px 1px #777 !important;
         border-radius: 3px !important;
     }

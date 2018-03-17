@@ -353,8 +353,18 @@ class Admin extends CI_Controller
     function download_admit_card()
     {
         $class_id = $this->input->post('class_id');
+        $shift_id = $this->input->post('shift_id');
+        $section_id = $this->input->post('section_id');
+        $group_id = $this->input->post('group_id');
         $exam_id = $this->input->post('exam_id');
+
         $this->db->where('class_id', $class_id);
+        $this->db->where('shift_id', $shift_id);
+        $this->db->where('section_id', $section_id);
+        $this->db->where('year', $this->running_year);
+        if(!empty($group_id)) {
+            $this->db->where('group_id', $group_id);
+        }
         $query = $this->db->get('enroll');
         if($query->num_rows() > 0) {
             $this->load->helper('file');
@@ -381,8 +391,18 @@ class Admin extends CI_Controller
     function download_seat_plan()
     {
         $class_id = $this->input->post('class_id');
+        $shift_id = $this->input->post('shift_id');
+        $section_id = $this->input->post('section_id');
+        $group_id = $this->input->post('group_id');
         $exam_id = $this->input->post('exam_id');
+
         $this->db->where('class_id', $class_id);
+        $this->db->where('shift_id', $shift_id);
+        $this->db->where('section_id', $section_id);
+        $this->db->where('year', $this->running_year);
+        if(!empty($group_id)) {
+            $this->db->where('group_id', $group_id);
+        }
         $query = $this->db->get('enroll');
         if($query->num_rows() > 0) {
             $data['std_info'] = $query->result_array();
@@ -464,14 +484,14 @@ class Admin extends CI_Controller
                             } else {
                                 $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
                                 $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
-                            }     
+                            }
                         } else {
                             $student[$std_id]['point'][$each2['subject_id']] = $each3['grade_point'];
                             $student[$std_id]['grade'][$each2['subject_id']] = $each3['name'];
                         }
                     }
-                }            
-            }    
+                }
+            }
             // Store total subjects mark
             $student[$std_id]['subject_total_mark'] = $totalSubjectsMark; 
             // Calculate Subject total 
@@ -543,9 +563,9 @@ class Admin extends CI_Controller
                 unset($students['mark_info'][$std_key]);
             } else {
                 $std_id = key($students['mark_info'][$std_key]);
-                $students['class_position'][] = $students['mark_info'][$std_key][$std_id]['total_mark'];
+                $students['class_position'][] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
             }
-        }     
+        }
         // SORTING MARK HEIGH TO LOW
         rsort($students['class_position']);
         return $students;
@@ -554,7 +574,7 @@ class Admin extends CI_Controller
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(23,1);
+        $data['students'] = $this->generate_marksheet_class_wise(13,1);
         // pd($data);
         $this->load->view('backend/admin/marksheet_single', $data);
     }
@@ -2821,15 +2841,15 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function ajax_marks_manage_view($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '', $group_id = '', $foundRolls = [])
+    function ajax_marks_manage_view($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '', $group_id = '', $student_ids = [])
     {
-        $page_data['running_year']       = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+        $page_data['running_year']       = $this->running_year;
         $page_data['exam_id']    =   $exam_id;
         $page_data['class_id']   =   $class_id;
         $page_data['group_id']   =   $group_id;
         $page_data['subject_id'] =   $subject_id;
         $page_data['section_id'] =   $section_id;
-        $page_data['foundRolls'] =   $foundRolls;
+        $page_data['student_ids'] =   $student_ids;
         $htmlData = $this->load->view('backend/admin/ajax_elements/ajax_marks_manage_view' , $page_data, true);
         $this->jsonMsgReturn(true,'Information Found.',$htmlData);
     }
@@ -2873,7 +2893,6 @@ class Admin extends CI_Controller
 
     function ajax_marks_selector()
     {
-        // pd($_POST);
         // $this->jsonMsgReturn(true,'hello',$_POST);
         $check = check_array_value($_POST);
         if(!$check){
@@ -2889,7 +2908,7 @@ class Admin extends CI_Controller
             }
             $data['section_id'] = $this->input->post('section_id');
             $data['subject_id'] = $this->input->post('subject_id');
-            $data['year']       = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+            $data['year']       = $this->running_year;
 
             $rolls = explode(',', $_POST['rolls']);
             foreach($rolls as $k=>$each):
@@ -2911,7 +2930,7 @@ class Admin extends CI_Controller
                         $data['student_id'] = $student_id;
                         $this->db->insert('mark' , $data);
                     }
-                    $foundRolls[$each] = $student_id;
+                    $student_ids[$each] = $student_id;
                 } else {
                     $notFound[] = $each;
                 }
@@ -2922,7 +2941,7 @@ class Admin extends CI_Controller
                 $msg = implode(',',$notFound).' Rolls not found.';
                 $this->jsonMsgReturn(false,$msg);
             } else {
-                $this->ajax_marks_manage_view($data['exam_id'],$data['class_id'],$data['section_id'],$data['subject_id'],$data['group_id'],$foundRolls);
+                $this->ajax_marks_manage_view($data['exam_id'],$data['class_id'],$data['section_id'],$data['subject_id'],$data['group_id'],$student_ids);
             }
         }
 
@@ -2930,24 +2949,44 @@ class Admin extends CI_Controller
 
     function marks_update($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
     {
-      $student_ids = $_POST['student_rolls'];
-      foreach ($_POST['marks_obtained'] as $key => $value) {
-        $data[$key]['marks_obtained'] = implode('|',$value);
-        $data[$key]['comment'] = $_POST['comment_'.$key];
-      }
-        $running_year = $this->running_year;
-        $marks_of_students = $this->db->get_where('mark' , array(
-            'exam_id' => $exam_id,
-                'class_id' => $class_id,
-                    'group_id' => $group_id,
-                        'section_id' => $section_id,
-                            'year' => $running_year,
-                                'subject_id' => $subject_id
-        ))->result_array();
+      $student_rolls = $_POST['student_rolls'];
+      
+        foreach ($_POST['marks_obtained'] as $key => $value) {
+            $data[$key]['marks_obtained'] = implode('|',$value);
+            $data[$key]['comment'] = $_POST['comment_'.$key];
+        }
         
-        foreach($marks_of_students as $row) {
-            $this->db->where('mark_id' , $row['mark_id']);
-            $this->db->update('mark' , ['mark_obtained' => $data[$row['mark_id']]['marks_obtained'] , 'comment' => $data[$row['mark_id']]['comment']]);
+        $running_year = $this->running_year;
+        
+        foreach($student_rolls as $k=>$each):
+            $student_id = $this->db->get_where('enroll' , array(
+                'class_id' => $class_id ,
+                    'group_id' => $group_id, 
+                        'section_id' => $section_id, 
+                            'roll' => $each, 
+                                'year' => $running_year
+            ))->row()->student_id;
+            if($student_id) {
+                $query = $this->db->get_where('mark' , array(
+                    'student_id' => $student_id,
+                        'exam_id' => $exam_id,
+                            'class_id' => $class_id,
+                                'group_id' => $group_id,
+                                    'section_id' => $section_id,
+                                        'year' => $running_year,
+                                            'subject_id' => $subject_id
+                ));
+                if($query->num_rows() > 0) {
+                    $marks_of_students[] = $query->row()->mark_id;
+                    $student_ids[$each] = $student_id;
+                }
+            }
+
+        endforeach;
+
+        foreach($marks_of_students as $mark_id) {
+            $this->db->where('mark_id' , $mark_id);
+            $this->db->update('mark' , ['mark_obtained' => $data[$mark_id]['marks_obtained'] , 'comment' => $data[$mark_id]['comment']]);
         }
         $this->ajax_marks_manage_view($exam_id,$class_id,$section_id,$subject_id,$group_id, $student_ids);
         // $this->session->set_flashdata('flash_message' , get_phrase('marks_updated'));

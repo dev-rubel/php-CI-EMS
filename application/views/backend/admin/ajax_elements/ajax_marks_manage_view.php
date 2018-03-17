@@ -24,10 +24,10 @@ $subject_marks = $subject_info[0]['subject_marks'];
 <div class="row">
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-    
+	<!-- updateMark -->
     <form id="updateMark" action="<?php echo base_url().'index.php?admin/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id; ?>" method="post">
-      <?php foreach($foundRolls as $k=>$value): ?>
-        <input type="hidden" name="student_rolls[]" value="<?php echo $value;?>">
+      <?php foreach($student_ids as $k=>$value): ?>
+        <input type="hidden" name="student_rolls[]" value="<?php echo $k;?>">
       <?php endforeach; ?>
 			<table class="table table-bordered">
 				<thead>
@@ -42,7 +42,7 @@ $subject_marks = $subject_info[0]['subject_marks'];
 				<tbody>
 				<?php
           $keys = 0;
-					foreach($foundRolls as $k=>$each):
+					foreach($student_ids as $k=>$each):
 					$marks_of_students = $this->db->get_where('mark' , array(
 						'class_id' => $class_id,
 							'student_id' => $each,
@@ -57,7 +57,7 @@ $subject_marks = $subject_info[0]['subject_marks'];
 					<tr>
 						<td><?php echo $keys += 1;?></td>
 						<td>
-							<?php echo $this->db->get_where('enroll', array('student_id'=>$row['student_id']))->row()->roll;?>
+							<?php echo $k;?>
 						</td>
 						<td>
 							<?php echo $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;?>

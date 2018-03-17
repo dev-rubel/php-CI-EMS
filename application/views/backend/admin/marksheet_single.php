@@ -1,4 +1,4 @@
-<?php //print_r($students); 
+<?php pd($students); 
 $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
 
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
@@ -108,6 +108,13 @@ function accSum($grades='')
 			$eachPoints = $each2['point'];
 			$eachGrades = $each2['grade'];
 			$eachObtainMarks = $each2['obtain_mark'];
+
+			if(!empty($unqJoinSubjectGrad)) {
+				unset($unqJoinSubjectGrad);
+			}
+			if(!empty($unqJoinSubjectPoint)) {
+				unset($unqJoinSubjectPoint);
+			}
 ?>
 <div class="container-fluid marksheet-border">
 	<br><br>
@@ -229,16 +236,24 @@ function accSum($grades='')
 					// If Join Subject
 					if(is_array($eachMark)):
 						foreach($eachMark as $subjectID2=>$eachMark2):
+							
 				?>
 				<tr>
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->name; ?></td>
 					<td class="text-center"><?php $singleSubjectMark = $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->total_mark; $achiveTotalMark += $singleSubjectMark; echo $singleSubjectMark; ?></td>
+					<!-- SUBJECT HEIGHT MARKS -->
 					<td></td>
+					<!-- SUBJECT MARKS -->
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID2]); 
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
 						<td class="text-center"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
 					<?php endforeach; ?>
-					<td class="text-center"><?php echo $eachMarks[$subjectID][$subjectID2]; ?></td>					
+					<!-- SUBJECT TOTAL MARKS -->
+					<td class="text-center"><?php $subjectTotalMark = $eachMarks[$subjectID][$subjectID2].' ';
+					echo $subjectTotalMark;
+					
+					?></td>	
+					<!-- SUBJECT TOTAL GRADE -->
 					<?php 
 						if(!empty($unqJoinSubjectGrad)):
 							if(!in_array($subjectID,$unqJoinSubjectGrad)):
@@ -247,7 +262,7 @@ function accSum($grades='')
 					<?php endif; else: ?>
 						<td class="text-center joinSubGrad" rowspan="2"><?php echo $eachGrades[$subjectID]; ?></td>
 					<?php endif; $unqJoinSubjectGrad[] = $subjectID; ?>
-
+					<!-- SUBJECT TOTAL POINT -->
 					<?php 
 						if(!empty($unqJoinSubjectPoint)):
 							if(!in_array($subjectID,$unqJoinSubjectPoint)):
@@ -266,8 +281,11 @@ function accSum($grades='')
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
 						<td class="text-center"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
 					<?php endforeach; ?>
+					<!-- SUBJECT TOTAL MARKS -->
 					<td class="text-center"><?php echo $eachMarks[$subjectID]; ?></td>
+					<!-- SUBJECT TOTAL GRADE -->
 					<td class="text-center"><?php echo $eachGrades[$subjectID]; ?></td>
+					<!-- SUBJECT TOTAL POINT -->
 					<td class="text-center"><?php echo $eachPoints[$subjectID]; ?></td>
 				</tr>
 			<?php endif; endforeach; ?>
@@ -289,8 +307,8 @@ function accSum($grades='')
 		<div class="col-sm-4">
 			<table class="table table-bordered">
 				<tr>
-					<td>Class Position</td>
-					<td><?php $class_position = array_search($each2['total_mark'],$students['class_position']); echo $class_position+1; ?></td>
+					<td>Class Position <?php echo $each2['total_mark'];?></td>
+					<td><?php $class_position = array_search($each2['total_point_with_4th'],$students['class_position']); echo $class_position+1; ?></td>
 				</tr>
 				<tr>
 					<td>GPA (Without 4th)</td>

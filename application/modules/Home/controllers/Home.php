@@ -352,6 +352,7 @@ class Home extends MX_Controller {
     {
         $class_id = $this->input->post('class_id');
         $this->db->where('class_id', $class_id);
+        $this->db->where('year', $this->running_year);
         $query = $this->db->get('enroll');
 
         if($query->num_rows() > 0) {
