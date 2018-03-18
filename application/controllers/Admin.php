@@ -560,10 +560,25 @@ class Admin extends CI_Controller
         foreach($class_std as $std_key=>$std_each) { 
             $students['mark_info'][$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
             if(empty($students['mark_info'][$std_key])) {
+                // IF NO MARK FOUND UNSET THIS STUDENT FROM ARRAY
                 unset($students['mark_info'][$std_key]);
             } else {
+                // GENERATE CLASS POSITION
                 $std_id = key($students['mark_info'][$std_key]);
                 $students['class_position'][] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
+                // GENERATE CLASS HIGHEST MARK
+                $subjects =  $students['mark_info'][$std_key][$std_id]['obtain_mark'];
+                foreach($subjects as $sub_key=>$subject) {
+                    if(empty($students['subject_highest'][$sub_key])) {
+                        $subject_mark = array_sum(explode('|',$subject));
+                        $students['subject_highest'][$sub_key] = $subject_mark;
+                    } else {
+                        $subject_mark = array_sum(explode('|',$subject));
+                        if($students['subject_highest'][$sub_key] < $subject_mark) {
+                            $students['subject_highest'][$sub_key] = $subject_mark;
+                        }
+                    }
+                }                
             }
         }
         // SORTING MARK HEIGH TO LOW

@@ -1,4 +1,4 @@
-<?php pd($students); 
+<?php //pd($students); 
 $running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
 
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
@@ -10,8 +10,6 @@ function accSum($grades='')
 	echo 'hello';
 }
 ?>
-
-
 <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
 <style media="all">
 	
@@ -38,12 +36,13 @@ function accSum($grades='')
 		margin: 0px;
 		padding: 0px;
 	}
-
+	.row.mark-table {
+		height: 550px;
+	}
 	p.std-title {
 		float: left;
 		width: 140px;
 	}
-
 	p.std-info {
 		width: 200px;
 		float: right;
@@ -65,20 +64,12 @@ function accSum($grades='')
 	}
 	.background-img {
 		background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%), url(bg.png) repeat 0 0 !important, url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.7)), color-stop(100%,rgba(255,255,255,0.7))), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: -webkit-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: -o-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: -ms-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
 		background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
-
-
 		background-repeat: no-repeat !important;
 		background-position: center 200px !important;
 		background-size: 300px 300px !important;
@@ -125,13 +116,16 @@ function accSum($grades='')
 			<h4 class="text-uppercase"><?php echo $schoolAddress; ?></h4>
 		</div>
 		<!-- HEADER TITLE -->
-		<div class="offset-sm-4 col-sm-4 text-center">
+		<div class="col-sm-4">
+			<img src="<?php echo base_url();?>uploads/school_logo.png" alt="" width="100px" height="100px">
+		</div>
+		<div class="col-sm-4 text-center">
 			<img src="<?php echo base_url();?>uploads/school_logo.png" alt="" width="100px" height="100px">
 			<br><br>
 			<h4>PROGRESS REPORT</h4>
 		</div>
 		<!-- HEADER GREADING LIST -->
-		<div class="offset-sm-1 col-sm-3">
+		<div class="offset-sm-1 col-sm-3 mark-range-table">
 			<table class="table table-bordered mark-range-table">
 				<thead>
 					<tr>
@@ -156,7 +150,7 @@ function accSum($grades='')
 	</div>
 	<br>
 	<!-- STUDENT INFORMATION -->
-	<div class="row">		
+	<div class="row student-information">		
 		<!-- STUDENT INFORMATION LEFT -->
 		<div class="offset-sm-1 col-sm-4">			
 			<div class="each-row">
@@ -213,7 +207,7 @@ function accSum($grades='')
 		</div>
 	</div>
 	<br>
-	<div class="row">
+	<div class="row mark-table">
 		<!-- STUDENT MARK TABLE -->
 		<div class="col-sm-12">
 		<table class="table table-bordered">
@@ -232,28 +226,24 @@ function accSum($grades='')
 				<td>MCQ</td>
 				<td>PR</td>
 			</tr>
-			<?php foreach($eachMarks as $subjectID=>$eachMark):
-					// If Join Subject
-					if(is_array($eachMark)):
-						foreach($eachMark as $subjectID2=>$eachMark2):
-							
+			<!-- ***** IF JOIN SUBJECT ***** -->
+			<?php foreach($eachMarks as $subjectID=>$eachMark):					
+					if(is_array($eachMark)): 
+						foreach($eachMark as $subjectID2=>$eachMark2):							
 				?>
-				<tr>
+				<tr class="table-join-subject">
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->name; ?></td>
 					<td class="text-center"><?php $singleSubjectMark = $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->total_mark; $achiveTotalMark += $singleSubjectMark; echo $singleSubjectMark; ?></td>
-					<!-- SUBJECT HEIGHT MARKS -->
-					<td></td>
-					<!-- SUBJECT MARKS -->
+					<!-- SUBJECT HIGHEST MARKS -->
+					<td class="text-center"><?php echo $students['subject_highest'][$subjectID2]; ?></td>
+					<!-- SUBJECT OBTAIN MARKS -->
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID2]); 
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
 						<td class="text-center"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
 					<?php endforeach; ?>
-					<!-- SUBJECT TOTAL MARKS -->
-					<td class="text-center"><?php $subjectTotalMark = $eachMarks[$subjectID][$subjectID2].' ';
-					echo $subjectTotalMark;
-					
-					?></td>	
-					<!-- SUBJECT TOTAL GRADE -->
+					<!-- SUBJECT OBTAIN TOTAL MARKS -->
+					<td class="text-center"><?php echo $eachMarks[$subjectID][$subjectID2];?></td>	
+					<!-- SUBJECT OBTAIN TOTAL GRADE -->
 					<?php 
 						if(!empty($unqJoinSubjectGrad)):
 							if(!in_array($subjectID,$unqJoinSubjectGrad)):
@@ -262,7 +252,7 @@ function accSum($grades='')
 					<?php endif; else: ?>
 						<td class="text-center joinSubGrad" rowspan="2"><?php echo $eachGrades[$subjectID]; ?></td>
 					<?php endif; $unqJoinSubjectGrad[] = $subjectID; ?>
-					<!-- SUBJECT TOTAL POINT -->
+					<!-- SUBJECT OBTAIN TOTAL POINT -->
 					<?php 
 						if(!empty($unqJoinSubjectPoint)):
 							if(!in_array($subjectID,$unqJoinSubjectPoint)):
@@ -272,25 +262,28 @@ function accSum($grades='')
 						<td class="text-center joinSubGrad" rowspan="2"><?php echo $eachPoints[$subjectID]; ?></td>
 					<?php endif; $unqJoinSubjectPoint[] = $subjectID; ?>
 				</tr>
-			<?php endforeach; else: // If Single Subject 	?>
-				<tr>
+			<?php endforeach; else: ?>
+			<!-- ***** IF SINGLE SOBJECT ***** -->
+				<tr class="table-single-subject">
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID])->row()->name; ?></td>
 					<td class="text-center"><?php $singleSubjectMark = $this->db->get_where('subject',['subject_id'=>$subjectID])->row()->total_mark; $achiveTotalMark += $singleSubjectMark; echo $singleSubjectMark; ?></td>
-					<td></td>
+					<!-- SUBJECT HIGHEST MARKS -->
+					<td class="text-center"><?php echo $students['subject_highest'][$subjectID]; ?></td>
+					<!-- SUBJECT OBTAIN MARKS -->
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID]); 
 							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
 						<td class="text-center"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
 					<?php endforeach; ?>
-					<!-- SUBJECT TOTAL MARKS -->
+					<!-- SUBJECT OBTAIN TOTAL MARKS -->
 					<td class="text-center"><?php echo $eachMarks[$subjectID]; ?></td>
-					<!-- SUBJECT TOTAL GRADE -->
+					<!-- SUBJECT OBTAIN TOTAL GRADE -->
 					<td class="text-center"><?php echo $eachGrades[$subjectID]; ?></td>
-					<!-- SUBJECT TOTAL POINT -->
+					<!-- SUBJECT OBTAIN TOTAL POINT -->
 					<td class="text-center"><?php echo $eachPoints[$subjectID]; ?></td>
 				</tr>
 			<?php endif; endforeach; ?>
-
-			<tr>
+			<!-- ***** BOTTOM ROW ***** -->
+			<tr class="table-bottom-row">
 				<td class="text-right">Total Exam Marks</td>
 				<td class="text-center"><?php echo $achiveTotalMark; ?></td>
 				<td colspan="5" class="text-right">Obtained Marks & GPA</td>				
@@ -302,12 +295,12 @@ function accSum($grades='')
 		</div>
 	</div>
 	<!-- BOTTOM TABLES -->
-	<div class="row">
+	<div class="row bottom-section">
 		<!-- BOTTOM TABLE LEFT -->
-		<div class="col-sm-4">
+		<div class="col-sm-4 bottom-left">
 			<table class="table table-bordered">
 				<tr>
-					<td>Class Position <?php echo $each2['total_mark'];?></td>
+					<td>Class Position</td>
 					<td><?php $class_position = array_search($each2['total_point_with_4th'],$students['class_position']); echo $class_position+1; ?></td>
 				</tr>
 				<tr>
@@ -329,7 +322,7 @@ function accSum($grades='')
 			</table>
 		</div>
 		<!-- BOTTOM TABLE CENTER -->
-		<div class="col-sm-4">
+		<div class="col-sm-4 bottom-center">
 			<table class="table table-bordered">
 				<tr>
 					<td colspan="2" class="text-center font-weight-bold">Moral & Behavior Evaluation</td>
@@ -353,7 +346,7 @@ function accSum($grades='')
 			</table>
 		</div>
 		<!-- BOTTOM TABLE RIGHT -->
-		<div class="col-sm-4">
+		<div class="col-sm-4 bottom-right">
 			<table class="table table-bordered">
 				<tr>
 					<td colspan="2" class="text-center font-weight-bold">Co-Curricular Activities</td>
@@ -378,7 +371,7 @@ function accSum($grades='')
 		</div>
 	</div>
 	<!-- BOTTOM COMMENT TABLE -->
-	<div class="row">		
+	<div class="row comment-section">		
 		<div class="col-sm-12">
 			<table class="table table-bordered">
 				<tr>
@@ -389,7 +382,7 @@ function accSum($grades='')
 	</div>
 	<br><br>
 	<!-- BOTTOM SIGNATURE -->
-	<div class="row text-center">		
+	<div class="row text-center signature-section">		
 		<div class="col-sm-4">
 			<hr class="bottom-border"/>
 			<p>Guardian</p> 
@@ -405,4 +398,4 @@ function accSum($grades='')
 	</div>
 </div>
 
-<?php endforeach; endforeach; endif; ?>
+<?php endforeach; endforeach; else: echo 'No result found, in this class.'; endif; ?>
