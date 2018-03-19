@@ -233,8 +233,13 @@ class Admin extends CI_Controller
             $this->session->set_flashdata('flash_message' , get_phrase('please_upload_only_jpg_format_size_270x300'));        
             redirect(base_url() . 'index.php?admin/student_menu');
         } else {
-            foreach($_FILES['files']['name'] as $k=>$eachName) {
-                move_uploaded_file($_FILES['files']['tmp_name'][$k], 'uploads/student_image/'.$eachName);    
+            foreach($_FILES['files']['name'] as $k=>$eachName) {                
+                $path = 'uploads/student_image/'.$eachName;
+                move_uploaded_file($_FILES['files']['tmp_name'][$k], $path);
+                // IMAGE RESIZE
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
             }
             $this->session->set_flashdata('flash_message' , get_phrase('image_add_success'));        
             redirect(base_url() . 'index.php?admin/student_menu');            
@@ -639,29 +644,22 @@ class Admin extends CI_Controller
         if ($param1 == 'create') {
 
             // CREATE STUDENT ACCOUNT UNIQUE CODE --- NOT USE
-
             $cname = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$_POST['group_id']))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$_POST['section_id']))->row()->name;
             $shname = $this->db->get_where('shift', array('shift_id'=>$_POST['shift_id']))->row()->name;
 
             if($cname == 9 || $cname == 10){
-
                 $acc_code = strtolower($shname[0].$cname.$sname[0].$_POST['roll'].$gname[0]);
-
             }elseif($cname > 0 && $cname < 9){
-
                 $acc_code = strtolower($shname[0].$cname.$sname[0].$_POST['roll']);
-
             }else{
                 $class_name = $this->db->get_where('class', array('class_id'=>$_POST['class_id']))->row()->name;
                 $acc_code = strtolower($shname[0].$class_name[0].$_POST['roll']);
-
             }
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
 
             // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
-
             $session = $this->db->get_where('settings',
             ['type'=>'admission_session'])->row()->description;
             $year = substr($session, -2);
@@ -679,20 +677,14 @@ class Admin extends CI_Controller
             }
 
             // END CREATE STUDENT ACCOUNT UNIQUE CODE
-            $this->db->insert('admit_std',
-                 ['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
-
+            $this->db->insert('admit_std',['uniq_id'=>$uniq_id,'status'=>2,'session'=>$session]);
 
             $table1Value1 = array_slice($_POST, 0, 21);
             $table1Value2 = array('student_code' => $uniq_id, 'siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
             $table1Value3 = array_merge($table1Value1,$table1Value2);
 
-            // pd($table1Value3);
-
-            //pd($table2Value1);
             $this->db->insert('student', $table1Value3);
             $student_id = $this->db->insert_id();
-
 
             $table2Value1 = array_slice($_POST, 22, 5);
             $data2['student_id']     = $student_id;
@@ -702,10 +694,15 @@ class Admin extends CI_Controller
             $data2['year']           = $running_year;
             $table2Value2 = array_merge($data2,$table2Value1);
 
-
             $this->db->insert('enroll', $table2Value2);
 
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id . '.jpg');
+            $path = 'uploads/student_image/' . $student_id . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE            
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             if(!empty($data['email'])):
             $this->email_model->account_opening_email('student', $data['email']); //SEND EMAIL ACCOUNT OPENING EMAIL
@@ -713,6 +710,7 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/student_add/', 'refresh');
         }
         if ($param1 == 'do_update') {
+
             $std_info = $this->db->get_where('enroll', array('student_id'=> $param2))->row();
             if($std_info->group_id == 0 || empty($std_info->group_id)){
                 $group_id = '';
@@ -726,47 +724,41 @@ class Admin extends CI_Controller
             $shname = $this->db->get_where('shift', array('shift_id'=>$std_info->shift_id))->row()->name;
 
             if($cname == 9 || $cname == 10){
-
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$std_info->roll.$gname[0]);
-
             }elseif($cname > 0 && $cname < 9){
-
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$std_info->roll);
-
             }else{
                 $class_name = $this->db->get_where('class', array('class_id'=>$std_info->class_id))->row()->name;
                 $update_acc = strtolower($shname[0].$class_name[0].$std_info->roll);
-
             }
             // 'acc_code'=>$update_acc,
             // END UPDATE ACCOUNT CODE SECTION
-
             $table1Value1 = array_slice($_POST, 0, 22);
             $table1Value2 = array('siblinginfo'=>implode('|', $_POST['siblinginfo']), 'jscpecinfo'=>implode(',', $_POST['jscpecinfo']));
             $table1Value3 = array_merge($table1Value1,$table1Value2);
-
             //pd(array('Account Code' => $update_acc));
             $this->db->where('student_id', $param2);
             $this->db->update('student', $table1Value3);
-
             // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)
             $book_no = array('book_no' => $_POST['book_no']) ;
             $this->db->where('student_id', $param2);
             $this->db->update('enroll', $book_no);
             // END UPDATE ACCOUNT CODE SECTION
+            $path = 'uploads/student_image/' . $student_id . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE            
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
 
-
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $param2 . '.jpg');
             $this->crud_model->clear_cache();
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
             redirect(base_url() . 'index.php?admin/student_information/'.$param3.'/'.$group_id, 'refresh');
         }
-
         if ($param1 == 'delete') {
             // STUDENT TABLE
             $this->db->where('student_id', $param2);
             $this->db->delete('student');
-
             // ENROLL TABLE
             $this->db->where('student_id', $param2);
             $this->db->delete('enroll');
@@ -781,7 +773,6 @@ class Admin extends CI_Controller
         // STUDENT TABLE
         $this->db->where('student_id', $student_id);
         $this->db->delete('student');
-
         // ENROLL TABLE
         $this->db->where('student_id', $student_id);
         $this->db->delete('enroll');
@@ -801,7 +792,6 @@ class Admin extends CI_Controller
         $session = $this->db->get_where('settings',
             ['type'=>'admission_session'])->row()->description;
         $year = substr($session, -2);
-
         // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
         $this->db->like('uniq_id', $year, 'after');
         $this->db->where('session', $session);
@@ -860,7 +850,12 @@ class Admin extends CI_Controller
         // INSERT IMAGE IF EXIST
         if(!empty($_FILES['userfile']['name'])){
             // $ext = explode('.', $_FILES['userfile']['name']);
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/student_image/' . $student_id.'.jpg');
+            $path = 'uploads/student_image/' . $student_id.'.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE            
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
         }
         $this->jsonMsgReturn(true,'Information Insert.');
 
@@ -885,35 +880,27 @@ class Admin extends CI_Controller
         $all_student = $this->db->get('enroll')->result_array();
 
         //pd($all_student);
-
         $count = 0;
         foreach($all_student as $each){
             // UPDATE ACCOUNT CODE (DELETE LETTER THIS SECTION)
-
             $cname = $this->db->get_where('class', array('class_id'=>$each['class_id']))->row()->name_numeric;
             $gname = $this->db->get_where('group', array('group_id'=>$each['group_id']))->row()->name;
             $sname = $this->db->get_where('section', array('section_id'=>$each['section_id']))->row()->name;
             $shname = $this->db->get_where('shift', array('shift_id'=>$each['shift_id']))->row()->name;
 
             if($cname == 9 || $cname == 10){
-
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$each['roll'].$gname[0]);
-
             }elseif($cname > 0 && $cname < 9){
-
                 $update_acc = strtolower($shname[0].$cname.$sname[0].$each['roll']);
                 //$arr[] = $update_acc;
-
             }else{
                 $class_name = $this->db->get_where('class', array('class_id'=>$each['class_id']))->row()->name;
                 $update_acc = strtolower($shname[0].$class_name[0].$each['roll']);
             }
 
             $data = array('acc_code' => $update_acc);
-
             $this->db->where('student_id', $each['student_id']);
             $this->db->update('student', $data);
-
             // END UPDATE ACCOUNT CODE SECTION
             $count++;
         }
@@ -1114,12 +1101,12 @@ class Admin extends CI_Controller
         $sections = $this->db->get_where('section' , array(
             'class_id' => $class_id
         ))->result_array();
-        if(!empty($sections)){
+        if(!empty($sections)) {
             echo '<option value="">Select Section</option>';
             foreach ($sections as $row) {
                 echo '<option value="' . $row['section_id'] . '">' . $row['name'] . '</option>';
             }
-        }else{
+        } else {
             echo null;
         }
     }
@@ -1531,7 +1518,14 @@ class Admin extends CI_Controller
             $data['password']    = sha1($this->input->post('password'));
             $this->db->insert('teacher', $data);
             $teacher_id = $this->db->insert_id();
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $teacher_id . '.jpg');
+
+            $path = 'uploads/teacher_image/' . $teacher_id . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             //$this->email_model->account_opening_email('teacher', $data['email']); //SEND EMAIL ACCOUNT OPENING EMAIL
             redirect(base_url() . 'index.php?admin/teacher/', 'refresh');
@@ -1546,7 +1540,14 @@ class Admin extends CI_Controller
 
             $this->db->where('teacher_id', $param2);
             $this->db->update('teacher', $data);
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $param2 . '.jpg');
+
+            $path = 'uploads/teacher_image/' . $param2 . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
             redirect(base_url() . 'index.php?admin/teacher/', 'refresh');
         } else if ($param1 == 'personal_profile') {
@@ -1577,7 +1578,7 @@ class Admin extends CI_Controller
 
     function ajax_create_teacher()
     {
-        $check = check_array_value($_POST);
+        $check = check_array_value($_POST,'userfile');
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -1590,7 +1591,15 @@ class Admin extends CI_Controller
             $data['password']    = sha1($this->input->post('password'));
             $this->db->insert('teacher', $data);
             $teacher_id = $this->db->insert_id();
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/teacher_image/' . $teacher_id . '.jpg');
+
+            if(!empty($_FILES['userfile']['name'])) {
+                $path = 'uploads/teacher_image/' . $teacher_id . '.jpg';
+                move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+                // IMAGE RESIZE
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
+            }            
             $this->jsonMsgReturn(true,'Teacher Added.');
         }
     }
@@ -1605,7 +1614,7 @@ class Admin extends CI_Controller
 
     function ajax_update_teacher()
     {
-        $check = check_array_value($_POST);
+        $check = check_array_value($_POST,'userfile');
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -1616,9 +1625,17 @@ class Admin extends CI_Controller
             $data['address']     = $this->input->post('address');
             $data['phone']       = $this->input->post('phone');
             $data['email']       = $this->input->post('email');
-
             $this->db->where('teacher_id', $teacher_id);
             $this->db->update('teacher', $data);
+
+            if(!empty($_FILES['userfile']['name'])) {
+                $path = 'uploads/teacher_image/' . $teacher_id . '.jpg';
+                move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+                // IMAGE RESIZE
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
+            }  
             $this->ajax_teacher_page();
         }
     }
@@ -3959,19 +3976,37 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
         if ($param1 == 'upload_logo') {
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/logo.png');
+            $path = 'uploads/logo.png';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE            
+            $config = resize_img(186,76,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
         if ($param1 == 'upload_favicon') {
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
+            $path = 'uploads/favicon.png';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(300,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
         if ($param1 == 'upload_school_info') {
             $data = implode('+',$_POST);
             $this->db->update('settings',['description'=>$data],['type'=>'school_information']);
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/school_logo.png');
+            $path = 'uploads/school_logo.png';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(300,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message', get_phrase('settings_updated'));
             redirect(base_url() . 'index.php?admin/system_settings/', 'refresh');
         }
@@ -3992,7 +4027,14 @@ class Admin extends CI_Controller
     {
         $data = implode('+',$_POST);
         $this->db->update('settings',['description'=>$data],['type'=>'school_information']);
-        move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/school_logo.png');
+
+        $path = 'uploads/school_logo.png';
+        move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+        // IMAGE RESIZE
+        $config = resize_img(300,300,$path);
+        $this->load->library('image_lib', $config);
+        $this->image_lib->resize();
+
         $htmlData = $this->load->view('backend/admin/ajax_elements/school_setting_info_holder' , '', true);
         $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
     }
@@ -4002,7 +4044,13 @@ class Admin extends CI_Controller
         if(empty($_FILES['userfile']['name'])){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/favicon.png');
+            $path = 'uploads/favicon.png';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(300,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->jsonMsgReturn(true,'Information Updated.');
         }
     }
@@ -4012,7 +4060,13 @@ class Admin extends CI_Controller
         if(empty($_FILES['userfile']['name'])){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/logo.png');
+            $path = 'uploads/logo.png';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(186,76,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->jsonMsgReturn(true,'Information Updated.');
         }
     }
@@ -4076,7 +4130,6 @@ class Admin extends CI_Controller
             $htmlData = $this->load->view('backend/admin/ajax_elements/genarel_setting_info_holder' , '', true);
             $this->jsonMsgReturn(true,'Information Updated.',$htmlData);
         }
-
     }
 
     function setting_menu()
@@ -4318,8 +4371,7 @@ class Admin extends CI_Controller
         $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
             ->row()
             ->description;
-
-
+            
         $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
         $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
         $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
@@ -4405,8 +4457,6 @@ class Admin extends CI_Controller
             $this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
         }
 
-        // pd($final);
-
         $this->flashmsg('Send SMS Successfully.');
         redirect(base('admin', 'send_result_sms'));
 
@@ -4425,8 +4475,7 @@ class Admin extends CI_Controller
 		if ($param1 == 'update_phrase') {
 			$language	=	$param2;
 			$total_phrase	=	$this->input->post('total_phrase');
-			for($i = 1 ; $i < $total_phrase ; $i++)
-			{
+			for($i = 1 ; $i < $total_phrase ; $i++) {
 				//$data[$language]	=	$this->input->post('phrase').$i;
 				$this->db->where('phrase_id' , $i);
 				$this->db->update('language' , array($language => $this->input->post('phrase'.$i)));
@@ -4511,7 +4560,14 @@ class Admin extends CI_Controller
 
             $this->db->where('admin_id', $this->session->userdata('admin_id'));
             $this->db->update('admin', $data);
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
+            
+            $path = 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message', get_phrase('account_updated'));
             redirect(base_url() . 'index.php?admin/manage_profile/', 'refresh');
         }
@@ -4523,7 +4579,14 @@ class Admin extends CI_Controller
 
             $this->db->insert('admin', $data);
             $admin_id = $this->db->insert_id;
-            move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
+
+            $path = 'uploads/admin_image/' . $admin_id . '.jpg';
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+            // IMAGE RESIZE
+            $config = resize_img(270,300,$path);
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+
             $this->session->set_flashdata('flash_message', get_phrase('new_account_added'));
             redirect(base_url() . 'index.php?admin/manage_profile/', 'refresh');
         }
@@ -4567,8 +4630,13 @@ class Admin extends CI_Controller
 
             $this->db->insert('admin', $data);
             $admin_id = $this->db->insert_id;
-            if(!empty($_FILES['userfile']['name'])){
-                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $admin_id . '.jpg');
+            if(!empty($_FILES['userfile']['name'])) {
+                $path = 'uploads/admin_image/' . $admin_id . '.jpg';
+                move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+                // IMAGE RESIZE
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
             }
             $this->jsonMsgReturn(true,'Success.');
         }
@@ -4586,8 +4654,13 @@ class Admin extends CI_Controller
             $this->db->where('admin_id', $this->session->userdata('admin_id'));
             $this->db->update('admin', $data);
 
-            if(!empty($_FILES['userfile']['name'])){
-                move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg');
+            if(!empty($_FILES['userfile']['name'])) {
+                $path = 'uploads/admin_image/' . $this->session->userdata('admin_id') . '.jpg';
+                move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+                // IMAGE RESIZE
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
             }
             $page_data['edit_data']  = $this->db->get_where('admin', array(
                 'admin_id' => $this->session->userdata('admin_id')

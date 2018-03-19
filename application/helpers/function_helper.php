@@ -212,6 +212,17 @@ function resize_file($w,$h)
     return $config;
 }
 
+function resize_img($width,$height,$path)
+{
+	$config['image_library']   = 'gd2';
+	$config['source_image']    = $path;
+	$config['create_thumb']    = FALSE;
+	$config['maintain_ratio']  = FALSE;
+	$config['width']           = $width;
+	$config['height']          = $height;
+	return $config;
+}
+
 function arrayUnique($ar1, $col1,$ar2, $col2)
 {
     $r = array();

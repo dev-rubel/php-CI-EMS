@@ -10,19 +10,19 @@ $base = base_url().'uploads/';
 <style media="all">
     @import url('https://fonts.googleapis.com/css?family=Oswald');
     html {
-    font-family: 'Oswald', sans-serif !important;
-    line-height: 23px;
+        font-family: 'Oswald', sans-serif !important;
+        line-height: 23px;
     }
 
     .each-card {
-        min-height: 280px !important;
+        min-height: 300px !important;
         padding-bottom: 25px;
         border-bottom: 2px dashed;
         padding-top: 25px;
     }
 
     .school-card {
-        min-height: 280px !important;
+        min-height: 300px !important;
     }
     
     .title h5 {
@@ -118,7 +118,7 @@ $base = base_url().'uploads/';
         position: relative;
         color: #2e3436;
         /* width: 400px; */
-        height: 230px;
+        height: 300px;
         font-size: 20px;
         border-bottom: 2px solid #d3d7df;
         /* margin-top: 5%; */
@@ -139,7 +139,7 @@ $base = base_url().'uploads/';
     .school-card-back .content {
         font-weight: bold;
         padding: 15px;
-        height: 160px;
+        height: 175px;
         padding-bottom: 0 !important;
     }
 

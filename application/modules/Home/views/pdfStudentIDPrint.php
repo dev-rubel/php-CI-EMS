@@ -15,12 +15,12 @@ $base = base_url().'uploads/';
     }
 
     .each-card {
-        min-height: 230px !important;
+        min-height: 250px !important;
         margin-bottom: 25px;
     }
 
     .school-card {
-        min-height: 230px !important;
+        min-height: 250px !important;
     }
     .title h5 {
         font-size: 16px !important;
@@ -93,7 +93,7 @@ $base = base_url().'uploads/';
         position: relative;
         color: #2e3436;
         /* width: 400px; */
-        height: 230px;
+        height: 250px;
         font-size: 20px;
         border-bottom: 2px solid #d3d7df;
         /* margin-top: 5%; */
@@ -114,7 +114,7 @@ $base = base_url().'uploads/';
     .school-card-back .content {
         font-weight: bold;
         padding: 15px;
-        height: 150px;
+        height: 160px;
         padding-bottom: 0 !important;
     }
 

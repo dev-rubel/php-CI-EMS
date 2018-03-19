@@ -15,7 +15,7 @@ $base = base_url().'uploads/';
     }
 
     .each-card {
-        min-height: 240px !important;
+        min-height: 250px !important;
         padding-bottom: 25px;
         border-bottom: 2px dashed;
         padding-top: 25px;
@@ -67,7 +67,7 @@ $base = base_url().'uploads/';
         position: relative;
         color: #2e3436;
         /* width: 400px; */
-        height: 180px;
+        height: 205px;
         font-size: 20px;
         border-bottom: 2px solid #d3d7df;
         /* margin-top: 5%; */

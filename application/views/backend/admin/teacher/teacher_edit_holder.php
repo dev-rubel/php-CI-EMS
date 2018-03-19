@@ -73,6 +73,27 @@ foreach ( $edit_data as $row):
 							<input type="text" class="form-control" name="email" value="<?php echo $row['email'];?>">
 						</div>
 					</div>
+
+					<div class="form-group">
+						<label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('photo');?></label>
+                        
+						<div class="col-sm-8">
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="fileinput-new thumbnail" style="width: 100px; height: 100px;" data-trigger="fileinput">
+									<img src="<?php echo $this->crud_model->get_image_url('teacher',$row['teacher_id']);?>" alt="...">
+								</div>
+								<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px"></div>
+								<div>
+									<span class="btn btn-white btn-file">
+										<span class="fileinput-new">Select image</span>
+										<span class="fileinput-exists">Change</span>
+										<input type="file" name="userfile" accept="image/*">
+									</span>
+									<a href="#" class="btn btn-orange fileinput-exists" data-dismiss="fileinput">Remove</a>
+								</div>
+							</div>
+						</div>
+					</div>
 		
                     
                     <div class="form-group">

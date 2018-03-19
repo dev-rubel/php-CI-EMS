@@ -16,20 +16,34 @@ function accSum($grades='')
 	@import url('https://fonts.googleapis.com/css?family=Noto+Sans');
 	* {
 		font-family: 'Noto Sans', sans-serif;
-		font-size: 13px;
+		font-size: 17px;
+		color: #000 !important;
 	}
+	table {
+		border-color: black !important;
+	}
+	.table-bordered td, .table-bordered th {
+		border: 1px solid #000 !important;
+		padding: 7px 5px !important;
+	}
+	
 	.marksheet-border {
-		border: 2px dashed #8c8b8b;
+		border: 4px dashed #000;
 	}
+	
 	.header-title {
 		text-align: center;
+	}
+	h2, h4 {
+		font-size: 23px;
+		font-weight: 600;
 	}
 	.std-info {
 		font-weight: bold;
 	}
 	.each-row {
-		height: 25px;
-		width: 360px;
+		/* height: 25px; */
+		width: 490px;
 	}
 	.each-row p {
 		display: inline;
@@ -37,14 +51,17 @@ function accSum($grades='')
 		padding: 0px;
 	}
 	.row.mark-table {
-		height: 550px;
+		height: 600px;
+	}
+	th.comment-head {
+		opacity: 0.1;
 	}
 	p.std-title {
 		float: left;
-		width: 140px;
+		width: 150px;
 	}
 	p.std-info {
-		width: 200px;
+		width: 330px;
 		float: right;
 	}
 	th {
@@ -111,21 +128,17 @@ function accSum($grades='')
 	<br><br>
 	<div class="row">
 		<!-- HEADER TITLE -->
-		<div class="col-sm-12 header-title">
-			<h2 class="text-uppercase"><?php echo $schoolName; ?></h2>
-			<h4 class="text-uppercase"><?php echo $schoolAddress; ?></h4>
-		</div>
-		<!-- HEADER TITLE -->
-		<div class="col-sm-4">
-			<img src="<?php echo base_url();?>uploads/school_logo.png" alt="" width="100px" height="100px">
-		</div>
-		<div class="col-sm-4 text-center">
-			<img src="<?php echo base_url();?>uploads/school_logo.png" alt="" width="100px" height="100px">
+		<div class="col-sm-3 text-center mt-5">
+			<img src="<?php echo base_url();?>uploads/school_logo.png" alt="" width="170px" height="170px">
 			<br><br>
 			<h4>PROGRESS REPORT</h4>
 		</div>
+		<div class="col-sm-6 header-title">
+			<h2 class="text-uppercase"><?php echo $schoolName; ?></h2>
+			<h4 class="text-uppercase"><?php echo $schoolAddress; ?></h4>
+		</div>		
 		<!-- HEADER GREADING LIST -->
-		<div class="offset-sm-1 col-sm-3 mark-range-table">
+		<div class="col-sm-3 mark-range-table  mt-5">
 			<table class="table table-bordered mark-range-table">
 				<thead>
 					<tr>
@@ -152,7 +165,7 @@ function accSum($grades='')
 	<!-- STUDENT INFORMATION -->
 	<div class="row student-information">		
 		<!-- STUDENT INFORMATION LEFT -->
-		<div class="offset-sm-1 col-sm-4">			
+		<div class="offset-sm-1 col-sm-6">			
 			<div class="each-row">
 				<p class="std-title">Student's Name</p>
 				<p>:</p>
@@ -186,7 +199,7 @@ function accSum($grades='')
 			
 		</div>
 		<!-- STUDENT INFORMATION RIGHT -->
-		<div class="offset-sm-2 col-sm-4">
+		<div class="offset-sm-1 col-sm-2">
 			<div class="each-row">
 				<p class="std-title">Exam</p>
 				<p>:</p>
@@ -375,7 +388,7 @@ function accSum($grades='')
 		<div class="col-sm-12">
 			<table class="table table-bordered">
 				<tr>
-					<th height="130px">Comments</th>
+					<th height="130px" class="comment-head">Comments</th>
 				</tr>
 			</table>
 		</div>
