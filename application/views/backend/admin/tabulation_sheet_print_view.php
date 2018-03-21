@@ -1,8 +1,15 @@
 <?php 
-	$class_name		 	= 	$this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
-	$exam_name  		= 	$this->db->get_where('exam' , array('exam_id' => $exam_id))->row()->name;
-	$system_name        =	$this->db->get_where('settings' , array('type'=>'system_name'))->row()->description;
-	$running_year       =	$this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+	!empty($group_id)?$group_id=$group_id:$group_id='';
+	if($group_id !== ''):
+		$group_name       = $this->db->get_where('group' , array('group_id' => $group_id))->row()->name;
+	endif;
+		$class_name		= $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
+		$section_name       = $this->db->get_where('section' , array('section_id' => $section_id))->row()->name;
+		$shift_name  		= $this->db->get_where('shift' , array('shift_id' => $shift_id))->row()->name;
+		$running_year       =	$this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+
+	$schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
+	list($schoolName,$schoolAddress,$eiin,$email,$phone) = explode('+', $schoolInfo);
 ?>
 <div id="print">
 	<script src="assets/js/jquery-1.11.0.min.js"></script>
@@ -13,12 +20,13 @@
 	</style>
 
 	<center>
-		<img src="uploads/logo.png" style="max-height : 60px;"><br>
-		<h3 style="font-weight: 100;"><?php echo $system_name;?></h3>
-		<?php echo get_phrase('tabulation_sheet');?><br>
-		<?php echo get_phrase('class') . ' ' . $class_name;?><br>
-		<?php echo $exam_name;?>
-
+		<!-- <img src="uploads/school_logo.png" style="max-height : 60px;"><br> -->
+		<h3><?php echo $schoolName;?> | <?php echo get_phrase('tabulation_sheet');?></h3>
+		<?php echo '<b>Exam: </b>'.$this->db->get_where('exam',['exam_id'=>$exam_id])->row()->name;?> |
+		<?php echo '<b>'.get_phrase('class') . ':</b> ' . $class_name;?> |
+        <?php echo '<b>'.get_phrase('section').':</b> '.$section_name;?> |
+        <?php echo '<b>'.get_phrase('shift').':</b> '.$shift_name;?> 
+		<?php echo !empty($group_name)?'| <b>Group:</b> '.ucwords($group_name).'<br>':'';?>
 		
 	</center>
 
@@ -42,51 +50,34 @@
 		<tbody>
 		<?php
 			
-			$students = $this->db->get_where('enroll' , array('class_id' => $class_id , 'year' => $running_year))->result_array();
-				foreach($students as $row):
+			$student = $this->db->get_where('enroll' , array('class_id' => $class_id , 'year' => $running_year))->result_array();
+			foreach($student as $key=>$row):
 		?>
 			<tr>
-				<td style="text-align: center;">
+				<td class="text-center">
 					<?php echo $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;?>
 				</td>
-			<?php
-				$total_marks = 0;
-				$total_grade_point = 0;  
-				foreach($subjects as $row2):
-			?>
-				<td style="text-align: center;">
-					<?php 
-						$obtained_mark_query = 	$this->db->get_where('mark' , array(
-												'class_id' => $class_id , 
-													'exam_id' => $exam_id , 
-														'subject_id' => $row2['subject_id'] , 
-															'student_id' => $row['student_id'],
-																'year' => $running_year
-											));
-						if ( $obtained_mark_query->num_rows() > 0) {
-							$obtained_marks = $obtained_mark_query->row()->mark_obtained;
-							echo $obtained_marks;
-							if ($obtained_marks >= 0 && $obtained_marks != '') {
-								$grade = $this->crud_model->get_grade($obtained_marks);
-								$total_grade_point += $grade['grade_point'];
-							}
-							$total_marks += $obtained_marks;
-						}
-						
 
-					?>
-				</td>
-			<?php endforeach;?>
-			<td style="text-align: center;"><?php echo $total_marks;?></td>
-			<td style="text-align: center;">
 				<?php 
-					$this->db->where('class_id' , $class_id);
-					$this->db->where('year' , $running_year);
-					$this->db->from('subject');
-					$number_of_subjects = $this->db->count_all_results();
-					echo ($total_grade_point / $number_of_subjects);
+					$subjects = $this->db->get_where('subject' , array('class_id' => $class_id , 'year' => $running_year))->result_array();
+					foreach($subjects as $key2=>$row2):
+						$marks = $students['mark_info'][$key][$row['student_id']];
+							if($marks):
+								$marks = $students['mark_info'][$key][$row['student_id']]['obtain_mark'][$row2['subject_id']];
+									$marks = array_sum(explode('|',$marks));
+										if($marks > 33):
 				?>
-			</td>
+					<td class="text-center"><?php echo $marks; ?></td>										
+				<?php else: ?>
+					<td class="text-center" style="color: red;"><?php echo $marks; ?></td>
+				<?php endif; else: ?>					
+					<td class="text-center">Fail</td>
+				<?php endif; endforeach;?>
+
+				<?php $color = $students['mark_info'][$key][$row['student_id']]['failCount'] > 0 ? 'color: red;': '' ?>
+				<td class="text-center" style="<?php echo $color == true? $color:'';?>"><?php echo $students['mark_info'][$key][$row['student_id']]['total_grade']; ?></td>
+				<td class="text-center" style="<?php echo $color == true? $color:'';?>"><?php echo $students['mark_info'][$key][$row['student_id']]['total_point_with_4th']; ?></td>
+			
 			</tr>
 
 		<?php endforeach;?>

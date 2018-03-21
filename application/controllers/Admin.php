@@ -594,8 +594,7 @@ class Admin extends CI_Controller
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(13,1);
-        // pd($data);
+        $data['students'] = $this->generate_marksheet_class_wise(13,1);       
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 
@@ -3061,6 +3060,7 @@ class Admin extends CI_Controller
         }
         $page_data['exam_id']    = $exam_id;
         $page_data['class_id']   = $class_id;
+        $page_data['students'] = $this->generate_marksheet_class_wise($class_id, $exam_id);
 
         $page_data['page_info'] = 'Exam marks';
 
@@ -3070,11 +3070,15 @@ class Admin extends CI_Controller
 
     }
 
-    function tabulation_sheet_print_view($class_id , $exam_id) {
+    function tabulation_sheet_print_view($class_id = '' , $exam_id = '') {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        $page_data['class_id'] = $class_id;
-        $page_data['exam_id']  = $exam_id;
+        $page_data['class_id'] = $this->input->post('class_id');
+        $page_data['exam_id']  = $this->input->post('exam_id');
+        $page_data['section_id']  = $this->input->post('section_id');
+        $page_data['shift_id']  = $this->input->post('shift_id');
+        $page_data['group_id']  = $this->input->post('group_id');
+        $page_data['students'] = $this->generate_marksheet_class_wise($page_data['class_id'], $page_data['exam_id']);
         $this->load->view('backend/admin/tabulation_sheet_print_view' , $page_data);
     }
 
