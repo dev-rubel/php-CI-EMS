@@ -784,7 +784,7 @@ class Admin extends CI_Controller
     }
         // CREATE STUDENT ACCOUNT UNIQUE CODE --- CURRENTLY USEING
     function ajax_student_create()
-    {
+    {       
         $running_year = $this->running_year;
         $nameNumaric = $this->db->get_where('class', 
             ['class_id'=>$_POST['class_id']])->row()->name_numeric;
@@ -857,7 +857,7 @@ class Admin extends CI_Controller
             $this->image_lib->resize();
         }
         $this->jsonMsgReturn(true,'Information Insert.');
-
+        
     }
 
     function student_menu()
@@ -1577,7 +1577,7 @@ class Admin extends CI_Controller
 
     function ajax_create_teacher()
     {
-        $check = check_array_value($_POST,'userfile');
+        $check = check_array_value($_POST,['userfile']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -1613,7 +1613,7 @@ class Admin extends CI_Controller
 
     function ajax_update_teacher()
     {
-        $check = check_array_value($_POST,'userfile');
+        $check = check_array_value($_POST,['userfile']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -2411,7 +2411,7 @@ class Admin extends CI_Controller
 
     function ajax_transaction_search_date_wise()
     {
-        $check = check_array_value($_POST, 'acc_id');
+        $check = check_array_value($_POST, ['acc_id']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -2500,7 +2500,7 @@ class Admin extends CI_Controller
 
     function ajax_upload_academic_syllabus()
     {
-        $check = check_array_value($_POST, 'file_name');
+        $check = check_array_value($_POST, ['file_name']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -4438,32 +4438,67 @@ class Admin extends CI_Controller
             redirect(base('admin', 'send_result_sms'));
         }
 
+
         $sender = urlencode($this->systemTitleName);
         $sms_description = urlencode($_POST['sms_description']);
         $file = $_FILES["xls_file"]["tmp_name"];
+        $file_name = $_FILES["xls_file"]["name"];
+        $class_id = $_POST["class"];
 
-        // ========= Load excel library & fetch data
-        $this->load->library('excel_reader');
-        $this->excel_reader->read($file);
-        $worksheet = $this->excel_reader->sheets[0];
-        $rows = $worksheet['cells'];
-
-        foreach($rows as $k=>$each) {
-            if(empty($each[1]) || strlen($each[1]) < 11){
-                $this->flashmsg('Please input valid phone number.','error');
-                redirect(base('admin', 'send_result_sms'));
+        if(empty($file_name) && empty($class_id)) {
+            $this->flashmsg('No Student Found.','error');
+            redirect(base('admin', 'send_result_sms'));
+        }
+        
+        if(!empty($class_id)) {
+            $enroll = $this->db->get_where('enroll',['class_id'=>$class_id])->result_array();
+            if(!empty($enroll)) {
+                foreach($enroll as $k=>$each) {
+                    $mobile = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile;
+                    if(!empty($mobile)) {
+                        //$this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+                        $status['class'][] = $mobile;
+                    }                    
+                }
             } else {
-                $final[] = $each[1];
+                $this->flashmsg('No Student Found.','error');
+                redirect(base('admin', 'send_result_sms'));
             }
         }
 
-        foreach ($final as $key => $mobile) {
-            $this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+        if(!empty($file_name)) {
+            $ext = explode('.',$_FILES["xls_file"]["name"]);
+            if($ext[1] == 'xls') {
+
+                // ========= Load excel library & fetch data
+                $this->load->library('excel_reader');
+                $this->excel_reader->read($file);
+                $worksheet = $this->excel_reader->sheets[0];
+                $rows = $worksheet['cells'];
+
+                foreach($rows as $k=>$each) {
+                    if(empty($each[1]) || strlen($each[1]) < 11){
+                        $this->flashmsg('Please input valid phone number.','error');
+                        redirect(base('admin', 'send_result_sms'));
+                    } else {
+                        $final[] = $each[1];
+                    }
+                }
+
+                foreach ($final as $key => $mobile) {
+                    //$this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+                    $status['file'][] = $mobile;
+                }
+
+                // $this->flashmsg('Send SMS Successfully.');
+                // redirect(base('admin', 'send_result_sms'));
+            } else {
+                $this->flashmsg('Invalid file format.','error');
+                redirect(base('admin', 'send_result_sms'));
+            }
         }
 
-        $this->flashmsg('Send SMS Successfully.');
-        redirect(base('admin', 'send_result_sms'));
-
+        pd($status);
     }
 
 
@@ -4623,7 +4658,7 @@ class Admin extends CI_Controller
 
     function ajax_add_account()
     {
-        $check = check_array_value($_POST, 'userfile');
+        $check = check_array_value($_POST, ['userfile']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -4648,7 +4683,7 @@ class Admin extends CI_Controller
 
     function ajax_update_profile()
     {
-        $check = check_array_value($_POST, 'userfile');
+        $check = check_array_value($_POST, ['userfile']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
@@ -4890,6 +4925,18 @@ class Admin extends CI_Controller
         $page_data['page_title']    = get_phrase('Send Result');
         $page_data['page_name']     = 'send_result_sms';
         $this->load->view('backend/index', $page_data);
+    }
+
+    function download_excel_result_format()
+    {
+        $this->load->helper('download');
+        force_download('assets/otherFiles/results.xls', NULL);
+    }
+
+    function download_excel_notice_format()
+    {
+        $this->load->helper('download');
+        force_download('assets/otherFiles/noticeFormat.xls', NULL);
     }
 
     function send_result_csv()

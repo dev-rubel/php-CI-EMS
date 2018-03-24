@@ -288,10 +288,12 @@ function return_month($data)
     return $string;
 }
 
-function check_array_value($data, $param='')
+function check_array_value($data, $param=[])
 {
     if(!empty($param)){
-        unset($data[$param]);
+		foreach($param as $k=>$each) {
+			unset($data[$each]);	
+		}        
     }
     $count = 0;
     foreach($data as $k=>$each){

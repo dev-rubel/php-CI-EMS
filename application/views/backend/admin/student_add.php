@@ -84,7 +84,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="faincome">
+                            <input type="text" class="form-control" name="faincome" data-validation="number">
                         </div>
                     </div>
 
@@ -114,8 +114,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="lguaridan" data-validate="required" data-message-required="<?php echo get_phrase('value_required'); ?>"
-                                value="">
+                            <input type="text" class="form-control" name="lguaridan" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
                         </div>
                     </div>
 
@@ -125,8 +124,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="relaguardian" data-validate="required" data-message-required="<?php echo get_phrase('value_required'); ?>"
-                                value="">
+                            <input type="text" class="form-control" name="relaguardian" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
                         </div>
                     </div>
 
@@ -161,7 +159,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="preschoolname" data-validation="required">
+                            <input type="text" class="form-control" name="preschoolname" />
                         </div>
                     </div>
 
@@ -171,7 +169,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="preschooladd" data-validation="required" />
+                            <input type="text" class="form-control" name="preschooladd"/>
                         </div>
                     </div>
 
@@ -184,7 +182,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control datepicker" name="birthday" data-start-view="2" required="required">
+                            <input type="text" class="form-control datepicker" name="birthday" data-start-view="2"  data-validation="required" />
                         </div>
                     </div>
 
@@ -214,17 +212,18 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="email">
+                            <input type="text" class="form-control" name="email" data-validation="email">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="field-1" class="col-sm-3 control-label">
-                            <?php echo get_phrase('guardian_mobile_no'); ?> <span class="mendatory">*</span>
+                            <?php echo get_phrase('guardian_mobile_no'); ?> 
+                            <span class="mendatory">*</span>
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="mobile">
+                            <input type="text" class="form-control" name="mobile" data-validation="required number length" data-validation-length="min11" />
                         </div>
                     </div>
 
@@ -259,7 +258,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="siblingname">
+                            <input type="text" class="form-control" name="siblingname" data-validation="number" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
                         </div>
                     </div>
 
@@ -287,8 +286,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <select name="class_id" class="form-control" data-validate="required" id="class_id" data-message-required="<?php echo get_phrase('value_required'); ?>"
-                                onchange="return get_class_sections(this.value)">
+                            <select name="class_id" class="form-control" id="class_id" onchange="return get_class_sections(this.value)" data-validation="required">
                                 <option value="">
                                     <?php echo get_phrase('select'); ?>
                                 </option>
@@ -325,7 +323,7 @@ span.mendatory {
                             <?php echo get_phrase('section'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
-                            <select name="section_id" class="form-control" id="section_selector_holder">
+                            <select name="section_id" class="form-control" id="section_selector_holder" data-validation="required">
                                 <option value="">
                                     <?php echo get_phrase('select_section'); ?>
                                 </option>
@@ -339,7 +337,7 @@ span.mendatory {
                             <?php echo get_phrase('shift'); ?> <span class="mendatory">*</span>
                         </label>
                         <div class="col-sm-8">
-                            <select name="shift_id" class="form-control" id="shift_selector_holder">
+                            <select name="shift_id" class="form-control" id="shift_selector_holder" data-validation="required">
                                 <option value="">
                                     <?php echo get_phrase('select_shift'); ?>
                                 </option>
@@ -361,7 +359,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-6">
-                            <select name="roll" class="form-control" id="roll_selector_holder">
+                            <select name="roll" class="form-control" id="roll_selector_holder" data-validation="required">
                             </select>
                         </div>
                         <button type="button" class="btn btn-info" onclick="get_std_roll()">Find Roll</button>
@@ -392,7 +390,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="book_no">
+                            <input type="number" class="form-control" name="book_no" data-validation="number" />
                         </div>
                     </div>
 
@@ -411,10 +409,9 @@ span.mendatory {
                                     <span class="btn btn-white btn-file">
                                         <span class="fileinput-new">Select image</span>
                                         <span class="fileinput-exists">Change</span>
-                                        <input type="file" name="userfile" id="stdImage" accept="image/*" data-validation="dimension mime size" data-validation-allowing="jpg, png, gif"
-                                            data-validation-dimension="max300x300" data-validation-max-size="100kb">
+                                        <input type="file" name="userfile" id="stdImage">
                                     </span>
-                                    <a href="#" class="btn btn-orange fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                    <a href="#" class="btn btn-orange fileinput-exists">Remove</a>
                                 </div>
                             </div>
                         </div>
@@ -439,13 +436,7 @@ span.mendatory {
 
 
 </div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
-<script>
-    // $.validate({
-    //     modules: 'security, file',
-    //     showErrorDialogs: false
-    // });
-</script>
+
 <script type="text/javascript">
 
     $("#focusField").focus();

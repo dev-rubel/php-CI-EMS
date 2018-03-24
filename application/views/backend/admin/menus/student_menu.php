@@ -24,8 +24,14 @@
 </style>
 
 <?php 
-$links = ['student_add','student_bulk_add','total_student_page','student_promotion','update_student_image'];
-$title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Update Student Image'];
+if($_SESSION['name']=='NihalIT'):
+    $links = ['student_add','student_bulk_add','total_student_page','student_promotion','update_student_image'];
+    $title = ['Admit New Student','Admit Bulk Student','Total Student','Student Promotion','Update Student Image'];
+else:
+    $links = ['student_add','total_student_page','student_promotion','update_student_image'];
+    $title = ['Admit New Student','Total Student','Student Promotion','Update Student Image'];
+endif;
+
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 
@@ -170,13 +176,18 @@ function changePage(page)
             
             $('#studentNavManu').show();
             $('#studentMainManu').hide();
+            // Dynamic Content Recive
             $('#ajaxPageContainer').html(response);
-            
+            // Form Validation Initialize
+            $.validate({
+                modules: 'security, toggleDisabled'
+            });
+            // Bangla Initialize
             $(".bangla").bnKb({
                 'switchkey': 'y',
                 'driver': unijoy
             });
-            
+            // Datepicker Initialize
             $('.datepicker').datepicker({
             	format: 'dd-mm-yyyy',
             });

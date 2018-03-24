@@ -1021,7 +1021,7 @@ class Homemanage extends CI_Controller
 
     function ajax_add_notice()
     {
-        $check = check_array_value($_POST,'file');
+        $check = check_array_value($_POST,['file']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {    
@@ -1064,7 +1064,7 @@ class Homemanage extends CI_Controller
 
     function ajax_update_notice()
     {
-        $check = check_array_value($_POST,'file');
+        $check = check_array_value($_POST,['file']);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {

@@ -74,7 +74,7 @@
             <td></td>
             <td><?php echo $totalAmount; ?></td>
             <td><?php echo $totalAmountPaid;?></td>
-            <td><?php echo $dueTotal; ?></td>
+            <td><b><?php echo $totalAmount - $totalAmountPaid; ?></b></td>
         </tr>
     </tbody>
   </table>

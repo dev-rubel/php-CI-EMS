@@ -102,6 +102,9 @@ function confDelete(con,func,id,id2){
 }
 </script>
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+
+
 <!-- SHOW SUCCESS TOASTR NOTIFICATION -->
 <?php if ($this->session->flashdata('flash_message') != ""):?>
 

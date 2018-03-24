@@ -25,8 +25,14 @@
 <br>
 <br>
 <?php 
-$links = ['exam','grade','marks_manage','exam_marks_sms','tabulation_sheet','question_paper'];
-$title = ['Exam List','Exam Grades','Manage Marks','Send Mark By SMS','Tabulation Sheet','Question Paper'];
+
+if($_SESSION['name']=='NihalIT'):
+    $links = ['exam','grade','marks_manage','exam_marks_sms','tabulation_sheet','question_paper'];
+    $title = ['Exam List','Exam Grades','Manage Marks','Send Mark By SMS','Tabulation Sheet','Question Paper'];
+else:
+    $links = ['exam','grade','question_paper'];
+    $title = ['Exam List','Exam Grades','Question Paper'];
+endif;
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="examNavManu">

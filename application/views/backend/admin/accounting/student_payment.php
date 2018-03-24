@@ -69,43 +69,7 @@
                                         <input type="text" class="form-control" id="acc_student_info" disabled="disabled" />
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">
-                                        <?php echo get_phrase('months');?>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <div class="col-sm-3">
-                                            <input type="checkbox" name="months[]" value="january" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;January</span>
-                                            <input type="checkbox" name="months[]" value="february" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;February</span>
-                                            <input type="checkbox" name="months[]" value="march" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;March</span>
-                                            <input type="checkbox" name="months[]" value="april" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;April</span>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="checkbox" name="months[]" value="may" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;May</span>
-                                            <input type="checkbox" name="months[]" value="june" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;June</span>
-                                            <input type="checkbox" name="months[]" value="july" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;July</span>
-                                            <input type="checkbox" name="months[]" value="august" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;August</span>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="checkbox" name="months[]" value="september" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;September</span>
-                                            <input type="checkbox" name="months[]" value="october" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;October</span>
-                                            <input type="checkbox" name="months[]" value="november" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;November</span>
-                                            <input type="checkbox" name="months[]" value="december" class="custom-control-input">
-                                            <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div id="accMonthCheckbox"></div>
 
 
                                 <div class="form-group">
@@ -332,6 +296,9 @@
             });
             $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccHistory/"+value, function( data ){
                 $( "#studentAccountHistory" ).html( data );  
+            });
+            $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccMonthCheckbox/"+value, function( data ){
+                $( "#accMonthCheckbox" ).html( data );  
             });
 
         });

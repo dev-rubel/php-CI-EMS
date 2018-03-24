@@ -25,8 +25,13 @@
 <br>
 <br>
 <?php 
-$links = ['system_settings','sms_settings','manage_language'];
-$title = ['General Settings','Sms Settings','Language Manage'];
+if($_SESSION['name']=='NihalIT'):
+    $links = ['system_settings','sms_settings','manage_language'];
+    $title = ['General Settings','Sms Settings','Language Manage'];
+else:
+    $links = ['system_settings'];
+    $title = ['General Settings'];
+endif;
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="systemNavManu">

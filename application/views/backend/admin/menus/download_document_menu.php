@@ -26,8 +26,13 @@
 <br>
 <br>
 <?php 
-$links = ['download_student_idcard', 'download_admit_card','download_seat_plan','download_excel'];
-$title = ['Download ID Card','Download Admit Card','Download Seat Plan','Download Excel'];
+if($_SESSION['name']=='NihalIT'):
+    $links = ['download_student_idcard', 'download_admit_card','download_seat_plan','download_excel'];
+    $title = ['Download ID Card','Download Admit Card','Download Seat Plan','Download Excel'];
+else:
+    $links = ['download_student_idcard', 'download_admit_card'];
+    $title = ['Download ID Card','Download Admit Card'];
+endif;
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="documentNavManu">

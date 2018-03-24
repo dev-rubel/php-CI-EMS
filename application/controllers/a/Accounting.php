@@ -676,13 +676,36 @@ class Accounting extends CI_Controller
     function getStudentAccHistory()
     {
         $year = $this->db->get_where('settings' , array('type' =>'running_year'))->row()->description;
-        $student_id = $result = $this->uri->segment(4);
-        $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_id,'year'=>$year])->result_array();
+        $student_code = $this->uri->segment(4);
+        $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_code,'year'=>$year])->result_array();
         if(empty($page_data['student_payment'])){
             $page_data['student_payment'] = [];
         }
         
         $this->load->view('backend/admin/accounting/student_account_history', $page_data);
+    }
+
+    function getStudentAccMonthCheckbox()
+    {
+        $year = $this->db->get_where('settings' , array('type' =>'running_year'))->row()->description;
+        $student_code = $this->uri->segment(4);
+        $page_data['student_name'] = $this->db->get_where('student',['student_code'=>$student_code])->row()->student_id;
+        if(!empty($page_data['student_name'])) {
+            $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_code,'year'=>$year])->result_array();
+            if(empty($page_data['student_payment'])){
+                $page_data['student_payment'] = [];
+            } else {
+                foreach($page_data['student_payment'] as $k=>$each) {
+                    $months = explode(',',$each['months']);
+                    foreach($months as $k2=>$each2) {
+                        if(!empty($each2)) {
+                            $page_data['months'][] = $each2;
+                        }                        
+                    }                    
+                }
+            }        
+            $this->load->view('backend/admin/accounting/account_months_checkbox', $page_data);
+        }        
     }
 
     function getAccStdInfo($value)  //ajax response

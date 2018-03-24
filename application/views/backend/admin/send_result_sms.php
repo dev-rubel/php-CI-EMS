@@ -66,7 +66,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label"><?php echo get_phrase('download_demo_file'); ?></label>
 								<div class="col-sm-5">
-									<a href="<?php echo base_url(); ?>assets/otherFiles/results.xls" class="btn btn-default btn-sm">Download</a>
+									<a href="<?php echo base('admin','download_excel_result_format');?>" class="btn btn-default btn-sm">Download</a>
 									<p class="form-text text-muted">
 										Please do not change file format.
 									</p>
@@ -107,21 +107,34 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label"><?php echo get_phrase('download_demo_file'); ?></label>
 								<div class="col-sm-5">
-									<a href="<?php echo base_url(); ?>assets/otherFiles/noticeFormat.xls" class="btn btn-default btn-sm">Download</a>
+									<a href="<?php echo base('admin','download_excel_notice_format'); ?>" class="btn btn-default btn-sm">Download</a>
 									<p class="form-text text-muted">
 										Please do not change file format.
 									</p>
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label  class="col-sm-3 control-label"><?php echo get_phrase('select_class'); ?></label>
+								<div class="col-sm-5">
+									<select name="class" id="" class="form-control">
+										<option value="">Select Class</option>
+										<option value="all">All</option>
+										<?php $class = $this->db->get('class')->result_array(); 
+											foreach($class as $k=>$each):
+										?>
+												<option value="<?php echo $each['class_id']?>"><?php echo $each['name']; ?></option>
+										<?php endforeach; ?>
+									</select>
+								</div>
+							</div>
 
-
-                        <div class="form-group">
-                            <label  class="col-sm-3 control-label"><?php echo get_phrase('SMS Description'); ?></label>
-                            <div class="col-sm-5">
-                                <textarea name="sms_description" id="sms_description" class="form-control" rows="15"></textarea>
-                            </div>
-                        </div>
+							<div class="form-group">
+								<label  class="col-sm-3 control-label"><?php echo get_phrase('SMS Description'); ?></label>
+								<div class="col-sm-5">
+									<textarea name="sms_description" id="sms_description" class="form-control" rows="15"></textarea>
+								</div>
+							</div>
 
 							<div class="form-group">
 								<label  class="col-sm-3 control-label"><?php echo get_phrase('input_.xls_file'); ?></label>
