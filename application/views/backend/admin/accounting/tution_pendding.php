@@ -143,7 +143,7 @@
             </div>
             <div class="tab-pane" id="sms_setting">
 
-                <form id="updateTutionSmsSetting" action="<?php echo base_url() .'index.php?admin/ajax_tution_fee_sms_setting'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
+                <form id="updateTutionSmsSetting" action="<?php echo base_url() .'index.php?admin/ajax_pendding_tution_fee_sms_setting'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
 
                 <div class="col-md-offset-2 col-md-8">
                         <div class="panel panel-default panel-shadow" data-collapsed="0">
@@ -159,7 +159,7 @@
                                         <?php echo get_phrase('pendding_fee_sms_status');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="checkbox" name="pendding_fee_sms_status" id="toggleButton" data-toggle="toggle" <?php echo $pendding_fee_setting[0]['description']==1?'checked':''?>>
+                                        <input type="checkbox" name="pendding_fee_sms_status" id="toggleButton" data-toggle="toggle" <?php $status = $this->db->get_where('settings',['type'=>'pendding_fee_sms_status'])->row()->description;  echo $status =='on'?'checked':''?>>
                                     </div>
                                 </div>
 
@@ -168,7 +168,7 @@
                                         <?php echo get_phrase('pendding_fee_sms_description');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control" name="pendding_fee_sms_details" id="" cols="30" rows="10"><?php echo $pendding_fee_setting[1]['description']; ?></textarea>
+                                        <textarea class="form-control" name="pendding_fee_sms_details" id="" cols="30" rows="10" required="required"><?php echo $this->db->get_where('settings',['type'=>'pendding_fee_sms_details'])->row()->description; ?></textarea>
                                     </div>
                                 </div>
 
@@ -206,6 +206,24 @@
             if(jData.type) {
                 toastr.success(jData.msg);
                 $('#studentPenddingFeeHistory').html(jData.html);
+            } else {
+                toastr.error(jData.msg);                
+            }   
+            $('body,html').animate({scrollTop:0},800);
+            $('#loading2').fadeOut('slow');
+            $('#overlayDiv').fadeOut('slow');
+        }
+    });
+
+    $('#updateTutionSmsSetting').ajaxForm({
+        beforeSend: function() {
+                $('#loading2').show();
+                $('#overlayDiv').show();
+        },
+        success: function (data){
+            var jData = JSON.parse(data);
+            if(jData.type) {
+                toastr.success(jData.msg);
             } else {
                 toastr.error(jData.msg);                
             }   

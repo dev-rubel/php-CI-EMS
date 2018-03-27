@@ -2394,6 +2394,24 @@ class Admin extends CI_Controller
         $this->jsonMsgReturn(true,'Information Updated.');
     }
 
+    function ajax_pendding_tution_fee_sms_setting()
+    {
+        $data = $this->input->post();
+        /* IF ROW NOT EXITS */
+        $exist = $this->db->get_where('settings', ['type'=>'pendding_fee_sms_status'])->num_rows();
+        if ($exist < 1) {
+            $this->db->insert('settings',['type'=>'pendding_fee_sms_status']);
+            $this->db->insert('settings',['type'=>'pendding_fee_sms_details']);           
+        }
+
+        $this->db->where('type','pendding_fee_sms_status');
+        $this->db->update('settings',['description'=>$data['pendding_fee_sms_status']]);
+        
+        $this->db->where('type','pendding_fee_sms_details');
+        $this->db->update('settings',['description'=>$data['pendding_fee_sms_details']]);
+        $this->jsonMsgReturn(true,'SMS settings updated.');
+    }
+
     function ajax_add_bank_transaction()
     {
         $check = check_array_value($_POST);
@@ -3355,8 +3373,8 @@ class Admin extends CI_Controller
 
     function get_section($class_id)
     {
-          $page_data['class_id'] = $class_id;
-          $this->load->view('backend/admin/manage_attendance_section_holder' , $page_data);
+        $page_data['class_id'] = $class_id;
+        $this->load->view('backend/admin/manage_attendance_section_holder' , $page_data);
     }
 
     function get_group($class_id)
@@ -3481,6 +3499,30 @@ class Admin extends CI_Controller
         $school_name = urlencode($school_name);
         $sms_setting = $this->sms_infos();
         
+        /* IF TABLE NOT EXIST */
+        if ($this->db->table_exists('attendance_send_sms') == false) {
+            $this->load->dbforge();
+            $fields = array(
+                'id' => array(
+                        'type' => 'INT',
+                        'constraint' => 5,
+                        'auto_increment' => TRUE
+                ),
+                'student_id' => array(
+                        'type' => 'VARCHAR',
+                        'constraint' => '100'
+                ),
+                'datetime' => array(
+                        'type' =>'VARCHAR',
+                        'constraint' => '100'
+                )
+            );
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->add_field($fields);
+            $this->dbforge->create_table('attendance_send_sms',true);
+        }
+        
+
         foreach($attendance_of_students as $row) {
             $attendance_status = $this->input->post('status_'.$row['attendance_id']);
             $this->db->where('attendance_id' , $row['attendance_id']);
@@ -3490,10 +3532,16 @@ class Admin extends CI_Controller
 
                 if ($attendance_sms_status == 'on') {
                     
-                    $student_name   = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;
-                    $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;
+                    $student_id = $row['student_id'];
+                    $exist = $this->db->get_where('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp])->num_rows();
+                    /* IF SMS NOT SEND */
+                    if($exist < 1) {
+                        $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;                    
+                        $this->long_sms_api($sms_setting['user'],$sms_setting['pass'],$school_name,$attendance_sms_description,$parent_mobile);
+
+                        $this->db->insert('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp]);
+                    }                    
                     
-                    $this->long_sms_api($sms_setting['user'],$sms_setting['pass'],$school_name,$attendance_sms_description,$parent_mobile);
                 }
             }
         }
@@ -3505,6 +3553,7 @@ class Admin extends CI_Controller
     function ajax_update_attendance_sms_setting()
     {
         $data = $this->input->post();
+        /* IF ROW NOT EXITS */
         $exist = $this->db->get_where('settings', ['type'=>'attendance_sms_status'])->num_rows();
         if ($exist < 1) {
             $this->db->insert('settings',['type'=>'attendance_sms_status']);
@@ -3516,7 +3565,6 @@ class Admin extends CI_Controller
         
         $this->db->where('type','attendance_sms_description');
         $this->db->update('settings',['description'=>$data['attendance_sms_description']]);
-
 
         $this->jsonMsgReturn(true,'Attendance settings updated.');
     }
