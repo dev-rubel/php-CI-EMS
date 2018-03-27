@@ -26,9 +26,14 @@
 <br>
 <br>
 <?php 
-$links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction'];
 
-$title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction'];
+if($_SESSION['name']=='NihalIT'):
+    $links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction','tution_pendding'];
+    $title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction','Tution Pendding'];
+else:
+    $links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction'];
+    $title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction'];
+endif;
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="accountingNavManu">
@@ -147,96 +152,9 @@ function changePage(page)
                 });
             }
 
-
-            if(selectValue == 'income') {
-            // var table;
-            // //datatables
-            // table = $('#incomedata').DataTable({    	 
-                
-
-            //     "lengthMenu": [[10, 50, 100, 500, -1], [10, 50, 100, 500, "All"]],
-            //     dom: 'lBfrtip',
-            //     buttons: [
-            //         {
-            //         extend: 'print',
-            //         text: '<i class="fa fa-print"></i> Print',
-            //         exportOptions: {
-            //             columns: [4,1,2,3,5]
-            //         },
-            //         footer: true,
-            //         autoPrint: true
-            //         }
-            //     ],
-        
-            //     "processing": true, //Feature control the processing indicator.
-            //     "serverSide": true, //Feature control DataTables' server-side processing mode.
-            //     "order": [], //Initial no order.
-        
-            //     // Load data for the table's content from an Ajax source
-            //     "ajax": {
-            //         "url": "<?php // echo base_url();?>index.php?a/accounting/ajax_list",
-            //         "type": "POST"
-            //     },
-        
-            //     //Set column definition initialisation properties.
-            //     "columnDefs": [
-            //     { 
-            //         "targets": [ 0 ], //first column / numbering column
-            //         "orderable": false, //set not orderable
-            //     },
-            //     ],
-
-            //     "footerCallback": function ( row, data, start, end, display ) {
-            //         var api = this.api(), data;
-        
-            //         // Remove the formatting to get integer data for summation
-            //         var intVal = function ( i ) {
-            //             return typeof i === 'string' ?
-            //                 i.replace(/[\$,]/g, '')*1 :
-            //                 typeof i === 'number' ?
-            //                     i : 0;
-            //         };
-        
-            //         // Total over all pages
-            //         total = api
-            //             .column( 4 )
-            //             .data()
-            //             .reduce( function (a, b) {
-            //                 return intVal(a) + intVal(b);
-            //             }, 0 );
-        
-            //         // Total over this page
-            //         pageTotal = api
-            //             .column( 4, { page: 'current'} )
-            //             .data()
-            //             .reduce( function (a, b) {
-            //                 return intVal(a) + intVal(b);
-            //             }, 0 );
-        
-            //         var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, 'TK: ' ).display;
-            //         // Update footer
-            //         $( api.column( 4 ).footer() ).html(
-            //             numFormat(pageTotal) 
-            //             //+' ('+ numFormat(total) +' total)'
-            //         );
-            //     }
-
-                
-        
-            // });
-
-            // $('#lastpage').on('click', function () {
-            //     table.page('last').draw(false);
-            // });
-            // $('#firstpage').on('click', function () {
-            //     table.page('first').draw(false);
-            // });
-        }
-
-
             $("#table_export").dataTable();
             $('.datepicker').datepicker();
-            $('#tution_fee_sms_status').bootstrapToggle();
+            $('#toggleButton').bootstrapToggle();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                
         }

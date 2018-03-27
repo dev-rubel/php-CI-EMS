@@ -6,6 +6,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Accounting extends CI_Controller
 {    
+
+    protected $systemTitleName;
+    private $running_year;
     
     function __construct()
     {
@@ -13,6 +16,8 @@ class Accounting extends CI_Controller
         $this->load->database();
         $this->load->library('session');
         
+        $this->systemTitleName = $this->db->get_where('settings' , array('type' =>'system_title_english'))->row()->description;
+        $this->running_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
        /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
@@ -201,7 +206,7 @@ class Accounting extends CI_Controller
             $data['due']                = $data['amount'] - $data['amount_paid'];
             $data['status']             = $this->input->post('status');
             $data['creation_timestamp'] = strtotime($this->input->post('date'));
-            $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']               = $this->running_year;
 
             $this->db->insert('invoice', $data);
             $invoice_id = $this->db->insert_id();
@@ -214,7 +219,7 @@ class Accounting extends CI_Controller
             $data2['method']            =   $this->input->post('method');
             $data2['amount']            =   $this->input->post('amount_paid');
             $data2['timestamp']         =   strtotime($this->input->post('date'));
-            $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data2['year']              =   $this->running_year;
 
             $this->db->insert('payment' , $data2);
 
@@ -254,7 +259,7 @@ class Accounting extends CI_Controller
                 $data['due']                = $data['amount'] - $data['amount_paid'];
                 $data['status']             = $this->input->post('status');
                 $data['creation_timestamp'] = strtotime($this->input->post('date'));
-                $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+                $data['year']               = $this->running_year;
                 
                 $this->db->insert('invoice', $data);
                 $invoice_id = $this->db->insert_id();
@@ -267,7 +272,7 @@ class Accounting extends CI_Controller
                 $data2['method']            =   $this->input->post('method');
                 $data2['amount']            =   $this->input->post('amount_paid');
                 $data2['timestamp']         =   strtotime($this->input->post('date'));
-                $data2['year']               =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+                $data2['year']              =   $this->running_year;
 
                 $this->db->insert('payment' , $data2);
             }
@@ -298,7 +303,7 @@ class Accounting extends CI_Controller
             $data['due']                = $data['amount'] - $data['amount_paid'];
             $data['status']             = $this->input->post('status');
             $data['creation_timestamp'] = strtotime($this->input->post('date'));
-            $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']               = $this->running_year;
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('invoice', $data);
@@ -307,7 +312,7 @@ class Accounting extends CI_Controller
             $data2['method']            =   $this->input->post('method');
             $data2['amount']            =   $this->input->post('amount_paid');
             $data2['timestamp']         =   strtotime($this->input->post('date'));
-            $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data2['year']              =   $this->running_year;
 
             $this->db->where('invoice_id', $invoice_id);
             $this->db->update('payment' , $data2);
@@ -324,7 +329,7 @@ class Accounting extends CI_Controller
             $data['method']       =   $this->input->post('method');
             $data['amount']       =   $this->input->post('amount');
             $data['timestamp']    =   strtotime($this->input->post('timestamp'));
-            $data['year']         =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']         =   $this->running_year;
             $this->db->insert('payment' , $data);
 
             $status['status']   =   $this->input->post('status');
@@ -439,7 +444,7 @@ class Accounting extends CI_Controller
             $data['method']              =   $this->input->post('method');
             $data['amount']              =   $this->input->post('amount');
             $data['timestamp']           =   strtotime($this->input->post('timestamp'));
-            $data['year']                =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']                =   $this->running_year;
             $this->db->insert('payment' , $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             redirect(base_url() . 'index.php?a/accounting/expense', 'refresh');
@@ -456,7 +461,7 @@ class Accounting extends CI_Controller
             $data['method']              =   $this->input->post('method');
             $data['amount']              =   $this->input->post('amount');
             $data['timestamp']           =   strtotime($this->input->post('timestamp'));
-            $data['year']                =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']                =   $this->running_year;
             $this->db->where('payment_id' , $param2);
             $this->db->update('payment' , $data);
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
@@ -597,23 +602,18 @@ class Accounting extends CI_Controller
         $formDate = $this->input->post('fromDate');
         $todate   = $this->input->post('toDate');
         $acc_id   = $this->input->post('acc_id');
-
-
         $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
 
         if(!empty($acc_id)){
             $this->db->where('acc_id' , $acc_id);    
-        }        
+        }
         $this->db->where('tran_date >=', strtotime($formDate));
         $this->db->where('tran_date <=', strtotime($todate));
-        $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();
-
-        
+        $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();        
 
         $page_data['fromDate'] = $formDate;
         $page_data['toDate']   = $todate;
-        $this->load->view('backend/admin/accounting/transaction_search_date_wise', $page_data);
-        
+        $this->load->view('backend/admin/accounting/transaction_search_date_wise', $page_data);        
     }
 
     function grab_account_info($id)
@@ -670,12 +670,54 @@ class Accounting extends CI_Controller
         redirect(base('a/accounting', 'student_payment'));
     }
 
+    function search_pendding_fee()
+    {
+        $data['class_id'] = $this->input->post('class_id');
+        $data['section_id'] = $this->input->post('section_id');
+        $data['group_id'] = $this->input->post('group_id');
+        $data['shift_id'] = $this->input->post('shift_id');
+        $page_data['enroll'] = $this->db->get_where('enroll',$data)->result_array();
+        if(!empty($page_data['enroll'])) {
+            foreach($page_data['enroll'] as $k => $each) {
+                $payments = $this->db->get_where('invoice',
+                                ['student_id'=>$each['student_id'], 'year'=>$this->running_year])->result_array();
+                if(!empty($payments)) {
+                    foreach($payments as $k2 => $each2) {
+                        $months = explode(',',$each2['months']);
+                        foreach($months as $k3 => $each3) {
+                            $page_data['students'][$each['student_id']]['months'][] = $each3;
+                        }                        
+                        $page_data['students'][$each['student_id']]['amount'] += $each2['amount'];
+                        $page_data['students'][$each['student_id']]['amount_paid'] += $each2['amount_paid'];
+                        $page_data['students'][$each['student_id']]['due'] += $each2['due'];
+                    }
+                } else {
+                        $page_data['students'][$each['student_id']]['months'] = false;
+                        $page_data['students'][$each['student_id']]['amount'] = 0;
+                        $page_data['students'][$each['student_id']]['amount_paid'] = 0;
+                        $page_data['students'][$each['student_id']]['due'] = 0;
+                }
+            }
+
+            $page_data['running_year'] = $this->running_year;
+            $html = $this->load->view('backend/admin/accounting/tution_pendding_table', $page_data, true);
+            return $this->jsonMsgReturn(true,'Success.', $html);
+        } else {
+            return $this->jsonMsgReturn(false,'No Student Found.');
+        }        
+    }
+
+    function send_unpaid_sms()
+    {
+        pd($_POST);
+    }
+
 
     // AJAX RESPONSE FUNCTION LIST //
 
     function getStudentAccHistory()
     {
-        $year = $this->db->get_where('settings' , array('type' =>'running_year'))->row()->description;
+        $year = $this->running_year;
         $student_code = $this->uri->segment(4);
         $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_code,'year'=>$year])->result_array();
         if(empty($page_data['student_payment'])){
@@ -687,7 +729,7 @@ class Accounting extends CI_Controller
 
     function getStudentAccMonthCheckbox()
     {
-        $year = $this->db->get_where('settings' , array('type' =>'running_year'))->row()->description;
+        $year = $this->running_year;
         $student_code = $this->uri->segment(4);
         $page_data['student_name'] = $this->db->get_where('student',['student_code'=>$student_code])->row()->student_id;
         if(!empty($page_data['student_name'])) {
@@ -841,6 +883,11 @@ class Accounting extends CI_Controller
         $page_data['page_name']  = $page_name;
         $page_data['page_title'] = get_phrase($page_title);
         $this->load->view('backend/index', $page_data);
+    }
+
+    function jsonMsgReturn($type, $msg, $html='')
+    {
+        echo json_encode(['type'=>$type,'msg'=>$msg,'html'=>$html]);
     }
 
     function flashmsg($msg,$error = '')

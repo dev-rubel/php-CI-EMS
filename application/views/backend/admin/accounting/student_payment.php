@@ -217,7 +217,7 @@
                                         <?php echo get_phrase('tution_fee_sms_status');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="checkbox" name="tution_fee_sms_status" id="tution_fee_sms_status" data-toggle="toggle" <?php echo $tution_fee_setting[0]['description']==1?'checked':''?>>
+                                        <input type="checkbox" name="tution_fee_sms_status" id="toggleButton" data-toggle="toggle" <?php echo $tution_fee_setting[0]['description']==1?'checked':''?>>
                                     </div>
                                 </div>
 
