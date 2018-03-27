@@ -84,7 +84,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="faincome" data-validation="number">
+                            <input type="text" class="form-control" name="faincome">
                         </div>
                     </div>
 
@@ -114,7 +114,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="lguaridan" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
+                            <input type="text" class="form-control" name="lguaridan" />
                         </div>
                     </div>
 
@@ -124,7 +124,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="relaguardian" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
+                            <input type="text" class="form-control" name="relaguardian" />
                         </div>
                     </div>
 
@@ -212,7 +212,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="email" data-validation="email">
+                            <input type="text" class="form-control" name="email" />
                         </div>
                     </div>
 
@@ -258,7 +258,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="siblingname" data-validation="number" data-validation="custom" data-validation-regexp="^([a-z]+)$" />
+                            <input type="text" class="form-control" name="siblingname" />
                         </div>
                     </div>
 
@@ -390,7 +390,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" name="book_no" data-validation="number" />
+                            <input type="number" class="form-control" name="book_no" />
                         </div>
                     </div>
 
@@ -440,7 +440,7 @@ span.mendatory {
 <script type="text/javascript">
 
     $("#focusField").focus();
-    $('#addStudentInfo').ajaxForm({ 
+    $('#addStudentInfo').ajaxForm({
         beforeSend: function() {                
                 $('#loading').show();
                 $('#overlayDiv').show();

@@ -91,7 +91,7 @@ $pandding = $this->db->query('SELECT * FROM `admit_std` WHERE `status`=0');
 <div class="row">
 	<div class="col-sm-6 col-md-3">
         <div class="panel panel-stat3 bg-sms">
-            <h2 class="m-top-none"><span id="serverloadCount"><?php echo floor($sms_info)/40; ?></span></h2>
+            <h2 class="m-top-none"><span id="serverloadCount"><?php echo floor($sms_info)/60; ?></span></h2>
             <h5>SMS Balance</h5>
             
             <div class="stat-icon">

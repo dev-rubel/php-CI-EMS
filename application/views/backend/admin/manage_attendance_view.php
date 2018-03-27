@@ -55,8 +55,8 @@ $group_id==''?$group_id=NULL:$group_id=$group_id;
     <div class="col-md-2"></div>
 
     <div class="col-md-8">
-
-        <form id="attendanceUpdate" action="<?php echo base_url() .'index.php?admin/attendance_update/' . $class_id . '/' . $shift_id . '/' . $section_id . '/' . $timestamp. '/' . $group_id ; ?>" class="form-horizontal form-groups-bordered validate" method="post">     
+    <!-- attendanceUpdate -->
+        <form id="" action="<?php echo base_url() .'index.php?admin/attendance_update/' . $class_id . '/' . $shift_id . '/' . $section_id . '/' . $timestamp. '/' . $group_id ; ?>" class="form-horizontal form-groups-bordered validate" method="post">     
         <div id="attendance_update">
             <table class="table table-bordered">
                 <thead>

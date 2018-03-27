@@ -3469,10 +3469,18 @@ class Admin extends CI_Controller
             $group_id = '';
         endif;
         $running_year = $this->running_year;
-        // $active_sms_service = $this->db->get_where('settings' , array('type' => 'active_sms_service'))->row()->description;
+
+        $attendance_sms_status = $this->db->get_where('settings' , array('type' => 'attendance_sms_status'))->row()->description;
+        $attendance_sms_description = $this->db->get_where('settings' , array('type' => 'attendance_sms_description'))->row()->description;
+        $attendance_sms_description = urlencode($attendance_sms_description);
+
         $attendance_of_students = $this->db->get_where('attendance' , array(
             'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
         ))->result_array();
+        $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
+        $school_name = urlencode($school_name);
+        $sms_setting = $this->sms_infos();
+        
         foreach($attendance_of_students as $row) {
             $attendance_status = $this->input->post('status_'.$row['attendance_id']);
             $this->db->where('attendance_id' , $row['attendance_id']);
@@ -3480,18 +3488,37 @@ class Admin extends CI_Controller
 
             if ($attendance_status == 2) {
 
-                if ($active_sms_service != '' || $active_sms_service != 'disabled') {
+                if ($attendance_sms_status == 'on') {
+                    
                     $student_name   = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;
-                    $parent_id      = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->parent_id;
-                    $receiver_phone = $this->db->get_where('parent' , array('parent_id' => $parent_id))->row()->phone;
-                    // $message        = 'Your child' . ' ' . $student_name . 'is absent today.';
-                    // $this->sms_model->send_sms($message,$receiver_phone);
+                    $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;
+                    
+                    $this->long_sms_api($sms_setting['user'],$sms_setting['pass'],$school_name,$attendance_sms_description,$parent_mobile);
                 }
             }
         }
         // $this->session->set_flashdata('flash_message' , get_phrase('attendance_updated'));
         //redirect(base_url().'index.php?admin/manage_attendance_view/'.$class_id.'/'.$shift_id.'/'.$section_id.'/'.$timestamp.'/'.$group_id , 'refresh');
         $this->ajax_manage_attendance_view($class_id,$shift_id,$section_id,$timestamp,$group_id);
+    }
+
+    function ajax_update_attendance_sms_setting()
+    {
+        $data = $this->input->post();
+        $exist = $this->db->get_where('settings', ['type'=>'attendance_sms_status'])->num_rows();
+        if ($exist < 1) {
+            $this->db->insert('settings',['type'=>'attendance_sms_status']);
+            $this->db->insert('settings',['type'=>'attendance_sms_description']);           
+        }
+
+        $this->db->where('type','attendance_sms_status');
+        $this->db->update('settings',['description'=>$data['attendance_sms_status']]);
+        
+        $this->db->where('type','attendance_sms_description');
+        $this->db->update('settings',['description'=>$data['attendance_sms_description']]);
+
+
+        $this->jsonMsgReturn(true,'Attendance settings updated.');
     }
 
     /****** DAILY ATTENDANCE *****************/
@@ -4806,9 +4833,6 @@ class Admin extends CI_Controller
     {
         $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
         $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;
-
-        $data['title'] = $this->db->get_where('settings',array('type'=>'sms_title'))->row()->description;
-        $data['desc'] = $this->db->get_where('settings',array('type'=>'sms_description'))->row()->description;
         return $data;
     }
 
@@ -5347,36 +5371,6 @@ class Admin extends CI_Controller
 
     }
 
-
-    function test()
-    {
-        $session = $this->db->get_where('settings',
-            ['type'=>'admission_session'])->row()->description;
-            $year = substr($session, -2);
-
-
-        $student_info = $this->db->get('student')->result_array();
-        foreach($student_info as $k=>$value){
-
-            $classID = $this->db->get_where('enroll',['student_id'=>$value['student_id']])->row()->class_id;
-            $cname = $this->db->get_where('class',['class_id'=>$classID])->row()->name_numeric;
-            //pd($classID);
-
-            // $this->db->like('student_code', $year, 'after');
-            // $exist = $this->db->get('student')->result_array();
-
-            // if(!empty($exist)) {
-            //     $last = end($exist);
-                $uniq_id = str_pad(substr($k, -4)+1, 4, '0', STR_PAD_LEFT);
-                $uniq_id = $year.$cname.$uniq_id;
-            // } else {
-            //     $uniq_id = str_pad(1, 4, '0', STR_PAD_LEFT);
-            //     $uniq_id = $year.$cname.$uniq_id;
-            // }
-
-            $this->db->update('student',['student_code'=>$uniq_id],['student_id'=>$value['student_id']]);
-        }
-    }
 
 
 }

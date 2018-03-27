@@ -25,14 +25,14 @@
 <br>
 <br>
 <?php 
-$links = ['manage_attendance','attendance_report'];
-$title = ['Daily Atendance','Attendance Report'];
+$links = ['manage_attendance','attendance_report','attendance_sms_setting'];
+$title = ['Daily Atendance','Attendance Report','Attendance SMS Setting'];
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
 <div class="row customNavManu" id="attendanceNavManu">
 
 <?php foreach($links as $k=>$each):?>
-    <div class="col-sm-6 col-md-6" style="margin-bottom: 10px;">
+    <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
         <a href="#" onclick="changePage('<?php echo $each?>')">
             <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
                 <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2>   -->
@@ -53,7 +53,7 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 
 <div class="menu-navigation-icons">
     <?php foreach($links as $k=>$each):?>
-        <div class="col-sm-6 col-md-6" style="margin-bottom: 10px;">
+        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
             <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
                 <i class="fa <?php echo fo_icon();?>"></i>
                 <span><?php echo $title[$k];?></span>
@@ -116,7 +116,8 @@ function changePage(page)
             $('#attendanceNavManu').show();
             $('#attendanceMainManu').hide();
             $('#ajaxPageContainer').html(response);
-
+            
+            $('#toggleButton').bootstrapToggle();
             $('.datepicker').datepicker({
             	format: 'dd-mm-yyyy',
             });
