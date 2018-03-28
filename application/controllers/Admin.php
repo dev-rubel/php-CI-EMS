@@ -180,8 +180,8 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url(), 'refresh');
-        $data = $this->sms_infos();
-        $page_data['sms_info'] = $this->sms_balance($data['user'],$data['pass']);
+        $this->load->library('nihalitsms');
+        $page_data['sms_info'] = $this->nihalitsms->sms_balance();
         $page_data['page_name']  = 'dashboard';
         $page_data['page_title'] = get_phrase('admin_dashboard');
         $this->load->view('backend/index', $page_data);
@@ -2340,7 +2340,7 @@ class Admin extends CI_Controller
             $data['due']                = $data['amount'] - $data['amount_paid'];
             $data['status']             = $this->input->post('status');
             $data['creation_timestamp'] = strtotime($this->input->post('date'));
-            $data['year']               = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data['year']               = $this->running_year;
 
             $this->db->insert('invoice', $data);
             $invoice_id = $this->db->insert_id();
@@ -2353,7 +2353,7 @@ class Admin extends CI_Controller
             $data2['method']            =   $this->input->post('method');
             $data2['amount']            =   $this->input->post('amount_paid');
             $data2['timestamp']         =   strtotime($this->input->post('date'));
-            $data2['year']              =   $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
+            $data2['year']              =   $this->running_year;
 
             $this->db->insert('payment' , $data2);
 
@@ -2362,19 +2362,11 @@ class Admin extends CI_Controller
             // TUTION FEE SMS SECTION
             // IF TUTION FEE SMS SETTING STATUS ON
             if($tution_sms_status == 1){
-                $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-                    ->row()
-                    ->description;
-                $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-                    ->row()
-                    ->description;
-                $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
+                $this->load->library('nihalitsms');                
                 $tution_sms_details = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
 
                 $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;
-                $sender = urlencode($school_name);
-                $msg    = urlencode($tution_sms_details);
-                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+                $this->nihalitsms->long_sms_api($tution_sms_details,$mobile);
             }
             // END TUTION FEE SMS SECTION
             $this->jsonMsgReturn(true,'Success.');
@@ -2398,11 +2390,9 @@ class Admin extends CI_Controller
     {
         $data = $this->input->post();
         /* IF ROW NOT EXITS */
-        $exist = $this->db->get_where('settings', ['type'=>'pendding_fee_sms_status'])->num_rows();
-        if ($exist < 1) {
-            $this->db->insert('settings',['type'=>'pendding_fee_sms_status']);
-            $this->db->insert('settings',['type'=>'pendding_fee_sms_details']);           
-        }
+        $this->load->library('dbmanage');
+        $this->dbmanage->createRow('type','pendding_fee_sms_status','settings');
+        $this->dbmanage->createRow('type','pendding_fee_sms_details','settings');
 
         $this->db->where('type','pendding_fee_sms_status');
         $this->db->update('settings',['description'=>$data['pendding_fee_sms_status']]);
@@ -2917,7 +2907,7 @@ class Admin extends CI_Controller
         }
         $data['section_id'] = $this->input->post('section_id');
         $data['subject_id'] = $this->input->post('subject_id');
-        $data['year']       = $this->db->get_where('settings' , array('type'=>'running_year'))->row()->description;
+        $data['year']       = $this->running_year;
 
         $query = $this->db->get_where('mark' , array(
                     'exam_id' => $data['exam_id'],
@@ -3481,6 +3471,7 @@ class Admin extends CI_Controller
 
     function attendance_update($class_id = '' , $shift_id = '', $section_id = '' , $timestamp = '', $group_id = '')
     {
+        $this->load->library('nihalitsms');
         if(!empty($group_id)):
             $group_id = $group_id;
         else:
@@ -3490,39 +3481,15 @@ class Admin extends CI_Controller
 
         $attendance_sms_status = $this->db->get_where('settings' , array('type' => 'attendance_sms_status'))->row()->description;
         $attendance_sms_description = $this->db->get_where('settings' , array('type' => 'attendance_sms_description'))->row()->description;
-        $attendance_sms_description = urlencode($attendance_sms_description);
-
+        
         $attendance_of_students = $this->db->get_where('attendance' , array(
             'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
         ))->result_array();
-        $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
-        $school_name = urlencode($school_name);
-        $sms_setting = $this->sms_infos();
         
         /* IF TABLE NOT EXIST */
-        if ($this->db->table_exists('attendance_send_sms') == false) {
-            $this->load->dbforge();
-            $fields = array(
-                'id' => array(
-                        'type' => 'INT',
-                        'constraint' => 5,
-                        'auto_increment' => TRUE
-                ),
-                'student_id' => array(
-                        'type' => 'VARCHAR',
-                        'constraint' => '100'
-                ),
-                'datetime' => array(
-                        'type' =>'VARCHAR',
-                        'constraint' => '100'
-                )
-            );
-            $this->dbforge->add_key('id', TRUE);
-            $this->dbforge->add_field($fields);
-            $this->dbforge->create_table('attendance_send_sms',true);
-        }
+        $this->load->library('dbmanage');
+        $this->dbmanage->createTable('id',['student_id-v','datetime-v'],'attendance_send_sms');        
         
-
         foreach($attendance_of_students as $row) {
             $attendance_status = $this->input->post('status_'.$row['attendance_id']);
             $this->db->where('attendance_id' , $row['attendance_id']);
@@ -3536,8 +3503,9 @@ class Admin extends CI_Controller
                     $exist = $this->db->get_where('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp])->num_rows();
                     /* IF SMS NOT SEND */
                     if($exist < 1) {
-                        $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;                    
-                        $this->long_sms_api($sms_setting['user'],$sms_setting['pass'],$school_name,$attendance_sms_description,$parent_mobile);
+                        $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;         
+
+                        $this->nihalitsms->long_sms_api($attendance_sms_description,$parent_mobile);
 
                         $this->db->insert('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp]);
                     }                    
@@ -3554,11 +3522,9 @@ class Admin extends CI_Controller
     {
         $data = $this->input->post();
         /* IF ROW NOT EXITS */
-        $exist = $this->db->get_where('settings', ['type'=>'attendance_sms_status'])->num_rows();
-        if ($exist < 1) {
-            $this->db->insert('settings',['type'=>'attendance_sms_status']);
-            $this->db->insert('settings',['type'=>'attendance_sms_description']);           
-        }
+        $this->load->library('dbmanage');
+        $this->dbmanage->createRow('type','attendance_sms_status','settings');
+        $this->dbmanage->createRow('type','attendance_sms_description','settings');
 
         $this->db->where('type','attendance_sms_status');
         $this->db->update('settings',['description'=>$data['attendance_sms_status']]);
@@ -4224,12 +4190,8 @@ class Admin extends CI_Controller
         $page_data['settings']   = $this->db->get('settings')->result_array();
 
         if ($pageName == 'sms_settings') {
-            $page_data['user'] = $this->db->get_where('settings',
-                    ['type'=>'nihalit_sms_user'])
-                            ->row()->description;
-            $page_data['pass'] = $this->db->get_where('settings',
-                    ['type'=>'nihalit_sms_password'])
-                            ->row()->description;
+            $this->load->library('nihalitsms'); 
+            $page_data = $this->nihalitsms->sms_user_info();
         }
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
@@ -4405,12 +4367,8 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect(base_url() . 'index.php?login', 'refresh');
-        $page_data['user'] = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-            ->row()
-            ->description;
-        $page_data['pass'] = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-            ->row()
-            ->description;
+        $this->load->library('nihalitsms'); 
+        $page_data = $this->nihalitsms->sms_user_info();
         $page_data['page_name']  = 'sms_settings';
         $page_data['page_title'] = get_phrase('sms_settings');
         $page_data['settings']   = $this->db->get('settings')->result_array();
@@ -4444,25 +4402,19 @@ class Admin extends CI_Controller
 
     function send_custom_sms($sender = '',$msg = '', $mobile = '', $arg = false)
     {
-        $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-            ->row()
-            ->description;
-        $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-            ->row()
-            ->description;
-            
-        $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
-        $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
+        $this->load->library('nihalitsms');
+                 
+        $msg    = !empty($msg)?$msg:$_POST['sms_description'];
         $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
         if($arg == true){
             $msg = str_replace('2C', '0A', $msg);
         }
 
         if($_POST['sms_lng']=='bangla') {
-            $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);
+            $this->nihalitsms->unicode_long_sms_api($msg,$mobile);
         }
         if($_POST['sms_lng']=='english' || $arg == true) {
-            $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+            $this->nihalitsms->long_sms_api($msg,$mobile);
         }
 
         if($arg == false) {
@@ -4476,26 +4428,20 @@ class Admin extends CI_Controller
 
     function ajax_send_custom_sms()
     {
-        $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-                ->row()->description;
-        $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-                ->row()->description;
+        $this->load->library('nihalitsms');        
+        
         $check = check_array_value($_POST);
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
-            $sender = urlencode(!empty($sender)?$sender:$_POST['sms_title']);
-            $msg    = urlencode(!empty($msg)?$msg:$_POST['sms_description']);
+            $msg    = !empty($msg)?$msg:$_POST['sms_description'];
             $mobile = !empty($mobile)?$mobile:$_POST['sms_number'];
-            if($arg == true){
-                $msg = str_replace('2C', '0A', $msg);
-            }
 
             if($_POST['sms_lng']=='bangla') {
-                $this->unicode_long_sms_api($user,$pass,$sender,$msg,$mobile);
+                $this->nihalitsms->unicode_long_sms_api($msg,$mobile);
             }
-            if($_POST['sms_lng']=='english' || $arg == true) {
-                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+            if($_POST['sms_lng']=='english') {
+                $this->nihalitsms->long_sms_api($msg,$mobile);
             }
             $this->jsonMsgReturn(true,'SMS Send.');
         }
@@ -4503,19 +4449,14 @@ class Admin extends CI_Controller
 
     function send_notice_sms()
     {
-        $user = $this->db->get_where('settings',
-            ['type'=>'nihalit_sms_user'])->row()->description;
-        $pass = $this->db->get_where('settings',
-            ['type'=>'nihalit_sms_password'])->row()->description;
-
+        $this->load->library('nihalitsms');
+        
         if(empty($_POST['sms_description'])) {
             $this->flashmsg('Please input description.','error');
             redirect(base('admin', 'send_result_sms'));
         }
 
-
-        $sender = urlencode($this->systemTitleName);
-        $sms_description = urlencode($_POST['sms_description']);
+        $sms_description = $_POST['sms_description'];
         $file = $_FILES["xls_file"]["tmp_name"];
         $file_name = $_FILES["xls_file"]["name"];
         $class_id = $_POST["class"];
@@ -4531,7 +4472,7 @@ class Admin extends CI_Controller
                 foreach($enroll as $k=>$each) {
                     $mobile = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile;
                     if(!empty($mobile)) {
-                        //$this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+                        // $this->nihalitsms->long_sms_api($sms_description,$mobile);
                         $status['class'][] = $mobile;
                     }                    
                 }
@@ -4561,7 +4502,7 @@ class Admin extends CI_Controller
                 }
 
                 foreach ($final as $key => $mobile) {
-                    //$this->long_sms_api($user,$pass,$sender,$sms_description,$mobile);
+                    // $this->nihalitsms->long_sms_api($sms_description,$mobile);
                     $status['file'][] = $mobile;
                 }
 
@@ -4876,60 +4817,6 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    // SMS API FUNCTION AND API INFO
-    function sms_infos()
-    {
-        $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
-        $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;
-        return $data;
-    }
-
-    function sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile";
-        $mystring = $this->get_data($url);
-        return $mystring;
-    }
-
-    function long_sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
-        $mystring = $this->curl_url($url);
-        return $mystring;
-    }
-
-    function unicode_long_sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/v3/sendsms/plain?user=$user&password=$pass&sender=$sender&text=$msg&GSM=88$mobile&datacoding=8&type=longSMS";
-        $mystring = $this->curl_url($url);
-        return $mystring;
-    }
-
-
-    function sms_balance($user,$pass)
-    {
-        $url = "http://api.zaman-it.com/api/command?username=$user&password=$pass&cmd=Credits";
-        $mystring = $this->get_data($url);
-        return $mystring;
-    }
-
-    function get_data($url)
-    {
-        $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
-    }
-
-
     // ======= DATABASE SECTION ======== //
     function database_structure()
     {
@@ -5024,9 +4911,6 @@ class Admin extends CI_Controller
         $firstRow = $worksheet['cells'][1]; // Seperate Column Header
         unset($worksheet['cells'][1]);
 
-
-
-
         if(!empty(current($worksheet['cells'])) && count(current($worksheet['cells'])) > 12) {
 
             $data = [
@@ -5049,9 +4933,6 @@ class Admin extends CI_Controller
                         $margeFinalForDatabase[] = $margedArray2;
                     }
                 }
-
-
-
 
                 // ========= Prepare string to send sms
                 foreach($margeFinalForSms as $key1=>$each1) {
@@ -5140,16 +5021,11 @@ class Admin extends CI_Controller
             redirect(base('admin', 'send_result_sms'));
         }
 
-
-
-
-
         // ============= CSV file reader laibrary
         // $this->load->library('CSVReader');
         // $csvData = $this->csvreader->parse_file($file); //path to csv file
         // echo '<pre>';
         // print_r($csvData);
-
     }
 
     function export_student_info_excel($extra = [])
@@ -5394,29 +5270,6 @@ class Admin extends CI_Controller
     {
         $result = $this->uri->segment($uri);
         return $result;
-    }
-
-
-    function curl_url($url)
-    {
-        // // create a new cURL resource
-        // $ch = curl_init();
-
-        // // set URL and other appropriate options
-        // curl_setopt($ch, CURLOPT_URL, "$url");
-        // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // // grab URL and pass it to the browser
-        // curl_exec($ch);
-
-        // // close cURL resource, and free up system resources
-        // curl_close($ch);
-        $data = file_get_contents($url);
-        if($data) {
-            return true;
-        }
-        return true;
-
     }
 
 

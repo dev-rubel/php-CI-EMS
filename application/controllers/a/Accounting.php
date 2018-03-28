@@ -228,19 +228,12 @@ class Accounting extends CI_Controller
             // TUTION FEE SMS SECTION
             // IF TUTION FEE SMS SETTING STATUS ON
             if($tution_sms_status == 1){
-                $user = $this->db->get_where('settings', array('type'=>'nihalit_sms_user'))
-                    ->row()
-                    ->description;            
-                $pass = $this->db->get_where('settings', array('type'=>'nihalit_sms_password'))
-                    ->row()
-                    ->description;
-                $school_name = $this->db->get_where('settings',['type'=>'system_title_english'])->row()->description;
-                $tution_sms_details = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
+                $this->load->library('nihalitsms'); 
+               
+                $msg = $this->db->get_where('settings',['type'=>'tution_fee_sms_details'])->row()->description;
+                $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;              
 
-                $mobile = $this->db->get_where('student', array('student_id' => $student_id))->row()->mobile;
-                $sender = urlencode($school_name);
-                $msg    = urlencode($tution_sms_details);                
-                $this->long_sms_api($user,$pass,$sender,$msg,$mobile);
+                $this->nihalitsms->long_sms_api($msg,$mobile);
             }
             // END TUTION FEE SMS SECTION
 
@@ -709,7 +702,21 @@ class Accounting extends CI_Controller
 
     function send_unpaid_sms()
     {
-        pd($_POST);
+        $post = $this->input->post('mobile');        
+        $status = $this->db->get_where('settings',['type'=>'pendding_fee_sms_status'])->row()->description;
+        if($status == 'on') {
+            $this->load->library('nihalitsms');
+            $desc = $this->db->get_where('settings',['type'=>'pendding_fee_sms_details'])->row()->description;
+            foreach($post as $k=>$each) {
+                $this->nihalitsms->long_sms_api($desc,$each);
+            }
+        $this->session->set_flashdata('flash_message' , get_phrase('SMS Send Success'));
+        redirect(base('a/accounting','accounting_menu'));
+        } else {
+            $this->session->set_flashdata('flash_message' , get_phrase('SMS status disabled'));
+            redirect(base('a/accounting','accounting_menu'));
+        }
+        
     }
 
 
@@ -903,35 +910,6 @@ class Accounting extends CI_Controller
     {
         $result = $this->uri->segment($uri);
         return $result;
-    }
-
-    function curl_url($url)
-    {
-        // // create a new cURL resource
-        // $ch = curl_init();
-
-        // // set URL and other appropriate options
-        // curl_setopt($ch, CURLOPT_URL, "$url");
-        // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // // grab URL and pass it to the browser
-        // curl_exec($ch);
-
-        // // close cURL resource, and free up system resources
-        // curl_close($ch);
-        $data = file_get_contents($url);
-        if($data) {
-            return true;
-        }
-        return true;        
-    }
-
-    function long_sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
-        $mystring = $this->curl_url($url);
-        return $mystring;
-    }
-    
+    }    
     
 }    

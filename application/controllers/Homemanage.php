@@ -207,19 +207,17 @@ class Homemanage extends CI_Controller
             
     function confirm_std()
     {
-        $mobile = str_replace('%', '', $this->uri(4));
-        $sms = $this->sms_infos();
-        
+        $this->load->library('nihalitsms'); 
+        $mobile = str_replace('%', '', $this->uri(4));        
         //send url
         $token = encryptor('encrypt', $this->uri(3));
         $url = 'http://freehtmltopdf.com/?convert='.base_url().'index.php?Home/check_token/'.$token;
         $shorten = $this->shorten($url);
-        $sms['title'] = urlencode($sms['title']);
-        $msg = urlencode($sms['desc'].'. '.$shorten);
+        $msg = $sms['desc'].'. '.$shorten;
 		//pd($msg);
 		
         //call api function
-        $smsId = $this->long_sms_api($sms['user'], $sms['pass'], $sms['title'], $msg, $mobile);
+        $smsId = $this->nihalitsms->long_sms_api($msg,$mobile);
         if(is_numeric($smsId)==true){
             $smsToken = $smsId;
         }else{
@@ -316,63 +314,6 @@ class Homemanage extends CI_Controller
         $mark = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->description;
             $Response = array('name' => $names, 'mark' => $mark);
             echo json_encode($Response);
-    }
-    
-    function sms_infos()
-    {
-        $data['user'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_user'))->row()->description;
-        $data['pass'] = $this->db->get_where('settings',array('type'=>'nihalit_sms_password'))->row()->description;        
-        $data['title'] = $this->db->get_where('settings',array('type'=>'admission_sms_title'))->row()->description;
-        $data['desc'] = $this->db->get_where('settings',array('type'=>'admission_sms_description'))->row()->description;
-        return $data;
-    }
-    
-    function sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile";
-        $mystring = $this->curl_url($url);
-        return $mystring;
-    }
-    
-
-    function long_sms_api($user,$pass,$sender,$msg,$mobile)
-    {
-        $url = "http://api.zaman-it.com/api/sendsms/plain?user=$user&password=$pass&sender=$sender&SMSText=$msg&GSM=88$mobile&type=longSMS";
-        $mystring = $this->curl_url($url);
-        return $mystring;
-    }
-	
-	function sms_balance($user,$pass)
-	{
-		$url = "http://api.zaman-it.com/api/command?username=$user&password=$pass&cmd=Credits";
-		$mystring = $this->get_data($url);
-        return $mystring;
-	}
-    
-    function get_data($url) 
-    {
-        $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
-    }
-
-    function curl_url($url)
-    {        
-        $data = file_get_contents($url);
-        if($data) {
-            return true;
-        }
-        return true;
-        
     }
     
     function update_admission_info()

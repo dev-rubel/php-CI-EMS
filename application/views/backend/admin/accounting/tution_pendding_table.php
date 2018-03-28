@@ -46,7 +46,7 @@ function checkUnpaid($monthArray) {
                 <?php endif; endforeach; endif; ?>
             </tbody>
         </table>
-        <!-- <button type="submit" class="btn btn-info">Send SMS</button> -->
+        <button type="submit" class="btn btn-info">Send SMS</button>
     </div>
 
 </form>
