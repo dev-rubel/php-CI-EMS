@@ -153,7 +153,9 @@ function changePage(page)
             }
 
             $("#table_export").dataTable();
-            $('.datepicker').datepicker();
+            $('.datepicker').datepicker({
+            	format: 'dd-mm-yyyy',
+            });
             $('#toggleButton').bootstrapToggle();
             $('#loading2').fadeOut('slow');
             $('#overlayDiv').fadeOut('slow');                

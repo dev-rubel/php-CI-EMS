@@ -40,7 +40,7 @@
 						<tbody>
 							<?php 
 								$count = 1;
-								$daily_expense = $this->db->get('daily_expense')->result_array();
+								$daily_expense = $this->db->get_where('daily_expense',['year'=>$running_year])->result_array();
 								foreach ($daily_expense as $row):
 							?>
 							<tr id="daily_expense<?php echo $row['daily_expense_id'];?>">

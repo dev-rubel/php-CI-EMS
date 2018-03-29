@@ -5,10 +5,10 @@
 		 table {border: 1px solid;}
 		 }
 </style>
-
+<?php $year = substr($running_year,0,4); ?>
 <div class="row">
 	<div class="col-md-10">
-		<h2>Current Month Balance Sheet (<?php echo date('M'); ?>)</h2>
+		<h2>Current Month Balance Sheet (<?php echo date('M').'-'.$year; ?>)</h2>
 	</div>
 	<div class="col-md-2">
 		<br>
@@ -37,8 +37,8 @@
       <td>
       <?php 
 			$this->db->select_sum('amount');
-			$this->db->where('timestamp >=', strtotime(date('01-m-Y')));
-			$this->db->where('timestamp <=', strtotime(date('t-m-Y')));
+			$this->db->where('timestamp >=', strtotime(date('01-m-'.$year)));
+			$this->db->where('timestamp <=', strtotime(date('t-m-'.$year)));
 			$this->db->where('payment_type' , 'income');					
 			$income_amount = $this->db->get('payment');
 			$income = $income_amount->row()->amount;
@@ -48,8 +48,8 @@
       <td>
       <?php 
 			$this->db->select_sum('amount');
-			$this->db->where('date >=', strtotime(date('01-m-Y')));
-			$this->db->where('date <=', strtotime(date('t-m-Y')));					
+			$this->db->where('date >=', strtotime(date('01-m-'.$year)));
+			$this->db->where('date <=', strtotime(date('t-m-'.$year)));					
 			$expense_amount = $this->db->get('daily_expense');
 			$expense = $expense_amount->row()->amount;
 			echo $expense !=0? $expense.' tk/=':0;
@@ -60,8 +60,8 @@
 				 <?php
 				 		// SELECT OLDEST DATE TO TODAY DATE INCOME 
 						$this->db->select_sum('tran_amount');
-						$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
-						$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+						$this->db->where('tran_date >=', strtotime(date('01-m-'.$year)));
+						$this->db->where('tran_date <=', strtotime(date('t-m-'.$year)));
 						$this->db->where('tran_status' , 1);					
 						$amount_i = $this->db->get('bank_transaction');
 						$amount_in = $amount_i->row()->tran_amount;
@@ -72,8 +72,8 @@
 				<?php 
 						// SELECT OLDEST DATE TO TODAY DATE EXPENSE
 						$this->db->select_sum('tran_amount');
-						$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
-						$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+						$this->db->where('tran_date >=', strtotime(date('01-m-'.$year)));
+						$this->db->where('tran_date <=', strtotime(date('t-m-'.$year)));
 						$this->db->where('tran_status' , 2);					
 						$amount_o = $this->db->get('bank_transaction');
 						$amount_out = $amount_o->row()->tran_amount;
@@ -83,15 +83,15 @@
       <td>
       	<?php  
       		$this->db->select_sum('tran_amount');
-			$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
-			$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+			$this->db->where('tran_date >=', strtotime(date('01-m-'.$year)));
+			$this->db->where('tran_date <=', strtotime(date('t-m-'.$year)));
 			$this->db->where('tran_status' , 1);					
 			$amount_i = $this->db->get('bank_transaction');
 			$amount_in = $amount_i->row()->tran_amount;
 			
 			$this->db->select_sum('tran_amount');
-			$this->db->where('tran_date >=', strtotime(date('01-m-Y')));
-			$this->db->where('tran_date <=', strtotime(date('t-m-Y')));
+			$this->db->where('tran_date >=', strtotime(date('01-m-'.$year)));
+			$this->db->where('tran_date <=', strtotime(date('t-m-'.$year)));
 			$this->db->where('tran_status' , 2);					
 			$amount_o = $this->db->get('bank_transaction');
 			$amount_out = $amount_o->row()->tran_amount;

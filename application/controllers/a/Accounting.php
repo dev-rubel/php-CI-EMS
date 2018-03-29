@@ -64,9 +64,10 @@ class Accounting extends CI_Controller
             $page_data['bank_accounts'] = $this->db->get('bank_account')->result_array();
             $this->db->order_by('tran_id', 'DESC');
             $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();
-        } elseif($pageName == 'monthly_balance_sheet'){
+        } elseif($pageName == 'monthly_balance_sheet'){            
             $page_data['year']   = date('Y'); 
         }
+        $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
         $this->load->view('backend/admin/accounting/'.$pageName, $page_data);
     }
@@ -157,7 +158,8 @@ class Accounting extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
-        $this->loadView('accounting/expense_balance_sheet', 'monthly_expense_sheet');
+        $page_data['running_year'] = $this->running_year;
+        $this->loadView('accounting/expense_balance_sheet', 'monthly_expense_sheet', $page_data);
     }
 
     function monthly_balance_sheet()

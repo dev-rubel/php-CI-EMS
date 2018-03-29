@@ -168,8 +168,8 @@
 		<tbody>
 		<?php foreach(range(1, 12) as $list): 
 			$monthName = date('F', mktime(0, 0, 0, $list, 10));
-			$first_day_of_month = date('01-m-'.$year, strtotime('01-'.$list.'-'.$year));
-			$last_day_of_month = date('t-m-'.$year, strtotime('01-'.$list.'-'.$year)); 
+			$first_day_of_month = date('01-'.$list.'-'.$year);
+			$last_day_of_month = date('t-'.$list.'-'.$year); 
 		?>
 
 			<tr>

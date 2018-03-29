@@ -17,6 +17,8 @@
 }
 </style>
 
+<?php $year = substr($running_year,0,4); ?>
+
   <div class="row">
     <div class="col-md-12">
           	<br><br>
@@ -37,7 +39,7 @@
          <div class="tab-pane active" id="today">
          	<div class="row">
 				<div class="col-md-10">
-					<h2>Today Balance Sheet (<?php echo date('d-M-Y'); ?>)</h2>
+					<h2>Today Balance Sheet (<?php echo date('d-M-'.$year); ?>)</h2>
 				</div>
 				<div class="col-md-2">
 					<br>
@@ -57,11 +59,12 @@
 					</thead>
 					<tbody>
 					<?php
+					
 						$expense_category = $this->db->get('expense_category')->result_array();
 					 foreach($expense_category as $each): 
 					 	$this->db->select_sum('amount');
 					 	$this->db->where('expense_category_id', $each['expense_category_id']);
-					 	$this->db->where('date', strtotime(date('d-m-Y')));
+					 	$this->db->where('date', strtotime(date('d-m-'.$year)));
 				 		$today_ex = $this->db->get('daily_expense')->row();
 					 	?>
 						<tr>
@@ -85,10 +88,11 @@
          </div>
 
 
-         <?php foreach(range(1, 12) as $list): 
+		 <?php 		 
+		 foreach(range(1, 12) as $list): 
 				$monthName = date('F', mktime(0, 0, 0, $list, 10));
-				$first_day_of_month = date('01-m-Y', strtotime('01-'.$list.'-2017'));
-				$last_day_of_month = date('t-m-Y', strtotime('01-'.$list.'-2017')); 
+				$first_day_of_month = date('01-'.$list.'-'.$year);
+				$last_day_of_month = date('t-'.$list.'-'.$year); 
 				$monthly_total = 0;
 			?>
          <div class="tab-pane" id="monthly<?php echo $monthName; ?>">
@@ -172,8 +176,8 @@
 							<th><h4>Source</h4></th>
 							<?php foreach(range(1, 12) as $list): 
 								$monthName = date('F', mktime(0, 0, 0, $list, 10));
-								$first_day_of_month = date('01-m-Y', strtotime('01-'.$list.'-2017'));
-								$last_day_of_month = date('t-m-Y', strtotime('01-'.$list.'-2017')); 
+								$first_day_of_month = date('01-'.$list.'-'.$year);
+								$last_day_of_month = date('t-'.$list.'-'.$year); 
 							?>
 							<th><h4><?php echo substr($monthName, 0, 3); ?></h4></th>
 							<?php endforeach; ?>
@@ -189,8 +193,8 @@
 							<?php 
 						foreach(range(1, 12) as $list): 
 							$monthName = date('F', mktime(0, 0, 0, $list, 10));
-							$first_day_of_month = date('01-m-Y', strtotime('01-'.$list.'-2017'));
-							$last_day_of_month = date('t-m-Y', strtotime('01-'.$list.'-2017')); 
+							$first_day_of_month = date('01-'.$list.'-'.$year);
+							$last_day_of_month = date('t-'.$list.'-'.$year); 
 
 
 						 	$this->db->select_sum('amount');

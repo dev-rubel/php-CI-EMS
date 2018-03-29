@@ -4472,7 +4472,7 @@ class Admin extends CI_Controller
                 foreach($enroll as $k=>$each) {
                     $mobile = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile;
                     if(!empty($mobile)) {
-                        // $this->nihalitsms->long_sms_api($sms_description,$mobile);
+                        $this->nihalitsms->long_sms_api($sms_description,$mobile);
                         $status['class'][] = $mobile;
                     }                    
                 }
@@ -4502,12 +4502,12 @@ class Admin extends CI_Controller
                 }
 
                 foreach ($final as $key => $mobile) {
-                    // $this->nihalitsms->long_sms_api($sms_description,$mobile);
+                    $this->nihalitsms->long_sms_api($sms_description,$mobile);
                     $status['file'][] = $mobile;
                 }
 
-                // $this->flashmsg('Send SMS Successfully.');
-                // redirect(base('admin', 'send_result_sms'));
+                $this->flashmsg('Send SMS Successfully.');
+                redirect(base('admin', 'send_result_sms'));
             } else {
                 $this->flashmsg('Invalid file format.','error');
                 redirect(base('admin', 'send_result_sms'));
