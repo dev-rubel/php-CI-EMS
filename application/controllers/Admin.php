@@ -570,7 +570,7 @@ class Admin extends CI_Controller
             } else {
                 // GENERATE CLASS POSITION
                 $std_id = key($students['mark_info'][$std_key]);
-                $students['class_position'][] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
+                $students['class_position'][$students['mark_info'][$std_key][$std_id]['total_mark']] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
                 // GENERATE CLASS HIGHEST MARK
                 $subjects =  $students['mark_info'][$std_key][$std_id]['obtain_mark'];
                 foreach($subjects as $sub_key=>$subject) {
@@ -586,15 +586,24 @@ class Admin extends CI_Controller
                 }                
             }
         }
+
+        // $all = count($students['class_position']);
+        // $uniq = count(array_unique($students['class_position']));
+        // if($all !== $uniq) {
+         
+        // }
+
+        pd($students['class_position']);
         // SORTING MARK HEIGH TO LOW
-        rsort($students['class_position']);
+        // rsort($students['class_position']);
         return $students;
     }
 
     function marksheet_single()
     {
         $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(13,1);       
+        $data['students'] = $this->generate_marksheet_class_wise(19,1);   
+        pd($data['students']);    
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 
@@ -3023,6 +3032,7 @@ class Admin extends CI_Controller
 
         endforeach;
 
+        // pd($student_ids);
         foreach($marks_of_students as $mark_id) {
             $this->db->where('mark_id' , $mark_id);
             $this->db->update('mark' , ['mark_obtained' => $data[$mark_id]['marks_obtained'] , 'comment' => $data[$mark_id]['comment']]);
