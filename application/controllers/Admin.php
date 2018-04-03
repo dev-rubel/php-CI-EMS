@@ -452,9 +452,24 @@ class Admin extends CI_Controller
             $student[$std_id]['failCount'] = 0;
             // Store mark against in each subject            
             foreach($marks as $k2=>$each2) {
-                $subject_code = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
+                $subject_code  = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_code;
+                $subject_marks = $this->db->get_where('subject',['subject_id'=>$each2['subject_id']])->row()->subject_marks;
+                $en_subject_marks = explode('|',$subject_marks);
                 // Expload Marks EG: MT,CQ,MCQ,PR
                 $ex_marks = explode('|',$each2['mark_obtained']);
+                // FAIL COUNT SUBJECTIVE, OBJECTIVE AND OTHER FOR EACH SUBJECT
+                foreach($ex_marks as $exk=>$ex_mark) {                    
+                    if($en_subject_marks[$exk]) {
+                        $en_mark_obtain = ($ex_mark*100)/$en_subject_marks[$exk]; // EG: (35*100)/50 or 100
+                        foreach($grades as $k3=>$each3) {
+                            if($en_mark_obtain >= $each3['mark_from'] && $en_mark_obtain <= $each3['mark_upto']) {
+                                if($each3['grade_point'] == 0) { // If Point 0 Found
+                                    $student[$std_id]['fail_subject'][$each2['subject_id']] = $exk; 
+                                }
+                            }
+                        }
+                    }                    
+                }                
                 // Store Obtain Mark
                 $student[$std_id]['obtain_mark'][$each2['subject_id']] = $each2['mark_obtained'];
                 if(!empty($subject_code)) {
@@ -570,7 +585,12 @@ class Admin extends CI_Controller
             } else {
                 // GENERATE CLASS POSITION
                 $std_id = key($students['mark_info'][$std_key]);
-                $students['class_position'][$students['mark_info'][$std_key][$std_id]['total_mark']] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
+                // IF FAIL FOUND THEN NO NEED TO GENERATE CLASS POSITION
+                if(empty($students['mark_info'][$std_key][$std_id]['fail_subject'])) {
+                    $students['class_position']['point_mark'][$students['mark_info'][$std_key][$std_id]['total_mark']] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
+                    $students['class_position']['mark'][] = $students['mark_info'][$std_key][$std_id]['total_mark'];
+                }
+                
                 // GENERATE CLASS HIGHEST MARK
                 $subjects =  $students['mark_info'][$std_key][$std_id]['obtain_mark'];
                 foreach($subjects as $sub_key=>$subject) {
@@ -586,14 +606,13 @@ class Admin extends CI_Controller
                 }                
             }
         }
-
-        // $all = count($students['class_position']);
-        // $uniq = count(array_unique($students['class_position']));
-        // if($all !== $uniq) {
-         
-        // }
-
-        pd($students['class_position']);
+        // SORTING MARK HEIGH TO LOW
+        rsort($students['class_position']['mark']);
+        foreach($students['class_position']['point_mark'] as $k=>$each) {
+            $niddle = array_search($k,$students['class_position']['mark']);
+            $students['class_position']['mark'][$niddle] = ['mark'=>$k,'point'=>$each];
+        }
+        unset($students['class_position']['point_mark']);        
         // SORTING MARK HEIGH TO LOW
         // rsort($students['class_position']);
         return $students;
@@ -603,7 +622,7 @@ class Admin extends CI_Controller
     {
         $data['exam_id'] = 1;
         $data['students'] = $this->generate_marksheet_class_wise(19,1);   
-        pd($data['students']);    
+        // pd($data['students']);    
         $this->load->view('backend/admin/marksheet_single', $data);
     }
 

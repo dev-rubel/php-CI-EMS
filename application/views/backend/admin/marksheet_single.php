@@ -116,6 +116,7 @@ function accSum($grades='')
 			$eachPoints = $each2['point'];
 			$eachGrades = $each2['grade'];
 			$eachObtainMarks = $each2['obtain_mark'];
+			$eachFails		 = $each2['fail_subject'];
 
 			if(!empty($unqJoinSubjectGrad)) {
 				unset($unqJoinSubjectGrad);
@@ -283,9 +284,18 @@ function accSum($grades='')
 					<!-- SUBJECT HIGHEST MARKS -->
 					<td class="text-center"><?php echo $students['subject_highest'][$subjectID]; ?></td>
 					<!-- SUBJECT OBTAIN MARKS -->
-					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID]); 
-							foreach($obtainMark as $markIndex=>$eachmark3):  ?>
-						<td class="text-center"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
+					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID]);
+						
+							foreach($obtainMark as $markIndex=>$eachmark3):  
+								if(!empty($eachFails)) {
+									if($eachFails[$subjectID] === $markIndex){
+										$failOrNot = 'color: red !important;';
+									} else {
+										$failOrNot = '';
+									}
+								}
+							?>
+						<td class="text-center" style="<?php echo $failOrNot;?>"><?php echo $eachmark3==false?'-':$eachmark3; ?></td>
 					<?php endforeach; ?>
 					<!-- SUBJECT OBTAIN TOTAL MARKS -->
 					<td class="text-center"><?php echo $eachMarks[$subjectID]; ?></td>
@@ -314,7 +324,15 @@ function accSum($grades='')
 			<table class="table table-bordered">
 				<tr>
 					<td>Class Position</td>
-					<td><?php $class_position = array_search($each2['total_point_with_4th'],$students['class_position']); echo $class_position+1; ?></td>
+					<td><?php //$class_position = array_search($each2['total_mark'],$students['class_position']); echo $class_position+1; 
+					
+					foreach($students['class_position']['mark'] as $cKey=>$cEach) {
+						if($each2['total_mark'] == $cEach['mark']) {
+							echo $cKey + 1;
+						}
+					}
+					
+					?></td>
 				</tr>
 				<tr>
 					<td>GPA (Without 4th)</td>
