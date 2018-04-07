@@ -55,8 +55,8 @@ $group_id==''?$group_id=NULL:$group_id=$group_id;
     <div class="col-md-2"></div>
 
     <div class="col-md-8">
-    <!-- attendanceUpdate -->
-        <form id="" action="<?php echo base_url() .'index.php?admin/attendance_update/' . $class_id . '/' . $shift_id . '/' . $section_id . '/' . $timestamp. '/' . $group_id ; ?>" class="form-horizontal form-groups-bordered validate" method="post">     
+    <!-- studentAttendanceUpdate -->
+        <form id="studentAttendanceUpdate" action="<?php echo base_url() .'index.php?admin/attendance_update/' . $class_id . '/' . $shift_id . '/' . $section_id . '/' . $timestamp. '/' . $group_id ; ?>" class="form-horizontal form-groups-bordered validate" method="post">     
         <div id="attendance_update">
             <table class="table table-bordered">
                 <thead>
@@ -121,16 +121,13 @@ $group_id==''?$group_id=NULL:$group_id=$group_id;
         <?php echo form_close(); ?>
 
     </div>
-
-
-
 </div>
 
 
 <script type="text/javascript">
 
 /* Update Attendance */
-$('#attendanceUpdate').ajaxForm({ 
+$('#studentAttendanceUpdate').ajaxForm({ 
 	beforeSend: function() {                
 		$('#loading').show();
 		$('#overlayDiv').show();

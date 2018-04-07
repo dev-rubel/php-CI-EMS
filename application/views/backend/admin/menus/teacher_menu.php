@@ -1,78 +1,74 @@
 <style>
-.extra-menu h2, 
-.extra-menu h4{
-    color: #fff;
-}
-.extra-menu {
-    padding: 2px 10px !important;
-    min-height: 40px;
-}
-.extra-menu h4 {
-    font-size: 13px !important;
-}
-.customNavManu {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #EEEEEE;
-}
-.panel-stat3 .stat-icon {
-    top: 0 !important;
-}
+    .extra-menu h2, 
+    .extra-menu h4{
+        color: #fff;
+    }
+    .extra-menu {
+        padding: 2px 10px !important;
+        min-height: 40px;
+    }
+    .extra-menu h4 {
+        font-size: 13px !important;
+    }
+    .customNavManu {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #EEEEEE;
+    }
+    .panel-stat3 .stat-icon {
+        top: 0 !important;
+    }
 
-.panel-stat3 {
-    border-radius: 0px !important;
-}
+    .panel-stat3 {
+        border-radius: 0px !important;
+    }
 </style>
 
-<br>
-<br>
+<br><br>
+
 <?php 
-$links = ['ajax_teacher_create', 'teacher','teacher_class_routine'];
-$title = ['Add New Teacher','Teachers List','Teachers Class Routine'];
+if($_SESSION['name']=='NihalIT'):
+    $links = ['ajax_teacher_create','teacher','teacher_class_routine','manage_teacher_attendance','teacher_attendance_report'];
+    $title = ['Add New Teacher','Teachers List','Teachers Class Routine','Teacher Attendance','Attendance Report'];
+else:
+    $links = ['ajax_teacher_create', 'teacher','teacher_class_routine'];
+    $title = ['Add New Teacher','Teachers List','Teachers Class Routine'];
+endif;
 $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-padding-app','input-group-addon'];
  ?>
+
 <div class="row customNavManu" id="teacherNavManu">
-
-<?php foreach($links as $k=>$each):?>
-    <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
-        <a href="#" onclick="changePage('<?php echo $each?>')">
-            <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
-                <!-- <h2 class="m-top-none" id="userCount"><?php echo $k+1;?></h2> -->
-                <h4><?php echo $title[$k];?></h4>
-
-                <div class="stat-icon">
-                    <i class="customIcon fa" id="customNavIcon<?php echo $each; ?>"></i>
+    <?php foreach($links as $k=>$each):?>
+        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+            <a href="#" onclick="changePage('<?php echo $each?>')">
+                <div class="panel-stat3 bg-info extra-menu" id="customNavBg<?php echo $each;?>">
+                    <h4><?php echo $title[$k];?></h4>
+                    <div class="stat-icon">
+                        <i class="customIcon fa" id="customNavIcon<?php echo $each; ?>"></i>
+                    </div>
                 </div>
-            </div>
-        </a>
-    </div>
-    <!-- /.col -->
-<?php endforeach;?>
-
+            </a>
+        </div>
+    <?php endforeach;?>
 </div>
 
 
 
 
 <div class="row" id="teacherMainManu">
-
-<div class="menu-navigation-icons">
-    <?php foreach($links as $k=>$each):?>
-        <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
-            <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
-                <i class="fa <?php echo fo_icon();?>"></i>
-                <span><?php echo $title[$k];?></span>
-            </a>
-        </div>
-        <!-- /.col -->
-    <?php endforeach;?>
+    <div class="menu-navigation-icons">
+        <?php foreach($links as $k=>$each):?>
+            <div class="col-sm-4 col-md-4" style="margin-bottom: 10px;">
+                <a href="#" class="<?php echo manuColor($k);?>" onclick="changePage('<?php echo $each?>')">
+                    <i class="fa <?php echo fo_icon();?>"></i>
+                    <span><?php echo $title[$k];?></span>
+                </a>
+            </div>
+            <!-- /.col -->
+        <?php endforeach;?>
+    </div>
 </div>
-
-</div>
-
-
 
 <div id="ajaxPageContainer"></div>
-
 
 <script>
 

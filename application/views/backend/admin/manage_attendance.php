@@ -15,22 +15,16 @@
 						</option>
 						<?php
 							$classes = $this->db->get('class')->result_array();
-							foreach($classes as $row):
-													
+							foreach($classes as $row):													
 						?>
-
 							<option value="<?php echo $row['class_id'];?>">
 								<?php echo $row['name'];?>
 							</option>
-
 							<?php endforeach;?>
 					</select>
 				</div>
 			</div>
-
-			<div id="group_holder">
-			</div>
-
+			<div id="group_holder"></div>
 			<div id="section_holder">
 				<div class="col-md-2">
 					<div class="form-group">
@@ -46,7 +40,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div id="shift_holder">
 				<div class="col-md-2">
 					<div class="form-group">
@@ -69,9 +62,6 @@
 					</div>
 				</div>
 			</div>
-
-
-
 			<div class="col-md-2">
 				<div class="form-group">
 					<label class="control-label" style="margin-bottom: 5px;">
@@ -82,15 +72,12 @@
 				</div>
 			</div>
 			<input type="hidden" name="year" value="<?php echo $running_year;?>">
-
 			<div class="col-md-1" style="margin-top: 25px;">
 				<button type="submit" class="btn btn-info">
 					<?php echo get_phrase('manage_attendance');?>
 				</button>
 			</div>
-
-
-			<?php echo form_close();?>
+		<?php echo form_close();?>
 	</div>
 </div>
 
@@ -98,7 +85,6 @@
 
 <script type="text/javascript">
 	$('#group_holder').hide();
-
 	/* Search Attendance */
 	$('#attendanceSelector').ajaxForm({
 		beforeSend: function () {
@@ -115,9 +101,7 @@
 
 		}
 	});
-
 	function select_section(class_id) {
-
 		$.ajax({
 			url: '<?php echo base_url(); ?>index.php?admin/get_group/' + class_id,
 			success: function (response) {
@@ -129,7 +113,6 @@
 				}
 			}
 		});
-
 		$.ajax({
 			url: '<?php echo base_url(); ?>index.php?admin/get_section/' + class_id,
 			success: function (response) {

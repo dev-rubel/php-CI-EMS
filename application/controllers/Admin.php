@@ -1027,8 +1027,8 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
         redirect(base_url(), 'refresh');
-        $page_data['class_id']   = $this->uri->segment(3);
-        $page_data['student_id']   = $this->uri->segment(4);
+        $page_data['class_id']   = $this->uri(3);
+        $page_data['student_id']   = $this->uri(4);
         $page_data['page_name']  = 'set_new_promotion_std_info';
         $page_data['page_title'] = get_phrase('set_new_student_information');
         $this->load->view('backend/index', $page_data);
@@ -1037,7 +1037,7 @@ class Admin extends CI_Controller
     function update_new_promotion_std_info()
     {
         $current_year = $this->running_year;
-        $student_id   = $this->uri->segment(3);
+        $student_id   = $this->uri(3);
         $info = $this->input->post();
         $this->db->where('student_id', $student_id);
         $this->db->where('year', $current_year);
@@ -3390,6 +3390,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/manage_attendance_view', $page_data);
     }
 
+    function ajax_manage_teacher_attendance_view($timestamp = '')
+    {
+        $page_data['timestamp'] = $timestamp;
+        $page_data['page_name'] = 'teacher_attendance_view';
+        $page_data['running_year'] = $this->running_year;
+        $this->load->view('backend/admin/teacher/teacher_attendance_view', $page_data);
+    }
+
     function get_section($class_id)
     {
         $page_data['class_id'] = $class_id;
@@ -3452,6 +3460,47 @@ class Admin extends CI_Controller
         redirect(base_url().'index.php?admin/manage_attendance_view/'.$data['class_id'].'/'.$data['shift_id'].'/'.$data['section_id'].'/'.$data['timestamp'].'/'.$group_id,'refresh');
     }
 
+    function ajax_teacher_attendance_selector()
+    {        
+        // IF TEACHER ATTENDANCE TABLE NOT EXIST
+        $this->load->library('dbmanage');
+        $this->dbmanage->createTable('attendance_id',['timestamp-v','year-v','teacher_id-i','status-i|0'],'teacher_attendance');
+
+        $data['year']       = $this->input->post('year');
+        $data['timestamp']  = strtotime($this->input->post('timestamp'));
+
+        $query = $this->db->get_where('teacher_attendance' ,array(
+            'year'=>$data['year'],
+                'timestamp'=>$data['timestamp']
+        ));
+        // pd($data);
+        if($query->num_rows() < 1) {
+            $teachers = $this->db->get('teacher')->result_array();
+
+            foreach($teachers as $row) {
+                $attn_data['year']       = $data['year'];
+                $attn_data['timestamp']  = $data['timestamp'];
+                $attn_data['teacher_id'] = $row['teacher_id'];
+                $this->db->insert('teacher_attendance' , $attn_data);
+            }
+        }
+        $this->ajax_manage_teacher_attendance_view($data['timestamp']);        
+    }
+
+    function teacher_attendance_update($timestamp = '')
+    {
+        $running_year = $this->running_year;
+        $attendance_of_students = $this->db->get_where('teacher_attendance', 
+            ['year'=>$running_year,'timestamp'=>$timestamp])->result_array();
+    
+        foreach($attendance_of_students as $row) {
+            $attendance_status = $this->input->post('status_'.$row['attendance_id']);
+            $this->db->where('attendance_id' , $row['attendance_id']);
+            $this->db->update('teacher_attendance' , array('status' => $attendance_status));          
+        }
+        $this->ajax_manage_teacher_attendance_view($timestamp);
+    }
+
     function ajax_attendance_selector()
     {
         // pd(strtotime($this->input->post('timestamp')));
@@ -3501,9 +3550,7 @@ class Admin extends CI_Controller
     function attendance_update($class_id = '' , $shift_id = '', $section_id = '' , $timestamp = '', $group_id = '')
     {
         $this->load->library('nihalitsms');
-        if(!empty($group_id)):
-            $group_id = $group_id;
-        else:
+        if(empty($group_id)):
             $group_id = '';
         endif;
         $running_year = $this->running_year;
@@ -3524,26 +3571,20 @@ class Admin extends CI_Controller
             $this->db->where('attendance_id' , $row['attendance_id']);
             $this->db->update('attendance' , array('status' => $attendance_status));
 
-            if ($attendance_status == 2) {
-
-                if ($attendance_sms_status == 'on') {
-                    
+            if ($attendance_sms_status == 'on') {  
+                if ($attendance_status == 2) {                                  
                     $student_id = $row['student_id'];
                     $exist = $this->db->get_where('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp])->num_rows();
                     /* IF SMS NOT SEND */
                     if($exist < 1) {
                         $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;         
-
                         $this->nihalitsms->long_sms_api($attendance_sms_description,$parent_mobile);
-
                         $this->db->insert('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp]);
-                    }                    
-                    
+                    }
                 }
             }
         }
-        // $this->session->set_flashdata('flash_message' , get_phrase('attendance_updated'));
-        //redirect(base_url().'index.php?admin/manage_attendance_view/'.$class_id.'/'.$shift_id.'/'.$section_id.'/'.$timestamp.'/'.$group_id , 'refresh');
+
         $this->ajax_manage_attendance_view($class_id,$shift_id,$section_id,$timestamp,$group_id);
     }
 
@@ -3679,6 +3720,14 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/attendance_report_view', $page_data);
      }
 
+     function ajax_teacher_attendance_report_view($month = '')
+     {
+        $page_data['running_year'] = $this->running_year;
+        $page_data['month']    = $month;
+        $page_data['page_name'] = 'teacher_attendance_report_view';
+        $this->load->view('backend/admin/teacher/teacher_attendance_report_view', $page_data);
+     }
+
      function attendance_report_print_view($class_id ='' ,$shift_id ='' , $section_id = '' , $month = '', $group_id = '')
      {
           if ($this->session->userdata('admin_login') != 1)
@@ -3691,13 +3740,39 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/attendance_report_print_view' , $page_data);
     }
 
+     function teacher_attendance_report_print_view($month = '')
+     {
+          if ($this->session->userdata('admin_login') != 1)
+            redirect(base_url(), 'refresh');            
+        $page_data['month'] = $month;
+        $this->load->view('backend/admin/teacher/teacher_attendance_report_print_view' , $page_data);
+    }
+
+    function ci_ftp()
+    {
+        $this->load->library('ftp');
+        $config['hostname'] = 'ftp.nihalit.com';
+        $config['username'] = 'ums@nihalit.com';
+        $config['password'] = 'ums123';
+        $config['debug']        = TRUE;
+
+        $this->ftp->connect($config);
+
+        $list = $this->ftp->list_files('/application/models/Admin_model.php');
+
+        echo '<pre>';
+        print_r($list);
+
+        $this->ftp->close();
+    }
+
     function attendance_report_selector()
     {
         $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
         if(!empty($className)):
-            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id=NULL;
+            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id='';
         else:
-            $group_id = NULL;
+            $group_id = '';
         endif;
         $data['class_id']   = $this->input->post('class_id');
         $data['shift_id']   = $this->input->post('shift_id');
@@ -3711,9 +3786,9 @@ class Admin extends CI_Controller
     {
         $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
         if(!empty($className)):
-            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id=NULL;
+            !empty($_POST['group_id'])?$group_id=$_POST['group_id']:$group_id='';
         else:
-            $group_id = NULL;
+            $group_id = '';
         endif;
         $data['class_id']   = $this->input->post('class_id');
         $data['shift_id']   = $this->input->post('shift_id');
@@ -3721,6 +3796,12 @@ class Admin extends CI_Controller
         $data['month']  = $this->input->post('month');
         $data['section_id'] = $this->input->post('section_id');
         $this->ajax_attendance_report_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['month'],$group_id);
+    }
+
+    function ajax_teacher_attendance_report_selector()
+    {
+        $data['month']  = $this->input->post('month');
+        $this->ajax_teacher_attendance_report_view($data['month']);
     }
 
 
@@ -4242,7 +4323,6 @@ class Admin extends CI_Controller
     }
 
     /***** UPDATE SITE COLOR *****/
-
     function change_site_color()
     {
         $mainColor = '#'.$this->input->post('main_color');
@@ -4269,7 +4349,6 @@ class Admin extends CI_Controller
     }
 
     // Truncate Table Section
-
     function truncate_table_data()
     {
         $tableName = $this->input->post('truncate_table');
@@ -4542,8 +4621,6 @@ class Admin extends CI_Controller
                 redirect(base('admin', 'send_result_sms'));
             }
         }
-
-        pd($status);
     }
 
 
@@ -4798,7 +4875,6 @@ class Admin extends CI_Controller
             $this->session->set_userdata('last_page', current_url());
             redirect(base_url(), 'refresh');
         }
-
         $data['page_name']  = 'question_paper';
         $data['page_title'] = get_phrase('question_paper');
         $this->load->view('backend/index', $data);
@@ -4809,38 +4885,29 @@ class Admin extends CI_Controller
     {
         if ($this->session->userdata('admin_login') != 1)
             redirect('login', 'refresh');
-
         if ($param1 == 'create') {
             $data['name']       = $this->input->post('name');
             $data['email']      = $this->input->post('email');
             $data['password']   = sha1($this->input->post('password'));
-
             $this->db->insert('librarian', $data);
-
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
             $this->email_model->account_opening_email('librarian', $data['email'], $this->input->post('password')); //SEND EMAIL ACCOUNT OPENING EMAIL
             redirect(base_url() . 'index.php?admin/librarian/', 'refresh');
         }
-
         if ($param1 == 'edit') {
             $data['name']   = $this->input->post('name');
             $data['email']  = $this->input->post('email');
-
             $this->db->where('librarian_id' , $param2);
             $this->db->update('librarian' , $data);
-
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
             redirect(base_url() . 'index.php?admin/librarian/', 'refresh');
         }
-
         if ($param1 == 'delete') {
             $this->db->where('librarian_id' , $param2);
             $this->db->delete('librarian');
-
             $this->session->set_flashdata('flash_message' , get_phrase('data_deleted'));
             redirect(base_url() . 'index.php?admin/librarian/', 'refresh');
         }
-
         $page_data['page_title']    = get_phrase('all_librarians');
         $page_data['page_name']     = 'librarian';
         $this->load->view('backend/index', $page_data);
@@ -4867,9 +4934,9 @@ class Admin extends CI_Controller
 
     function delete_database_entitie()
     {
-        $table_name = $this->uri->segment(3);
-        $column_name = $this->uri->segment(4);
-        $entitie_id = $this->uri->segment(5);
+        $table_name = $this->uri(3);
+        $column_name = $this->uri(4);
+        $entitie_id = $this->uri(5);
 
         $this->db->where($column_name, $entitie_id);
         $this->db->delete($table_name);
@@ -4880,7 +4947,7 @@ class Admin extends CI_Controller
 
     function add_data_to_database()
     {
-        $table_name = $this->uri->segment(3);
+        $table_name = $this->uri(3);
         $data = $this->input->post();
 
         $this->db->insert($table_name, $data);
@@ -4890,9 +4957,9 @@ class Admin extends CI_Controller
 
     function edit_data_to_database()
     {
-        $table_name = $this->uri->segment(3);
-        $column_name = $this->uri->segment(4);
-        $entitie_id = $this->uri->segment(5);
+        $table_name = $this->uri(3);
+        $column_name = $this->uri(4);
+        $entitie_id = $this->uri(5);
         $data = $this->input->post();
 
         $this->db->where($column_name, $entitie_id);
@@ -5065,8 +5132,8 @@ class Admin extends CI_Controller
             $class_id         = $extra['class_id'];
             $running_year     = $extra['year'];
         } else {
-            $class_id     = $this->uri->segment(3);
-            $running_year = $this->uri->segment(4);
+            $class_id     = $this->uri(3);
+            $running_year = $this->uri(4);
         }        
 
         $className = $this->db->get_where('class',['class_id'=>$class_id])->result_array();

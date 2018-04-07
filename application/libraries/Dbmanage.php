@@ -40,7 +40,7 @@ class Dbmanage {
     {
         if ($this->ci->db->table_exists($table) == FALSE) {
             $this->ci->load->dbforge();
-            $this->tableFild($key,$filds);
+            $test = $this->tableFild($key,$filds);            
             $result = $this->ci->dbforge->create_table($table, TRUE);
             return $result;
         } else {
@@ -61,7 +61,7 @@ class Dbmanage {
     public function tableFild($key,$fildArray) 
     {
         $filds[$key] = [
-                $value => 'INT',
+                'type' => 'INT',
                 'constraint' => 5,
                 'auto_increment' => TRUE
             ];
@@ -69,17 +69,15 @@ class Dbmanage {
             $fild = explode('-',$each);
             // TYPE CONVERT
             if(!empty($fild[1])) {
-                $type = $this->getType($fild[1]);
+                $type = $this->getType($fild[0],$fild[1]);
             } else {
                 $type = [
-                    $value => 'VARCHAR',
+                    'type' => 'VARCHAR',
                     'constraint' => '256'
                 ];
-            }
-            
+            }            
             $filds[$fild[0]] = $type;
         }
-        
         $this->ci->dbforge->add_field($filds);
         $this->ci->dbforge->add_key($key, TRUE);
     }
@@ -88,11 +86,12 @@ class Dbmanage {
      * getType function
      * 
      * @access public
-     * @param $getType
+     * @param $value
+     * @param $type
      * @return array
     */
 
-    public function getType($type) 
+    public function getType($value,$type) 
     {        
         $ext = explode('|',$type);
         // IF DEFULT VALUE EXITS
@@ -103,19 +102,19 @@ class Dbmanage {
         }
         if($ext[0] == 'i') {
             $result = [
-                $value => 'INT',
+                'type' => 'INT',
                 'constraint' => '11'                
             ];
             $result = array_merge($result,$defult);
         } elseif($ext[0] == 'v') {
             $result = [
-                $value => 'VARCHAR',
+                'type' => 'VARCHAR',
                 'constraint' => '256'
             ];
             $result = array_merge($result,$defult);
         } elseif($ext[0] == 't') {
             $result = [
-                $value => 'TEXT'
+                'type' => 'TEXT'
             ];
             $result = array_merge($result,$defult);
         }

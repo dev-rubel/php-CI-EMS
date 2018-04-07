@@ -6,8 +6,7 @@
     <?php
     $query = $this->db->get('class');
     if ($query->num_rows() > 0):
-        $class = $query->result_array();
-        
+        $class = $query->result_array();        
         ?>
 
         <div class="col-md-2">
@@ -54,8 +53,8 @@
     </div>
     <div class="col-md-2">
          <div class="form-group">
-                <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section'); ?></label>
-        <select name="month" class="form-control" id="month" onchange="show_year()">
+                <label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('month'); ?></label>
+        <select name="month" class="form-control" id="month">
             <?php
             for ($i = 1; $i <= 12; $i++):
                 if ($i == 1)
