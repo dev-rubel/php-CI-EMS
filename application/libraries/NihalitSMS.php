@@ -6,7 +6,7 @@
  * Created By: Rubel
  * Create Date: 28-Mar-18 
 */
-class NihalitSMS {
+class Nihalitsms {
 
     private $ci;
     private $user;

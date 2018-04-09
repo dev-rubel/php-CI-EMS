@@ -48,7 +48,7 @@ class Admin extends CI_Controller
         $params['data']     = $txt;
         $params['level']    = 'H';
         $params['size']     = 3;
-        $params['savename'] = FCPATH.'/uploads/qrcode/'.$name.'.png';
+        $params['savename'] = 'uploads/qrcode/'.$name.'.png';
         $params['cacheable']	= false;
         $this->ciqrcode->generate($params);
 	}
@@ -3748,24 +3748,6 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/teacher/teacher_attendance_report_print_view' , $page_data);
     }
 
-    function ci_ftp()
-    {
-        $this->load->library('ftp');
-        $config['hostname'] = 'ftp.nihalit.com';
-        $config['username'] = 'ums@nihalit.com';
-        $config['password'] = 'ums123';
-        $config['debug']        = TRUE;
-
-        $this->ftp->connect($config);
-
-        $list = $this->ftp->list_files('/application/models/Admin_model.php');
-
-        echo '<pre>';
-        print_r($list);
-
-        $this->ftp->close();
-    }
-
     function attendance_report_selector()
     {
         $className = $this->db->get_where('group', array('class_id'=>$_POST['class_id']))->row()->name;
@@ -5295,15 +5277,95 @@ class Admin extends CI_Controller
 
     // FILE DERECTORY
     //
+
+    function ci_ftp($path='',$mode='list',$localPath='')
+    {
+        $info = $this->db->get_where('settings',['type'=>'ftp_acc_info'])->row()->description;
+        list($host,$user,$pass) = explode('|',$info);
+        $this->load->library('ftp');
+        $config['hostname'] = $host;
+        $config['username'] = $user;
+        $config['password'] = $pass;
+        $config['debug']    = TRUE;
+        $this->ftp->connect($config);
+        if($mode == 'list') {
+            $list = $this->ftp->list_files('/'.$path);
+        } elseif($mode == 'download') {            
+            $list = $this->ftp->download('/'.$path, FCPATH.'/ftp/'.$this->uri(3));                
+        } elseif($mode == 'upload') {
+            $list = $this->ftp->upload($localPath, $path, '', 0775);
+        }
+        $this->ftp->close();
+        return $list;
+    }
+
+    function db_ftp_acc_info() 
+    {
+        $this->load->library('dbmanage');
+        $this->dbmanage->createRow('type','ftp_acc_info','settings');
+        $data = 'ftp.nihalit.com|ums@nihalit.com|ums123';
+        $this->db->where('type','ftp_acc_info');
+        $this->db->update('settings',['description'=>$data]);
+        pd('update');
+    }
+
     function directory()
     {
-        $this->load->helper('directory');
-        $page_data['map'] = directory_map(APPPATH.'views/');
+        // $this->load->helper('directory');
+        // $page_data['map'] = directory_map(APPPATH.'views/');
+        $this->load->library('dbmanage');
+        $this->dbmanage->createRow('type','ftp_acc_info','settings');
 
+        if (!is_dir('ftp')) {
+            mkdir('./ftp', 0777, TRUE);        
+        }
+        $path = $this->uri(3);
+        $_SESSION['path'] = $path;
+
+        if(strpos($path,'prefolder')) {
+            $arr = explode('_',$_SESSION['path']);
+            $remove = array_splice($arr, -2);
+            $_SESSION['path'] = implode('/',$arr);
+            // pd($_SESSION['path']);
+        }
+        // pd($path);        
+        $page_data['folder'] = $this->ci_ftp(str_replace('_','/',$_SESSION['path']));
         $page_data['page_title']    = get_phrase('directory');
         $page_data['page_name']     = 'get_directory_stracture';
         $this->load->view('backend/index', $page_data);
     }
+
+    function edit_file($filename='')
+    {
+        $_SESSION['dir_down'] = str_replace('_','/',$_SESSION['path']).'/'.$filename;
+        $this->ci_ftp($_SESSION['dir_down'],'download');        
+        $_SESSION['dir_file'] = $filename;
+        $page_data['filename']      = $filename;
+        $page_data['page_title']    = get_phrase('directory_file_edit');
+        $page_data['page_name']     = 'get_directory_file_edit';
+        $this->load->view('backend/index', $page_data);
+    }
+
+    function save_dir_file()
+    {
+        file_put_contents('ftp/'.$_SESSION['dir_file'], $_POST['value']);
+        $this->ci_ftp($_SESSION['dir_down'],'upload','ftp/'.$_SESSION['dir_file']);
+        echo true;
+        // $this->jsonMsgReturn(true,'Information Insert.');        
+    }
+
+    function changeDir()
+    {
+        $_SESSION['path'] = $_POST['dir'];
+        if(strpos($_SESSION['path'],'prefolder')) {
+            $arr = explode('_',$_SESSION['path']);
+            $remove = array_splice($arr, -2);
+            $_SESSION['path'] = implode('/',$arr);
+        }        
+        $page_data['folder'] = $this->ci_ftp(str_replace('_','/',$_SESSION['path']));
+        echo $this->load->view('backend/admin/get_directory_file_list',$page_data,true);
+    }
+
 
     function delete_file()
     {
