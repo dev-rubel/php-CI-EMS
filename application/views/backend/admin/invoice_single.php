@@ -91,27 +91,21 @@
 <?php 
 $schoolInfo = $this->db->get_where('settings',['type'=>'school_information'])->row()->description;
 list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoolInfo);
+$running_year = $this->db->get_where('settings', array('type' => 'running_year'))->row()->description;
 
 
 $invoice_info = $this->db->get_where('invoice', array('invoice_id' => $invoice_id))->result_array();
 foreach ($invoice_info as $row):
 
-	$class_id = $this->db->get_where('enroll' , array(
+	$eachStd = $this->db->get_where('enroll' , array(
 		'student_id' => $row['student_id'],
-			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-	))->row()->class_id;
-	$shift_id = $this->db->get_where('enroll' , array(
-		'student_id' => $row['student_id'],
-			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-	))->row()->shift_id;
-	$section_id = $this->db->get_where('enroll' , array(
-		'student_id' => $row['student_id'],
-			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-	))->row()->section_id;
-	$std_roll = $this->db->get_where('enroll' , array(
-		'student_id' => $row['student_id'],
-			'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-	))->row()->roll;
+			'year' => $running_year
+	))->row();
+	$class_id = $eachStd->class_id;
+	$shift_id = $eachStd->shift_id;
+	$section_id = $eachStd->section_id;
+	$std_roll = $eachStd->roll;
+
 ?>
 <div class="container">
 	<div class="row">
@@ -185,7 +179,7 @@ foreach ($invoice_info as $row):
 					<table class="table borderless invoice-head">
 						<tbody>
 						<?php 
-							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
+							$group_name = ucfirst($this->db->get_where('group', array('group_id' => $eachStd->group_id))->row()->name);
                             if(strlen($group_name) > 0):
 						?>
 							<tr>
@@ -353,7 +347,7 @@ foreach ($invoice_info as $row):
 					<table class="table borderless invoice-head">
 						<tbody>
 						<?php 
-							$group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
+							$group_name = ucfirst($this->db->get_where('group', array('group_id' => $eachStd->group_id))->row()->name);
                             if(strlen($group_name) > 0):
 						?>
 							<tr>

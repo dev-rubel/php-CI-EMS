@@ -34,7 +34,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control bangla" name="namebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="namebn">
                         </div>
                     </div>
 
@@ -54,7 +54,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control bangla" name="fnamebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="fnamebn">
                         </div>
                     </div>
 
@@ -74,7 +74,7 @@ span.mendatory {
                         </label>
 
                         <div class="col-sm-8">
-                            <input type="text" class="form-control bangla" name="mnamebn" data-validation="required">
+                            <input type="text" class="form-control bangla" name="mnamebn">
                         </div>
                     </div>
 

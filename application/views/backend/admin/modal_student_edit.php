@@ -1,11 +1,31 @@
 <?php 
+$current_year = $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description;
 $edit_data      =   $this->db->get_where('enroll' , array(
-    'student_id' => $param2 , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description))->result_array();
+    'student_id' => $param2 , 'year' => $current_year))->result_array();
 
 $nClass_id	=	$this->db->get_where('enroll' , array(
-    'student_id' => $param2 , 'year' => $this->db->get_where('settings' , array('type' => 'running_year'))->row()->description))->row()->class_id;
+    'student_id' => $param2 , 'year' => $current_year))->row()->class_id;
 $nClass_numaric = $this->db->get_where('class', array('class_id'=>$nClass_id))->row()->name_numeric;
 
+// available roll numbers //
+$this->db->where('class_id',$edit_data[0]['class_id']);
+$this->db->where('section_id',$edit_data[0]['section_id']);
+$this->db->where('shift_id',$edit_data[0]['shift_id']);
+if($edit_data[0]['group_id']){
+    $this->db->where('group_id',$edit_data[0]['group_id']);
+}
+$this->db->where('year',$current_year);
+$result = $this->db->get('enroll')->result_array();
+$databaseRoll = array_column($result,'roll');
+$oneTohundred = range(1,300);
+foreach($oneTohundred as $k=>$list){
+    foreach($databaseRoll as $list2){
+        if($list==$list2){
+            unset($oneTohundred[$k]);
+        }
+    }
+}
+// end available roll numbers //
 foreach ($edit_data as $row):
 	$stdInfo = $this->db->get_where('student' , array('student_id' => $row['student_id']))->result_array();
 	extract($stdInfo[0]);
@@ -44,7 +64,20 @@ foreach ($edit_data as $row):
 						</div>
 					</div>
 	
-					<div class="form-group">
+                <div class="form-group">
+                    <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('change_roll_to'); ?></label>
+
+                    <div class="col-sm-7">
+                        <select name="change_roll" class="form-control">
+                        <option value="noChange">Current Roll: <?php echo '<b>'.$edit_data[0]['roll'].'</b>';  ?></option>
+                        <?php foreach($oneTohundred as $rollKey=>$eachRoll): ?>
+                            <option value="<?php echo $eachRoll; ?>"><?php echo $eachRoll; ?></option>
+                        <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+	
+                <div class="form-group">
                     <label for="field-1" class="col-sm-3 control-label"><?php echo get_phrase('name'); ?></label>
 
                     <div class="col-sm-7">

@@ -7,7 +7,7 @@ list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoo
 $grades = $this->db->get('grade')->result_array();
 function accSum($grades='')
 {	
-	echo 'hello';
+	echo '';
 }
 ?>
 <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />

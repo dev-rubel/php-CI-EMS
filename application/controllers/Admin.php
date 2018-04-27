@@ -357,12 +357,13 @@ class Admin extends CI_Controller
 
     function download_admit_card()
     {
+        $rolls = $this->input->post('rolls');       
         $class_id = $this->input->post('class_id');
         $shift_id = $this->input->post('shift_id');
         $section_id = $this->input->post('section_id');
         $group_id = $this->input->post('group_id');
         $exam_id = $this->input->post('exam_id');
-
+    
         $this->db->where('class_id', $class_id);
         $this->db->where('shift_id', $shift_id);
         $this->db->where('section_id', $section_id);
@@ -370,12 +371,21 @@ class Admin extends CI_Controller
         if(!empty($group_id)) {
             $this->db->where('group_id', $group_id);
         }
-        $query = $this->db->get('enroll');
-        if($query->num_rows() > 0) {
+        $result = $this->db->get('enroll')->result_array();
+        if(!empty($rolls)):
+            $ext_rolls = explode(',',$rolls);
+            
+            foreach($result as $k=>$each) {
+                if(!in_array($each['roll'],$ext_rolls)){
+                    unset($result[$k]);
+                }
+            }
+        endif;
+        
+        if(count($result) > 0) {
             $this->load->helper('file');
             delete_files('./uploads/qrcode/');
             // $this->load->library('m_pdf');
-            $result = $query->result_array();
             foreach($result as $k=>$each) {
                 $name = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name;
                 $class = $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name;
@@ -574,11 +584,11 @@ class Admin extends CI_Controller
         return $student;
     }
 
-    function generate_marksheet_class_wise($classID,$examID)
+    function generate_marksheet_class_wise($array,$exam_id)
     {
-        $class_std = $this->db->get_where('enroll',['class_id'=>$classID,'year'=>$this->running_year])->result_array();
+        $class_std = $this->db->get_where('enroll',$array)->result_array();
         foreach($class_std as $std_key=>$std_each) { 
-            $students['mark_info'][$std_key] = $this->generate_marksheet($std_each['student_id'],$examID);
+            $students['mark_info'][$std_key] = $this->generate_marksheet($std_each['student_id'],$exam_id);
             if(empty($students['mark_info'][$std_key])) {
                 // IF NO MARK FOUND UNSET THIS STUDENT FROM ARRAY
                 unset($students['mark_info'][$std_key]);
@@ -618,12 +628,28 @@ class Admin extends CI_Controller
         return $students;
     }
 
-    function marksheet_single()
+    function download_marksheet()
     {
-        $data['exam_id'] = 1;
-        $data['students'] = $this->generate_marksheet_class_wise(19,1);   
+        $data = $this->input->post();
+        $filds = ['shift_id','class_id','section_id','group_id'];
+        $array = [];
+        foreach($filds as $k=>$fild){
+            if(!empty($data[$fild])) {
+                $fild = [$fild=>$data[$fild]];
+                $array = array_merge($array,$fild);
+            }    
+        }
+        $array = array_merge($array,['year'=>$this->running_year]);
+        $exam_id = $data['exam_id'];
+        $data['students'] = $this->generate_marksheet_class_wise($array,$exam_id);   
         // pd($data['students']);    
         $this->load->view('backend/admin/marksheet_single', $data);
+    }
+
+    function print_blank_marksheet($data)
+    {
+        // pd($data);
+        $this->load->view('backend/admin/marksheet_list_blank', $data);
     }
 
     function invoice_single()
@@ -737,7 +763,13 @@ class Admin extends CI_Controller
             redirect(base_url() . 'index.php?admin/student_add/', 'refresh');
         }
         if ($param1 == 'do_update') {
-
+            // change roll if changed //
+            if($_POST['change_roll'] != 'noChange') {
+                $this->db->where('student_id',$param2);
+                $this->db->update('enroll',['roll'=>$_POST['change_roll']]);
+            }
+            unset($_POST['change_roll']);
+            // end change roll work //
             $std_info = $this->db->get_where('enroll', array('student_id'=> $param2))->row();
             if($std_info->group_id == 0 || empty($std_info->group_id)){
                 $group_id = '';
@@ -771,16 +803,17 @@ class Admin extends CI_Controller
             $this->db->where('student_id', $param2);
             $this->db->update('enroll', $book_no);
             // END UPDATE ACCOUNT CODE SECTION
-            $path = 'uploads/student_image/' . $student_id . '.jpg';
-            move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
-            // IMAGE RESIZE            
-            $config = resize_img(270,300,$path);
-            $this->load->library('image_lib', $config);
-            $this->image_lib->resize();
-
+            if(!empty($_FILES['userfile']['name'])) {
+                $path = 'uploads/student_image/' . $param2 . '.jpg';
+                move_uploaded_file($_FILES['userfile']['tmp_name'], $path);
+                // IMAGE RESIZE            
+                $config = resize_img(270,300,$path);
+                $this->load->library('image_lib', $config);
+                $this->image_lib->resize();
+            }
             $this->crud_model->clear_cache();
             $this->session->set_flashdata('flash_message' , get_phrase('data_updated'));
-            redirect(base_url() . 'index.php?admin/student_information/'.$param3.'/'.$group_id, 'refresh');
+            redirect(base_url() . 'index.php?admin/student_menu', 'refresh');
         }
         if ($param1 == 'delete') {
             // STUDENT TABLE
@@ -790,7 +823,7 @@ class Admin extends CI_Controller
             $this->db->where('student_id', $param2);
             $this->db->delete('enroll');
             $this->session->set_flashdata('flash_message' , get_phrase('data_deleted'));
-            redirect(base_url() . 'index.php?admin/student_information/' . $param1, 'refresh');
+            redirect(base_url() . 'index.php?admin/student_menu', 'refresh');
         }
     }
 
@@ -5106,6 +5139,12 @@ class Admin extends CI_Controller
         // print_r($csvData);
     }
 
+    function export_student_info_print($data)
+    {
+        // pd($data);
+        $this->load->view('backend/admin/export_student_info_print', $data);
+    }
+
     function export_student_info_excel($extra = [])
     {
         // pd($extra);
@@ -5267,8 +5306,12 @@ class Admin extends CI_Controller
         $form_info = $this->input->post();
         $type = $form_info['download'];
         array_splice($form_info, -1);
-        if($type = 'student_information') {
+        if($type == 'student_information') {
             $this->export_student_info_excel($form_info);
+        } elseif($type == 'marksheet_blank') {
+            $this->print_blank_marksheet($form_info);
+        } elseif($type == 'student_information2') {
+            $this->export_student_info_print($form_info);
         } else {
             echo 'This section was on going development.';
         }
@@ -5337,9 +5380,9 @@ class Admin extends CI_Controller
 
     function edit_file($filename='')
     {
-        $_SESSION['dir_down'] = str_replace('_','/',$_SESSION['path']).'/'.$filename;
-        $this->ci_ftp($_SESSION['dir_down'],'download');        
-        $_SESSION['dir_file'] = $filename;
+        $_SESSION['dir_down'][$filename] = str_replace('_','/',$_SESSION['path']).'/'.$filename;
+        $this->ci_ftp($_SESSION['dir_down'][$filename],'download');        
+        $_SESSION['dir_file'][$filename] = $filename;
         $page_data['filename']      = $filename;
         $page_data['page_title']    = get_phrase('directory_file_edit');
         $page_data['page_name']     = 'get_directory_file_edit';
@@ -5348,8 +5391,8 @@ class Admin extends CI_Controller
 
     function save_dir_file()
     {
-        file_put_contents('ftp/'.$_SESSION['dir_file'], $_POST['value']);
-        $this->ci_ftp($_SESSION['dir_down'],'upload','ftp/'.$_SESSION['dir_file']);
+        file_put_contents('ftp/'.$_SESSION['dir_file'][$_POST['file']], $_POST['value']);
+        $this->ci_ftp($_SESSION['dir_down'][$_POST['file']],'upload','ftp/'.$_SESSION['dir_file'][$_POST['file']]);
         echo true;
         // $this->jsonMsgReturn(true,'Information Insert.');        
     }

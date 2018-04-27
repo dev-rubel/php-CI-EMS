@@ -1,5 +1,6 @@
 <?php
 $edit_data = $this->db->get_where('invoice', array('invoice_id' => $param2))->result_array();
+$running_year = $this->db->get_where('settings', array('type' => 'running_year'))->row()->description;
 
 // pd($edit_data);
 foreach ($edit_data as $row):
@@ -37,28 +38,20 @@ foreach ($edit_data as $row):
                     <?php 
                     if(!empty($row['student_id'])){
                         echo get_phrase('name: ') . ' ' . $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name.'<br>'; 
-                    
-                        $class_id = $this->db->get_where('enroll' , array(
+                        
+                        $eachStd = $this->db->get_where('enroll' , array(
                             'student_id' => $row['student_id'],
-                                'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-                        ))->row()->class_id;
-                        $shift_id = $this->db->get_where('enroll' , array(
-                            'student_id' => $row['student_id'],
-                                'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-                        ))->row()->shift_id;
-                        $section_id = $this->db->get_where('enroll' , array(
-                            'student_id' => $row['student_id'],
-                                'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-                        ))->row()->section_id;
-                        $std_roll = $this->db->get_where('enroll' , array(
-                            'student_id' => $row['student_id'],
-                                'year' => $this->db->get_where('settings', array('type' => 'running_year'))->row()->description
-                        ))->row()->roll;
+                                'year' => $running_year
+                        ))->row();
+                        $class_id = $eachStd->class_id;
+                        $shift_id = $eachStd->shift_id;
+                        $section_id = $eachStd->section_id;
+                        $std_roll = $eachStd->roll;
                         if(!empty($class_id)){
                             echo get_phrase('shift: ') . ' ' . $this->db->get_where('shift', array('shift_id' => $shift_id))->row()->name.'<br>';
                             echo get_phrase('class: ') . ' ' . $this->db->get_where('class', array('class_id' => $class_id))->row()->name.'<br>';
                             
-                            $group_name = ucfirst($this->db->get_where('group', array('class_id' => $class_id))->row()->name);
+                            $group_name = ucfirst($this->db->get_where('group', array('group_id' => $eachStd->group_id))->row()->name);
                             if(strlen($group_name) > 0){
                                 echo get_phrase('group: ') . ' ' .$group_name.'<br>';
                             }                           

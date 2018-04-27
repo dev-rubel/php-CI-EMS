@@ -1,6 +1,6 @@
 <?php 
 	!empty($group_id)?$group_id=$group_id:$group_id='';
-	if($group_id !== ''):
+	if($group_id != ''):
 		$group_name       = $this->db->get_where('group' , array('group_id' => $group_id))->row()->name;
 	endif;
 		$class_name		= $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
