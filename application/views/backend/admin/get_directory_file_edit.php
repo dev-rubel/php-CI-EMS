@@ -1,4 +1,4 @@
-<?php list($name,$ext) = explode('.',$filename); ?>
+
 <style type="text/css" media="screen">
     pre.ace_editor.ace-monokai.ace_dark {
         height: 400px;
@@ -21,7 +21,7 @@
         $('#savingProcess').hide();
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/<?php echo $ext;?>");
+        editor.getSession().setMode("ace/mode/php");
         editor.commands.addCommand({
             name: 'myCommand',
             bindKey: {win: 'Ctrl-M',  mac: 'Command-M'},
@@ -30,7 +30,7 @@
                 $.ajax({
                     url: "<?php echo base('admin','save_dir_file');?>",
                     type: "post",
-                    data: {'value':editor.getValue(),'file':<?php echo $filename; ?>},
+                    data: {'value':editor.getValue()},
                     beforeSend: function() {
                         $('#savingProcess').show();
                         $('#savingProcess').text('Saving.....');

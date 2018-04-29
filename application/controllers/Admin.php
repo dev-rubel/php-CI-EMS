@@ -5337,6 +5337,8 @@ class Admin extends CI_Controller
             $list = $this->ftp->download('/'.$path, FCPATH.'/ftp/'.$this->uri(3));                
         } elseif($mode == 'upload') {
             $list = $this->ftp->upload($localPath, $path, '', 0775);
+        } elseif($mode == 'rename') {
+            $list = $this->ftp->rename($path, $localPath);
         }
         $this->ftp->close();
         return $list;
@@ -5356,10 +5358,8 @@ class Admin extends CI_Controller
     {
         // $this->load->helper('directory');
         // $page_data['map'] = directory_map(APPPATH.'views/');
-        $this->load->library('dbmanage');
-        $this->dbmanage->createRow('type','ftp_acc_info','settings');
 
-        if (!is_dir('ftp')) {
+        if (!is_dir('ftp'.$date)) {
             mkdir('./ftp', 0777, TRUE);        
         }
         $path = $this->uri(3);
@@ -5380,9 +5380,9 @@ class Admin extends CI_Controller
 
     function edit_file($filename='')
     {
-        $_SESSION['dir_down'][$filename] = str_replace('_','/',$_SESSION['path']).'/'.$filename;
-        $this->ci_ftp($_SESSION['dir_down'][$filename],'download');        
-        $_SESSION['dir_file'][$filename] = $filename;
+        $_SESSION['dir_down'] = str_replace('_','/',$_SESSION['path']).'/'.$filename;
+        $this->ci_ftp($_SESSION['dir_down'],'download');        
+        $_SESSION['dir_file'] = $filename;
         $page_data['filename']      = $filename;
         $page_data['page_title']    = get_phrase('directory_file_edit');
         $page_data['page_name']     = 'get_directory_file_edit';
@@ -5391,24 +5391,39 @@ class Admin extends CI_Controller
 
     function save_dir_file()
     {
-        file_put_contents('ftp/'.$_SESSION['dir_file'][$_POST['file']], $_POST['value']);
-        $this->ci_ftp($_SESSION['dir_down'][$_POST['file']],'upload','ftp/'.$_SESSION['dir_file'][$_POST['file']]);
+        file_put_contents('ftp/'.$_SESSION['dir_file'], $_POST['value']);
+        $this->ci_ftp($_SESSION['dir_down'],'upload','ftp/'.$_SESSION['dir_file']);
         echo true;
         // $this->jsonMsgReturn(true,'Information Insert.');        
     }
 
-    function changeDir()
+    function ftp_rename_file()
     {
-        $_SESSION['path'] = $_POST['dir'];
-        if(strpos($_SESSION['path'],'prefolder')) {
-            $arr = explode('_',$_SESSION['path']);
-            $remove = array_splice($arr, -2);
-            $_SESSION['path'] = implode('/',$arr);
-        }        
-        $page_data['folder'] = $this->ci_ftp(str_replace('_','/',$_SESSION['path']));
-        echo $this->load->view('backend/admin/get_directory_file_list',$page_data,true);
+        $path = str_replace('_','/',$_SESSION['path']);        
+        if($_POST['file_name'] != $_POST['pre_file_name']) {
+            $this->ci_ftp($path.'/'.$_POST['pre_file_name'],'rename',$path.'/'.$_POST['file_name']);
+            $this->jsonMsgReturn(true,$path.'/'.$_POST['pre_file_name'], $this->changeDir(true));
+        } else {
+            echo true;
+        }
     }
 
+    function changeDir($returnHtml = '')
+    {
+        if($returnHtml) {
+            $page_data['folder'] = $this->ci_ftp(str_replace('_','/',$_SESSION['path']));
+            return $this->load->view('backend/admin/get_directory_file_list',$page_data,true);
+        } else {
+            $_SESSION['path'] = $_POST['dir'];
+            if(strpos($_SESSION['path'],'prefolder')) {
+                $arr = explode('_',$_SESSION['path']);
+                $remove = array_splice($arr, -2);
+                $_SESSION['path'] = implode('/',$arr);
+            }
+            $page_data['folder'] = $this->ci_ftp(str_replace('_','/',$_SESSION['path']));
+            echo $this->load->view('backend/admin/get_directory_file_list',$page_data,true);
+        }
+    }
 
     function delete_file()
     {

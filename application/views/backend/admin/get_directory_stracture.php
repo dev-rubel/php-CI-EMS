@@ -70,6 +70,9 @@
     i.fa.fa-trash-o {
         color: red;
     }
+    .fa.fa-eraser {
+        color: deepskyblue;
+    }
 </style>
 
 <p id="loadingProcess"></p>    
@@ -83,8 +86,9 @@
         $file = strpos($value, '.');
         if(is_numeric($file)){
             echo '<li><a href="#">'.$value.'</a>
-            <a href="'.base_url().'index.php?admin/edit_file/'.$value.'" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
-            <a href="#" onclick="return confirm("Are you sure you want to delete this file?");"><i class="fa fa-trash-o"></i></a>
+            <a href="'.base_url().'index.php?admin/edit_file/'.$value.'" target="_blank" title="Rename"><i class="fa fa-eraser"></i></a>
+            <a href="'.base_url().'index.php?admin/edit_file/'.$value.'" target="_blank" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+            <a href="#" onclick="return confirm("Are you sure you want to delete this file?");" title="Delete"><i class="fa fa-trash-o"></i></a>
             </li>';
         }else{
             $path = $oldPath.$value;

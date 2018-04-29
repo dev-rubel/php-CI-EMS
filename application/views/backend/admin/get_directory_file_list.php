@@ -1,3 +1,8 @@
+<style>
+    #rename-box, #create-dir-box, #move-file-box, #del-file-box, #del-folder-box {
+        display: none;
+    }
+</style>
 <div id="dir_wrapper">
    <?php 
     $oldPath = str_replace('/','_',$_SESSION['path']);
@@ -8,8 +13,8 @@
         $file = strpos($value, '.');
         if(is_numeric($file)){
             echo '<li><a href="#">'.$value.'</a>
-            <a href="'.base_url().'index.php?admin/edit_file/'.$value.'" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
-            <a href="#" onclick="return confirm("Are you sure you want to delete this file?");"><i class="fa fa-trash-o"></i></a>
+            <a href="#" class="renameButton" data-value="'.$value.'" title="Rename"><i class="fa fa-eraser"></i></a>
+            <a href="'.base_url().'index.php?admin/edit_file/'.$value.'" target="_blank" title="Edit"><i class="fa fa-pencil-square-o"></i></a>            
             </li>';
         }else{
             $path = $oldPath.$value;
@@ -18,8 +23,116 @@
     }
    ?>
 
-    <div class="row">
-        <div class="col-md-12 well tree">
+    <div class="row">   
+        <br>
+        <div class="create-dir-button">
+            <div class="row">
+                <div class="col-md-2" id="create-dir">
+                    <h4><a href="#" id="create-dir-button"><i class="fa fa-plus"></i> Create Folder</a></h4>
+                </div>
+                <div class="col-md-2" id="move-file">
+                    <h4><a href="#" id="move-file-button"><i class="fa fa-copy"></i> Move File</a></h4>
+                </div>
+                <div class="col-md-2" id="del-file">
+                    <h4><a href="#" id="del-file-button"><i class="fa fa-minus-square"></i> Delete File</a></h4>
+                </div>
+                <div class="col-md-2" id="del-folder">
+                    <h4><a href="#" id="del-folder-button"><i class="fa fa-trash"></i> Delete Folder</a></h4>
+                </div>
+            </div>
+        </div> 
+        <!-- create new folder/dir area -->
+        <div id="create-dir-box">
+            <br>
+            <div class="row">
+                <form id="ftpCreateDir" action="<?php echo base_url() .'index.php?admin/ftp_create_folder'; ?>" method="post">   
+                    <div class="col-md-3">
+                        <input type="text" name="folder_name" class="form-control" id="create-dir-box-input" placeholder="Folder Name">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Create</button>
+                    </div>                    
+                </form>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-danger cancle-operation">Cancle</a>
+                </div>
+            </div>
+        </div>  
+        <!-- move file area -->
+        <div id="move-file-box">
+            <br>
+            <div class="row">
+                <form id="ftpMoveFile" action="<?php echo base_url() .'index.php?admin/ftp_move_file'; ?>" method="post">   
+                    <div class="col-md-3">
+                        <input type="text" name="from_folder" class="form-control" id="move-file-from-box-input" placeholder="From file path">
+                    </div>
+                    <div class="col-md-1 text-center"><b>To</b></div>
+                    <div class="col-md-3">
+                        <input type="text" name="to_folder" class="form-control" id="move-file-to-box-input" placeholder="To file path">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Move</button>
+                    </div>                    
+                </form>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-danger cancle-operation">Cancle</a>
+                </div>
+            </div>
+        </div>  
+        <!-- file rename area -->
+        <div id="rename-box">
+            <br>
+            <div class="row">
+                <form id="ftpRename" action="<?php echo base_url() .'index.php?admin/ftp_rename_file'; ?>" method="post">   
+                    <div class="col-md-3">
+                        <input type="text" name="file_name" class="form-control" id="rename-box-input" placeholder="File Name">
+                        <input type="hidden" name="pre_file_name" class="form-control" id="rename-box-input-pre">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Save</button>
+                    </div>
+                </form>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-danger cancle-operation">Cancle</a>
+                </div>
+            </div>
+        </div>   
+        <!-- delete file area -->
+        <div id="del-file-box">
+            <br>
+            <div class="row">
+                <form id="ftpdelFile" action="<?php echo base_url() .'index.php?admin/ftp_delete_file'; ?>" method="post">   
+                    <div class="col-md-3">
+                        <input type="text" name="file_name" class="form-control" id="delete-file-box-input" placeholder="File Name (This Directory)">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Delete</button>
+                    </div>
+                </form>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-danger cancle-operation">Cancle</a>
+                </div>
+            </div>
+        </div>   
+        <!-- delete folder area -->
+        <div id="del-folder-box">
+            <br>
+            <div class="row">
+                <form id="ftpdelFolder" action="<?php echo base_url() .'index.php?admin/ftp_folder_file'; ?>" method="post">   
+                    <div class="col-md-3">
+                        <input type="text" name="folder_name" class="form-control" id="delete-folder-box-input" placeholder="Folder Name (This Directory)">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-info">Delete</button>
+                    </div>
+                </form>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-danger cancle-operation">Cancle</a>
+                </div>
+            </div>
+        </div>   
+        <br>
+        <div class="col-md-12 well tree">    
             <ul id="tree">
                 <?php 
                 foreach($folder as $k=>$each){
@@ -41,7 +154,79 @@
 </div>
 
 <script>
+
+    $('#ftpRename').ajaxForm({
+        beforeSend: function() {    
+            $('#loadingProcess').show();
+            $('#loadingProcess').text('Loading.....');    
+        },  
+        success: function (data){
+            var jData = JSON.parse(data);
+            $('#rename-box').hide();
+            $('#rename-box-input').val('');
+            $('#rename-box-input-pre').val('');
+            $('#dir_wrapper').html(jData.html);
+            console.log(jData.msg);
+        },
+        complete: function() {
+            $('#loadingProcess').text('!!.....Done.....!!');
+            setTimeout(function(){
+                $('#loadingProcess').hide();                  
+            }, 2000);                     
+        }
+    }); 
+    
+
     $(function () {
+        // rename file section
+        $('.renameButton').on('click', function () {
+            var Status = $(this).val($(this).attr("data-value"));
+            var value = Status.context.dataset.value;  
+            $('#rename-box').show();
+            $('#rename-box-input').val(value);
+            $('#rename-box-input-pre').val(value);
+        });
+        // create folder/dir section
+        $('#create-dir-button').on('click', function () {
+            $('#create-dir-box').show();
+            $('#move-file').hide();
+            $('#del-file').hide();
+            $('#del-folder').hide();
+        });
+        // move file section
+        $('#move-file-button').on('click', function () {
+            $('#create-dir').hide();
+            $('#move-file-box').show();
+            $('#del-file').hide();
+            $('#del-folder').hide();
+        });
+        // delete file section
+        $('#del-file-button').on('click', function () {
+            $('#create-dir').hide();
+            $('#move-file').hide();
+            $('#del-file-box').show();
+            $('#del-folder').hide();
+        });
+        // delete folder section
+        $('#del-folder-button').on('click', function () {
+            $('#create-dir').hide();
+            $('#move-file').hide();
+            $('#del-file').hide();
+            $('#del-folder-box').show();
+        });
+        // cancle operation section or reset section
+        $('.cancle-operation').on('click', function () {
+            $('#create-dir-box').hide();
+            $('#move-file-box').hide();
+            $('#rename-box').hide();
+            $('#del-file-box').hide();
+            $('#del-folder-box').hide();
+            
+            $('#create-dir').show();
+            $('#move-file').show();
+            $('#del-file').show();
+            $('#del-folder').show();
+        });
         $('.folder').on('click', function () {
             var Status = $(this).val($(this).attr("data-path"));
             var dirPath = Status.context.dataset.path;        
