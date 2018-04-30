@@ -5339,6 +5339,12 @@ class Admin extends CI_Controller
             $list = $this->ftp->upload($localPath, $path, '', 0775);
         } elseif($mode == 'rename') {
             $list = $this->ftp->rename($path, $localPath);
+        } elseif($mode == 'mkdir') {
+            $list = $this->ftp->mkdir($path, 0755);
+        } elseif($mode == 'deldir') {
+            $list = $this->ftp->delete_dir($path);
+        } elseif($mode == 'delfile') {
+            $list = $this->ftp->delete_file($path);
         }
         $this->ftp->close();
         return $list;
@@ -5399,12 +5405,63 @@ class Admin extends CI_Controller
 
     function ftp_rename_file()
     {
-        $path = str_replace('_','/',$_SESSION['path']);        
-        if($_POST['file_name'] != $_POST['pre_file_name']) {
-            $this->ci_ftp($path.'/'.$_POST['pre_file_name'],'rename',$path.'/'.$_POST['file_name']);
-            $this->jsonMsgReturn(true,$path.'/'.$_POST['pre_file_name'], $this->changeDir(true));
+        if(!empty($_POST['file_name'])) {
+            $path = str_replace('_','/',$_SESSION['path']);        
+            if($_POST['file_name'] != $_POST['pre_file_name']) {
+                $this->ci_ftp($path.'/'.$_POST['pre_file_name'],'rename',$path.'/'.$_POST['file_name']);
+                $this->jsonMsgReturn(true,'File rename success', $this->changeDir(true));
+            } else {
+                $this->jsonMsgReturn(true,'No Change');
+            }
         } else {
-            echo true;
+            $this->jsonMsgReturn(false,'Name Empty');
+        }        
+    }
+
+    function ftp_create_folder()
+    {
+        if(!empty($_POST['folder_name'])) {
+            $path = str_replace('_','/',$_SESSION['path']);  
+            $this->ci_ftp($path.'/'.$_POST['folder_name'],'mkdir');
+            $this->jsonMsgReturn(true,'Folder created', $this->changeDir(true));
+        } else {
+            $this->jsonMsgReturn(false,'Need folder name');
+        }
+    }
+
+    function ftp_delete_folder()
+    {
+        if(!empty($_POST['folder_name'])) {
+            $path = str_replace('_','/',$_SESSION['path']);  
+            $check = $this->ci_ftp($path.'/'.$_POST['folder_name'],'list');
+            if($check) {
+                $this->ci_ftp($path.'/'.$_POST['folder_name'],'deldir');
+            }            
+            $this->jsonMsgReturn(true,'Delete folder', $this->changeDir(true));
+        } else {
+            $this->jsonMsgReturn(false,'Need folder name');
+        }
+    }
+
+    function ftp_delete_file()
+    {
+        if(!empty($_POST['file_name'])) {
+            $path = str_replace('_','/',$_SESSION['path']);  
+            $err = $this->ci_ftp($path.'/'.$_POST['file_name'],'delfile');
+            $this->jsonMsgReturn(true,'File deleted', $this->changeDir(true));
+        } else {
+            $this->jsonMsgReturn(false,'Need File name');
+        }
+    }
+
+    function ftp_upload_file()
+    {
+        if(!empty($_FILES['file_name']['name'])) {
+            $path = str_replace('_','/',$_SESSION['path']);  
+            $err = $this->ci_ftp($path.'/'.$_FILES['file_name']['name'],'upload',$_FILES['file_name']['tmp_name']);
+            $this->jsonMsgReturn(true,'File uploded', $this->changeDir(true));
+        } else {
+            $this->jsonMsgReturn(false,'Need File');
         }
     }
 
