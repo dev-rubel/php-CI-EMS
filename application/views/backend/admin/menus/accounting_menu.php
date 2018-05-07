@@ -104,21 +104,9 @@ function changePage(page)
         url: '<?php echo base_url(); ?>index.php?a/accounting/ajax_accounting_menu_pages',
         success: function (response)
         {   
-            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?a/accounting/' + selectValue;
-            window.history.pushState({path:newurl},'',newurl);                
-            // var cName = $('#'+selectValue).hasClass('bg-info'); 
-            // if(cName){
-            //     $("#"+selectValue).removeClass("bg-info");
-            //     $("#"+selectValue).addClass("bg-primary");
-            // } else {
-            //     $("#"+selectValue).addClass("bg-info");
-            //     $("#"+selectValue).removeClass("bg-primary");
-            // }
-            // if(cName.contains("bg-info")){
-            //     console.log("String Found");
-            // }
-            //$("#"+selectValue).removeClass("bg-info");
-            //$("#"+selectValue).toggleClass("bg-primary");
+            // var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?a/accounting/' + selectValue;
+            // window.history.pushState({path:newurl},'',newurl);                
+           
             $('#accountingNavManu').show();
             $('#accountingMainManu').hide();
             $('#ajaxPageContainer').html(response);

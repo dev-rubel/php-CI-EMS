@@ -411,18 +411,18 @@ class Accounting extends CI_Controller
         $this->loadView('accounting/income_category', 'income_category');
     }
 
-    function student_payment($param1 = '' , $param2 = '' , $param3 = '') {
+    // function student_payment($param1 = '' , $param2 = '' , $param3 = '')
+    // {
+    //     if ($this->session->userdata('admin_login') != 1)
+    //         redirect('login', 'refresh');
 
-        if ($this->session->userdata('admin_login') != 1)
-            redirect('login', 'refresh');
-
-        $this->db->select('description');
-        $this->db->where('type','tution_fee_sms_status');
-        $this->db->or_where('type','tution_fee_sms_details');
-        $page_data['tution_fee_setting'] = $this->db->get('settings')->result_array();
-        $page_data['income_category'] = $this->db->get('income_category')->result_array();
-        $this->loadView('accounting/student_payment', 'create_student_payment', $page_data);
-    }
+    //     $this->db->select('description');
+    //     $this->db->where('type','tution_fee_sms_status');
+    //     $this->db->or_where('type','tution_fee_sms_details');
+    //     $page_data['tution_fee_setting'] = $this->db->get('settings')->result_array();
+    //     $page_data['income_category'] = $this->db->get('income_category')->result_array();
+    //     $this->loadView('accounting/student_payment', 'create_student_payment', $page_data);
+    // }
 
     function expense($param1 = '' , $param2 = '')
     {

@@ -652,9 +652,9 @@ class Admin extends CI_Controller
         $this->load->view('backend/admin/marksheet_list_blank', $data);
     }
 
-    function invoice_single()
+    function invoice_single($inv_id = '')
     {
-        $invoice_id['invoice_id'] = $this->uri(3);
+        $invoice_id['invoice_id'] = !empty($inv_id)? $inv_id:$this->uri(3);
         $this->load->view('backend/admin/invoice_single',$invoice_id);
     }
 
@@ -2430,7 +2430,7 @@ class Admin extends CI_Controller
                 $this->nihalitsms->long_sms_api($tution_sms_details,$mobile);
             }
             // END TUTION FEE SMS SECTION
-            $this->jsonMsgReturn(true,'Success.');
+            $this->invoice_single($invoice_id);
         }
     }
 

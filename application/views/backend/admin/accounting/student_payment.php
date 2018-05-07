@@ -322,26 +322,26 @@
 
 $(document).ready(function() { 
 
-    $('#createInvoice').ajaxForm({
-        beforeSend: function() {
-                $('#loading2').show();
-                $('#overlayDiv').show();
-        },
-        success: function (data){
-            var jData = JSON.parse(data);
+    // $('#createInvoice').ajaxForm({
+    //     beforeSend: function() {
+    //             $('#loading2').show();
+    //             $('#overlayDiv').show();
+    //     },
+    //     success: function (data){
+    //         var jData = JSON.parse(data);
 
-            if(!jData.type) {
-                toastr.error(jData.msg);
-            } else {
-                toastr.success(jData.msg);
-                $('#createInvoice').resetForm();
-                $('#studentAccountHistory').html('');
-            }   
-            $('body,html').animate({scrollTop:0},800);
-            $('#loading2').fadeOut('slow');
-            $('#overlayDiv').fadeOut('slow');
-        }
-    });
+    //         if(!jData.type) {
+    //             toastr.error(jData.msg);
+    //         } else {
+    //             toastr.success(jData.msg);
+    //             $('#createInvoice').resetForm();
+    //             $('#studentAccountHistory').html('');
+    //         }   
+    //         $('body,html').animate({scrollTop:0},800);
+    //         $('#loading2').fadeOut('slow');
+    //         $('#overlayDiv').fadeOut('slow');
+    //     }
+    // });
 
     $('#updateTutionSmsSetting').ajaxForm({ 
         beforeSend: function() {                
