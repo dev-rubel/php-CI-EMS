@@ -7,7 +7,7 @@ list($schoolName,$schoolAddress,$eiin,$schoolEmail,$phone) = explode('+', $schoo
 $grades = $this->db->get('grade')->result_array();
 function accSum($grades='')
 {	
-	echo '';
+	//echo 'hello';
 }
 ?>
 <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
@@ -17,22 +17,27 @@ function accSum($grades='')
 	* {
 		font-family: 'Noto Sans', sans-serif;
 		font-size: 17px;
-		color: #000 !important;
+		color: #000;
 	}
 	table {
 		border-color: black !important;
 	}
+	.table-bordered th {
+        color: #27ae60;
+    }
 	.table-bordered td, .table-bordered th {
 		border: 1px solid #000 !important;
 		padding: 7px 5px !important;
 	}
-	
+	.font-weight-bold {
+        color: #27ae60;
+    }
 	.marksheet-border {
 		border: 4px dashed #000;
 	}
-	
 	.header-title {
 		text-align: center;
+		color: #27ae60;
 	}
 	h2, h4 {
 		font-size: 23px;
@@ -63,6 +68,7 @@ function accSum($grades='')
 	p.std-info {
 		width: 330px;
 		float: right;
+		color: #27ae60;
 	}
 	th {
 		vertical-align: middle !important;
@@ -79,6 +85,9 @@ function accSum($grades='')
 		padding: 0;
 		text-align: center;
 	}
+	.signature-section p {
+        color: #27ae60;
+    }
 	.background-img {
 		background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%), url(bg.png) repeat 0 0 !important, url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
 		background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.7) 100%), url('<?php echo base_url();?>uploads/school_logo.png') repeat 0 0 !important;
@@ -116,14 +125,9 @@ function accSum($grades='')
 			$eachPoints = $each2['point'];
 			$eachGrades = $each2['grade'];
 			$eachObtainMarks = $each2['obtain_mark'];
-			$eachFails		 = $each2['fail_subject'];
+			// IF FAIL SUBJECT NOT FOUND
+			$eachFails		 = $each2['fail_subject']!=null?$each2['fail_subject']:false;
 
-			if(!empty($unqJoinSubjectGrad)) {
-				unset($unqJoinSubjectGrad);
-			}
-			if(!empty($unqJoinSubjectPoint)) {
-				unset($unqJoinSubjectPoint);
-			}
 ?>
 <div class="container-fluid marksheet-border">
 	<br><br>
@@ -235,15 +239,15 @@ function accSum($grades='')
 				<th rowspan="2">GPA</th>
 			</tr>
 			<tr class="text-center">
-				<td>MT</td>
-				<td>CQ</td>
+				<td>OM</td>
+				<td>CT</td>
 				<td>MCQ</td>
 				<td>PR</td>
 			</tr>
 			<!-- ***** IF JOIN SUBJECT ***** -->
 			<?php foreach($eachMarks as $subjectID=>$eachMark):					
 					if(is_array($eachMark)): 
-						foreach($eachMark as $subjectID2=>$eachMark2):							
+						foreach($eachMark as $subjectID2=>$eachMark2):													
 				?>
 				<tr class="table-join-subject">
 					<td><?php echo $this->db->get_where('subject',['subject_id'=>$subjectID2])->row()->name; ?></td>
@@ -285,9 +289,9 @@ function accSum($grades='')
 					<td class="text-center"><?php echo $students['subject_highest'][$subjectID]; ?></td>
 					<!-- SUBJECT OBTAIN MARKS -->
 					<?php $obtainMark = explode('|',$eachObtainMarks[$subjectID]);
-						
+							$failOrNot = '';
 							foreach($obtainMark as $markIndex=>$eachmark3):  
-								if(!empty($eachFails)) {
+								if($eachFails!=false) {
 									if($eachFails[$subjectID] === $markIndex){
 										$failOrNot = 'color: red !important;';
 									} else {
@@ -324,8 +328,8 @@ function accSum($grades='')
 			<table class="table table-bordered">
 				<tr>
 					<td>Class Position</td>
-					<td><?php //$class_position = array_search($each2['total_mark'],$students['class_position']); echo $class_position+1; 
-					
+					<td><?php 
+
 					foreach($students['class_position']['mark'] as $cKey=>$cEach) {
 						if($each2['total_mark'] == $cEach['mark']) {
 							echo $cKey + 1;
@@ -429,4 +433,9 @@ function accSum($grades='')
 	</div>
 </div>
 
-<?php endforeach; endforeach; else: echo 'No result found, in this class.'; endif; ?>
+<?php 
+endforeach; 
+endforeach; 
+else: 
+	echo 'No result found, in this class.'; 
+endif; ?>                                                

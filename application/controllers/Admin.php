@@ -562,12 +562,12 @@ class Admin extends CI_Controller
             $student[$std_id]['total_point_without_4th'] = round($point_total/$total_subject, 2);
             
             if(!array_search('F',$student[$std_id]['grade'])){
-                // Calculate total grade mark EG: 695/12 = 57.91 (12 for total subject) AND (695 is total obtain mark)
-                $markForTotalGrade = $student[$std_id]['total_mark']/$totalSubjectCount;
+                // Calculate total grade mark EG: 450/6 = 75 (6 for total subject) AND (75 is obtain mark point total)
+                $markForTotalGrade = round($point_total/$totalSubjectCount,2);
                 foreach($grades as $k2=>$each2) {                    
                     if(!empty($grades[$k2+1])) {
-                        if($markForTotalGrade >= $grades[$k2+1]['mark_from'] && $markForTotalGrade <= $each2['mark_upto']) {
-                            $student[$std_id]['total_grade'] = $each2['name'];
+                        if($markForTotalGrade >= $grades[$k2+1]['grade_point'] && $markForTotalGrade <= $each2['grade_point']) {
+                            $student[$std_id]['total_grade'] = $grades[$k2+1]['name'];
                         }
                     }
                 }
