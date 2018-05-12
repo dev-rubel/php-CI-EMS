@@ -82,6 +82,7 @@ if(!empty($stdExist)):
                         <tr>
                             <th width="80"><div><?php echo get_phrase('id');?></div></th>
                             <th width="80"><div><?php echo get_phrase('roll');?></div></th>
+                            <th width="80"><div><?php echo get_phrase('shift');?></div></th>
                             <th width="80"><div><?php echo get_phrase('photo');?></div></th>
                             <th><div><?php echo get_phrase('name');?></div></th>
                             <th class="span3"><div><?php echo get_phrase('father_name');?></div></th>
@@ -108,6 +109,7 @@ if(!empty($stdExist)):
                                     <a href="<?php echo base('admin','set_new_promotion_std_info/').$class_id.'/'.$row['student_id'];?>">Set Roll</a>
                                 <?php endif;?>
                             </td>
+                            <td><?php echo $this->db->get_where('shift',['shift_id'=>$row['shift_id']])->row()->name; ?></td>
                             <td>
                             <?php $img_url = $this->crud_model->get_image_url2('student',$row['student_id']);
                                 if($img_url): 

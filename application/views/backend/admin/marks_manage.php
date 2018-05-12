@@ -18,6 +18,20 @@
 
 	<div class="col-md-2">
 		<div class="form-group">
+		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('shift');?></label>
+			<select name="shift_id" class="form-control">
+				<?php
+					$shifts = $this->db->get('shift')->result_array();
+					foreach($shifts as $row):
+				?>
+				<option value="<?php echo $row['shift_id'];?>"><?php echo $row['name'];?></option>
+				<?php endforeach;?>
+			</select>
+		</div>
+	</div>
+
+	<div class="col-md-1">
+		<div class="form-group">
 		<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('class');?></label>
 			<select name="class_id" class="form-control" onchange="get_class_subject(this.value)">
 				<option value=""><?php echo get_phrase('select_class');?></option>
@@ -34,7 +48,7 @@
 	
 
 	<div id="subject_holder">
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="form-group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
 				<select name="" id="" class="form-control" disabled="disabled">
@@ -42,7 +56,7 @@
 				</select>
 			</div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="form-group">
 			<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('subject');?></label>
 				<select name="" id="" class="form-control" disabled="disabled">
@@ -50,9 +64,9 @@
 				</select>
 			</div>
 		</div>
-		<div class="col-md-2" style="margin-top: 20px;">
+		<div class="col-md-1" style="margin-top: 20px;">
 			<center>
-				<button type="submit" class="btn btn-info" disabled="disabled"><?php echo get_phrase('manage_marks');?></button>
+				<button type="submit" class="btn btn-info" disabled="disabled"><?php echo get_phrase('manage');?></button>
 			</center>
 		</div>
 	</div>

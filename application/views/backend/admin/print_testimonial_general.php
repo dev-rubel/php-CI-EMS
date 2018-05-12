@@ -43,6 +43,10 @@
 
 <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <style>
+	body {
+        width: 100%;
+        height: 100%;
+    }
 	.col-md-12.testimonial-body {
 	    min-height: 270px !important;
 	}
@@ -100,13 +104,13 @@
 	.testimonial-wrapper:after {
  	  content: "";
 	  background: url(<?php echo base_url(); ?>uploads/school_logo.png) !important;
-	  opacity: 0.1;
-	  top: 100px;
-	  left: 0;
-	  bottom: 0;
-	  right: 0;
-	  position: absolute;
-	  background-size: 550px 400px;
+	  opacity: 0.1 !important;
+	  top: 100px !important;
+	  left: 0 !important;
+	  bottom: 0 !important;
+	  right: 0 !important;
+	  position: absolute !important;
+	  background-size: 550px 400px !important;
 	  background-repeat: no-repeat !important;
 	  background-position: center center !important;
 	}
@@ -131,9 +135,11 @@
 	hr{
 		border: 1px solid #000;
 		width: 215px;
-	}
-	
+	}	
 	@media print{
+		@page {
+			size: A4 landscape;
+		}
 		.logo img{
 			width: 100px;
 			height: 100px;

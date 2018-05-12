@@ -25,7 +25,7 @@ $subject_marks = $subject_info[0]['subject_marks'];
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
 	<!-- updateMark -->
-    <form id="updateMark" action="<?php echo base_url().'index.php?admin/marks_update/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id; ?>" method="post">
+    <form id="updateMark" action="<?php echo base_url().'index.php?admin/marks_update/'.$exam_id.'/'.$shift_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id; ?>" method="post">
       <?php foreach($student_ids as $k=>$value): ?>
         <input type="hidden" name="student_rolls[]" value="<?php echo $k;?>">
       <?php endforeach; ?>

@@ -12,7 +12,7 @@
 </div>
 <?php endif; ?>
 
-<div class="col-md-2">
+<div class="col-md-1">
 	<div class="form-group">
 	<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('section');?></label>
 		<select name="section_id" id="section_id" class="form-control selectboxit">
@@ -27,18 +27,6 @@
 		</select>
 	</div>
 </div>
-
-<!-- 
-<?php //if(!empty($groups)): ?>
-<div class="col-md-2" id="group_holder">
-	<div class="form-group">
-	<label class="control-label" style="margin-bottom: 5px;"><?php echo get_phrase('subject');?></label>
-		<select name="subject_id" class="form-control" id="subject_id_two">
-			
-		</select>
-	</div>
-</div>
-<?php //else: ?> -->
 
 <div class="col-md-2">
 	<div class="form-group">
@@ -58,44 +46,12 @@
 
 <?php //endif; ?>
 
-<div class="col-md-2" style="margin-top: 20px;">
+<div class="col-md-1" style="margin-top: 20px;">
 	<center>
-		<button type="submit" class="btn btn-info"><?php echo get_phrase('manage_marks');?></button>
+		<button type="submit" class="btn btn-info"><?php echo get_phrase('manage');?></button>
 	</center>
 </div>
 
-<?php //if(!empty($groups)): ?>
-	
-<!-- <script type="text/javascript">
-	$('#subject_id_two').append('<option>Select Subject</option>');
-
-	$("#group_id").change(function(){
-		var groupId = this.options[this.selectedIndex].value;
-		$.ajax({
-            url: '<?php echo base_url();?>index.php?admin/marks_get_group_subject/' + groupId ,
-            success: function(response)
-            {
-                
-                if(response){
-                	var json = JSON.parse(response);
-                	$('#subject_id_two').empty();
-					jQuery.each( json, function( key, value ) {
-					  var data =  "<option value="+value.subject_id+">"+value.name+"</option>";
-					  $(data).appendTo('#subject_id_two');					  
-					});
-                }else{
-                	$('#subject_id_two').empty();
- 					$('#subject_id_two').append('<option>No Subject Found</option>');
-                }
-                
-            }
-        });
-
-	});
-			
-</script> -->
-
-<?php // endif; ?>
 
 <script type="text/javascript">
 	$(document).ready(function() {

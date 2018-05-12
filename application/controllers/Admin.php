@@ -597,7 +597,8 @@ class Admin extends CI_Controller
                 $std_id = key($students['mark_info'][$std_key]);
                 // IF FAIL FOUND THEN NO NEED TO GENERATE CLASS POSITION
                 if(empty($students['mark_info'][$std_key][$std_id]['fail_subject'])) {
-                    $students['class_position']['point_mark'][$students['mark_info'][$std_key][$std_id]['total_mark']] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
+                    $total_mark = $students['mark_info'][$std_key][$std_id]['total_mark'];
+                    $students['class_position']['point_mark']["$total_mark"] = $students['mark_info'][$std_key][$std_id]['total_point_with_4th'];
                     $students['class_position']['mark'][] = $students['mark_info'][$std_key][$std_id]['total_mark'];
                 }
                 
@@ -1243,7 +1244,8 @@ class Admin extends CI_Controller
         $course = $this->uri(4);
         $page_data['std_info'] = $this->db->get_where('testimonial',
                     ['testimonial_id'=>$testimonial_id])->result_array();
-
+                    
+        $page_data['trade_name'] = $this->db->get_where('group', array('group_id' => $page_data['std_info'][0]['trade']))->row()->name;
         if($course == 'General'){
             $this->print_testimonial_general($page_data);
         }else{
@@ -1261,7 +1263,7 @@ class Admin extends CI_Controller
     function print_testimonial_general($page_data = '')
     {
         $page_data['page_name']  = 'print_testimonial_general';
-        $page_data['page_title'] = get_phrase('testimonial_for_general');
+        $page_data['page_title'] = get_phrase('testimonial_for_general');        
         $this->load->view('backend/admin/print_testimonial_general' , $page_data);
     }
 
@@ -2941,10 +2943,11 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-    function ajax_marks_manage_view($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '', $group_id = '', $student_ids = [])
+    function ajax_marks_manage_view($exam_id = '' , $shift_id = '', $class_id = '' , $section_id = '' , $subject_id = '', $group_id = '', $student_ids = [])
     {
         $page_data['running_year']       = $this->running_year;
         $page_data['exam_id']    =   $exam_id;
+        $page_data['shift_id']   =   $shift_id;
         $page_data['class_id']   =   $class_id;
         $page_data['group_id']   =   $group_id;
         $page_data['subject_id'] =   $subject_id;
@@ -2998,8 +3001,8 @@ class Admin extends CI_Controller
         if(!$check){
             $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
         } else {
-
-            $data['exam_id']    = $this->input->post('exam_id');
+            $shift_id    = $this->input->post('shift_id');
+            $data['exam_id']    = $this->input->post('exam_id');            
             $data['class_id']   = $this->input->post('class_id');
             if(!empty($_POST['group_id'])){
                 $data['group_id'] = $this->input->post('group_id');
@@ -3014,7 +3017,12 @@ class Admin extends CI_Controller
             foreach($rolls as $k=>$each):
 
                 $student_id = $this->db->get_where('enroll' , array(
-                    'class_id' => $data['class_id'] ,'group_id' => $data['group_id'], 'section_id' => $data['section_id'] , 'roll'=>$each, 'year' => $data['year']
+                    'class_id' => $data['class_id'],
+                    'shift_id' => $shift_id,
+                    'group_id' => $data['group_id'], 
+                    'section_id' => $data['section_id'], 
+                    'roll'=>$each, 
+                    'year' => $data['year']
                 ))->row()->student_id;
                 if($student_id) {
                     $query = $this->db->get_where('mark' , array(
@@ -3041,13 +3049,13 @@ class Admin extends CI_Controller
                 $msg = implode(',',$notFound).' Rolls not found.';
                 $this->jsonMsgReturn(false,$msg);
             } else {
-                $this->ajax_marks_manage_view($data['exam_id'],$data['class_id'],$data['section_id'],$data['subject_id'],$data['group_id'],$student_ids);
+                $this->ajax_marks_manage_view($data['exam_id'],$shift_id,$data['class_id'],$data['section_id'],$data['subject_id'],$data['group_id'],$student_ids);
             }
         }
 
     }
 
-    function marks_update($exam_id = '' , $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
+    function marks_update($exam_id = '' , $shift_id = '', $class_id = '' , $section_id = '' , $subject_id = '',$group_id = '')
     {
       $student_rolls = $_POST['student_rolls'];
       
@@ -3061,10 +3069,11 @@ class Admin extends CI_Controller
         foreach($student_rolls as $k=>$each):
             $student_id = $this->db->get_where('enroll' , array(
                 'class_id' => $class_id ,
-                    'group_id' => $group_id, 
-                        'section_id' => $section_id, 
-                            'roll' => $each, 
-                                'year' => $running_year
+                    'shift_id' => $shift_id ,
+                        'group_id' => $group_id, 
+                            'section_id' => $section_id, 
+                                'roll' => $each, 
+                                    'year' => $running_year
             ))->row()->student_id;
             if($student_id) {
                 $query = $this->db->get_where('mark' , array(
@@ -3089,7 +3098,7 @@ class Admin extends CI_Controller
             $this->db->where('mark_id' , $mark_id);
             $this->db->update('mark' , ['mark_obtained' => $data[$mark_id]['marks_obtained'] , 'comment' => $data[$mark_id]['comment']]);
         }
-        $this->ajax_marks_manage_view($exam_id,$class_id,$section_id,$subject_id,$group_id, $student_ids);
+        $this->ajax_marks_manage_view($exam_id,$shift_id,$class_id,$section_id,$subject_id,$group_id, $student_ids);
         // $this->session->set_flashdata('flash_message' , get_phrase('marks_updated'));
         // redirect(base_url().'index.php?admin/marks_manage_view/'.$exam_id.'/'.$class_id.'/'.$section_id.'/'.$subject_id.'/'.$group_id , 'refresh');
     }
@@ -4935,6 +4944,43 @@ class Admin extends CI_Controller
         $page_data['page_name']     = 'database_structure';
         $this->load->view('backend/index', $page_data);
     }
+    
+    function queryDelete() 
+    {        
+        $post = $this->input->post();
+        extract($post);
+        $whereArr = [];
+        $statusCount = 0;
+        foreach($where as $k=>$each) {
+            $value = '';
+            if(!empty($each)) {
+                $value = explode('=',$each);
+                $whereArr[$value[0]] = $value[1];                
+                $statusCount += 1;
+            } 
+        }
+
+        $this->db->where($whereArr);
+        if($statusCount > 0) {
+            $fields['table_name'] = $table;
+            $fields['table_field'] = $this->db->field_data($table);
+
+            $result = $this->db->$type($table);
+            if($type == 'get') {
+                $fields['table_data'] = $result->result_array();
+                $html = $this->load->view('backend/admin/get_database_table', $fields, true);
+                $this->jsonMsgReturn(true,'View Result.',$html);
+            }
+            if($type == 'delete') {
+                $fields['table_data'] = $this->db->get($table)->result_array();
+                $html = $this->load->view('backend/admin/get_database_table', $fields, true);
+                $this->jsonMsgReturn(true,'Deleted.',$html);
+            }
+        } else {
+            return false;
+        }
+             
+    }
 
     function get_database_table($table_name)
     {
@@ -5524,6 +5570,7 @@ class Admin extends CI_Controller
 
 
     //   ========= REUSEABLE FUNCTION
+
 
     function jsonMsgReturn($type, $msg, $html='')
     {
