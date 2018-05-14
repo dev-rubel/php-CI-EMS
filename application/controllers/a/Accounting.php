@@ -736,6 +736,16 @@ class Accounting extends CI_Controller
         $this->load->view('backend/admin/accounting/student_account_history', $page_data);
     }
 
+    function getRollToStudentInfo()
+    {
+        $year = $this->running_year;
+        $student_code = $this->uri->segment(4);
+        $info = explode('-',$student_code);
+        $page_data['student_class'] = $info[0];
+        $page_data['student_roll'] = $info[1];
+        $this->load->view('backend/admin/accounting/roll_to_student_list', $page_data);
+    }
+
     function getStudentAccMonthCheckbox()
     {
         $year = $this->running_year;

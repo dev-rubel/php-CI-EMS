@@ -9,7 +9,8 @@
     }
     .panel {
         margin: 5px 0px;
-    }
+    }   
+
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -60,6 +61,8 @@
                                             required="required" autofocus/>
                                     </div>
                                 </div>
+                                
+                                <div id="students_lists"></div>    
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">
@@ -296,6 +299,9 @@
             });
             $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccHistory/"+value, function( data ){
                 $( "#studentAccountHistory" ).html( data );  
+            });
+            $.get( "<?php echo base_url();?>index.php?a/accounting/getRollToStudentInfo/"+value, function( data ){
+                $( "#students_lists" ).html( data );  
             });
             $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccMonthCheckbox/"+value, function( data ){
                 $( "#accMonthCheckbox" ).html( data );  
