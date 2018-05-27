@@ -44,7 +44,6 @@ $url = $url[0];
 
 <!--start for homemanage controller-->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
-<script src="assets/js/jquery.word-and-character-counter.min.js"></script>
 <script src="assets/backend/js/bootstrap-toggle.min.js"></script>
 <script src="assets/backend/js/jscolor.min.js"></script>
 
@@ -71,13 +70,41 @@ $url = $url[0];
 
 <script>
 // Confirm delete function
+function confDelete2(con,func,id,id2,id3){
+	$.confirm({
+		title: 'Confirm!',
+		content: 'Are you sure? You want to delete this.',
+		type: 'red',
+		typeAnimated: true,
+		buttons: {
+			tryAgain: {
+				text: 'Delete',
+				btnClass: 'btn-red',
+				action: function(){
+					$.ajax({
+						url: '<?php echo base_url();?>index.php?'+con+'/'+func+'/'+id,
+						dataType: 'json',
+						method: 'get'
+					}).done(function (response) {
+						ajaxDataTable(id2,id3);
+						toastr.success('Delete Success');
+					}).fail(function(){
+						$.alert('Location problem.');
+					});
+				}
+			},
+			close: function () {
+			}
+		}
+	});
+}
 
 function confDelete(con,func,id,id2){
 	$.confirm({
 		title: 'Confirm!',
 		content: 'Are you sure? You want to delete this.',
 		type: 'red',
-    	typeAnimated: true,
+		typeAnimated: true,
 		buttons: {
 			tryAgain: {
 				text: 'Delete',
@@ -102,7 +129,7 @@ function confDelete(con,func,id,id2){
 }
 </script>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script> -->
 
 
 <!-- SHOW SUCCESS TOASTR NOTIFICATION -->

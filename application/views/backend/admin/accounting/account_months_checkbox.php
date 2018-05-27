@@ -1,9 +1,9 @@
-<?php //pd($months); ?>
 <div class="form-group">
 	<label class="col-sm-3 control-label">
-		<?php echo get_phrase('months');?>
+		<?php echo !empty($student_id)?get_phrase('paid_months'):get_phrase('months');?>
 	</label>
 	<div class="col-sm-9">
+	<?php if(empty($student_id)):?>
 		<div class="col-sm-3">
 			<input type="checkbox" name="months[]" value="january" class="custom-control-input" <?php echo in_array('january',$months)?'disabled':''?>>
 			<span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;January</span>
@@ -35,4 +35,9 @@
 			<span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
 		</div>
 	</div>
+<?php else: echo '<br>'; foreach($months as $k=>$each) {
+	$k = $k+1;
+	echo $k.'. '.ucfirst($each).' | ';
+} endif;?>
+
 </div>

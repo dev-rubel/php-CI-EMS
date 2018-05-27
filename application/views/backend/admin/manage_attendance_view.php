@@ -1,13 +1,13 @@
 <div id="attendanceUpdate">
 <hr />
 <?php 
-$data = [
-    'class_id' => $class_id,
-    'group_id' => $group_id,
-    'section_id' => $section_id,
-    'year' => $running_year,
-    'timestamp' => $timestamp
-];
+// $data = [
+//     'class_id' => $class_id,
+//     'group_id' => $group_id,
+//     'section_id' => $section_id,
+//     'year' => $running_year,
+//     'timestamp' => $timestamp
+// ];
 
 
 // echo pd($data);
@@ -77,32 +77,35 @@ $group_id==''?$group_id=NULL:$group_id=$group_id;
                     else:
                         $group_id = '';
                     endif;
-                    $attendance_of_students = $this->db->get_where('attendance', array(
-                                'class_id' => $class_id,
-                                'shift_id' => $shift_id,
-                                'group_id' => $group_id,
-                                'section_id' => $section_id,
-                                'year' => $running_year,
-                                'timestamp' => $timestamp
-                            ))->result_array();
 
+                    $data['class_id']   = $class_id;
+                    $data['group_id']   = $group_id;
+                    $data['shift_id']   = $shift_id;
+                    $data['section_id'] = $section_id;
+                    $data['year']       = $running_year;
+                    $students = $this->db->get_where('enroll', $data)->result_array();
+
+                    $data2['year']       = $running_year;
+                    $data2['timestamp']  = $timestamp;
                    
-                    foreach ($attendance_of_students as $row):
+                    foreach ($students as $k=>$each):
+                        $data2['student_id'] = $each['student_id'];
+                        $attendance = $this->db->get_where('attendance',$data2)->result_array();
                         ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td>
-                                <?php echo $this->db->get_where('enroll', array('student_id' => $row['student_id']))->row()->roll; ?>
+                                <?php echo $each['roll']; ?>
                             </td>
                             <td>
-                                <?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?>
+                                <?php echo $this->db->get_where('student', array('student_id' => $each['student_id']))->row()->name; ?>
                             </td>
                             <td>
-                                <select class="form-control" name="status_<?php echo $row['attendance_id']; ?>" id="status_<?php echo $select_id; ?>">
-                                    <option value="0" <?php if ($row['status'] == 0) echo 'selected'; ?>><?php echo get_phrase('undefined'); ?></option>
-                                    <option value="1" <?php if ($row['status'] == 1) echo 'selected'; ?>><?php echo get_phrase('present'); ?></option>
-                                    <option value="2" <?php if ($row['status'] == 2) echo 'selected'; ?>><?php echo get_phrase('absent'); ?></option>
-                                    <option value="3" <?php if ($row['status'] == 3) echo 'selected'; ?>><?php echo get_phrase('escaped'); ?></option>
+                                <select class="form-control" name="status_<?php echo $attendance[0]['attendance_id']; ?>" id="status_<?php echo $select_id; ?>">
+                                    <option value="0" <?php if ($attendance[0]['status'] == 0) echo 'selected'; ?>><?php echo get_phrase('undefined'); ?></option>
+                                    <option value="1" <?php if ($attendance[0]['status'] == 1) echo 'selected'; ?>><?php echo get_phrase('present'); ?></option>
+                                    <option value="2" <?php if ($attendance[0]['status'] == 2) echo 'selected'; ?>><?php echo get_phrase('absent'); ?></option>
+                                    <option value="3" <?php if ($attendance[0]['status'] == 3) echo 'selected'; ?>><?php echo get_phrase('escaped'); ?></option>
                                 </select>	
                             </td>
                         </tr>
@@ -125,7 +128,7 @@ $group_id==''?$group_id=NULL:$group_id=$group_id;
 
 
 <script type="text/javascript">
-
+ 
 /* Update Attendance */
 $('#studentAttendanceUpdate').ajaxForm({ 
 	beforeSend: function() {                
@@ -143,14 +146,14 @@ $('#studentAttendanceUpdate').ajaxForm({
 }); 
 
 function mark_all_present() {
-    var count = <?php echo count($attendance_of_students); ?>;
+    var count = <?php echo count($students); ?>;
 
     for(var i = 0; i < count; i++)
         $('#status_' + i).val("1");
 }
 
 function mark_all_absent() {
-    var count = <?php echo count($attendance_of_students); ?>;
+    var count = <?php echo count($students); ?>;
 
     for(var i = 0; i < count; i++)
         $('#status_' + i).val("2");

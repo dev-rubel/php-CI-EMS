@@ -54,17 +54,34 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">
-                                        <?php echo get_phrase('input_student_id');?>
+                                        <?php echo get_phrase('input_student_roll');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Student Uniqe ID"
-                                            required="required" autofocus/>
+
+                                        <div class="col-md-6">
+                                            <select name="classId" id="classId" class="form-control" onchange="getClassId(this)">
+                                                <option value="">Select Class</option>
+                                                <?php $classList = $this->db->get('class')->result_array(); 
+                                                    foreach($classList as $k=>$each):
+                                                    ?>
+                                                    <option value="<?php echo $each['name_numeric'] ?>-"><?php echo $each['name'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>  
+                                            <input type="hidden" id="hidden_student_id">                                     
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Student Roll"
+                                            required="required" autofocus/>                                        
+                                        </div>
+
+                                        
                                     </div>
                                 </div>
                                 
                                 <div id="students_lists"></div>    
 
-                                <div class="form-group">
+                                <div class="form-group" id="studentInfoBox">
                                     <label class="col-sm-3 control-label">
                                         <?php echo get_phrase('student_info');?>
                                     </label>
@@ -172,7 +189,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-5">
-                                <button type="submit" class="btn btn-info">
+                                <button type="submit" id="addInvoice" class="btn btn-info">
                                     <?php echo get_phrase('add_invoice');?>
                                 </button>
                             </div>
@@ -258,8 +275,6 @@
         for (i = 0; i < chk.length; i++) {
             chk[i].checked = true;
         }
-
-        //alert('asasas');
     }
 
     function unselect() {
@@ -269,10 +284,15 @@
         }
     }
 
-
+    function getClassId(id) { 
+        $('#hidden_student_id').val(id.value);
+    }    
 
     $(document).ready(function () {
+        $( "#studentInfoBox" ).hide(); 
+        $( "#addInvoice" ).hide(); 
 
+        
         $("#acc_date").datepicker({
             format: 'dd-mm-yyyy',
             startView: 1
@@ -285,26 +305,24 @@
         });
 
         $("input[name=student_code]").keyup(function () {
-            var value = $(this).val();
-            $.ajax({
-                url: '<?php echo base_url();?>index.php?a/accounting/getAccStdInfo/' + value,
-                success: function (response) {
-                    var data = $.parseJSON(response);
-                    if (!data.name) {
-                        jQuery('#acc_student_info').val('কোন ছাত্র খুজে পাওয়া যায় নি।');
-                    } else {
-                        jQuery('#acc_student_info').val(data.name);
-                    }
-                }
-            });
-            $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccHistory/"+value, function( data ){
-                $( "#studentAccountHistory" ).html( data );  
-            });
+            
+            var value = $('#hidden_student_id').val()+$(this).val();      
+           
             $.get( "<?php echo base_url();?>index.php?a/accounting/getRollToStudentInfo/"+value, function( data ){
-                $( "#students_lists" ).html( data );  
-            });
-            $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccMonthCheckbox/"+value, function( data ){
-                $( "#accMonthCheckbox" ).html( data );  
+                if(data) {
+                    $( "#students_lists" ).show(); 
+                    $( "#students_lists" ).html( data );  
+                    $( "#accMonthCheckbox" ).show();  
+                    $( "#studentAccountHistory" ).show();  
+                } else {
+                    $( "#students_lists" ).hide();  
+                    $( "#addInvoice" ).hide(); 
+                    $( "#studentInfoBox" ).hide();  
+                    $( "#acc_student_info" ).val('');  
+
+                    $( "#accMonthCheckbox" ).html('');  
+                    $( "#studentAccountHistory" ).html('');  
+                }                
             });
 
         });
@@ -316,10 +334,7 @@
         $("table.fee-list").find('input[name^="fee_amount"]').each(function () {
             grandTotal += +$(this).val();
         });
-        console.log(grandTotal);
         $("#grandtotal, #payment").val(grandTotal.toFixed(2));
-
-        //row.find('input[name^="grandtotal"]').val((price).toFixed(2));
     }
 </script>
 
@@ -328,26 +343,6 @@
 
 $(document).ready(function() { 
 
-    // $('#createInvoice').ajaxForm({
-    //     beforeSend: function() {
-    //             $('#loading2').show();
-    //             $('#overlayDiv').show();
-    //     },
-    //     success: function (data){
-    //         var jData = JSON.parse(data);
-
-    //         if(!jData.type) {
-    //             toastr.error(jData.msg);
-    //         } else {
-    //             toastr.success(jData.msg);
-    //             $('#createInvoice').resetForm();
-    //             $('#studentAccountHistory').html('');
-    //         }   
-    //         $('body,html').animate({scrollTop:0},800);
-    //         $('#loading2').fadeOut('slow');
-    //         $('#overlayDiv').fadeOut('slow');
-    //     }
-    // });
 
     $('#updateTutionSmsSetting').ajaxForm({ 
         beforeSend: function() {                

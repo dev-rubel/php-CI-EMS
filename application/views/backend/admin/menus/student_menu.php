@@ -171,8 +171,8 @@ function changePage(page)
         url: '<?php echo base_url(); ?>index.php?admin/ajax_page_load',
         success: function (response)
         {   
-            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?admin/' + selectValue;
-            window.history.pushState({path:newurl},'',newurl);                
+            // var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?admin/' + selectValue;
+            // window.history.pushState({path:newurl},'',newurl);                
             
             $('#studentNavManu').show();
             $('#studentMainManu').hide();

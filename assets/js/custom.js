@@ -1,10 +1,12 @@
+
 jQuery(document).ready(function($)
 {
-	var datatable = $(".datatable").dataTable();
-	
+	var datatable = $(".datatable").dataTable();	
 	$(".dataTables_wrapper select").select2({
 		minimumResultsForSearch: -1
 	});
+	
+	
 });
 
 //close the lateral panel
@@ -25,18 +27,7 @@ $(document).ready(function(){
 	}).on('changeDate', function(e){
 	    $(this).datepicker('hide');
 	});
-	$("#sms_description").counter({
-		   count: 'down',
-	   goal: 160
-	});
-	$("#sms_title").counter({
-	   count: 'down',
-	   goal: 11
-	});
-	$("#sms_number").counter({
-	   count: 'down',
-	   goal: 11
-	});
+	
 });
 
 // Form Validation
@@ -46,5 +37,7 @@ $(document).ready(function(){
             modules : 'security, file'
         });
 });
+
+
 
 

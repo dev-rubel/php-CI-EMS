@@ -66,6 +66,8 @@ class Accounting extends CI_Controller
             $page_data['bank_transactions'] = $this->db->get('bank_transaction')->result_array();
         } elseif($pageName == 'monthly_balance_sheet'){            
             $page_data['year']   = date('Y'); 
+        } elseif($pageName == 'tution_pendding') {
+            $page_data['data']   = $this->search_pendding_fee(true);             
         }
         $page_data['running_year'] = $this->running_year;
         $page_data['page_name'] = $pageName;
@@ -278,13 +280,13 @@ class Accounting extends CI_Controller
 
         if ($param1 == 'do_update') {
             $invoice_id = $this->uri->segment(5); 
-            $student_code                   = $this->input->post('student_code');
-            $student_id                 = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
+            $student_code                   = $this->input->post('radio');
+            $student_id                 = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;            
             if(!$student_id){
                 $this->flashmsg('No Student Found', 'error');
                 redirect(base_url() . 'index.php?a/accounting/edit_student_payment/'.$invoice_id, 'refresh');
                 $student_id = '';
-            }            
+            }
             
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
@@ -313,7 +315,7 @@ class Accounting extends CI_Controller
             $this->db->update('payment' , $data2);
 
             $this->session->set_flashdata('flash_message' , get_phrase('data_added_successfully'));
-            redirect(base_url() . 'index.php?a/accounting/income', 'refresh');
+            redirect(base_url() . 'index.php?a/accounting/accounting_menu', 'refresh');
         }
         if ($param1 == 'take_payment') {
             $data['invoice_id']   =   $this->input->post('invoice_id');
@@ -366,9 +368,24 @@ class Accounting extends CI_Controller
     function edit_student_payment()
     {
         $invoice_id = $this->uri->segment(4);
+        $page_data['running_year'] = $this->running_year;        
         $page_data['income_category'] = $this->db->get('income_category')->result_array();
         $page_data['invoice_info'] = $this->db->get_where('invoice', array('invoice_id'=>$invoice_id))->result_array();
-        $page_data['student_code'] = $this->db->get_where('student', array('student_id'=>$page_data['invoice_info'][0]['student_id']))->row()->student_code;
+        $page_data['student_info'] = $this->db->get_where('enroll', array('student_id'=>$page_data['invoice_info'][0]['student_id']))->result_array();
+        $student_code = $this->db->get_where('student',['student_id'=>$page_data['invoice_info'][0]['student_id']])->row()->student_code;
+        
+        $student_payment = $this->db->get_where('invoice',['acc_code'=>$student_code,'year'=>$this->running_year])->result_array();
+        if(!empty($student_payment)){
+            foreach($student_payment as $k=>$each) {
+                $months = explode(',',$each['months']);
+                foreach($months as $k2=>$each2) {
+                    if(!empty($each2)) {
+                        $page_data['months'][] = $each2;
+                    }                        
+                }                    
+            }
+        }
+
         $this->loadView('accounting/edit_student_payment', 'edit_invoice/edit', $page_data);
     }
 
@@ -665,12 +682,18 @@ class Accounting extends CI_Controller
         redirect(base('a/accounting', 'student_payment'));
     }
 
-    function search_pendding_fee()
+    function search_pendding_fee($returnData = false)
     {
-        $data['class_id'] = $this->input->post('class_id');
-        $data['section_id'] = $this->input->post('section_id');
-        $data['group_id'] = $this->input->post('group_id');
-        $data['shift_id'] = $this->input->post('shift_id');
+        $data['year'] = $this->running_year;
+        if(!$returnData) {
+            $data['class_id'] = $this->input->post('class_id');
+            $data['section_id'] = $this->input->post('section_id');            
+            if(!empty($_POST['group_id'])) {
+                $data['group_id'] = $this->input->post('group_id');
+            }           
+            $data['shift_id'] = $this->input->post('shift_id');
+        }        
+        
         $page_data['enroll'] = $this->db->get_where('enroll',$data)->result_array();
         if(!empty($page_data['enroll'])) {
             foreach($page_data['enroll'] as $k => $each) {
@@ -695,8 +718,12 @@ class Accounting extends CI_Controller
             }
 
             $page_data['running_year'] = $this->running_year;
-            $html = $this->load->view('backend/admin/accounting/tution_pendding_table', $page_data, true);
-            return $this->jsonMsgReturn(true,'Success.', $html);
+            if(!$returnData) {
+                $html = $this->load->view('backend/admin/accounting/tution_pendding_table', $page_data, true);
+                return $this->jsonMsgReturn(true,'Success.', $html);
+            } else {
+                return $page_data;
+            }
         } else {
             return $this->jsonMsgReturn(false,'No Student Found.');
         }        
@@ -738,19 +765,32 @@ class Accounting extends CI_Controller
 
     function getRollToStudentInfo()
     {
-        $year = $this->running_year;
+        $page_data['running_year'] = $this->running_year;
         $student_code = $this->uri->segment(4);
+        if(!empty($this->uri->segment(5))){
+            $page_data['student_id'] = $this->uri->segment(5);
+        }        
         $info = explode('-',$student_code);
-        $page_data['student_class'] = $info[0];
-        $page_data['student_roll'] = $info[1];
-        $this->load->view('backend/admin/accounting/roll_to_student_list', $page_data);
+        $class_id = $this->db->get_where('class',['name_numeric'=>$info[0]])->row()->class_id;        
+        $data = ['class_id'=>$class_id,'roll'=>$info[1]];
+        $students = $this->db->get_where('enroll',$data)->result_array();
+        if(!empty($students)) {
+            $page_data['student_class'] = $info[0];
+            $page_data['student_roll'] = $info[1];
+            $this->load->view('backend/admin/accounting/roll_to_student_list', $page_data);
+        } else {
+            echo false;
+        }        
     }
 
     function getStudentAccMonthCheckbox()
     {
+        if($this->uri->segment(5) > 1){
+            $page_data['student_id'] = $this->uri->segment(5);
+        } 
         $year = $this->running_year;
         $student_code = $this->uri->segment(4);
-        $page_data['student_name'] = $this->db->get_where('student',['student_code'=>$student_code])->row()->student_id;
+        $page_data['student_name'] = $this->db->get_where('student',['student_code'=>$student_code])->row()->name;
         if(!empty($page_data['student_name'])) {
             $page_data['student_payment'] = $this->db->get_where('invoice',['acc_code'=>$student_code,'year'=>$year])->result_array();
             if(empty($page_data['student_payment'])){
@@ -764,9 +804,9 @@ class Accounting extends CI_Controller
                         }                        
                     }                    
                 }
-            }        
-            $this->load->view('backend/admin/accounting/account_months_checkbox', $page_data);
-        }        
+            }      
+        $this->load->view('backend/admin/accounting/account_months_checkbox', $page_data);            
+        }  
     }
 
     function getAccStdInfo($value)  //ajax response
@@ -774,14 +814,32 @@ class Accounting extends CI_Controller
         $name = $this->db->get_where('student',array('student_code'=>$value))->row()->name;
         $stdId = $this->db->get_where('student',array('student_code'=>$value))->row()->student_id;
         $classId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->class_id;
+        $groupId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->group_id;
+        $sectionId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->section_id;
+        $shiftId = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->shift_id;
         $roll = $this->db->get_where('enroll',array('student_id'=>$stdId))->row()->roll;
+
         $className = $this->db->get_where('class',array('class_id'=>$classId))->row()->name;
-              
+        $shiftName = $this->db->get_where('shift',array('shift_id'=>$shiftId))->row()->name;
+        if(!empty($groupId)) {
+            $groupName = $this->db->get_where('group',['group_id'=>$groupId])->row()->name;
+            $groupInfo = ' | Group: '.$groupName;
+        } else {
+            $groupInfo = '';
+        }
+
+        if(!empty($sectionId)) {
+            $sectionName = $this->db->get_where('section',['section_id'=>$sectionId])->row()->name;
+            $sectionInfo = ' | Section: '.$sectionName;
+        } else {
+            $sectionInfo = '';
+        }
+
         if ($stdId) {
-            $Response = array('name' => 'Name: '.$name.' * Roll: '.$roll.' * Class: '.$className);
+            $Response = array('name' => 'Roll: '.$roll.' | Class: '.$className.$groupInfo.$sectionInfo.' | '.$shiftName);
             echo json_encode($Response);
         }else{
-            $Response = array('name' => 'কোন ছাত্র খুজে পাওয়া যায় নি।');
+            $Response = array('abc' => false);
             echo json_encode($Response);
         }
         

@@ -27,6 +27,13 @@
                 </a>
             </li>
             <li>
+                <a href="#all_pending_tution" data-toggle="tab">
+                    <span class="hidden-xs">
+                        <?php echo get_phrase('all_pendding_tution');?>
+                    </span>
+                </a>
+            </li>
+            <li>
                 <a href="#sms_setting" data-toggle="tab">
                     <span class="hidden-xs">
                         <?php echo get_phrase('sms_setting');?>
@@ -141,6 +148,93 @@
 
                 
             </div>
+
+            
+
+            <div class="tab-pane" id="all_pending_tution">
+            
+            <?php 
+            function checkUnpaid($monthArray) {
+                $monthNum = date('m');
+                for($i = 1; $i <= $monthNum; $i++) {
+                    $month = date('F', mktime(0, 0, 0, $i, 10));
+                    $monthl = strtolower($month);
+                    if(!in_array($monthl, $monthArray)) {
+                        $unpaidMonth[] = ucfirst(substr($monthl,0,3)) ;
+                    }
+                }
+                return $unpaidMonth;
+            }
+            ?>
+                <table class="table table-bordered datatable" id="table_export">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Unpaid Month</th>
+                            <th>Unpaid Amount</th>
+                            <th>Total Amount</th>
+                            <th>Paid Amount</th>
+                            <th>Due</th>
+                            <th>Mobile</th>
+                            <th>Send SMS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($data['enroll'])): 
+                        foreach($data['enroll'] as $k => $each): 
+                            if(!empty(checkUnpaid($data['students'][$each['student_id']]['months']))):
+                                $remain_month = checkUnpaid($data['students'][$each['student_id']]['months']);  
+                    ?>
+                        <tr>
+                            <td>
+                            Class-<?php echo $this->db->get_where('class',['class_id'=>$each['class_id']])->row()->name; ?>-<?php echo $this->db->get_where('group',['group_id'=>$each['group_id']])->row()->name; ?>
+                            </td>
+                            <td><?php echo $each['roll']; ?></td>
+                            <td><?php echo $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name; ?></td>
+                            <td><?php echo implode(',',$remain_month); ?></td>
+                            <td><?php 
+                                $group_name = $this->db->get_where('group',['group_id'=>$each['group_id']])->row()->name;     
+                                if($group_name == 'Bangla Medium'){
+                                    $dueAmountTotal += count($remain_month)*600;
+                                    echo count($remain_month)*600;
+                                } elseif($group_name == 'English Version') {
+                                    $dueAmountTotal += count($remain_month)*900;
+                                    echo count($remain_month)*900;
+                                } else {
+                                    $dueAmountTotal += count($remain_month)*900;
+                                    echo count($remain_month)*900;
+                                }
+                            ?></td>
+                            <td><?php echo $data['students'][$each['student_id']]['amount']; ?></td>
+                            <td><?php echo $data['students'][$each['student_id']]['amount_paid'];; ?></td>                    
+                            <td><?php echo $data['students'][$each['student_id']]['due'];; ?></td>
+                            <td><?php $mobile = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->mobile; echo $mobile; ?></td>
+                            <td>
+                                <a href="#" class="btn btn-info btn-sm">Send</a>
+                            </td>
+                        </tr>
+                        <?php endif; endforeach; endif; ?>                       
+
+                    </tbody>                    
+                    <tfoot>
+                        <tr>
+                            <th>Class</th>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Unpaid Month</th>
+                            <th>Total: <?php echo $dueAmountTotal; ?></th>
+                            <th>Total Amount</th>
+                            <th>Paid Amount</th>
+                            <th>Due</th>
+                            <th>Mobile</th>
+                            <th>Send SMS</th>
+                        </tr>
+                    </tfoot>
+                </table>                
+            </div>
+
             <div class="tab-pane" id="sms_setting">
 
                 <form id="updateTutionSmsSetting" action="<?php echo base_url() .'index.php?admin/ajax_pendding_tution_fee_sms_setting'; ?>" class="form-horizontal form-groups-bordered validate" method="post">   
@@ -168,7 +262,7 @@
                                         <?php echo get_phrase('pendding_fee_sms_description');?>
                                     </label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control" name="pendding_fee_sms_details" id="" cols="30" rows="10" required="required"><?php echo $this->db->get_where('settings',['type'=>'pendding_fee_sms_details'])->row()->description; ?></textarea>
+                                        <textarea class="form-control" name="pendding_fee_sms_details" id="pendding_fee_sms_details" cols="30" rows="10" required="required"><?php echo $this->db->get_where('settings',['type'=>'pendding_fee_sms_details'])->row()->description; ?></textarea>
                                     </div>
                                 </div>
 
@@ -191,7 +285,15 @@
     </div>
 </div>
 
+<script src="assets/js/jquery.word-and-character-counter.min.js"></script>
+
 <script type="text/javascript">
+$(document).ready(function() {
+    $("#pendding_fee_sms_details").counter({
+        count: 'down',
+        goal: 160
+    });
+});
     $('.jscHolder').hide();
     $('.sectionHolder').hide();
     $('.groupHolder').hide();

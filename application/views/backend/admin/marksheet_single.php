@@ -117,7 +117,7 @@ function accSum($grades='')
 			extract($std_info[0]);
 			// GET CLASS & GROUP NAME
 			$className = $this->db->get_where('class',['class_id'=>$class_id])->row()->name;
-			$groupName = $this->db->get_where('group',['class_id'=>$class_id])->row()->name;
+			$groupName = $this->db->get_where('group',['group_id'=>$group_id])->row()->name;
 			// EXAM ID FROM CONTROLLER
 			$examName   = $this->db->get_where('exam',['exam_id'=>$exam_id])->row()->name;
 			// STORE MARK,POINT AND GRADE

@@ -83,12 +83,15 @@
             </thead>
 
             <tbody>
-                <?php
-                            $data = array();
-
-                            $students = $this->db->get_where('enroll', array('class_id' => $class_id,'shift_id' => $shift_id,'group_id'=>$group_id, 'year' => $running_year, 'section_id' => $section_id))->result_array();
-                            foreach ($students as $row):
-                                ?>
+                    <?php
+                        $data = array();
+                        $students = $this->db->get_where('enroll', array('class_id' => $class_id,
+                        'shift_id' => $shift_id,
+                        'group_id'=>$group_id, 
+                        'year' => $running_year, 
+                        'section_id' => $section_id))->result_array();
+                        foreach ($students as $row):
+                            ?>
                     <tr>
                         <td style="text-align: center;">
                             <?php echo $this->db->get_where('student', array('student_id' => $row['student_id']))->row()->name; ?>
@@ -98,15 +101,14 @@
                             for ($i = 1; $i <= $days; $i++) {
                                 $timestamp = strtotime($i . '-' . $month . '-' . date('Y'));
                                 $this->db->group_by('timestamp');
-                                $attendance = $this->db->get_where('attendance', array('section_id' => $section_id,'group_id'=>$group_id ,'class_id' => $class_id,'shift_id' => $shift_id, 'year' => $running_year, 'timestamp' => $timestamp, 'student_id' => $row['student_id']))->result_array();
-                                
+                                // $attendance = $this->db->get_where('attendance', array('section_id' => $section_id,'group_id'=>$group_id ,'class_id' => $class_id,'shift_id' => $shift_id, 'year' => $running_year, 'timestamp' => $timestamp, 'student_id' => $row['student_id']))->result_array();
+                                $attendance = $this->db->get_where('attendance', array('year' => $running_year, 'timestamp' => $timestamp, 'student_id' => $row['student_id']))->result_array();                               
 
                                 foreach ($attendance as $row1):
                                     $month_dummy = date('d', $row1['timestamp']);
                                    
                                     if ($i == $month_dummy)
-                                    $status = $row1['status'];
-                                   
+                                    $status = $row1['status'];                                  
                                    
                                 endforeach;
                                 ?>

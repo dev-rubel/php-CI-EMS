@@ -76,8 +76,9 @@
                         <div class="form-group">
                             <label  class="col-sm-3 control-label"><?php echo get_phrase('SMS Description'); ?></label>
                             <div class="col-sm-5">
-                                <textarea name="sms_description" id="sms_description" class="form-control" rows="15"></textarea>
+                                <textarea name="sms_description" id="sms_description" class="form-control textarea" rows="15"></textarea>
                             </div>
+                            <div id="textarea_feedback"></div>
                         </div>
                         
                         <div class="form-group">
@@ -95,11 +96,25 @@
     </div>
 </div>
 
+<script src="assets/js/jquery.word-and-character-counter.min.js"></script>
 <script>
-$(document).ready(function() { 
+$(document).ready(function() {
 
-    // update sms setting
+    $("#sms_description").counter({
+        count: 'down',
+        goal: 160
+	});
+	$("#sms_title").counter({
+	   count: 'down',
+	   goal: 11
+	});
+	$("#sms_number").counter({
+	   count: 'down',
+	   goal: 11
+	});
     
+
+    // update sms setting    
     $('#updateSmsSetting').ajaxForm({ 
         beforeSend: function() {                
                 $('#loading2').show();

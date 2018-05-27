@@ -28,8 +28,8 @@
 <?php 
 
 if($_SESSION['name']=='NihalIT'):
-    $links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction','tution_pendding'];
-    $title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction','Tution Pendding'];
+    $links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction','tution_pendding','stationary'];
+    $title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction','Tution Pendding','Stationarys'];
 else:
     $links = ['student_payment','income','income_category','daily_expense','expense_category','monthly_expense_sheet','monthly_balance_sheet','total_balance_sheet','manage_bank_ac','bank_transaction'];
     $title = ['Create Student Payment','Student Payment','Payment Category', 'Daily Expense','Expense Category','Monthly Expense Sheet','Monthly balance Sheet','Total balance Sheet','Manage Account','Bank Transaction'];
@@ -81,6 +81,28 @@ $color = ['bg-info','bg-primary','bg-sms','bg-today-app','bg-confirm-app','bg-pa
 <script>
 
 $('#accountingNavManu').hide();
+function ajaxDataTable(id, url){
+    $('#'+id).dataTable({
+
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo base_url(); ?>index.php?"+url,
+            "type": "POST"
+        },
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ 0 ], //first column / numbering column
+            "orderable": false, //set not orderable
+        },
+        ],
+        "bDestroy": true
+
+    });
+}
 
 function changePage(page)
 {
@@ -109,8 +131,8 @@ function changePage(page)
            
             $('#accountingNavManu').show();
             $('#accountingMainManu').hide();
-            $('#ajaxPageContainer').html(response);
-
+            $('#ajaxPageContainer').html(response);            
+            
             if(selectValue == 'student_payment') {
                 $("#acc_date").datepicker({
                     format: 'dd-mm-yyyy',
@@ -120,27 +142,13 @@ function changePage(page)
                 });
 
 
-                $("input[name=student_code]").keyup(function () {
-                    var value = $(this).val();
-                    $.ajax({
-                        url: '<?php echo base_url();?>index.php?a/accounting/getAccStdInfo/' + value,
-                        success: function (response) {
-                            var data = $.parseJSON(response);
-                            if (!data.name) {
-                                jQuery('#acc_student_info').val('কোন ছাত্র খুজে পাওয়া যায় নি।');
-                            } else {
-                                jQuery('#acc_student_info').val(data.name);
-                            }
-                        }
-                    });
-                    $.get( "<?php echo base_url();?>index.php?a/accounting/getStudentAccHistory/"+value, function( data ){
-                        $( "#studentAccountHistory" ).html( data );  
-                    });
-
-                });
+                
             }
-
+            
+            ajaxDataTable('stationary_item', 'admin/ajaxStationaryItemList');
+            ajaxDataTable('stationary_category', 'admin/ajaxStationaryCategoryList');
             $("#table_export").dataTable();
+            
             $('.datepicker').datepicker({
             	format: 'dd-mm-yyyy',
             });
@@ -150,5 +158,7 @@ function changePage(page)
         }
     });
 }
+
+
 
 </script>

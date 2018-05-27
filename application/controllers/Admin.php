@@ -2171,6 +2171,233 @@ class Admin extends CI_Controller
         $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
     }
 
+    // STATIONARY SECTION
+
+    // STATIONARY ITEM SECTION   
+    
+    function get_stationary_item_remain($stationary_item_id) 
+    {
+        if(!empty($stationary_item_id)) {
+            $data['stationary_category_id'] = $stationary_item_id;
+            $data['item_status'] = 1;
+            $this->db->select_sum('item_amount');
+            $totalIn = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+            // Total OUT
+            $data['item_status'] = 2;
+            $this->db->select_sum('item_amount');
+            $totalOut = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+            $finalAmount = $totalIn - $totalOut;
+            echo $finalAmount;
+        } else {
+            echo false;
+        }
+                
+    }
+
+    function ajax_stationary_item_create()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            // If OUT Item Amount Is More Then Balance Amount
+            if($_POST['item_status'] == 2) {
+                // Total IN
+                $data['stationary_category_id'] = $this->input->post('stationary_category_id');
+
+                $data['item_status'] = 1;
+                $this->db->select_sum('item_amount');
+                $totalIn = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+                // Total OUT
+                $data['item_status'] = 2;
+                $this->db->select_sum('item_amount');
+                $totalOut = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+                $finalAmount = $totalIn - $totalOut;
+                if($_POST['item_amount'] > $finalAmount) {
+                    $this->jsonMsgReturn(false,'Insufficient item amount.');    
+                } else {
+                    $data   =   $this->input->post();
+                    $data['item_price_total']   =   $_POST['item_amount']*$_POST['item_price'];
+                    $data['item_transaction_date']   =   strtotime($_POST['item_transaction_date']);
+                    $data['year']   =   $this->running_year;
+                    $this->db->insert('stationary_items' , $data);
+                    $this->jsonMsgReturn(true,'Add Success.');
+                }
+            } else {
+                $data   =   $this->input->post();
+                $data['item_price_total']   =   $_POST['item_amount']*$_POST['item_price'];
+                $data['item_transaction_date']   =   strtotime($_POST['item_transaction_date']);
+                $data['year']   =   $this->running_year;
+                $this->db->insert('stationary_items' , $data);
+                $this->jsonMsgReturn(true,'Add Success.');
+            }
+            
+        }
+    }
+
+    function ajaxStationaryItemList()
+    {
+        $data['table']   = 'stationary_items';
+        $data['columns'] = [null,'stationary_category_id','item_amount','item_price','item_description','item_status','item_transaction_date'];
+        $data['search']  = ['stationary_category_id','item_amount','item_price','item_description','item_status','item_transaction_date'];
+        $data['order']   = ['stationary_item_id'=>'asc'];
+        $data['func']    = [
+            'stationary_category_id'=>'get_stationary_category_name',
+            'item_status'=>'get_stationary_category_status',
+            'item_transaction_date'=>'get_item_transaction_date'
+        ];
+        $method = 'get_datatables';
+        $action = 'actionButtonStationaryItem';
+        $this->ajaxList($data,$method,$action);
+    }
+
+    public function actionButtonStationaryItem($id)
+    {
+        $listTable = ['stationary_item','admin/ajaxStationaryItemList'];
+        $button = '
+        <a href="#" class="btn btn-info btn-xs" onclick="editStationaryItem(\''.$id.'\')">
+            <i class="entypo-pencil"></i>
+            Edit
+        </a>
+        <a href="#" class="btn btn-danger btn-xs" onclick="confDelete2(\''.admin.'\',\''.ajax_delete_stationary_item.'\',\''.$id.'\',\''.$listTable[0].'\',\''.$listTable[1].'\')">
+            <i class="entypo-trash"></i>
+            Delete
+        </a>
+        ';
+        return $button;
+    }  
+
+    function ajax_stationary_item_edit()
+    {
+        $stationary_item_id = $this->uri(3);
+        $page_data['stationary_item_id']   = $stationary_item_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_stationary_item_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_stationary_item()
+    {
+        $stationary_item_id = $this->uri(3);
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            // If OUT Item Amount Is More Then Balance Amount
+            if($_POST['item_status'] == 2) {
+                // Total IN
+                $data['stationary_category_id'] = $this->input->post('stationary_category_id');
+
+                $data['item_status'] = 1;
+                $this->db->select_sum('item_amount');
+                $totalIn = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+                // Total OUT
+                $data['item_status'] = 2;
+                $this->db->select_sum('item_amount');
+                $totalOut = $this->db->get_where('stationary_items',$data)->row()->item_amount;
+                $finalAmount = $totalIn - $totalOut;
+                if($_POST['item_amount'] > $finalAmount) {
+                    $this->jsonMsgReturn(false,'Insufficient item amount.');    
+                } else {
+                    $data   =   $this->input->post();
+                    $data['item_price_total']   =   $_POST['item_amount']*$_POST['item_price'];
+                    $data['item_transaction_date']   =   strtotime($_POST['item_transaction_date']);
+                    $data['year']   =   $this->running_year;
+                    $this->db->where('stationary_item_id',$stationary_item_id);
+                    $this->db->update('stationary_items' , $data);
+                    $this->jsonMsgReturn(true,'Edit Success.');
+                }
+            } else {
+                $data   =   $this->input->post();
+                $data['item_price_total']   =   $_POST['item_amount']*$_POST['item_price'];
+                $data['item_transaction_date']   =   strtotime($_POST['item_transaction_date']);
+                $data['year']   =   $this->running_year;
+                $this->db->where('stationary_item_id',$stationary_item_id);
+                $this->db->update('stationary_items' , $data);
+                $this->jsonMsgReturn(true,'Edit Success.');
+            }
+        }
+    }
+
+    function ajax_delete_stationary_item()
+    {
+        $stationary_item_id = $this->uri(3);
+        $this->db->where('stationary_item_id' , $stationary_item_id);
+        $this->db->delete('stationary_items');
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
+
+    // STATIONARY CATEGORY SECTION
+
+    public function ajaxStationaryCategoryList()
+    {
+        $data['table']   = 'stationary_category';
+        $data['columns'] = [null,'stationary_category_id'];
+        $data['search']  = ['stationary_category_id'];
+        $data['order']   = ['stationary_category_id'=>'asc'];
+        $data['func']    = ['stationary_category_id'=>'get_stationary_category_name',];
+        $method = 'get_datatables';
+        $action = 'actionButtonStationaryCategory';
+        $this->ajaxList($data,$method,$action);
+    }
+
+    public function actionButtonStationaryCategory($id)
+    {
+        $listTable = ['stationary_category','admin/ajaxStationaryCategoryList'];
+        $button = '
+        <a href="#" class="btn btn-info btn-xs" onclick="editStationaryCategory(\''.$id.'\')">
+            <i class="entypo-pencil"></i>
+            Edit
+        </a>
+        <a href="#" class="btn btn-danger btn-xs" onclick="confDelete2(\''.admin.'\',\''.ajax_delete_stationary_category.'\',\''.$id.'\',\''.$listTable[0].'\',\''.$listTable[1].'\')">
+            <i class="entypo-trash"></i>
+            Delete
+        </a>
+        ';
+        return $button;
+    }    
+
+    function ajax_stationary_category_create()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
+            $this->db->insert('stationary_category' , $data);
+            $this->jsonMsgReturn(true,'Add Success.',$htmlData);
+        }
+    }
+
+    function ajax_stationary_category_edit()
+    {
+        $stationary_category_id = $this->uri(3);
+        $page_data['stationary_category_id']   = $stationary_category_id;
+        $htmlData = $this->load->view('backend/admin/ajax_elements/edit_stationary_category_holder', $page_data, true);
+        $this->jsonMsgReturn(true,'Edit Moad ON',$htmlData);
+    }
+
+    function ajax_update_stationary_category()
+    {
+        $check = check_array_value($_POST);
+        if(!$check){
+            $this->jsonMsgReturn(false,'Please Fill All Field Properly.');
+        } else {
+            $stationary_category_id = $this->uri(3);
+            $data['name']   =   strtolower(str_replace(' ', '_', $this->input->post('name')));
+            $this->db->where('stationary_category_id' , $stationary_category_id);
+            $this->db->update('stationary_category' , $data);
+            $this->jsonMsgReturn(true,'Edit Success.',$htmlData);
+        }
+    }
+
+    function ajax_delete_stationary_category()
+    {
+        $stationary_category_id = $this->uri(3);
+        $this->db->where('stationary_category_id' , $stationary_category_id);
+        $this->db->delete('stationary_category');
+        $this->jsonMsgReturn(true,'Delete Success');
+    }
+
     // ACCOUNTING SECTION
 
     function ajax_income_category_create()
@@ -2373,14 +2600,13 @@ class Admin extends CI_Controller
 
     function ajax_create_invoice()
     {
-        $student_code = $this->input->post('student_code');
+        $student_code = $this->input->post('radio');
         $student_id = $this->db->get_where('student', array('student_code' => $student_code))->row()->student_id;
 
         if(!$student_id){
             $this->jsonMsgReturn(false,'No Student Found.');
             $student_id = '';
         } else {
-
             if(!empty($_POST['months'])){
                 $monthsValue = implode(',', $this->input->post('months'));
             } else {
@@ -2393,7 +2619,7 @@ class Admin extends CI_Controller
 
             $data['student_id']         = $student_id;
             $data['class_id']           = $this->db->get_where('enroll',array('student_id' => $student_id))->row()->class_id;
-            $data['acc_code']           = $this->input->post('student_code');
+            $data['acc_code']           = $student_code;
             $data['months']             = $monthsValue;
             $data['fee_name']           = implode(',', $this->input->post('fee_name'));
             $data['fee_amount']         = implode(',', $this->input->post('fee_amount'));
@@ -3554,78 +3780,124 @@ class Admin extends CI_Controller
         endif;
         // pd($_POST);
         $data['class_id']   = $this->input->post('class_id');
+        $data['group_id']   = $group_id;
         $data['shift_id']   = $this->input->post('shift_id');
         $data['section_id'] = $this->input->post('section_id');
         $data['year']       = $this->input->post('year');
-        $data['timestamp']  = strtotime($this->input->post('timestamp'));
+        $students = $this->db->get_where('enroll', $data)->result_array();
 
-        $query = $this->db->get_where('attendance' ,array(
-            'class_id'=>$data['class_id'],
-                'shift_id'=>$data['shift_id'],
-                    'group_id'=>$group_id,
-                        'section_id'=>$data['section_id'],
-                            'year'=>$data['year'],
-                                'timestamp'=>$data['timestamp']
-        ));
-
-        // pd($data);
-        if($query->num_rows() < 1) {
-            $students = $this->db->get_where('enroll' , array(
-                'class_id' => $data['class_id'],'shift_id'=>$data['shift_id'], 'group_id'=>$group_id,'section_id' => $data['section_id'], 'year'=>$data['year']))->result_array();
-
-        //   pd($students);
-            foreach($students as $row) {
-                $attn_data['class_id']   = $data['class_id'];
-                $attn_data['shift_id']   = $data['shift_id'];
-                $attn_data['group_id']   = $group_id;
-                $attn_data['year']       = $data['year'];
-                $attn_data['timestamp']  = $data['timestamp'];
-                $attn_data['section_id'] = $data['section_id'];
-                $attn_data['student_id'] = $row['student_id'];
-                $this->db->insert('attendance' , $attn_data);
+        $data2['year']       = $this->input->post('year');
+        $data2['timestamp']  = strtotime($this->input->post('timestamp'));
+        if(!empty($students)) {
+            foreach($students as $k=>$each) {
+                $data2['student_id'] = $each['student_id'];
+                $query = $this->db->get_where('attendance',$data2)->num_rows();
+                if($query < 1) {
+                    $this->db->insert('attendance' , $data2);
+                }
             }
         }
 
-        $this->ajax_manage_attendance_view($data['class_id'],$data['shift_id'],$data['section_id'],$data['timestamp'],$group_id);
+        // $query = $this->db->get_where('attendance' ,array(
+        //     'class_id'=>$data['class_id'],
+        //         'shift_id'=>$data['shift_id'],
+        //             'group_id'=>$group_id,
+        //                 'section_id'=>$data['section_id'],
+        //                     'year'=>$data['year'],
+        //                         'timestamp'=>$data['timestamp']
+        // ));
+
+        // // pd($data);
+        // if($query->num_rows() < 1) {
+        //     $students = $this->db->get_where('enroll' , array(
+        //         'class_id' => $data['class_id'],'shift_id'=>$data['shift_id'], 'group_id'=>$group_id,'section_id' => $data['section_id'], 'year'=>$data['year']))->result_array();
+
+        // //   pd($students);
+        //     foreach($students as $row) {
+        //         $attn_data['class_id']   = $data['class_id'];
+        //         $attn_data['shift_id']   = $data['shift_id'];
+        //         $attn_data['group_id']   = $group_id;
+        //         $attn_data['year']       = $data['year'];
+        //         $attn_data['timestamp']  = $data['timestamp'];
+        //         $attn_data['section_id'] = $data['section_id'];
+        //         $attn_data['student_id'] = $row['student_id'];
+        //         $this->db->insert('attendance' , $attn_data);
+        //     }
+        // }
+
+        $this->ajax_manage_attendance_view($data['class_id'],$data['shift_id'],$data['section_id'],$data2['timestamp'],$group_id);
     }
 
     function attendance_update($class_id = '' , $shift_id = '', $section_id = '' , $timestamp = '', $group_id = '')
     {
-        $this->load->library('nihalitsms');
-        if(empty($group_id)):
-            $group_id = '';
-        endif;
-        $running_year = $this->running_year;
+        $attendance_id_batch = $this->input->post();        
+        // pd($attendance_id_batch);
 
+        $this->load->library('nihalitsms');
+        $this->load->library('dbmanage');
+
+        $running_year = $this->running_year;
+        /* IF TABLE NOT EXIST */        
+        $this->dbmanage->createTable('id',['student_id-v','datetime-v'],'attendance_send_sms');        
+      
         $attendance_sms_status = $this->db->get_where('settings' , array('type' => 'attendance_sms_status'))->row()->description;
         $attendance_sms_description = $this->db->get_where('settings' , array('type' => 'attendance_sms_description'))->row()->description;
-        
-        $attendance_of_students = $this->db->get_where('attendance' , array(
-            'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
-        ))->result_array();
-        
-        /* IF TABLE NOT EXIST */
-        $this->load->library('dbmanage');
-        $this->dbmanage->createTable('id',['student_id-v','datetime-v'],'attendance_send_sms');        
-        
-        foreach($attendance_of_students as $row) {
-            $attendance_status = $this->input->post('status_'.$row['attendance_id']);
-            $this->db->where('attendance_id' , $row['attendance_id']);
-            $this->db->update('attendance' , array('status' => $attendance_status));
 
+        foreach($attendance_id_batch as $k => $attendance_status) {
+            $attendance = explode('_',$k);
+            $this->db->where('attendance_id' , $attendance[1]);
+            $this->db->update('attendance' , array('status' => $attendance_status));
+            /* send sms section */
             if ($attendance_sms_status == 'on') {  
                 if ($attendance_status == 2) {                                  
-                    $student_id = $row['student_id'];
+                    $student_id = $this->db->get_where('attendance ',['attendance_id'=>$attendance[1]])->row()->student_id;
                     $exist = $this->db->get_where('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp])->num_rows();
                     /* IF SMS NOT SEND */
                     if($exist < 1) {
-                        $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;         
+                        $parent_mobile  = $this->db->get_where('student' , array('student_id' => $student_id))->row()->mobile;         
                         $this->nihalitsms->long_sms_api($attendance_sms_description,$parent_mobile);
                         $this->db->insert('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp]);
                     }
                 }
             }
         }
+
+        // $this->load->library('nihalitsms');
+        // if(empty($group_id)):
+        //     $group_id = '';
+        // endif;
+        // $running_year = $this->running_year;
+
+        // $attendance_sms_status = $this->db->get_where('settings' , array('type' => 'attendance_sms_status'))->row()->description;
+        // $attendance_sms_description = $this->db->get_where('settings' , array('type' => 'attendance_sms_description'))->row()->description;
+        
+        // $attendance_of_students = $this->db->get_where('attendance' , array(
+        //     'class_id'=>$class_id,'shift_id'=>$shift_id,'section_id'=>$section_id,'group_id'=>$group_id,'year'=>$running_year,'timestamp'=>$timestamp
+        // ))->result_array();
+
+        
+        // /* IF TABLE NOT EXIST */
+        // $this->load->library('dbmanage');
+        // $this->dbmanage->createTable('id',['student_id-v','datetime-v'],'attendance_send_sms');        
+        
+        // foreach($attendance_of_students as $row) {
+        //     $attendance_status = $this->input->post('status_'.$row['attendance_id']);
+        //     $this->db->where('attendance_id' , $row['attendance_id']);
+        //     $this->db->update('attendance' , array('status' => $attendance_status));
+
+        //     if ($attendance_sms_status == 'on') {  
+        //         if ($attendance_status == 2) {                                  
+        //             $student_id = $row['student_id'];
+        //             $exist = $this->db->get_where('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp])->num_rows();
+        //             /* IF SMS NOT SEND */
+        //             if($exist < 1) {
+        //                 $parent_mobile  = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;         
+        //                 $this->nihalitsms->long_sms_api($attendance_sms_description,$parent_mobile);
+        //                 $this->db->insert('attendance_send_sms',['student_id'=>$student_id,'datetime'=>$timestamp]);
+        //             }
+        //         }
+        //     }
+        // }
 
         $this->ajax_manage_attendance_view($class_id,$shift_id,$section_id,$timestamp,$group_id);
     }
@@ -5566,6 +5838,57 @@ class Admin extends CI_Controller
     function code_edit()
     {
         $this->load->view('backend/admin/code_edit');
+    }
+
+    /* DATATABLE AJAX FUNCTION */
+    public function ajaxList($array,$method,$action = '')
+    {
+        $this->load->model('DatatableModel','datatable');
+        $this->load->model('AjaxDatatableFunctionModel','ajaxModel');
+
+        $list = $this->datatable->$method($array);
+        $data = array();
+        $no = $_POST['start'];
+
+        // If data found
+        if(!empty($list)) {
+            foreach ($list as $k=>$each) {
+                $no++;
+                $row = array();
+                $row[] = $no;
+    
+                foreach($array['search'] as $k2=>$each2) {
+                    /* if function found */
+                    if (array_key_exists($each2, $array['func'])) {
+                        $row[] = $this->ajaxModel->$array['func'][$each2]($each[$each2]);
+                    } else {
+                        $row[] = $each[$each2];
+                    }                    
+                }
+                /* If Action Button Assign */
+                if(!empty($action)) {
+                    $row[] = $this->$action($each[key($array['order'])]);
+                }
+                $data[] = $row;
+            }
+            $output = array(
+                "draw" => $_POST['draw'],
+                "recordsTotal" => $this->datatable->count_all($array),
+                "recordsFiltered" => $this->datatable->count_filtered($array),
+                "data" => $data,
+            );
+            //output to json format
+            echo json_encode($output);
+        } else {        // If no data found     
+            $output = array(
+                "draw" => $_POST['draw'],
+                "recordsTotal" => $this->datatable->count_all($array),
+                "recordsFiltered" => $this->datatable->count_filtered($array),
+                "data" => [],
+            );
+            //output to json format
+            echo json_encode($output);
+        }
     }
 
 

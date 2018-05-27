@@ -1,6 +1,6 @@
 <?php  
-$months = explode(',', $invoice_info[0]['months']);
-//pd(date('d-m-Y', $invoice_info[0]['creation_timestamp']));
+$active_month = explode(',', $invoice_info[0]['months']);
+// pd($invoice_info);
 ?>
 <hr />
 <style>
@@ -43,59 +43,100 @@ $months = explode(',', $invoice_info[0]['months']);
                                 </div>
                                 <div class="panel-body">
                                     
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        <?php echo get_phrase('input_student_roll');?>
+                                    </label>
+                                    <div class="col-sm-9">
 
-                                    
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label"><?php echo get_phrase('input_student_id');?></label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Shift Class Section Roll Group" value="<?php echo $student_code;?>" autofocus/>
-                        </div>
-                    </div>
+                                        <div class="col-md-6">
+                                            <select name="classId" id="classId" class="form-control" onchange="getClassId(this)">
+                                                <?php $classList = $this->db->get('class')->result_array(); 
+                                                    foreach($classList as $k=>$each):
+                                                    ?>
+                                                    <option value="<?php echo $each['name_numeric']; ?>-" <?php echo selected($student_info[0]['class_id'],$each['class_id']);?>><?php echo $each['name'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>  
+                                            <input type="hidden" id="hidden_student_id">                                     
+                                        </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label"><?php echo get_phrase('student_info');?></label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="acc_student_info" disabled="disabled" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label"><?php echo get_phrase('months');?></label>
-                        <div class="col-sm-9">
-                        <div class="col-sm-3">
-                            <input type="checkbox" name="months[]" value="january" class="custom-control-input" <?php echo checked2('january',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;January</span>
-                              <input type="checkbox" name="months[]" value="february" class="custom-control-input" <?php echo checked2('february',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;February</span>
-                              <input type="checkbox" name="months[]" value="march" class="custom-control-input" <?php echo checked2('march',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;March</span>
-                              <input type="checkbox" name="months[]" value="april" class="custom-control-input" <?php echo checked2('april',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;April</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <input type="checkbox" name="months[]" value="may" class="custom-control-input" <?php echo checked2('may',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;May</span>
-                              <input type="checkbox" name="months[]" value="june" class="custom-control-input" <?php echo checked2('june',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;June</span>
-                              <input type="checkbox" name="months[]" value="july" class="custom-control-input" <?php echo checked2('july',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;July</span>
-                              <input type="checkbox" name="months[]" value="august" class="custom-control-input" <?php echo checked2('august',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;August</span>
-                        </div>
-                        <div class="col-sm-3">
-                            <input type="checkbox" name="months[]" value="september" class="custom-control-input" <?php echo checked2('september',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;September</span>
-                              <input type="checkbox" name="months[]" value="october" class="custom-control-input" <?php echo checked2('october',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;October</span>
-                              <input type="checkbox" name="months[]" value="november" class="custom-control-input" <?php echo checked2('november',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;November</span>
-                              <input type="checkbox" name="months[]" value="december" class="custom-control-input" <?php echo checked2('december',$months); ?>>
-                              <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
-                        </div>
-                              
-                              
-                              
-                        </div>
-                    </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="student_code" id="acc_student_id" placeholder="Student Roll"
+                                            required="required" value="<?php echo $student_info[0]['roll'];?>"/>                                        
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div id="students_lists">
+                                    <div class="form-group">
+                                        <div class="row student-list-wrapper">
+                                        <?php 
+                                                
+                                                    $data = ['student_id'=>$student_info[0]['student_id']];
+                                                    $students = $this->db->get_where('enroll',$data)->result_array();
+                                                        if(!empty($students)):
+                                                    foreach($students as $k=>$each):
+                                                        $stdName = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->name;
+                                                        $student_code = $this->db->get_where('student',['student_id'=>$each['student_id']])->row()->student_code;                    
+                                            ?>
+                                            <div class="col-sm-6">
+                                                <div class="funkyradio">
+                                                    <div class="funkyradio-success">
+                                                        <input type="radio" name="radio" value="<?php echo $student_code;?>" class="radio" id="radio<?php echo $k?>" checked="checked"/>
+                                                        <label for="radio<?php echo $k?>"><?php echo $stdName;?></label>
+                                                    </div>      
+                                                </div>
+                                            </div>
+                                                    <?php endforeach; 
+                                                    echo '</row>';
+                                                    else: echo '<p class="text-center"><b>No Student Found</b></p>'; endif;
+                                                    ?>
+                                        </div>
+                                    </div>
+                                </div>    
+
+                                
+                                <div class="form-group">
+                                        <label class="col-sm-3 control-label"><?php echo get_phrase('months');?></label>
+                                        <div class="col-sm-9">
+                                            <div class="col-sm-3">
+                                                <input type="checkbox" name="months[]" value="january" class="custom-control-input" <?php $january = checked2('january',$active_month); echo $january; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;January</span>
+                                                <input type="checkbox" name="months[]" value="february" class="custom-control-input" <?php $february = checked2('february',$active_month); echo $february; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;February</span>
+                                                <input type="checkbox" name="months[]" value="march" class="custom-control-input" <?php $march = checked2('march',$active_month); echo $march; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;March</span>
+                                                <input type="checkbox" name="months[]" value="april" class="custom-control-input" <?php $april = checked2('april',$active_month); echo $april; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;April</span>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="checkbox" name="months[]" value="may" class="custom-control-input" <?php $may = checked2('may',$active_month); echo $may; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;May</span>
+                                                <input type="checkbox" name="months[]" value="june" class="custom-control-input" <?php $june = checked2('june',$active_month); echo $june; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;June</span>
+                                                <input type="checkbox" name="months[]" value="july" class="custom-control-input" <?php $july = checked2('july',$active_month); echo $july; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;July</span>
+                                                <input type="checkbox" name="months[]" value="august" class="custom-control-input" <?php $august = checked2('august',$active_month); echo $august; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;August</span>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="checkbox" name="months[]" value="september" class="custom-control-input" <?php $september = checked2('september',$active_month); echo $september; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;September</span>
+                                                <input type="checkbox" name="months[]" value="october" class="custom-control-input" <?php $october = checked2('october',$active_month); echo $october; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;October</span>
+                                                <input type="checkbox" name="months[]" value="november" class="custom-control-input" <?php $november = checked2('november',$active_month); echo $november; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;November</span>
+                                                <input type="checkbox" name="months[]" value="december" class="custom-control-input" <?php $december = checked2('december',$active_month); echo $december; ?>>
+                                                <span class="custom-control-description">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;December</span>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                    <div id="accMonthCheckbox">
+                                        
+                                    </div>
+                    
                                     
 
                     <div class="form-group">
@@ -189,23 +230,6 @@ $months = explode(',', $invoice_info[0]['months']);
 
                                 <input type="hidden" name="status" value="paid">
                                 <input type="hidden" name="method" value="1">
-                                <!--<div class="form-group">
-                                    <label class="col-sm-3 control-label"><?php echo get_phrase('status');?></label>
-                                    <div class="col-sm-9">
-                                        <select name="status" class="form-control selectboxit">
-                                            <option value="paid" <?php echo selected('paid',$invoice_info[0]['status']);?>><?php echo get_phrase('paid');?></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label"><?php echo get_phrase('method');?></label>
-                                    <div class="col-sm-9">
-                                        <select name="method" class="form-control selectboxit">
-                                            <option value="1"><?php echo get_phrase('cash');?></option>
-                                        </select>
-                                    </div>
-                                </div>-->
                                 
                             </div>
                         </div>
@@ -248,31 +272,33 @@ $months = explode(',', $invoice_info[0]['months']);
     }
 
 
-
     $(document).ready(function () {
-
+        $( "#studentInfoBox" ).hide(); 
+        $( "#addInvoice" ).hide(); 
         //$("#acc_date").datepicker({format: 'dd-mm-yyyy'}).datepicker("setDate", new Date());
 
         $("table.fee-list").on("change", 'input[name^="fee_amount"]', function (event) {
             calculateGrandTotal();
         });
         
-        $( "input[name=acc_code]" ).keyup(function() {
-            var value = $( this ).val();
-            $.ajax({
-            url: '<?php echo base_url();?>index.php?a/accounting/getAccStdInfo/' + value ,
-            success: function(response)
-            {
-                var data = $.parseJSON(response);
-                if(!data.name){
-                    jQuery('#acc_student_info').val('কোন ছাত্র খুজে পাওয়া যায় নি।');
-                }
-                else{
-                    jQuery('#acc_student_info').val(data.name);
-                }
-            }
-        });
-        
+        $("input[name=student_code]").keyup(function () {
+            
+            var value = $('#classId').val()+$(this).val();         
+           
+            $.get( "<?php echo base_url();?>index.php?a/accounting/getRollToStudentInfo/"+value+'/'+<?php echo $student_info[0]['student_id'];?>, function( data ){
+                if(data) {
+                    $( "#students_lists" ).show(); 
+                    $( "#students_lists" ).html( data );  
+                    $( "#accMonthCheckbox" ).show();  
+                } else {
+                    $( "#students_lists" ).hide();  
+                    $( "#studentInfoBox" ).hide();  
+                    $( "#accMonthCheckbox" ).html('');  
+                    $( "#acc_student_info" ).val('');  
+ 
+                }                
+            });
+
         });
     });
 
