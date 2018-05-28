@@ -35,6 +35,8 @@
                     <tbody>
                     	<?php 
                         $count = 1;foreach($subjects as $row):
+                        $this->db->select_sum('total_mark');
+                        $joinOrNotTotalMark = $this->db->get_where('subject',array('subject_code'=>$row['subject_code']))->row()->total_mark;
                         $joinOrNot = $this->db->get_where('subject',array('subject_code'=>$row['subject_code']))->result_array();
                         $groupName = $this->db->get_where('group',array('group_id'=>$row['group_id']))->row()->name;
                         ?>
@@ -44,9 +46,9 @@
                             <td><?php 
                                 $subject_marks = explode('|', $row['subject_marks']);
                                 if(count($joinOrNot)>1) {                                    
-                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
+                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNotTotalMark).'</b>';
                                 } else {
-                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNot[0]['total_mark']).'</b>';
+                                    echo 'MT: '.$subject_marks[0].'| CQ: '.$subject_marks[1].'| MCQ: '.$subject_marks[2].'| PR: '.$subject_marks[3].'| <b>Total: '.($joinOrNotTotalMark).'</b>';
                                 } ?>
                             </td>
 							<td><?php echo $this->crud_model->get_type_name_by_id('teacher',$row['teacher_id']);?></td>

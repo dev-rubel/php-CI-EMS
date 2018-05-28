@@ -168,7 +168,7 @@
 								<textarea name="item_description" class="form-control" placeholder="Item Description" cols="30" rows="5"></textarea>
 							</div>
 							<div class="col-sm-1">
-								<select name="item_status" class="form-control">
+								<select name="item_status" class="form-control" onchange="changeButton(this)">
 									<option value="1">IN</option>
 									<option value="2">OUT</option>
 								</select>
@@ -178,7 +178,7 @@
 							</div>
 
 							<div class="col-sm-2">
-								<button type="submit" class="btn btn-info">
+								<button type="submit" class="btn btn-info" id="addSellButton">
 									<?php echo get_phrase('add_item');?>
 								</button>
 							</div>
@@ -271,6 +271,23 @@
 
 
 <script type="text/javascript">
+
+	function changeButton(id) {
+		console.log(id.value);
+		if(id.value == 1) {
+			$('#addSellButton').text('Add Item');
+			$('#addSellButton').removeClass('btn-danger');
+			$('#addSellButton').addClass('btn-info');			
+		} else if(id.value == 2) {
+			$('#addSellButton').text('Sell Item');
+			$('#addSellButton').removeClass('btn-info');
+			$('#addSellButton').addClass('btn-danger');
+		} else {
+			$('#addSellButton').text('Add Item');
+			$('#addSellButton').removeClass('btn-danger');
+			$('#addSellButton').addClass('btn-info');	
+		}
+	}
 
 	function get_stationary_item_remain(stationary_item_id) {
 		$.ajax({

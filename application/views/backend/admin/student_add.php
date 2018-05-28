@@ -453,6 +453,7 @@ span.mendatory {
             } else {
                 toastr.success(jData.msg);
                 $('#addStudentInfo').resetForm();
+                $('#roll_selector_holder').text('');
                 $("#focusField").focus();
             }
             $('body,html').animate({scrollTop:0},800);
