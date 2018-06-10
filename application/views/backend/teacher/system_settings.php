@@ -471,7 +471,7 @@
                                     <div class="form-group">
                                         <label for="field-1" class="col-md-3 control-label">Main Color</label>
                                         <div class="col-md-8">
-                                            <input type="test" class="form-control jscolor" name="main_color" value="<?php echo $mainColor; ?>" required="required">
+                                            <input type="text" class="form-control jscolor" name="main_color" value="<?php echo $mainColor; ?>" required="required">
                                         </div>
                                     </div>
                                     <br>
@@ -480,7 +480,7 @@
                                     <div class="form-group">
                                         <label for="field-1" class="col-md-3 control-label">Hover Color</label>
                                         <div class="col-md-8">
-                                            <input type="test" class="form-control jscolor" name="hover_color" value="<?php echo $hoverColor; ?>" required="required">
+                                            <input type="text" class="form-control jscolor" name="hover_color" value="<?php echo $hoverColor; ?>" required="required">
                                         </div>
                                     </div>
                                     <br>
