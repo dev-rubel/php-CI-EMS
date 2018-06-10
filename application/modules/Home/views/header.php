@@ -99,6 +99,9 @@ $socialLink = explode('+', $head['textInfo']['social_links']);
                             <a href="#">একাডেমিক রেকর্ড</a>
                             <ul class="sub-menu">
                                 <li>
+                                    <a href="index.php?Home/massageDetails/midExam">Marksheet</a>
+                                </li>
+                                <li>
                                     <a href="index.php?Home/massageDetails/midExam">সাময়িক পরীক্ষা</a>
                                 </li>
                                 <li>
