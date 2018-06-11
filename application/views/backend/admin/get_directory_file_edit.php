@@ -9,9 +9,7 @@
     <div class="row">
         <div class="col-md-12">
             <p id="savingProcess"></p>           
-            <textarea name="code" class="form-control" id="editor">
-                <?php echo $file; ?>
-            </textarea>
+            <textarea name="code" class="form-control" id="editor"><?php echo $file; ?></textarea>
         </div>
     </div>
 

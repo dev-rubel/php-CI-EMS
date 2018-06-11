@@ -633,12 +633,27 @@ class Admin extends CI_Controller
     {
         $data = $this->input->post();
         $filds = ['shift_id','class_id','section_id','group_id'];
-        $array = [];
-        foreach($filds as $k=>$fild){
-            if(!empty($data[$fild])) {
-                $fild = [$fild=>$data[$fild]];
-                $array = array_merge($array,$fild);
-            }    
+        $array = [];        
+        
+        if(!empty($data['student_code'])) {
+            $this->db->where('student_code',$data['student_code']);
+            $query = $this->db->get('student');
+            if($query->num_rows() > 0) {
+                $student_id = $query->row()->student_id;
+                $this->db->where('student_id',$student_id);
+                $query2 = $this->db->get('enroll');
+                foreach($filds as $k=>$fild){
+                    $array[$fild] = $query2->row()->$fild;
+                }
+                $array = array_merge($array,['student_id'=> $student_id]);
+            }
+        } else {
+            foreach($filds as $k=>$fild){
+                if(!empty($data[$fild])) {
+                    $fild = [$fild=>$data[$fild]];
+                    $array = array_merge($array,$fild);
+                }    
+            }
         }
         $array = array_merge($array,['year'=>$this->running_year]);
         $exam_id = $data['exam_id'];
@@ -3087,14 +3102,16 @@ class Admin extends CI_Controller
                 $this->db->where('student_id' , $row['student_id']);
                 $marks = $this->db->get_where('mark' , array('year' => $this->running_year))->result_array();
                 $message = '';
+                $message = $row['student_id'];
                 foreach ($marks as $row2) {
                     $subject       = $this->db->get_where('subject' , array('subject_id' => $row2['subject_id']))->row()->name;
                     $mark_obtained = $row2['mark_obtained'];
-                    $message      .= $row2['student_id'] . $subject . ' : ' . $mark_obtained . ' , ';
+                    $message      .= $subject . ' : ' . $mark_obtained . ' , ';
 
                 }
                 // send sms
-                $this->sms_model->send_sms( $message , $receiver_phone );
+                pd($message);
+                //$this->sms_model->send_sms( $message , $receiver_phone );
             }
             $this->session->set_flashdata('flash_message' , get_phrase('message_sent'));
             redirect(base_url() . 'index.php?admin/exam_marks_sms' , 'refresh');
@@ -5843,8 +5860,8 @@ class Admin extends CI_Controller
     /* DATATABLE AJAX FUNCTION */
     public function ajaxList($array,$method,$action = '')
     {
-        $this->load->model('DatatableModel','datatable');
-        $this->load->model('AjaxDatatableFunctionModel','ajaxModel');
+        $this->load->model('datatable_model','datatable');
+        $this->load->model('ajaxdatatablefunction_model','ajaxModel');
 
         $list = $this->datatable->$method($array);
         $data = array();

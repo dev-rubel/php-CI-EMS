@@ -33,6 +33,3 @@
 <script type="text/javascript" src="assets/newNav/navscrp.js"></script>
 <link rel="shortcut icon" href="assets/images/favicon.png">
 
-<script>
-	  $(document).ready(function(){$(".vertical-nav").verticalnav({speed: 400,align: "left"});});
-</script>

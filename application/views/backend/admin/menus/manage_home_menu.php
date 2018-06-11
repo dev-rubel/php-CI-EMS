@@ -1,26 +1,26 @@
 <style>
-.extra-menu h2, 
-.extra-menu h4{
-    color: #fff;
-}
-.extra-menu {
-    padding: 2px 10px !important;
-    min-height: 40px;
-}
-.extra-menu h4 {
-    font-size: 13px !important;
-}
-.customNavManu {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #EEEEEE;
-}
-.panel-stat3 .stat-icon {
-    top: 0 !important;
-}
+    .extra-menu h2, 
+    .extra-menu h4{
+        color: #fff;
+    }
+    .extra-menu {
+        padding: 2px 10px !important;
+        min-height: 40px;
+    }
+    .extra-menu h4 {
+        font-size: 13px !important;
+    }
+    .customNavManu {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #EEEEEE;
+    }
+    .panel-stat3 .stat-icon {
+        top: 0 !important;
+    }
 
-.panel-stat3 {
-    border-radius: 0px !important;
-}
+    .panel-stat3 {
+        border-radius: 0px !important;
+    }
 </style>
 
 <br>

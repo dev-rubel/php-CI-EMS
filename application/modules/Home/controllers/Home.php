@@ -365,6 +365,11 @@ class Home extends MX_Controller {
         }        
     }
 
+    function marksheet()
+    {
+        $this->load_page('marksheet', 'Marksheet',[]);
+    }
+
     function download_blank_form()
     {
         $this->load->library('m_pdf');
@@ -392,17 +397,17 @@ class Home extends MX_Controller {
         if($status[0]==0){
             $data['date'] = $status[1];
         	$this->load->view('underConstraction',$data);
-        }else{
-        $data2['title'] = $title;
-        $data['meta'] = $this->home_model->getMetaInfo(); 
-        $data3['head'] = $this->home_model->get_headerInfo();
-        $data3['header_img'] = $this->db->get_where('settings', array('type'=>'headerImg'))->row()->description;
-        $data2['contentInfo'] = $this->home_model->get_contentInfo();
-        $data4['footerInfo'] = $this->home_model->get_footerInfo();
-        $data['header'] = $this->load->view('header', $data3, true);
-        $data['footer'] = $this->load->view('footer', $data4, true);
-        $data['content'] = $this->load->view($page, $data2, true);
-        $this->load->view('home_master', $data);
+        } else {
+            $data2['title'] = $title;
+            $data['meta'] = $this->home_model->getMetaInfo(); 
+            $data3['head'] = $this->home_model->get_headerInfo();
+            $data3['header_img'] = $this->db->get_where('settings', array('type'=>'headerImg'))->row()->description;
+            $data2['contentInfo'] = $this->home_model->get_contentInfo();
+            $data4['footerInfo'] = $this->home_model->get_footerInfo();
+            $data['header'] = $this->load->view('header', $data3, true);
+            $data['footer'] = $this->load->view('footer', $data4, true);
+            $data['content'] = $this->load->view($page, $data2, true);
+            $this->load->view('home_master', $data);
         }
         
     }
