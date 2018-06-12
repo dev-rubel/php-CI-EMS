@@ -3081,36 +3081,42 @@ class Admin extends CI_Controller
             $class_id   =   $this->input->post('class_id');
             $receiver   =   $this->input->post('receiver');
 
+            $this->load->library('nihalitsms');
             // get all the students of the selected class
             $students = $this->db->get_where('enroll' , array(
                 'class_id' => $class_id,
-                    'year' => $this->running_year
+                'year' => $this->running_year
             ))->result_array();
             // get the marks of the student for selected exam
             foreach ($students as $row) {
-                if ($receiver == 'student')
-                    $receiver_phone = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->phone;
-                if ($receiver == 'parent') {
-                    $parent_id =  $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->parent_id;
-                    if($parent_id != '') {
-                        $receiver_phone = $this->db->get_where('parent' , array('parent_id' => $row['parent_id']))->row()->phone;
-                    }
-                }
+                
+                $receiver_phone = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->mobile;
+                $student_name   = $this->db->get_where('student' , array('student_id' => $row['student_id']))->row()->name;
+                $class_name     = $this->db->get_where('class' , array('class_id' => $class_id))->row()->name;
+                $exam_term      = $this->db->get_where('exam' , array('exam_id' => $exam_id))->row()->name;                
 
+                $marks = $this->generate_marksheet($row['student_id'],$exam_id);
+                /* PHP_EOL line break */
+                $message .= 'Name: '.$student_name.PHP_EOL;
+                $message .= 'Class: '.$class_name.PHP_EOL;
+                $message .= 'Exam: '.$exam_term.PHP_EOL;
+                $message .= 'GPA: '.$marks[$row['student_id']]['total_point_with_4th'].PHP_EOL;
+                $message .= 'Grade: '.$marks[$row['student_id']]['total_grade'];
+                // $final_msg = nl2br($message);
+                // $this->db->where('exam_id' , $exam_id);
+                // $this->db->where('student_id' , $row['student_id']);
+                // $marks = $this->db->get_where('mark' , array('year' => $this->running_year))->result_array();
+                // $message = '';
+                // $message = $row['student_id'];
+                // foreach ($marks as $row2) {
+                //     $subject       = $this->db->get_where('subject' , array('subject_id' => $row2['subject_id']))->row()->name;
+                //     $mark_obtained = $row2['mark_obtained'];
+                //     $message      .= $subject . ' : ' . $mark_obtained . ' , ';
 
-                $this->db->where('exam_id' , $exam_id);
-                $this->db->where('student_id' , $row['student_id']);
-                $marks = $this->db->get_where('mark' , array('year' => $this->running_year))->result_array();
-                $message = '';
-                $message = $row['student_id'];
-                foreach ($marks as $row2) {
-                    $subject       = $this->db->get_where('subject' , array('subject_id' => $row2['subject_id']))->row()->name;
-                    $mark_obtained = $row2['mark_obtained'];
-                    $message      .= $subject . ' : ' . $mark_obtained . ' , ';
-
-                }
+                // }
                 // send sms
-                pd($message);
+                $this->nihalitsms->long_sms_api($message,$receiver_phone);
+                pd($receiver_phone);
                 //$this->sms_model->send_sms( $message , $receiver_phone );
             }
             $this->session->set_flashdata('flash_message' , get_phrase('message_sent'));

@@ -33,10 +33,8 @@
         <div class="col-md-3">
             <div class="form-group">
             <label class="control-label"><?php echo get_phrase('receiver');?></label>
-                <select name="receiver" class="form-control" id="receiver">
-                	<option value=""><?php echo get_phrase('select_receiver');?></option>
-                	<option value="student"><?php echo get_phrase('students');?></option>
-                	<option value="parent"><?php echo get_phrase('parents');?></option>
+                <select name="receiver" class="form-control" id="receiver" readonly>
+                	<option value="parent" selected><?php echo get_phrase('parents');?></option>
                 </select>
             </div>
         </div>
