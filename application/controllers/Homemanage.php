@@ -312,8 +312,8 @@ class Homemanage extends CI_Controller
     {
         $names = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->title;
         $mark = $this->db->get_where('frontpages',array('track_name'=>$value))->row()->description;
-            $Response = array('name' => $names, 'mark' => $mark);
-            echo json_encode($Response);
+        $Response = array('name' => $names, 'mark' => $mark);
+        echo json_encode($Response);
     }
     
     function update_admission_info()
@@ -826,8 +826,7 @@ class Homemanage extends CI_Controller
     function ajax_edit_slider()
     {
         $slider_id = $this->uri(3);  
-        $page_data['slider_id']   = $slider_id; 
-
+        $page_data['slider_id']   = $slider_id;
         $htmlData = $this->load->view('backend/admin/ajax_elements/edit_slider_form_holder' , $page_data, true);
         $this->jsonMsgReturn(true,'Edit Mode.',$htmlData);
     }
@@ -907,8 +906,7 @@ class Homemanage extends CI_Controller
         }
         $htmlData['imageHolder'] = $this->load->view('backend/admin/ajax_elements/slider_table_holder' , '', true);
         $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_slider_form_holder' , '', true);
-        $this->jsonMsgReturn(true,$status,$htmlData);
-        
+        $this->jsonMsgReturn(true,$status,$htmlData);        
     }
 
     function ajax_delete_slider()
@@ -1152,8 +1150,7 @@ class Homemanage extends CI_Controller
     {
         $this->dashboard_model->delete_linkinfo_table($this->uri(3));
         $this->jsonMsgReturn(true,'Delete Success');
-    }
-    
+    }    
     
     function update_manage_pages()
     {
@@ -1205,7 +1202,6 @@ class Homemanage extends CI_Controller
             $htmlData['addForm'] = $this->load->view('backend/admin/ajax_elements/add_important_link_form_holder', '', true);
             $this->jsonMsgReturn(true,'Update Success',$htmlData);
         }
-
     }
     
     function update_link()

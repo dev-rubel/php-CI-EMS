@@ -1,7 +1,6 @@
 <div class="row">
         <div class="col-md-offset-1 col-md-10">
                 <div class="col-md-4 col-md-offset-1" id="add_location_form_holder">
-
                         <form id="addImportantLink" action="<?php echo base_url() .'index.php?homemanage/ajax_update_location'; ?>" class="form-horizontal form-groups-bordered" method="post">
                                 <div class="form-group">
                                         <label>
@@ -34,7 +33,6 @@
 
 <script>
 $(document).ready(function () {
-
         $('#addImportantLink').ajaxForm({
         beforeSend: function () {
                 $('#loading2').show();

@@ -23,7 +23,6 @@ $link = $this->db->get('linkinfo')->row()->link;
 
 <script>
 $(document).ready(function () {
-
     $('#editImportantLink').ajaxForm({
       beforeSend: function () {
           $('#loading2').show();
@@ -46,8 +45,6 @@ $(document).ready(function () {
           $('#overlayDiv').fadeOut('slow');
       }
   });
-  
-
 });
 
 </script>
